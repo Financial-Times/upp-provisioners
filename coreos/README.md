@@ -1,5 +1,13 @@
 #Playbook to provision nodes for coreos cluster
 
+###
+Simple option - use docker
+
+```
+docker build -t setup .
+docker run --env "AWS_SECRET_ACCESS_KEY=xxxxxxx" --env "AWS_ACCESS_KEY_ID=xxxxxxxx" --env "TOKEN_URL=https://discovery.etcd.io/xxxxxx" setup
+```
+
 ###Requirements
 
  - python2 + pip + virtualenv
