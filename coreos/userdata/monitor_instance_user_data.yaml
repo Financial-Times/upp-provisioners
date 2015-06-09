@@ -1,0 +1,28 @@
+#cloud-config
+
+coreos:
+  update:
+    reboot-strategy: best-effort
+  etcd:
+    discovery: {{token}}
+    addr: $private_ipv4:4001
+    peer-addr: $private_ipv4:7001
+    # give etcd more time if it's under heavy load - prevent leader election thrashing
+    peer-election-timeout: 2000
+    # heartbeat interval should ideally be 1/4 or 1/5 of peer election timeout
+    peer-heartbeat-interval: 500
+  fleet:
+    # allow etcd to slow down at times
+    etcd_request_timeout: 3.0
+    metadata: host_type=monitor
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
+write_files:
+  - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
+    content: |
+      [Socket]
+      ListenStream=0.0.0.0:49153
+

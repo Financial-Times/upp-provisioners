@@ -1,0 +1,215 @@
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars:
+    region: eu-west-1
+    ami: ami-4b1c763c
+
+  tasks:
+    - name: Set up fleet security group
+      ec2_group:
+        region: "{{region}}"
+        name: fleet_sg
+        description: Fleet secutiy group
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 514
+            to_port: 514
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 4001
+            to_port: 4001
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 3000
+            to_port: 3000
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 7001
+            to_port: 7001
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 8000
+            to_port: 8000
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 8080
+            to_port: 8082
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 8086
+            to_port: 8086
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 9000
+            to_port: 9000
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 9080
+            to_port: 9080
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 9090
+            to_port: 9090
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 9092
+            to_port: 9092
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 2182
+            to_port: 2182
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 49153
+            to_port: 49153
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 0
+            to_port: 65535
+            cidr_ip: 172.31.0.0/16
+          - proto: tcp
+            from_port: 49153
+            to_port: 49153
+            cidr_ip: 81.144.234.34/32
+          - proto: tcp
+            from_port: 49153
+            to_port: 49153
+            cidr_ip: 194.117.242.16/32
+        rules_egress:
+          - proto: tcp
+            from_port: 0
+            to_port: 65535
+            cidr_ip: 0.0.0.0/0
+      register: fleet_group
+
+    - name: Fleet key
+      ec2_key:
+        region: "{{region}}"
+        name: fleet_key
+        key_material: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClioG5nIJuK0+PAUyyrwtvfhd6/BbkAyx8BMfWVUV7IQAqeBgIz/yl4DQL23XBHoRhfLeN2Xv2j/szSFwAwY9Rf8BiN1GSkHIIvjeZ3MaQWLk+2Bmxi26Zz4Rdd17yJ+trvS9IJBSwd+DuZt/I9yATboWKf272Zd25MJeGmpmzgqXpn0I9i94DZPft9rWCDR0jgA3/uhqY00iR7k+/3YLbU9xo6IWjAFeBRre/te/e/q4h21MJFjqUOrDInyfjA6Wj/7WKE+os9DNLQ5usXgNEUbuHHHSAryetWWNK5emJ8jKHMFUggGrAkuyls9BhufVlkaqH7qzJkPWsm5V85AEt george@archiso'
+        state: present
+
+    - name: Provision m3.medium instances
+      ec2:
+        region: "{{region}}"
+        key_name: fleet_key
+        group: fleet_sg
+        image: "{{ami}}"
+        instance_type: m3.medium
+        wait: true
+        exact_count: 3
+        user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 20
+        count_tag:
+          Name: fleet_default
+        instance_tags:
+          Name: fleet_default
+      register: ec2_small
+
+    - debug: msg="ec2_small ips {{ item.public_ip }}"
+      with_items: "{{ ec2_small.tagged_instances }}"
+
+    - name: Provision m3.medium persistent instance
+      ec2:
+        region: "{{region}}"
+        key_name: fleet_key
+        group: fleet_sg
+        image: "{{ami}}"
+        instance_type: m3.medium
+        wait: true
+        exact_count: 3
+        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 20
+          - device_name: /dev/xvdf
+            volume_size: 50
+        count_tag:
+          Name: fleet_persistent
+        instance_tags:
+          Name: fleet_persistent
+      register: ec2_persistent
+
+    - debug: msg="ec2_persistent ips {{ item.public_ip }}"
+      with_items: "{{ ec2_persistent.tagged_instances }}"
+
+    - name: Provision m3.medium kafka host
+      ec2:
+        region: "{{region}}"
+        key_name: fleet_key
+        group: fleet_sg
+        image: "{{ami}}"
+        instance_type: m3.medium
+        wait: true
+        exact_count: 1
+        user_data: "{{ lookup('template', 'userdata/kafka_instance_user_data.yaml') }}"
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 20
+        count_tag:
+          Name: fleet_kafka
+        instance_tags:
+          Name: fleet_kafka
+      register: ec2_kafka
+
+    - debug: msg="ec2_kafka ips {{ item.public_ip }}"
+      with_items: "{{ ec2_kafka.tagged_instances }}"
+
+    - name: Monitoring host
+      ec2:
+        region: "{{region}}"
+        key_name: fleet_key
+        group: fleet_sg
+        image: "{{ami}}"
+        instance_type: m3.medium
+        wait: true
+        exact_count: 1
+        user_data: "{{ lookup('template', 'userdata/monitor_instance_user_data.yaml') }}"
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 20
+        count_tag:
+          Name: fleet_monitor
+        instance_tags:
+          Name: fleet_monitor
+      register: ec2_monitor
+
+    - debug: msg="ec2_monitor ips {{ item.public_ip }}"
+      with_items: "{{ ec2_monitor.tagged_instances }}"
+
+    - name: Splunk host
+      ec2:
+        region: "{{region}}"
+        key_name: fleet_key
+        group: fleet_sg
+        image: "{{ami}}"
+        instance_type: m3.medium
+        wait: true
+        exact_count: 1
+        user_data: "{{ lookup('template', 'userdata/splunk_instance_user_data.yaml') }}"
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 20
+          - device_name: /dev/xvdf
+            volume_size: 20
+        count_tag:
+          Name: fleet_splunk
+        instance_tags:
+          Name: fleet_splunk
+      register: ec2_splunk
+
+    - debug: msg="ec2_splunk ips {{ item.public_ip }}"
+      with_items: "{{ ec2_splunk.tagged_instances }}"
+
