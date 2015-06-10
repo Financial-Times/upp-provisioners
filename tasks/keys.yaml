@@ -1,0 +1,6 @@
+---
+
+- include_vars: vars/keys.yaml
+
+- name: add wordpress content api key to etcd
+  shell: curl -L http://127.0.0.1:4001/v2/keys/ft/_credentials/wp -XPUT -d value="{{ wp_contentApi_key }}"

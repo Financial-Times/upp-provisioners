@@ -21,5 +21,5 @@ RUN . .venv/bin/activate && pip install ansible boto
 
 ADD . /
 
-CMD export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID && export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY && . .venv/bin/activate && ansible-playbook -i ~/.ansible_hosts aws_coreos_site.yml --extra-vars "token=$TOKEN_URL"
+CMD export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID && export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY && . .venv/bin/activate && $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts aws_coreos_site.yml --extra-vars "token=$TOKEN_URL" --vault-password-file=/vault.pass 
 
