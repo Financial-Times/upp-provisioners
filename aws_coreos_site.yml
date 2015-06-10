@@ -25,14 +25,6 @@
             from_port: 0
             to_port: 65535
             cidr_ip: 172.31.0.0/16
-          - proto: tcp
-            from_port: 49153
-            to_port: 49153
-            cidr_ip: 81.144.234.34/32
-          - proto: tcp
-            from_port: 49153
-            to_port: 49153
-            cidr_ip: 194.117.242.16/32
         rules_egress:
           - proto: tcp
             from_port: 0
