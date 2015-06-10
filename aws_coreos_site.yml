@@ -213,9 +213,3 @@
     - debug: msg="ec2_splunk ips {{ item.public_ip }}"
       with_items: "{{ ec2_splunk.tagged_instances }}"
     
-    - add_host: hostname={{ item.public_ip }} groups=splunkHost
-      with_items: ec2_splunk.tagged_instances  
-
-- hosts: splunkHost
-  tasks: 
-    - include: tasks/keys.yaml 
