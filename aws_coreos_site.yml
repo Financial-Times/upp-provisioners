@@ -5,6 +5,8 @@
   vars:
     region: eu-west-1
     ami: ami-4b1c763c
+  vars_files:
+    - keys.yaml
 
   tasks:
     - name: Set up fleet security group
