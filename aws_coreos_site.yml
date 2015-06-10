@@ -1,12 +1,14 @@
 - hosts: localhost
   connection: local
-  gather_facts: False
 
   vars:
     region: eu-west-1
     ami: ami-4b1c763c
-
+  
   tasks:
+    - debug: msg="{{ token | regex_replace('^https?:\\/\\/[\\w\\.]*\\/([\\w]*)$', '\\1') }}"
+      register:  cp
+    
     - name: Set up fleet security group
       ec2_group:
         region: "{{region}}"
@@ -53,9 +55,9 @@
           - device_name: /dev/xvda
             volume_size: 20
         count_tag:
-          Name: fleet_default
+          Name: "{{cp.msg}}_fleet_default"
         instance_tags:
-          Name: fleet_default
+          Name: "{{cp.msg}}_fleet_default"
       register: ec2_small
 
     - debug: msg="ec2_small ips {{ item.public_ip }}"
@@ -77,9 +79,9 @@
           - device_name: /dev/xvdf
             volume_size: 50
         count_tag:
-          Name: fleet_persistent
+          Name: "{{cp.msg}}_fleet_persistent"
         instance_tags:
-          Name: fleet_persistent
+          Name: "{{cp.msg}}_fleet_persistent"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -99,9 +101,9 @@
           - device_name: /dev/xvda
             volume_size: 20
         count_tag:
-          Name: fleet_kafka
+          Name: "{{cp.msg}}_fleet_kafka"
         instance_tags:
-          Name: fleet_kafka
+          Name: "{{cp.msg}}_fleet_kafka"
       register: ec2_kafka
 
     - debug: msg="ec2_kafka ips {{ item.public_ip }}"
@@ -121,9 +123,9 @@
           - device_name: /dev/xvda
             volume_size: 20
         count_tag:
-          Name: fleet_monitor
+          Name: "{{cp.msg}}_fleet_monitor"
         instance_tags:
-          Name: fleet_monitor
+          Name: "{{cp.msg}}_fleet_monitor"
       register: ec2_monitor
 
     - debug: msg="ec2_monitor ips {{ item.public_ip }}"
@@ -145,9 +147,9 @@
           - device_name: /dev/xvdf
             volume_size: 20
         count_tag:
-          Name: fleet_splunk
+          Name: "{{cp.msg}}_fleet_splunk"
         instance_tags:
-          Name: fleet_splunk
+          Name: "{{cp.msg}}_fleet_splunk"
       register: ec2_splunk
 
     - debug: msg="ec2_splunk ips {{ item.public_ip }}"
