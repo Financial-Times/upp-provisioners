@@ -34,17 +34,9 @@
             cidr_ip: 0.0.0.0/0
       register: fleet_group
 
-    - name: Fleet key
-      ec2_key:
-        region: "{{region}}"
-        name: fleet_key
-        key_material: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClioG5nIJuK0+PAUyyrwtvfhd6/BbkAyx8BMfWVUV7IQAqeBgIz/yl4DQL23XBHoRhfLeN2Xv2j/szSFwAwY9Rf8BiN1GSkHIIvjeZ3MaQWLk+2Bmxi26Zz4Rdd17yJ+trvS9IJBSwd+DuZt/I9yATboWKf272Zd25MJeGmpmzgqXpn0I9i94DZPft9rWCDR0jgA3/uhqY00iR7k+/3YLbU9xo6IWjAFeBRre/te/e/q4h21MJFjqUOrDInyfjA6Wj/7WKE+os9DNLQ5usXgNEUbuHHHSAryetWWNK5emJ8jKHMFUggGrAkuyls9BhufVlkaqH7qzJkPWsm5V85AEt george@archiso'
-        state: present
-
     - name: Provision m3.medium instances
       ec2:
         region: "{{region}}"
-        key_name: fleet_key
         group: fleet_sg
         image: "{{ami}}"
         instance_type: m3.medium
@@ -66,7 +58,6 @@
     - name: Provision m3.medium persistent instance
       ec2:
         region: "{{region}}"
-        key_name: fleet_key
         group: fleet_sg
         image: "{{ami}}"
         instance_type: m3.medium
@@ -90,7 +81,6 @@
     - name: Monitoring host
       ec2:
         region: "{{region}}"
-        key_name: fleet_key
         group: fleet_sg
         image: "{{ami}}"
         instance_type: m3.medium
