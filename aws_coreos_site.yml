@@ -49,7 +49,7 @@
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
-        exact_count: 3
+        exact_count: 4
         user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
         volumes:
           - device_name: /dev/xvda
@@ -87,28 +87,6 @@
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
       with_items: "{{ ec2_persistent.tagged_instances }}"
 
-    - name: Provision m3.medium kafka host
-      ec2:
-        region: "{{region}}"
-        key_name: fleet_key
-        group: fleet_sg
-        image: "{{ami}}"
-        instance_type: m3.medium
-        wait: true
-        exact_count: 1
-        user_data: "{{ lookup('template', 'userdata/kafka_instance_user_data.yaml') }}"
-        volumes:
-          - device_name: /dev/xvda
-            volume_size: 20
-        count_tag:
-          Name: "{{cp.msg}}_fleet_kafka"
-        instance_tags:
-          Name: "{{cp.msg}}_fleet_kafka"
-      register: ec2_kafka
-
-    - debug: msg="ec2_kafka ips {{ item.public_ip }}"
-      with_items: "{{ ec2_kafka.tagged_instances }}"
-
     - name: Monitoring host
       ec2:
         region: "{{region}}"
@@ -130,28 +108,4 @@
 
     - debug: msg="ec2_monitor ips {{ item.public_ip }}"
       with_items: "{{ ec2_monitor.tagged_instances }}"
-
-    - name: Splunk host
-      ec2:
-        region: "{{region}}"
-        key_name: fleet_key
-        group: fleet_sg
-        image: "{{ami}}"
-        instance_type: m3.medium
-        wait: true
-        exact_count: 1
-        user_data: "{{ lookup('template', 'userdata/splunk_instance_user_data.yaml') }}"
-        volumes:
-          - device_name: /dev/xvda
-            volume_size: 20
-          - device_name: /dev/xvdf
-            volume_size: 20
-        count_tag:
-          Name: "{{cp.msg}}_fleet_splunk"
-        instance_tags:
-          Name: "{{cp.msg}}_fleet_splunk"
-      register: ec2_splunk
-
-    - debug: msg="ec2_splunk ips {{ item.public_ip }}"
-      with_items: "{{ ec2_splunk.tagged_instances }}"
 
