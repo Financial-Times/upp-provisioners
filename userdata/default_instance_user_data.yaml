@@ -28,7 +28,7 @@ coreos:
           After=etcd.service
 
           [Service]
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/wp {{ wp_contentApi_key }}"
+          ExecStart=/bin/sh -c "sleep 5; etcdctl set /ft/_credentials/wp {{ wp_contentApi_key }}"
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
