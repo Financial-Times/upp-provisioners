@@ -20,6 +20,15 @@ coreos:
       command: start
     - name: fleet.service
       command: start
+    - name: key-register.service
+      command: start
+      content: |
+          [Unit]
+          Description=Add secret keys to etcd
+          After=etcd.service
+
+          [Service]
+          ExecStart=/bin/sh -c "sleep 5; etcdctl set /ft/_credentials/wp {{ wp_contentApi_key }}"
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
