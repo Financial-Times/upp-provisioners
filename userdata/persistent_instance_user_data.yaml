@@ -36,6 +36,15 @@ coreos:
         What=/dev/xvdf
         Where=/vol
         Type=ext4
+    - name: deploy-deployer.service
+      command: start
+      content: |
+          [Unit]
+          Description=Deploy the deployer
+          After=fleet.service
+
+          [Service]
+          ExecStart=/bin/sh -c "curl {{deployer_service_file_location}} > deployer.service; fleetctl start deployer.service "
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
