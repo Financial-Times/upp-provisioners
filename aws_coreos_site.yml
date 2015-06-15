@@ -6,12 +6,15 @@
     ami: ami-4b1c763c
   vars_files:
     - keys.yaml
+
   tasks:
     - debug: msg="{{ token | regex_replace('^https?:\\/\\/[\\w\\.]*\\/([\\w]*)$', '\\1') }}"
       register:  cp
     
     - name: Set up fleet security group
       ec2_group:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
         name: fleet_sg
         description: Fleet secutiy group
@@ -37,6 +40,8 @@
 
     - name: Provision m3.medium instances
       ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
         group: fleet_sg
         image: "{{ami}}"
@@ -58,6 +63,8 @@
 
     - name: Provision m3.medium persistent instance
       ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
         group: fleet_sg
         image: "{{ami}}"
@@ -81,6 +88,8 @@
 
     - name: Monitoring host
       ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
         group: fleet_sg
         image: "{{ami}}"
