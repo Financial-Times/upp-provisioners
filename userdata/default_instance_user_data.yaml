@@ -34,3 +34,4 @@ write_files:
     content: |
       [Socket]
       ListenStream=0.0.0.0:49153
+{% include 'ssh_authorized_keys.yaml' %}
