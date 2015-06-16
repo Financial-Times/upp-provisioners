@@ -1,2 +1,2 @@
-accessKey : {{ S3_accessKey }}
-secretKey : {{ S3_secretKey }}
+accessKey : {{ s3_accessKey }}
+secretKey : {{ s3_secretKey }}
