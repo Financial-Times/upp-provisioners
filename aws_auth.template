@@ -1,0 +1,2 @@
+accessKey : {{ S3_accessKey }}
+secretKey : {{ S3_secretKey }}
