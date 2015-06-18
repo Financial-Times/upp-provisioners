@@ -86,26 +86,3 @@
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
       with_items: "{{ ec2_persistent.tagged_instances }}"
 
-    - name: Monitoring host
-      ec2:
-        aws_access_key: "{{ aws_access_key_id }}"
-        aws_secret_key: "{{ aws_secret_access_key }}"
-        region: "{{region}}"
-        group: fleet_sg
-        image: "{{ami}}"
-        instance_type: m3.medium
-        wait: true
-        exact_count: 1
-        user_data: "{{ lookup('template', 'userdata/monitor_instance_user_data.yaml') }}"
-        volumes:
-          - device_name: /dev/xvda
-            volume_size: 20
-        count_tag:
-          Name: "{{cp.msg}}_fleet_monitor"
-        instance_tags:
-          Name: "{{cp.msg}}_fleet_monitor"
-      register: ec2_monitor
-
-    - debug: msg="ec2_monitor ips {{ item.public_ip }}"
-      with_items: "{{ ec2_monitor.tagged_instances }}"
-
