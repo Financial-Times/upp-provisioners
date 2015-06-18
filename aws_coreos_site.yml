@@ -51,7 +51,7 @@
         user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
         volumes:
           - device_name: /dev/xvda
-            volume_size: 20
+            volume_size: 30
         count_tag:
           Name: "{{cp.msg}}_fleet_default"
         instance_tags:
@@ -74,9 +74,9 @@
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
         volumes:
           - device_name: /dev/xvda
-            volume_size: 20
+            volume_size: 30
           - device_name: /dev/xvdf
-            volume_size: 50
+            volume_size: 80
         count_tag:
           Name: "{{cp.msg}}_fleet_persistent"
         instance_tags:
