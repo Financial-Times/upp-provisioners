@@ -14,7 +14,7 @@ coreos:
   fleet:
     # allow etcd to slow down at times
     etcd_request_timeout: 3.0
-    metadata: host_type=persistent_3
+    metadata: host_type=persistent,persistent_tag=3
   units:
     - name: etcd.service
       command: start
