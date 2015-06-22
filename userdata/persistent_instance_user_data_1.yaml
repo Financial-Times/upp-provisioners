@@ -1,0 +1,58 @@
+#cloud-config
+
+coreos:
+  update:
+    reboot-strategy: best-effort
+  etcd:
+    discovery: {{token}}
+    addr: $private_ipv4:4001
+    peer-addr: $private_ipv4:7001
+    # give etcd more time if it's under heavy load - prevent leader election thrashing
+    peer-election-timeout: 2000
+    # heartbeat interval should ideally be 1/4 or 1/5 of peer election timeout
+    peer-heartbeat-interval: 500
+  fleet:
+    # allow etcd to slow down at times
+    etcd_request_timeout: 3.0
+    metadata: host_type=persistent_1
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: makefs.service
+      command: start
+      content: |
+        [Unit]
+        Before=vol.mount
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash -c "/usr/sbin/fsck /dev/xvdf || /usr/sbin/mkfs.ext4 /dev/xvdf"
+        ExecStart=/bin/bash -c "/usr/bin/test -e /vol || /usr/bin/mkdir /vol"
+    - name: vol.mount
+      command: start
+      content: |
+        [Mount]
+        What=/dev/xvdf
+        Where=/vol
+        Type=ext4
+    - name: deploy-deployer.service
+      command: start
+      content: |
+          [Unit]
+          Description=Deploy the deployer
+          After=fleet.service
+
+          [Service]
+          ExecStart=/bin/sh -c "curl {{deployer_service_file_location}} > deployer.service; fleetctl start deployer.service "
+write_files:
+  - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
+    content: |
+      [Socket]
+      ListenStream=0.0.0.0:49153
+  - path: /etc/systemd/system/docker.service.d/mirror.conf
+    content: |
+      [Service]
+      Environment="DOCKER_OPTS=--registry-mirror=http://fleet-mirror-elb-772239574.eu-west-1.elb.amazonaws.com"
+{% include 'ssh_authorized_keys.yaml' %}
+
