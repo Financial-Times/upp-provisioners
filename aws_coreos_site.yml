@@ -70,8 +70,55 @@
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
-        exact_count: 3
-        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
+        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_1.yaml') }}"
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 30
+          - device_name: /dev/xvdf
+            volume_size: 80
+        count_tag:
+          Name: "{{cp.msg}}_fleet_persistent"
+        instance_tags:
+          Name: "{{cp.msg}}_fleet_persistent"
+      register: ec2_persistent
+
+    - debug: msg="ec2_persistent ips {{ item.public_ip }}"
+      with_items: "{{ ec2_persistent.tagged_instances }}"
+
+    - name: Provision m3.medium persistent instance
+      ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        group: fleet_sg
+        image: "{{ami}}"
+        instance_type: m3.medium
+        wait: true
+        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_2.yaml') }}"
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 30
+          - device_name: /dev/xvdf
+            volume_size: 80
+        count_tag:
+          Name: "{{cp.msg}}_fleet_persistent"
+        instance_tags:
+          Name: "{{cp.msg}}_fleet_persistent"
+      register: ec2_persistent
+
+    - debug: msg="ec2_persistent ips {{ item.public_ip }}"
+      with_items: "{{ ec2_persistent.tagged_instances }}"
+
+    - name: Provision m3.medium persistent instance
+      ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        group: fleet_sg
+        image: "{{ami}}"
+        instance_type: m3.medium
+        wait: true
+        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_3.yaml') }}"
         volumes:
           - device_name: /dev/xvda
             volume_size: 30
