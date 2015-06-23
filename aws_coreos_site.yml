@@ -3,7 +3,7 @@
 
   vars:
     region: eu-west-1
-    ami: ami-4b1c763c
+    ami: ami-5f2f5528
   vars_files:
     - keys.yaml
 
