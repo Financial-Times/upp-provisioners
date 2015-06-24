@@ -47,7 +47,7 @@
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
-        exact_count: 4
+        exact_count: 2
         user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
         volumes:
           - device_name: /dev/xvda
