@@ -34,6 +34,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/binary-writer/s3-accessKey {{ s3_accessKey }};" 
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/binary-writer/s3-secretKey {{ s3_secretKey }};"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/splunk-forwarder/splunk_url {{ splunk_url }};"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/dashing/auth_token {{ dashing_auth_token }};"
     - name: deploy-deployer.service
       command: start
       content: |
