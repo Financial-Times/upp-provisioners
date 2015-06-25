@@ -38,6 +38,30 @@
             cidr_ip: 0.0.0.0/0
       register: fleet_group
 
+    - name: cluster-elb
+      ec2_elb_lb:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        name: "cluster-elb"
+        state: present
+        security_group_ids: '{{fleet_group.group_id}}'
+        zones:
+          - eu-west-1a
+        listeners:
+          - protocol: http
+            load_balancer_port: 80
+            instance_port: 8080
+        purge_listeners: True
+        health_check:
+          ping_protocol: tcp # options are http, https, ssl, tcp
+          ping_port: 8080
+          #ping_path: "/index.html" # not required for tcp or ssl
+          response_timeout: 5 # seconds
+          interval: 30 # seconds
+          unhealthy_threshold: 2
+          healthy_threshold: 10
+
     - name: Provision m3.medium instances
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
