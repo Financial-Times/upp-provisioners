@@ -48,6 +48,8 @@
         security_group_ids: '{{fleet_group.group_id}}'
         zones:
           - eu-west-1a
+          - eu-west-1b
+          - eu-west-1c
         listeners:
           - protocol: http
             load_balancer_port: 80
