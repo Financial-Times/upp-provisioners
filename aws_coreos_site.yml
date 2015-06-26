@@ -96,6 +96,7 @@
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
+        exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_1.yaml') }}"
         volumes:
           - device_name: /dev/xvda
@@ -103,9 +104,9 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_fleet_persistent"
+          Name: "{{cp.msg}}_fleet_persistent_1"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_persistent"
+          Name: "{{cp.msg}}_fleet_persistent_1"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -120,6 +121,7 @@
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
+        exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_2.yaml') }}"
         volumes:
           - device_name: /dev/xvda
@@ -127,9 +129,9 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_fleet_persistent"
+          Name: "{{cp.msg}}_fleet_persistent_2"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_persistent"
+          Name: "{{cp.msg}}_fleet_persistent_2"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -144,6 +146,7 @@
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
+        exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_3.yaml') }}"
         volumes:
           - device_name: /dev/xvda
@@ -151,9 +154,9 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_fleet_persistent"
+          Name: "{{cp.msg}}_fleet_persistent_3"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_persistent"
+          Name: "{{cp.msg}}_fleet_persistent_3"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
