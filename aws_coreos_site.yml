@@ -4,6 +4,7 @@
   vars:
     region: eu-west-1
     ami: ami-5f2f5528
+    insecure_registry: registry.skydns.local:8080
   vars_files:
     - keys.yaml
 

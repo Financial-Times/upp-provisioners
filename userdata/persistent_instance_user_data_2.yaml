@@ -53,6 +53,6 @@ write_files:
   - path: /etc/systemd/system/docker.service.d/mirror.conf
     content: |
       [Service]
-      Environment="DOCKER_OPTS=--registry-mirror=http://fleet-mirror-elb-772239574.eu-west-1.elb.amazonaws.com"
+      Environment="DOCKER_OPTS=--insecure-registry={{insecure_registry}}"
 {% include 'ssh_authorized_keys.yaml' %}
 
