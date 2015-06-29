@@ -9,7 +9,7 @@
     - keys.yaml
 
   tasks:
-    - debug: msg="{{ token | regex_replace('^https?:\\/\\/[\\w\\.]*\\/([\\w]*)$', '\\1') }}"
+    - debug: msg="{{ token | regex_replace('^https?:\\/\\/[\\w\\.]*\\/([\\w]{12})[\\w]*$', '\\1') }}"
       register:  cp
     
     - s3:
