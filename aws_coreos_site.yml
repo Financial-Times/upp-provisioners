@@ -4,6 +4,7 @@
   vars:
     region: eu-west-1
     ami: ami-5f2f5528
+    insecure_registry: http://registry.skydns.local:8080
   vars_files:
     - keys.yaml
 
@@ -11,6 +12,14 @@
     - debug: msg="{{ token | regex_replace('^https?:\\/\\/[\\w\\.]*\\/([\\w]*)$', '\\1') }}"
       register:  cp
     
+    - s3:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        bucket: "coco-docker-registry"
+        object: "/registry"
+        mode: "create"
+
     - name: Set up fleet security group
       ec2_group:
         aws_access_key: "{{ aws_access_key_id }}"
