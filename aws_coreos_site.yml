@@ -4,7 +4,7 @@
   vars:
     region: eu-west-1
     ami: ami-5f2f5528
-    insecure_registry: http://up-registry.ft.com
+    insecure_registry: up-registry.ft.com
   vars_files:
     - keys.yaml
 
