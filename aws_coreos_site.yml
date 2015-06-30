@@ -72,6 +72,9 @@
           interval: 30 # seconds
           unhealthy_threshold: 2
           healthy_threshold: 10
+      register: cluster_elb
+
+    - debug: msg="cluster_elb dns {{ cluster_elb.elb.dns_name }}"
 
     - name: Provision m3.medium instances
       ec2:
