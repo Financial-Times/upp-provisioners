@@ -18,11 +18,11 @@
         region: "{{region}}"
         state: present
         cidr_block: 172.23.0.0/16
-        resource_tags: { "Environment":"Production" }
+        resource_tags: { "Environment":"Production", "Name":"fleet-vpc-{{ cp.msg }}" }
         subnets:
           - cidr: 172.23.1.0/24
             az:  "{{ region }}a"
-            resource_tags: { "Environment":"Production", "Name": "a"}
+            resource_tags: { "Environment":"Production", "Name": "fleet-subnet-{{ cp.msg }}"}
         internet_gateway: True
         route_tables:
           - subnets:
