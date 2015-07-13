@@ -47,7 +47,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: fleet_sg
+        name: "fleet-sg-{{ cp.msg }}"
         description: Fleet secutiy group
         vpc_id: "{{ vpc.vpc_id }}"
         rules:
@@ -62,7 +62,7 @@
           - proto: tcp
             from_port: 0
             to_port: 65535
-            cidr_ip: 172.31.0.0/16
+            cidr_ip: 172.23.1.0/24
         rules_egress:
           - proto: tcp
             from_port: 0
@@ -102,7 +102,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: fleet_sg
+        group: "fleet-sg-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -127,7 +127,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: fleet_sg
+        group: "fleet-sg-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -154,7 +154,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: fleet_sg
+        group: "fleet-sg-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -181,7 +181,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: fleet_sg
+        group: "fleet-sg-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
