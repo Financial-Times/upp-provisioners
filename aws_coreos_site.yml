@@ -18,11 +18,11 @@
         region: "{{region}}"
         state: present
         cidr_block: 172.23.0.0/16
-        resource_tags: { "Environment":"Production", "Name":"fleet-vpc-{{ cp.msg }}" }
+        resource_tags: { "Environment":"Production", "Name":"up-{{ cp.msg }}" }
         subnets:
           - cidr: 172.23.1.0/24
             az:  "{{ region }}a"
-            resource_tags: { "Environment":"Production", "Name": "fleet-subnet-{{ cp.msg }}"}
+            resource_tags: { "Environment":"Production", "Name": "up-{{ cp.msg }}"}
         internet_gateway: True
         route_tables:
           - subnets:
@@ -39,7 +39,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: "fleet-sg-{{ cp.msg }}"
+        name: "up-{{ cp.msg }}"
         description: Fleet secutiy group
         vpc_id: "{{ vpc.vpc_id }}"
         rules:
@@ -67,7 +67,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: "{{cp.msg}}-cluster-elb"
+        name: "{{cp.msg}}-up-elb"
         state: present
         security_group_ids: '{{fleet_group.group_id}}'
         subnets:
@@ -94,7 +94,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "fleet-sg-{{ cp.msg }}"
+        group: "up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -106,9 +106,9 @@
           - device_name: /dev/xvda
             volume_size: 30
         count_tag:
-          Name: "{{cp.msg}}_fleet_default"
+          Name: "{{cp.msg}}_up_default"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_default"
+          Name: "{{cp.msg}}_up_default"
       register: ec2_small
 
     - debug: msg="ec2_small ips {{ item.public_ip }}"
@@ -119,7 +119,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "fleet-sg-{{ cp.msg }}"
+        group: "up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -133,9 +133,9 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_fleet_persistent_1"
+          Name: "{{cp.msg}}_up_persistent_1"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_persistent_1"
+          Name: "{{cp.msg}}_up_persistent_1"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -146,7 +146,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "fleet-sg-{{ cp.msg }}"
+        group: "up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -160,9 +160,9 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_fleet_persistent_2"
+          Name: "{{cp.msg}}_up_persistent_2"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_persistent_2"
+          Name: "{{cp.msg}}_up_persistent_2"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -173,7 +173,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "fleet-sg-{{ cp.msg }}"
+        group: "up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -187,9 +187,9 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_fleet_persistent_3"
+          Name: "{{cp.msg}}_up_persistent_3"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_persistent_3"
+          Name: "{{cp.msg}}_up_persistent_3"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
