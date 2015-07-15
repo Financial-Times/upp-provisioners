@@ -12,21 +12,36 @@
     - debug: msg="{{ token | regex_replace('^https?:\\/\\/[\\w\\.]*\\/([\\w]{12})[\\w]*$', '\\1') }}"
       register:  cp
     
-    - s3:
+    - ec2_vpc:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        bucket: "coco-docker-registry"
-        object: "/registry"
-        mode: "create"
+        state: present
+        cidr_block: 172.23.0.0/16
+        resource_tags: { "Environment":"Production", "Name":"up-{{ cp.msg }}" }
+        subnets:
+          - cidr: 172.23.1.0/24
+            az:  "{{ region }}a"
+            resource_tags: { "Environment":"Production", "Name": "up-{{ cp.msg }}"}
+        internet_gateway: True
+        route_tables:
+          - subnets:
+              - 172.23.1.0/24
+            routes:
+              - dest: 0.0.0.0/0
+                gw: igw
+      register: vpc
+
+    - debug: msg="VPC {{ vpc }}"
 
     - name: Set up fleet security group
       ec2_group:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: fleet_sg
+        name: "up-{{ cp.msg }}"
         description: Fleet secutiy group
+        vpc_id: "{{ vpc.vpc_id }}"
         rules:
           - proto: tcp
             from_port: 22
@@ -39,7 +54,7 @@
           - proto: tcp
             from_port: 0
             to_port: 65535
-            cidr_ip: 172.31.0.0/16
+            cidr_ip: 172.23.1.0/24
         rules_egress:
           - proto: tcp
             from_port: 0
@@ -52,13 +67,11 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: "{{cp.msg}}-cluster-elb"
+        name: "{{cp.msg}}-up-elb"
         state: present
         security_group_ids: '{{fleet_group.group_id}}'
-        zones:
-          - eu-west-1a
-          - eu-west-1b
-          - eu-west-1c
+        subnets:
+          - "{{ vpc.subnets[0].id }}"
         listeners:
           - protocol: http
             load_balancer_port: 80
@@ -81,19 +94,21 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: fleet_sg
+        group: "up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
         exact_count: 2
         user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
+        vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+        assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
             volume_size: 30
         count_tag:
-          Name: "{{cp.msg}}_fleet_default"
+          Name: "{{cp.msg}}_up_default"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_default"
+          Name: "{{cp.msg}}_up_default"
       register: ec2_small
 
     - debug: msg="ec2_small ips {{ item.public_ip }}"
@@ -104,21 +119,23 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: fleet_sg
+        group: "up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_1.yaml') }}"
+        vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+        assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
             volume_size: 30
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_fleet_persistent_1"
+          Name: "{{cp.msg}}_up_persistent_1"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_persistent_1"
+          Name: "{{cp.msg}}_up_persistent_1"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -129,21 +146,23 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: fleet_sg
+        group: "up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_2.yaml') }}"
+        vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+        assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
             volume_size: 30
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_fleet_persistent_2"
+          Name: "{{cp.msg}}_up_persistent_2"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_persistent_2"
+          Name: "{{cp.msg}}_up_persistent_2"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -154,21 +173,23 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: fleet_sg
+        group: "up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_3.yaml') }}"
+        vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+        assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
             volume_size: 30
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_fleet_persistent_3"
+          Name: "{{cp.msg}}_up_persistent_3"
         instance_tags:
-          Name: "{{cp.msg}}_fleet_persistent_3"
+          Name: "{{cp.msg}}_up_persistent_3"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
