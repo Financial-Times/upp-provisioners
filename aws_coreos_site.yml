@@ -5,6 +5,11 @@
     region: eu-west-1
     ami: ami-5f2f5528
     insecure_registry: up-registry.ft.com
+    env: p
+    ipcode: IP295
+    systemCode: "Universal-Publishing-CoreOS"
+    description: "Universal-Publishing-CoreOS"
+    teamDL: "george.angel@ft.com"
   vars_files:
     - keys.yaml
 
@@ -18,11 +23,11 @@
         region: "{{region}}"
         state: present
         cidr_block: 172.23.0.0/16
-        resource_tags: { "Environment":"Production", "Name":"up-{{ cp.msg }}" }
+        resource_tags: {"Name": "up-{{ cp.msg }}", "env": "{{env}}", "ipcode": "{{ipcode}}", "systemCode": "{{systemCode}}", "description": "{{description}}", "teamDL": "{{teamDL}}"}
         subnets:
           - cidr: 172.23.1.0/24
             az:  "{{ region }}a"
-            resource_tags: { "Environment":"Production", "Name": "up-{{ cp.msg }}"}
+            resource_tags: {"Name": "up-{{ cp.msg }}", "env": "{{env}}", "ipcode": "{{ipcode}}", "systemCode": "{{systemCode}}", "description": "{{description}}", "teamDL": "{{teamDL}}"}
         internet_gateway: True
         route_tables:
           - subnets:
@@ -62,12 +67,27 @@
             cidr_ip: 0.0.0.0/0
       register: fleet_group
 
+    - name: Tag UP CoreOS security group
+      ec2_tag:
+        resource: "{{fleet_group.group_id}}"
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        state: present
+        tags:
+          Name: "up-{{ cp.msg }}"
+          env: "{{env}}"
+          ipcode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
+
     - name: cluster-elb
       ec2_elb_lb:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: "{{cp.msg}}-up-elb"
+        name: "up-{{cp.msg}}"
         state: present
         security_group_ids: '{{fleet_group.group_id}}'
         subnets:
@@ -86,6 +106,9 @@
           unhealthy_threshold: 2
           healthy_threshold: 10
       register: cluster_elb
+
+    - name: tag ELB
+      shell: ". .venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names up-{{cp.msg}} --tags Key=Name,Value=up-{{cp.msg}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}}"
 
     - debug: msg="cluster_elb dns {{ cluster_elb.elb.dns_name }}"
 
@@ -109,6 +132,11 @@
           Name: "{{cp.msg}}_up_default"
         instance_tags:
           Name: "{{cp.msg}}_up_default"
+          env: "{{env}}"
+          ipcode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
       register: ec2_small
 
     - debug: msg="ec2_small ips {{ item.public_ip }}"
@@ -133,9 +161,14 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_up_persistent_1"
+          Name: "up-persistent-1-{{cp.msg}}"
         instance_tags:
-          Name: "{{cp.msg}}_up_persistent_1"
+          Name: "up-persistent-1-{{cp.msg}}"
+          env: "{{env}}"
+          ipcode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -160,9 +193,14 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_up_persistent_2"
+          Name: "up-persistent-2-{{cp.msg}}"
         instance_tags:
-          Name: "{{cp.msg}}_up_persistent_2"
+          Name: "up-persistent-2-{{cp.msg}}"
+          env: "{{env}}"
+          ipcode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -187,9 +225,14 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "{{cp.msg}}_up_persistent_3"
+          Name: "up-persistent-3-{{cp.msg}}"
         instance_tags:
-          Name: "{{cp.msg}}_up_persistent_3"
+          Name: "up-persistent-3-{{cp.msg}}"
+          env: "{{env}}"
+          ipcode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
