@@ -46,7 +46,7 @@
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
         name: "coreos-up-{{ cp.msg }}"
-        description: Fleet secutiy group
+        description: Fleet security group
         vpc_id: "{{ vpc.vpc_id }}"
         rules:
           - proto: tcp
