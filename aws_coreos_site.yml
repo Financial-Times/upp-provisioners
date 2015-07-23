@@ -138,6 +138,7 @@
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
       register: ec2_small
 
     - debug: msg="ec2_small ips {{ item.public_ip }}"
@@ -170,6 +171,7 @@
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -202,6 +204,7 @@
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -234,6 +237,7 @@
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
