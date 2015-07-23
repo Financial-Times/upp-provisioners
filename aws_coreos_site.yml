@@ -133,8 +133,8 @@
           Name: "ftstt{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
           Name: "ftstt{{cp.msg}}-caw1{{az}}-eu-p"
-          env: "{{env}}"
-          ipcode: "{{ipcode}}"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
@@ -166,8 +166,8 @@
           Name: "ftpr1{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
           Name: "ftpr1{{cp.msg}}-caw1{{az}}-eu-p"
-          env: "{{env}}"
-          ipcode: "{{ipcode}}"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
@@ -199,8 +199,8 @@
           Name: "ftpr2{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
           Name: "ftpr2{{cp.msg}}-caw1{{az}}-eu-p"
-          env: "{{env}}"
-          ipcode: "{{ipcode}}"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
@@ -232,8 +232,8 @@
           Name: "ftpr3{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
           Name: "ftpr3{{cp.msg}}-caw1{{az}}-eu-p"
-          env: "{{env}}"
-          ipcode: "{{ipcode}}"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
