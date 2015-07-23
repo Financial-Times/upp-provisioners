@@ -3,35 +3,36 @@
 
   vars:
     region: eu-west-1
+    az: a
     ami: ami-5f2f5528
     insecure_registry: up-registry.ft.com
     env: p
     ipcode: IP295
-    systemCode: "Universal-Publishing-CoreOS"
-    description: "Universal-Publishing-CoreOS"
+    systemCode: "CoreOS-Universal-Publishing"
+    description: "CoreOS-Universal-Publishing"
     teamDL: "george.angel@ft.com"
   vars_files:
     - keys.yaml
 
   tasks:
-    - debug: msg="{{ token | regex_replace('^https?:\\/\\/[\\w\\.]*\\/([\\w]{12})[\\w]*$', '\\1') }}"
+    - debug: msg="{{ token | regex_replace('^https?:\\/\\/[\\w\\.]*\\/([\\w]{8})[\\w]*$', '\\1') }}"
       register:  cp
-    
+
     - ec2_vpc:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
         state: present
         cidr_block: 172.23.0.0/16
-        resource_tags: {"Name": "up-{{ cp.msg }}", "env": "{{env}}", "ipcode": "{{ipcode}}", "systemCode": "{{systemCode}}", "description": "{{description}}", "teamDL": "{{teamDL}}"}
+        resource_tags: {"Name": "coreos-up", "env": "{{env}}", "ipcode": "{{ipcode}}", "systemCode": "{{systemCode}}", "description": "{{description}}", "teamDL": "{{teamDL}}"}
         subnets:
-          - cidr: 172.23.1.0/24
-            az:  "{{ region }}a"
-            resource_tags: {"Name": "up-{{ cp.msg }}", "env": "{{env}}", "ipcode": "{{ipcode}}", "systemCode": "{{systemCode}}", "description": "{{description}}", "teamDL": "{{teamDL}}"}
+          - cidr: 172.23.0.0/16
+            az:  "{{ region }}{{az}}"
+            resource_tags: {"Name": "coreos-up", "env": "{{env}}", "ipcode": "{{ipcode}}", "systemCode": "{{systemCode}}", "description": "{{description}}", "teamDL": "{{teamDL}}"}
         internet_gateway: True
         route_tables:
           - subnets:
-              - 172.23.1.0/24
+              - 172.23.0.0/16
             routes:
               - dest: 0.0.0.0/0
                 gw: igw
@@ -44,7 +45,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: "up-{{ cp.msg }}"
+        name: "coreos-up-{{ cp.msg }}"
         description: Fleet secutiy group
         vpc_id: "{{ vpc.vpc_id }}"
         rules:
@@ -59,7 +60,7 @@
           - proto: tcp
             from_port: 0
             to_port: 65535
-            cidr_ip: 172.23.1.0/24
+            cidr_ip: 172.23.0.0/16
         rules_egress:
           - proto: tcp
             from_port: 0
@@ -75,7 +76,7 @@
         region: "{{region}}"
         state: present
         tags:
-          Name: "up-{{ cp.msg }}"
+          Name: "coreos-up-{{ cp.msg }}"
           env: "{{env}}"
           ipcode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -87,7 +88,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: "up-{{cp.msg}}"
+        name: "coreos-up-{{cp.msg}}"
         state: present
         security_group_ids: '{{fleet_group.group_id}}'
         subnets:
@@ -108,7 +109,7 @@
       register: cluster_elb
 
     - name: tag ELB
-      shell: ". .venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names up-{{cp.msg}} --tags Key=Name,Value=up-{{cp.msg}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}}"
+      shell: ". .venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names coreos-up-{{cp.msg}} --tags Key=Name,Value=coreos-up-{{cp.msg}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}}"
 
     - debug: msg="cluster_elb dns {{ cluster_elb.elb.dns_name }}"
 
@@ -117,7 +118,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "up-{{ cp.msg }}"
+        group: "coreos-up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -129,9 +130,9 @@
           - device_name: /dev/xvda
             volume_size: 30
         count_tag:
-          Name: "{{cp.msg}}_up_default"
+          Name: "ftstt{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
-          Name: "{{cp.msg}}_up_default"
+          Name: "ftstt{{cp.msg}}-caw1{{az}}-eu-p"
           env: "{{env}}"
           ipcode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -147,7 +148,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "up-{{ cp.msg }}"
+        group: "coreos-up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -161,9 +162,9 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "up-persistent-1-{{cp.msg}}"
+          Name: "ftpr1{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
-          Name: "up-persistent-1-{{cp.msg}}"
+          Name: "ftpr1{{cp.msg}}-caw1{{az}}-eu-p"
           env: "{{env}}"
           ipcode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -179,7 +180,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "up-{{ cp.msg }}"
+        group: "coreos-up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -193,9 +194,9 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "up-persistent-2-{{cp.msg}}"
+          Name: "ftpr2{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
-          Name: "up-persistent-2-{{cp.msg}}"
+          Name: "ftpr2{{cp.msg}}-caw1{{az}}-eu-p"
           env: "{{env}}"
           ipcode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -211,7 +212,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "up-{{ cp.msg }}"
+        group: "coreos-up-{{ cp.msg }}"
         image: "{{ami}}"
         instance_type: m3.medium
         wait: true
@@ -225,9 +226,9 @@
           - device_name: /dev/xvdf
             volume_size: 80
         count_tag:
-          Name: "up-persistent-3-{{cp.msg}}"
+          Name: "ftpr3{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
-          Name: "up-persistent-3-{{cp.msg}}"
+          Name: "ftpr3{{cp.msg}}-caw1{{az}}-eu-p"
           env: "{{env}}"
           ipcode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
