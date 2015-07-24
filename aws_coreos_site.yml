@@ -7,7 +7,7 @@
     ami: ami-5f2f5528
     insecure_registry: up-registry.ft.com
     env: p
-    ipcode: IP295
+    ipcode: P295
     systemCode: "CoreOS-Universal-Publishing"
     description: "CoreOS-Universal-Publishing"
     teamDL: "george.angel@ft.com"
