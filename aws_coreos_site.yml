@@ -7,7 +7,7 @@
     ami: ami-5f2f5528
     insecure_registry: up-registry.ft.com
     env: p
-    ipcode: IP295
+    ipcode: P295
     systemCode: "CoreOS-Universal-Publishing"
     description: "CoreOS-Universal-Publishing"
     teamDL: "george.angel@ft.com"
@@ -133,11 +133,12 @@
           Name: "ftstt{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
           Name: "ftstt{{cp.msg}}-caw1{{az}}-eu-p"
-          env: "{{env}}"
-          ipcode: "{{ipcode}}"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
       register: ec2_small
 
     - debug: msg="ec2_small ips {{ item.public_ip }}"
@@ -165,11 +166,12 @@
           Name: "ftpr1{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
           Name: "ftpr1{{cp.msg}}-caw1{{az}}-eu-p"
-          env: "{{env}}"
-          ipcode: "{{ipcode}}"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -197,11 +199,12 @@
           Name: "ftpr2{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
           Name: "ftpr2{{cp.msg}}-caw1{{az}}-eu-p"
-          env: "{{env}}"
-          ipcode: "{{ipcode}}"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -229,11 +232,12 @@
           Name: "ftpr3{{cp.msg}}-caw1{{az}}-eu-p"
         instance_tags:
           Name: "ftpr3{{cp.msg}}-caw1{{az}}-eu-p"
-          env: "{{env}}"
-          ipcode: "{{ipcode}}"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"

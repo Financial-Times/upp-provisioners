@@ -37,7 +37,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/dashing/auth_token {{ dashing_auth_token }};"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_access_key_id {{ aws_access_key_id }};"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_secret_access_key {{ aws_secret_access_key }};"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/cluster_id {{cp.msg}};"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/elb_name coreos-up-{{cp.msg}};"
     - name: deploy-deployer.service
       command: start
       content: |
