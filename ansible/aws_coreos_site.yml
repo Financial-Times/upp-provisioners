@@ -24,11 +24,11 @@
         region: "{{region}}"
         state: present
         cidr_block: 172.23.0.0/16
-        resource_tags: {"Name": "coreos-up", "env": "{{env}}", "ipcode": "{{ipcode}}", "systemCode": "{{systemCode}}", "description": "{{description}}", "teamDL": "{{teamDL}}"}
+        resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS", "teamDL": "george.angel@ft.com}"}
         subnets:
           - cidr: 172.23.0.0/16
             az:  "{{ region }}{{az}}"
-            resource_tags: {"Name": "coreos-up", "env": "{{env}}", "ipcode": "{{ipcode}}", "systemCode": "{{systemCode}}", "description": "{{description}}", "teamDL": "{{teamDL}}"}
+            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS", "teamDL": "george.angel@ft.com}"}
         internet_gateway: True
         route_tables:
           - subnets:
@@ -109,7 +109,7 @@
       register: cluster_elb
 
     - name: tag ELB
-      shell: ". .venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names coreos-up-{{cp.msg}} --tags Key=Name,Value=coreos-up-{{cp.msg}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}}"
+      shell: ". /.venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names coreos-up-{{cp.msg}} --tags Key=Name,Value=coreos-up-{{cp.msg}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}}"
 
     - debug: msg="cluster_elb dns {{ cluster_elb.elb.dns_name }}"
 
