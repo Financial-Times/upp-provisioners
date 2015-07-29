@@ -1,25 +1,13 @@
 FROM centos
 
-RUN yum -y update
-RUN yum -y install python-pip python-virtualenv gcc python-devel
-
-RUN echo "[localhost]" >~/.ansible_hosts
-RUN echo '127.0.0.1 ansible_python_interpreter=$VIRTUAL_ENV/bin/python' >>~/.ansible_hosts
-
-#RUN yum -y install python-crypto
-#RUN yum -y install PyYAML
-#RUN yum -y install libyaml
+RUN yum -y update && yum -y install python-pip python-virtualenv gcc python-devel
+RUN echo "[localhost]" >~/.ansible_hosts && echo '127.0.0.1 ansible_python_interpreter=$VIRTUAL_ENV/bin/python' >>~/.ansible_hosts
 
 # Create virtualenv dir
-RUN mkdir .venv
+RUN mkdir .venv && virtualenv .venv && . .venv/bin/activate && pip install ansible boto awscli
 
-# Init virtualenv
-RUN virtualenv .venv
-
-# Activate virtual env
-RUN . .venv/bin/activate && pip install ansible boto awscli
-
-ADD . /
+ADD provision.sh /
+ADD ansible/ /ansible
 
 CMD ./provision.sh
 
