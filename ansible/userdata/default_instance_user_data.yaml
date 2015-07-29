@@ -15,6 +15,7 @@ coreos:
     listen-peer-urls: http://$private_ipv4:2380
   fleet:
     # allow etcd to slow down at times
+    etcd_servers: http://127.0.0.1:2379
     etcd_request_timeout: 3.0
     metadata: host_type=stateless
   units:
