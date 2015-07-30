@@ -46,9 +46,10 @@ coreos:
       content: |
           [Unit]
           Description=Deploy the deployer
-          After=fleet.service
+          After=fleet.service etcd2.service
 
           [Service]
+          ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && break || sleep 2; done"
           ExecStart=/bin/sh -c "curl {{deployer_service_file_location}} > deployer.service; fleetctl start deployer.service "
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
