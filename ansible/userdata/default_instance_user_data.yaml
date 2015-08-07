@@ -40,7 +40,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/elb_name coreos-up-{{cp.msg}};"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/cms-notifier/post-credentials {{ cms_notifier_credentials }};"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/environment_tag {{environment_tag}};"
-          ExecStart=/bin/sh -c "etcdctl set /ft/config/service-definition-location https://raw.githubusercontent.com/Financial-Times/fleet/master/services.yaml;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/config/service-definition-location {{service_definition_location}};"
     - name: deploy-deployer.service
       command: start
       content: |
@@ -49,7 +49,7 @@ coreos:
           After=fleet.service
 
           [Service]
-          ExecStart=/bin/sh -c "curl {{deployer_service_file_location}} > deployer.service; fleetctl start deployer.service "
+          ExecStart=/bin/sh -c "curl {{deployer_service_location}} > deployer.service; fleetctl start deployer.service "
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
