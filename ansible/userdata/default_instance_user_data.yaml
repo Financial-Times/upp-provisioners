@@ -54,42 +54,42 @@ coreos:
           Type=oneshot
           ExecStart=/bin/bash -c "fleetctl start /tmp/deployer.service"
           ExecStart=/bin/bash -c "fleetctl start /tmp/deployer.timer"
-  write_files:
-    - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
-      content: |
-        [Socket]
-        ListenStream=0.0.0.0:49153
-    - path: /etc/systemd/system/docker.service.d/mirror.conf
-      content: |
-        [Service]
-        Environment="DOCKER_OPTS=--insecure-registry={{insecure_registry}}"
-    - path: /tmp/deployer.service
-      content: |
-          [Unit]
-          Description=Deployer
-          After=docker.service
-          Requires=docker.service
+write_files:
+  - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
+    content: |
+      [Socket]
+      ListenStream=0.0.0.0:49153
+  - path: /etc/systemd/system/docker.service.d/mirror.conf
+    content: |
+      [Service]
+      Environment="DOCKER_OPTS=--insecure-registry={{insecure_registry}}"
+  - path: /tmp/deployer.service
+    content: |
+      [Unit]
+      Description=Deployer
+      After=docker.service
+      Requires=docker.service
 
-          [Service]
-          Environment="DOCKER_APP_VERSION=service-files-metadata"
-          TimeoutStartSec=0
-          Type=oneshot
-          ExecStartPre=-/bin/bash -c '/usr/bin/docker kill %p > /dev/null 2>&1'
-          ExecStartPre=-/bin/bash -c '/usr/bin/docker rm %p > /dev/null 2>&1'
-          ExecStartPre=/usr/bin/docker pull coco/coco-fleet-deployer:$DOCKER_APP_VERSION
-          ExecStart=/bin/bash -c "SERVICE_DEFINITION_LOCATION=$(etcdctl get /ft/config/service-definition-location); docker run --rm --name %p --env=\"FLEET_ENDPOINT=http://$HOSTNAME:49153\" --env=\"SERVICES_DEFINITION_FILE_URI=$SERVICE_DEFINITION_LOCATION\" --env=\"DESTROY=true\" coco/coco-fleet-deployer:$DOCKER_APP_VERSION"
-    - path: /tmp/deployer.timer
-      content: |
-          [Unit]
-          Description=Deployer timer
-          
-          [Timer]
-          OnUnitActiveSec=1m
-          Persistent=true
-          
-          [Install]
-          WantedBy=timers.target
-          
-          [X-Fleet]
-          MachineOf=deployer.service
+      [Service]
+      Environment="DOCKER_APP_VERSION=service-files-metadata"
+      TimeoutStartSec=0
+      Type=oneshot
+      ExecStartPre=-/bin/bash -c '/usr/bin/docker kill %p > /dev/null 2>&1'
+      ExecStartPre=-/bin/bash -c '/usr/bin/docker rm %p > /dev/null 2>&1'
+      ExecStartPre=/bin/bash -c '/usr/bin/docker pull coco/coco-fleet-deployer:$DOCKER_APP_VERSION'
+      ExecStart=/bin/bash -c "SERVICE_DEFINITION_LOCATION=$(etcdctl get /ft/config/service-definition-location); docker run --rm --name %p --env=\"FLEET_ENDPOINT=http://$HOSTNAME:49153\" --env=\"SERVICES_DEFINITION_FILE_URI=$SERVICE_DEFINITION_LOCATION\" --env=\"DESTROY=true\" coco/coco-fleet-deployer:$DOCKER_APP_VERSION"
+  - path: /tmp/deployer.timer
+    content: |
+      [Unit]
+      Description=Deployer timer
+      
+      [Timer]
+      OnUnitActiveSec=1m
+      Persistent=true
+      
+      [Install]
+      WantedBy=timers.target
+      
+      [X-Fleet]
+      MachineOf=deployer.service
 {% include 'ssh_authorized_keys.yaml' %}
