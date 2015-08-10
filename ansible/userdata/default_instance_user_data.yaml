@@ -30,16 +30,16 @@ coreos:
           [Service]
           Type=oneshot
           ExecStartPre=/bin/sh -c "sleep 5"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/wp {{ wp_contentApi_key }};" 
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/binary-writer/s3-accessKey {{ s3_accessKey }};" 
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/binary-writer/s3-secretKey {{ s3_secretKey }};"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/splunk-forwarder/splunk_url {{ splunk_url }};"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/dashing/auth_token {{ dashing_auth_token }};"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_access_key_id {{ aws_access_key_id }};"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_secret_access_key {{ aws_secret_access_key }};"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/elb_name coreos-up-{{cp.msg}};"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/cms-notifier/post-credentials {{ cms_notifier_credentials }};"
-          ExecStart=/bin/sh -c "etcdctl set /ft/config/environment_tag {{environment_tag}};"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/wp {{ wp_contentApi_key }} > /dev/null;" 
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/binary-writer/s3-accessKey {{ s3_accessKey }} > /dev/null;" 
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/binary-writer/s3-secretKey {{ s3_secretKey }} > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/splunk-forwarder/splunk_url {{ splunk_url }} > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/dashing/auth_token {{ dashing_auth_token }} > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_access_key_id {{ aws_access_key_id }} > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_secret_access_key {{ aws_secret_access_key }} > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/elb_name coreos-up-{{cp.msg}} > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/cms-notifier/post-credentials {{ cms_notifier_credentials }} > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/config/environment_tag {{environment_tag}} > /dev/null;"
     - name: deploy-deployer.service
       command: start
       content: |
