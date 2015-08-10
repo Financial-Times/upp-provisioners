@@ -54,5 +54,7 @@ write_files:
     content: |
       [Service]
       Environment="DOCKER_OPTS=--insecure-registry={{insecure_registry}}"
+  - path: /etc/motd.d/env.conf
+    content: This enviroment is tagged as {{environment_tag}}
 {% include 'ssh_authorized_keys.yaml' %}
 
