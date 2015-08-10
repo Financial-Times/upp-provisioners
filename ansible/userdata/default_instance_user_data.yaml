@@ -30,7 +30,7 @@ coreos:
 
           [Service]
           Type=oneshot
-          ExecStartPre=/bin/sh -c "sleep 5"
+          ExecStartPre=/bin/sh -c "while true; do etcdctl ls / && break || sleep 5; done;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/wp {{ wp_contentApi_key }};" 
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/binary-writer/s3-accessKey {{ s3_accessKey }};" 
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/binary-writer/s3-secretKey {{ s3_secretKey }};"
@@ -51,6 +51,7 @@ coreos:
           Requires=fleet.service
 
           [Service]
+          Type=oneshot
           ExecStart=/bin/bash -c "fleetctl start /tmp/deployer.service"
           ExecStart=/bin/bash -c "fleetctl start /tmp/deployer.timer"
   write_files:
