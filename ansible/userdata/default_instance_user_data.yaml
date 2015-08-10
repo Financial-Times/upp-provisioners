@@ -76,8 +76,8 @@ write_files:
       Type=oneshot
       ExecStartPre=-/bin/bash -c '/usr/bin/docker kill %p > /dev/null 2>&1'
       ExecStartPre=-/bin/bash -c '/usr/bin/docker rm %p > /dev/null 2>&1'
-      ExecStartPre=/bin/bash -c '/usr/bin/docker pull coco/coco-fleet-deployer:$DOCKER_APP_VERSION'
-      ExecStart=/bin/bash -c "SERVICE_DEFINITION_LOCATION=$(etcdctl get /ft/config/service-definition-location); docker run --rm --name %p --env=\"FLEET_ENDPOINT=http://$HOSTNAME:49153\" --env=\"SERVICES_DEFINITION_FILE_URI=$SERVICE_DEFINITION_LOCATION\" --env=\"DESTROY=true\" coco/coco-fleet-deployer:$DOCKER_APP_VERSION"
+      ExecStartPre=/bin/bash -c '/usr/bin/docker pull angelx/coco-fleet-deployer:$DOCKER_APP_VERSION'
+      ExecStart=/bin/bash -c "SERVICE_DEFINITION_LOCATION=$(etcdctl get /ft/config/service-definition-location); docker run -v '/etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt' --rm --name %p --env=\"FLEET_ENDPOINT=http://$HOSTNAME:49153\" --env=\"SERVICES_DEFINITION_FILE_URI=$SERVICE_DEFINITION_LOCATION\" --env=\"DESTROY=true\" angelx/coco-fleet-deployer:$DOCKER_APP_VERSION"
   - path: /tmp/deployer.timer
     content: |
       [Unit]
