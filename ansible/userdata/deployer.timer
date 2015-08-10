@@ -1,0 +1,13 @@
+[Unit]
+Description=Deployer timer
+
+[Timer]
+OnCalendar=*:*:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+
+[X-Fleet]
+MachineOf=deployer.service
+
