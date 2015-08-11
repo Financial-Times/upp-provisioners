@@ -74,7 +74,7 @@ write_files:
       Requires=docker.service
 
       [Service]
-      Environment="DOCKER_APP_VERSION=service-files-metadata"
+      Environment="DOCKER_APP_VERSION=latest"
       TimeoutStartSec=0
       Type=oneshot
       ExecStartPre=-/bin/bash -c '/usr/bin/docker kill %p > /dev/null 2>&1'
