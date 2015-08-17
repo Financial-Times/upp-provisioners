@@ -3,20 +3,22 @@
 coreos:
   update:
     reboot-strategy: best-effort
-  etcd:
+  etcd2:
+    # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
     discovery: {{token}}
-    addr: $private_ipv4:4001
-    peer-addr: $private_ipv4:7001
-    # give etcd more time if it's under heavy load - prevent leader election thrashing
-    peer-election-timeout: 2000
-    # heartbeat interval should ideally be 1/4 or 1/5 of peer election timeout
-    peer-heartbeat-interval: 500
+    # multi-region and multi-cloud deployments need to use $public_ipv4
+    advertise-client-urls: http://$private_ipv4:2379
+    initial-advertise-peer-urls: http://$private_ipv4:2380
+    # listen on both the official ports and the legacy ports
+    # legacy ports can be omitted if your application doesn't depend on them
+    listen-client-urls: http://0.0.0.0:2379
+    listen-peer-urls: http://$private_ipv4:2380
   fleet:
     # allow etcd to slow down at times
     etcd_request_timeout: 3.0
     metadata: host_type=persistent,persistent_tag=3
   units:
-    - name: etcd.service
+    - name: etcd2.service
       command: start
     - name: fleet.service
       command: start
