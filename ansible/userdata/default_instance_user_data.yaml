@@ -55,7 +55,7 @@ coreos:
 
           [Service]
           Type=oneshot
-          ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && break || sleep 5; done"
+          ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done"
           ExecStart=/bin/bash -c "fleetctl start /tmp/deployer.service"
           ExecStart=/bin/bash -c "fleetctl start /tmp/deployer.timer"
 write_files:
