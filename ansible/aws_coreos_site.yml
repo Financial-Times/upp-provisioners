@@ -110,7 +110,7 @@
       register: cluster_elb
 
     - name: tag ELB
-      shell: ". /.venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names coreos-up-{{cp.msg}} --tags Key=Name,Value=coreos-up-{{cp.msg}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}}"
+      shell: ". /.venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names coreos-up-{{cp.msg}} --tags Key=Name,Value=coreos-up-{{cp.msg}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}} Key=coco-environment-tag,Value={{environment_tag}}"
 
     - debug: msg="cluster_elb dns {{ cluster_elb.elb.dns_name }}"
 
@@ -141,6 +141,7 @@
           description: "{{description}}"
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
+          coco-environment-tag: "{{environment_tag}}"
       register: ec2_small
 
     - debug: msg="ec2_small ips {{ item.public_ip }}"
@@ -176,6 +177,7 @@
           description: "{{description}}"
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
+          coco-environment-tag: "{{environment_tag}}"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -211,6 +213,7 @@
           description: "{{description}}"
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
+          coco-environment-tag: "{{environment_tag}}"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
@@ -246,6 +249,7 @@
           description: "{{description}}"
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
+          coco-environment-tag: "{{environment_tag}}"
       register: ec2_persistent
 
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
