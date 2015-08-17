@@ -83,6 +83,7 @@
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
+          coco-environment-tag: "{{environment_tag}}"
 
     - name: cluster-elb
       ec2_elb_lb:
