@@ -35,16 +35,16 @@ coreos:
           Type=oneshot
           ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && break || sleep 2; done"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/wp '{{ wp_contentApi_key }}' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/binary-writer/s3-accessKey '{{ s3_accessKey }}' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/binary-writer/s3-secretKey '{{ s3_secretKey }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/splunk-forwarder/splunk_url '{{ splunk_url }}' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/dashing/auth_token '{{ dashing_auth_token }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_access_key_id '{{ aws_access_key_id }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_secret_access_key '{{ aws_secret_access_key }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/elb_name 'coreos-up-{{cp.msg}}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/cms-notifier/post-credentials '{{ cms_notifier_credentials }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/environment_tag '{{environment_tag}}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/service-definition-location '{{service_definition_location}}' > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/config/binary-writer/bucket '{{binary_writer_bucket}}' > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/config/synthetic-image-publication-monitor-aws/test-uuid '{{aws_image_monitor_test_uuid}}' > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/config/synthetic-image-publication-monitor-ucs/test-uuid '{{ucs_image_monitor_test_uuid}}' > /dev/null;"
     - name: bootstrap.service
       command: start
       content: |

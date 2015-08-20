@@ -11,6 +11,9 @@ echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> /etc/boto.cfg
   service_definition_location=${SERVICE_DEFINITION_LOCATION:=https://raw.githubusercontent.com/Financial-Times/fleet/master/services.yaml} \
   aws_access_key_id=$AWS_ACCESS_KEY_ID \ 
   aws_secret_access_key=$AWS_SECRET_ACCESS_KEY \
+  binary_writer_bucket=$BINARY_WRITER_BUCKET \
+  aws_image_monitor_test_uuid=$AWS_MONITOR_TEST_UUID \
+  ucs_image_monitor_test_uuid=$UCS_MONITOR_TEST_UUID \
   environment_tag=${ENVIRONMENT_TAG:=default}" \
   --vault-password-file=/vault.pass
 
