@@ -7,12 +7,12 @@ coreos:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
     discovery: {{token}}
     # multi-region and multi-cloud deployments need to use $public_ipv4
-    advertise-client-urls: http://$private_ipv4:2379
+    advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
     initial-advertise-peer-urls: http://$private_ipv4:2380
     # listen on both the official ports and the legacy ports
     # legacy ports can be omitted if your application doesn't depend on them
-    listen-client-urls: http://0.0.0.0:2379
-    listen-peer-urls: http://$private_ipv4:2380
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
   fleet:
     # allow etcd to slow down at times
     etcd_servers: http://127.0.0.1:2379
@@ -83,7 +83,6 @@ write_files:
       Type=oneshot
       ExecStartPre=-/bin/bash -c '/usr/bin/docker kill %p > /dev/null 2>&1'
       ExecStartPre=-/bin/bash -c '/usr/bin/docker rm %p > /dev/null 2>&1'
-      ExecStartPre=/bin/bash -c '/usr/bin/docker pull coco/coco-fleet-deployer:$DOCKER_APP_VERSION'
       ExecStart=/bin/bash -c "SERVICE_DEFINITION_LOCATION=$(etcdctl get /ft/config/service-definition-location); docker run -v '/etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt' --rm --name %p --env=\"FLEET_ENDPOINT=http://$HOSTNAME:49153\" --env=\"SERVICES_DEFINITION_FILE_URI=$SERVICE_DEFINITION_LOCATION\" --env=\"DESTROY=true\" coco/coco-fleet-deployer:$DOCKER_APP_VERSION"
   - path: /tmp/deployer.timer
     content: |
