@@ -6,6 +6,7 @@
 docker build -t coco/coreos-up-setup .
 
 # Set all the required variables
+TOKEN_URL=https://discovery.etcd.io/xxxxxx
 VAULT_PASS=xxxxxxxx
 AWS_SECRET_ACCESS_KEY=xxxxxxx
 AWS_ACCESS_KEY_ID=xxxxxxxx
@@ -18,7 +19,8 @@ SERVICE_DEFINITION_LOCATION=https://raw.githubusercontent.com/Financial-Times/fl
 ENVIRONMENT_TAG=xxxx
 
 # Run the image
-docker run --env "VAULT_PASS=$VAULT_PASS" \ 
+docker run --env "VAULT_PASS=$VAULT_PASS" \
+	   --env "TOKEN_URL=$TOKEN_URL" \	 
 	   --env "SERVICE_DEFINITION_LOCATION=$SERVICE_DEFINITION_LOCATION" \ 
 	   --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
 	   --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
