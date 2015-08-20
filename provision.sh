@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Place credentials to be able to run "aws" from shell for missing ansible commands, like adding tags to elb
+export TOKEN_URL=$(curl https://discovery.etcd.io/new)
 echo "[Credentials]" >> /etc/boto.cfg
 echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> /etc/boto.cfg
 echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> /etc/boto.cfg
