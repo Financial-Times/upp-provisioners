@@ -67,6 +67,10 @@
             from_port: 0
             to_port: 65535
             cidr_ip: 0.0.0.0/0
+          - proto: udp
+            from_port: 123
+            to_port: 123
+            cidr_ip: 0.0.0.0/0
       register: fleet_group
 
     - name: Tag UP CoreOS security group
