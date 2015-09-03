@@ -38,6 +38,27 @@ coreos:
         What=/dev/xvdf
         Where=/vol
         Type=ext4
+    - name: swapon.service
+      command: start
+      content: |
+          [Unit]
+          Description=Create swap
+
+          [Service]
+          Type=oneshot
+          Environment="SWAPFILE=/swapfile"
+          RemainAfterExit=true 
+          ExecStartPre=/usr/bin/touch ${SWAPFILE}
+          ExecStartPre=/usr/bin/fallocate -l 4096m ${SWAPFILE}
+          ExecStartPre=/usr/bin/chmod 600 ${SWAPFILE}
+          ExecStartPre=/usr/sbin/mkswap ${SWAPFILE}
+          ExecStartPre=/usr/sbin/losetup -f ${SWAPFILE}
+          ExecStart=/usr/bin/sh -c "/sbin/swapon $(/usr/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
+          ExecStop=/usr/bin/sh -c "/sbin/swapoff $(/usr/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
+          ExecStopPost=/usr/bin/sh -c "/usr/sbin/losetup -d $(/usr/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
+
+          [Install]
+          WantedBy=multi-user.target
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
