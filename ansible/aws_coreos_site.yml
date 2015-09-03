@@ -170,7 +170,7 @@
             volume_size: 30
             delete_on_termination: true
           - device_name: /dev/xvdf
-            volume_size: 80
+            volume_size: 200
             delete_on_termination: true
         count_tag:
           Name: "ftpr1{{cp.msg}}-caw1{{az}}-eu-p"
@@ -206,7 +206,7 @@
             volume_size: 30
             delete_on_termination: true
           - device_name: /dev/xvdf
-            volume_size: 80
+            volume_size: 200
             delete_on_termination: true
         count_tag:
           Name: "ftpr2{{cp.msg}}-caw1{{az}}-eu-p"
@@ -242,7 +242,7 @@
             volume_size: 30
             delete_on_termination: true
           - device_name: /dev/xvdf
-            volume_size: 80
+            volume_size: 200
             delete_on_termination: true
         count_tag:
           Name: "ftpr3{{cp.msg}}-caw1{{az}}-eu-p"
