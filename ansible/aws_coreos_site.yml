@@ -63,6 +63,31 @@
             from_port: 0
             to_port: 65535
             cidr_ip: 172.23.0.0/16
+          # XP
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 194.117.242.6/32
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 194.117.242.15/32
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 194.117.242.16/32
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 194.117.242.17/32
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 194.117.242.18/32
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 194.117.242.19/32
         rules_egress:
           - proto: tcp
             from_port: 0
