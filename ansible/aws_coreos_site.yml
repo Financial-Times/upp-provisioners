@@ -50,10 +50,16 @@
         description: Fleet security group
         vpc_id: "{{ vpc.vpc_id }}"
         rules:
+          # OSB + LDNWebPerf
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: 0.0.0.0/0
+            cidr_ip: 82.136.1.214/32
+          # XP - Cluj office
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 194.117.242.0/24
           - proto: tcp
             from_port: 80
             to_port: 80
