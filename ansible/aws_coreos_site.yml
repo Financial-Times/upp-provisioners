@@ -60,6 +60,11 @@
             from_port: 22
             to_port: 22
             cidr_ip: 194.117.242.0/24
+          # aws - jumpbox
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 52.16.117.250/32
           - proto: tcp
             from_port: 80
             to_port: 80
