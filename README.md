@@ -9,7 +9,7 @@ See SSH_README.md
 ## Building
 ```bash
 # Build the image
-docker build -t coco/coreos-up-setup .
+[sudo] docker build -t coco-provisioner .
 ```
 
 ## Set all the required variables
@@ -49,6 +49,6 @@ ENVIRONMENT_TAG=xxxx
     --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     --env "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
     --env "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
-    --env "UCS_MONITOR_TEST_UUID=$UCS_MONITOR_TEST_UUID" coco/coreos-up-setup
+    --env "UCS_MONITOR_TEST_UUID=$UCS_MONITOR_TEST_UUID" coco-provisioner
 ```
 
