@@ -1,5 +1,7 @@
 #Docker image to provision a cluster
 
+*Note if your user is not part of the docker group, run commands with sudo.*
+
 ##Building
 ```bash
 # Build the image
@@ -35,7 +37,7 @@ ENVIRONMENT_TAG=xxxx
 
 ## Run the image
 ```bash
-docker run --env "VAULT_PASS=$VAULT_PASS" \
+[sudo] docker run --env "VAULT_PASS=$VAULT_PASS" \
     --env "TOKEN_URL=$TOKEN_URL" \
     --env "SERVICE_DEFINITION_LOCATION=$SERVICE_DEFINITION_LOCATION" \
     --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
