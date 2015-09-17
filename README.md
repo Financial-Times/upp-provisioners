@@ -2,7 +2,11 @@
 
 *Note if your user is not part of the docker group, run commands with sudo.*
 
-##Building
+## Set up SSH
+
+See SSH_README.md
+
+## Building
 ```bash
 # Build the image
 docker build -t coco/coreos-up-setup .
