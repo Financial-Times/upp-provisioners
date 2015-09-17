@@ -46,7 +46,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: "coreos-up-{{ cp.msg }}"
+        name: "coreos-up-{{environment_tag}}-{{ cp.msg }}"
         description: Fleet security group
         vpc_id: "{{ vpc.vpc_id }}"
         rules:
@@ -105,7 +105,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: "coreos-up-{{cp.msg}}"
+        name: "coreos-up-{{environment_tag}}-{{cp.msg}}"
         state: present
         security_group_ids: '{{fleet_group.group_id}}'
         subnets:
