@@ -12,3 +12,6 @@
 
 In search bar, use `tag:coco-environment-tag :` followed by value for $ENVIRONMENT_TAG
 
+## TODO
+
+George to talk to Valuks about using tagbot to remove unused artefacts.
