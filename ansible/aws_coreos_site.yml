@@ -4,7 +4,7 @@
   vars:
     region: eu-west-1
     az: a
-    ami: ami-0e104179 #eu-west-1 HMV
+    ami: ami-83e9c8f4 #eu-west-1 HMV
     insecure_registry: up-registry.ft.com
     env: p
     ipcode: P295
