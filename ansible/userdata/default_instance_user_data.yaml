@@ -39,7 +39,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_secret_access_key '{{ aws_secret_access_key }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/elb_name 'coreos-up-{{cp.msg}}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/cms-notifier/post-credentials '{{ cms_notifier_credentials }}' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/konstructor/api-key '{{ konstructor-api-key }}' > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/konstructor/api-key '{{ konstructor_api_key }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/environment_tag '{{environment_tag}}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/splunk-forwarder/splunk_url 'https://ingest.splunk.glb.ft.com/coco-up/fleet' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/service-definition-location '{{service_definition_location}}' > /dev/null;"
