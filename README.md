@@ -6,6 +6,14 @@
 
 See [SSH_README.md](/SSH_README.md/)
 
+## [optional] USE LATEST STABLE AMI
+
+Check [this page](https://coreos.com/os/docs/latest/booting-on-ec2.html) for the HVM ami-xxxxxx id
+for your EC2 region.
+
+You can replace the vars->ami value in [ansible/aws_coreos_site.yml](/ansible/aws_coreos_site.yml/)
+with this latest id.
+
 ## Building
 ```bash
 # Build the image
