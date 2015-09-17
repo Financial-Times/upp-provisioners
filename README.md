@@ -4,7 +4,7 @@
 
 ## Set up SSH
 
-See SSH_README.md
+See [SSH_README.md](/SSH_README.md/)
 
 ## Building
 ```bash
