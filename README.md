@@ -1,6 +1,12 @@
 #Docker image to provision a cluster
 
-##Building
+*Note if your user is not part of the docker group, run commands with sudo.*
+
+## Set up SSH
+
+See SSH_README.md
+
+## Building
 ```bash
 # Build the image
 docker build -t coco/coreos-up-setup .
@@ -23,18 +29,19 @@ AWS_ACCESS_KEY_ID=xxxxxxxx
 ## S3 bucket name to write to (up stack specific)
 BINARY_WRITER_BUCKET=xxxxxxxx
 
-## `uuidgen` these for a new cluster
+## `uuidgen` each of these when creating new cluster
 AWS_MONITOR_TEST_UUID=xxxxxxxx
 UCS_MONITOR_TEST_UUID=xxxxxxxx
 
 # [optional]
 SERVICE_DEFINITION_LOCATION=https://raw.githubusercontent.com/Financial-Times/fleet/master/services.yaml
+# make a unique identifier (you can use this to search your splunk logs as well)
 ENVIRONMENT_TAG=xxxx
 ```
 
 ## Run the image
 ```bash
-docker run --env "VAULT_PASS=$VAULT_PASS" \
+[sudo] docker run --env "VAULT_PASS=$VAULT_PASS" \
     --env "TOKEN_URL=$TOKEN_URL" \
     --env "SERVICE_DEFINITION_LOCATION=$SERVICE_DEFINITION_LOCATION" \
     --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \

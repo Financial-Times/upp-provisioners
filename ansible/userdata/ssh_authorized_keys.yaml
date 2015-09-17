@@ -1,4 +1,5 @@
 ssh_authorized_keys:
+  - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL42zZclLzLffPfrXFsR2O3PKPwZas5XNXkHQGojkTQD jin@ft.com"
   - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF2Fm1tpX6nd+l8LLyguc10QTH9Ie5OgbnyvrBhJE6YM george@thinkpad"
   - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIf7f9KT90hE8PUo7E+IVGdczFSEOrG91Fogk+YwZHzp gartonm@gartonm-xps"
   - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+F/iEXDDTmARz9RBd6JxD0b3XpBw3+f8+cdFlqYC9JcQnLKxS7C+PqKnGun6NDfnVbwh+PJ4utvzZ8iY+f+NbI0H/b4ohtR7Pnh5LrBa1GDImAulDRkbu9PdV/bt+3R6jXihUcK0i1//uqLQgld0dif7ZZ4lh7z8hmSVLDSODBdzfEcNoG9Z7sDQijE5jfrDc5XGBg3Wh2Ccjd8NkEIZwVu2caBR9gfUtNhhFuw9PXoCC/0uOonpGIXXI8r6eVojbdrq5p5sMp7SUSZQ/tzmbktRNfjU5zG7NLzMT9bp6Ne+i9SJBC6P7lo9l2re2NO3U52Ji06j6BePyI1qeydPx yolande.leung@ft.com"
