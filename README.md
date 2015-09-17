@@ -23,12 +23,13 @@ AWS_ACCESS_KEY_ID=xxxxxxxx
 ## S3 bucket name to write to (up stack specific)
 BINARY_WRITER_BUCKET=xxxxxxxx
 
-## `uuidgen` these for a new cluster
+## `uuidgen` each of these when creating new cluster
 AWS_MONITOR_TEST_UUID=xxxxxxxx
 UCS_MONITOR_TEST_UUID=xxxxxxxx
 
 # [optional]
 SERVICE_DEFINITION_LOCATION=https://raw.githubusercontent.com/Financial-Times/fleet/master/services.yaml
+# make a unique identifier (you can use this to search your splunk logs as well)
 ENVIRONMENT_TAG=xxxx
 ```
 
