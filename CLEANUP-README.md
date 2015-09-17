@@ -10,7 +10,7 @@
 
 * The next day, you can delete the Security Group: find your group and delete:
 
-In search bar, use `tag:coco-environment-tag :` followed by value for $ENVIRONMENT_TAG
+    * In search bar, use `tag:coco-environment-tag :` followed by value for $ENVIRONMENT_TAG
 
 ## TODO
 
