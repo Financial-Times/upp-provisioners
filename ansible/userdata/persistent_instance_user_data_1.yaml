@@ -29,7 +29,7 @@ coreos:
         Before=vol.mount
         [Service]
         Type=oneshot
-        ExecStart=/bin/bash -c "/usr/sbin/fsck /dev/xvdf || /usr/sbin/mkfs.ext4 /dev/xvdf"
+        ExecStart=/bin/bash -c "/usr/sbin/fsck -a /dev/xvdf || /usr/sbin/mkfs.ext4 /dev/xvdf"
         ExecStart=/bin/bash -c "/usr/bin/test -e /vol || /usr/bin/mkdir /vol"
     - name: vol.mount
       command: start
