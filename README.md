@@ -42,7 +42,7 @@ AWS_MONITOR_TEST_UUID=xxxxxxxx
 UCS_MONITOR_TEST_UUID=xxxxxxxx
 
 # [optional]
-SERVICE_DEFINITION_LOCATION=https://raw.githubusercontent.com/Financial-Times/fleet/master/services.yaml
+SERVICE_DEFINITION_LOCATION=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/services.yaml
 # make a unique identifier (you can use this to search your splunk logs as well)
 ENVIRONMENT_TAG=xxxx
 ```
