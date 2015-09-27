@@ -79,8 +79,8 @@ coreos:
           [Service]
           Type=oneshot
           ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done"
-          ExecStart=/bin/bash -c "fleetctl start /tmp/deployer.service"
-          ExecStart=/bin/bash -c "fleetctl start /tmp/deployer.timer"
+          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service"
+          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.timer https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.timer && fleetctl start /tmp/deployer.timer"
     - name: swapon.service
       command: start
       content: |
@@ -114,30 +114,4 @@ write_files:
   - path: /etc/motd.d/env.conf
     content: |
             This enviroment is tagged as {{environment_tag}} and is cluster {{token}}
-  - path: /tmp/deployer.service
-    content: |
-      [Unit]
-      Description=Deployer
-      After=docker.service
-      Requires=docker.service
 
-      [Service]
-      Environment="DOCKER_APP_VERSION=latest"
-      TimeoutStartSec=0
-      Type=oneshot
-      ExecStartPre=-/bin/bash -c '/usr/bin/docker kill %p > /dev/null 2>&1'
-      ExecStartPre=-/bin/bash -c '/usr/bin/docker rm %p > /dev/null 2>&1'
-      ExecStart=/bin/bash -c "SERVICE_DEFINITION_LOCATION=$(etcdctl get /ft/config/service-definition-location); docker run -v '/etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt' --rm --name %p --env=\"FLEET_ENDPOINT=http://$HOSTNAME:49153\" --env=\"SERVICES_DEFINITION_FILE_URI=$SERVICE_DEFINITION_LOCATION\" --env=\"DESTROY=true\" coco/coco-fleet-deployer:$DOCKER_APP_VERSION"
-  - path: /tmp/deployer.timer
-    content: |
-      [Unit]
-      Description=Deployer timer
-      
-      [Timer]
-      OnUnitActiveSec=1m
-      
-      [Install]
-      WantedBy=timers.target
-      
-      [X-Fleet]
-      MachineOf=deployer.service
