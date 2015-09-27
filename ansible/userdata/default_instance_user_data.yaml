@@ -46,6 +46,28 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl set /ft/config/binary-writer/bucket '{{binary_writer_bucket}}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/synthetic-image-publication-monitor-aws/test-uuid '{{aws_image_monitor_test_uuid}}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/synthetic-image-publication-monitor-ucs/test-uuid '{{ucs_image_monitor_test_uuid}}' > /dev/null;"
+    - name: authorized_keys.service
+      command: start
+      content: |
+          [Unit]
+          Description=Update authorized_keys
+
+          [Service]
+          Type=oneshot
+          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
+          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys && /home/core/.ssh/authorized_keys"
+          ExecStart=/bin/sh -c "cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys"
+    - name: authorized_keys.timer
+      command: start
+      content: |
+          [Unit]
+          Description=Authorized keys timer
+          
+          [Timer]
+          OnUnitActiveSec=1min
+          
+          [Install]
+          WantedBy=timers.target
     - name: bootstrap.service
       command: start
       content: |
@@ -119,4 +141,3 @@ write_files:
       
       [X-Fleet]
       MachineOf=deployer.service
-{% include 'ssh_authorized_keys.yaml' %}
