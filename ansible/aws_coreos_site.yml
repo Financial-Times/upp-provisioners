@@ -3,8 +3,8 @@
 
   vars:
     region: eu-west-1
-    az: a
-    ami: ami-854f63f2 #eu-west-1 HMV 808.0.0
+    az: b
+    ami: ami-83e9c8f4 #eu-west-1 HMV 766.3.0
     insecure_registry: up-registry.ft.com
     env: p
     ipcode: P295
