@@ -18,26 +18,6 @@ coreos:
     etcd_request_timeout: 3.0
     metadata: host_type=persistent,persistent_tag=3
   units:
-    - name: etcd2.service
-      command: start
-    - name: fleet.service
-      command: start
-    - name: makefs.service
-      command: start
-      content: |
-        [Unit]
-        Before=vol.mount
-        [Service]
-        Type=oneshot
-        ExecStart=/bin/bash -c "/usr/sbin/fsck -a /dev/xvdf || /usr/sbin/mkfs.ext4 /dev/xvdf"
-        ExecStart=/bin/bash -c "/usr/bin/test -e /vol || /usr/bin/mkdir /vol"
-    - name: vol.mount
-      command: start
-      content: |
-        [Mount]
-        What=/dev/xvdf
-        Where=/vol
-        Type=ext4
     - name: authorized_keys.service
       command: start
       content: |
@@ -54,10 +34,10 @@ coreos:
       content: |
           [Unit]
           Description=Authorized keys timer
-          
+
           [Timer]
           OnUnitActiveSec=1min
-          
+
           [Install]
           WantedBy=timers.target
     - name: swapon.service
@@ -81,6 +61,26 @@ coreos:
 
           [Install]
           WantedBy=multi-user.target
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: makefs.service
+      command: start
+      content: |
+        [Unit]
+        Before=vol.mount
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/bash -c "/usr/sbin/fsck -a /dev/xvdf || /usr/sbin/mkfs.ext4 /dev/xvdf"
+        ExecStart=/bin/bash -c "/usr/bin/test -e /vol || /usr/bin/mkdir /vol"
+    - name: vol.mount
+      command: start
+      content: |
+        [Mount]
+        What=/dev/xvdf
+        Where=/vol
+        Type=ext4
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
