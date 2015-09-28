@@ -94,3 +94,10 @@ write_files:
   - path: /etc/motd.d/env.conf
     content: |
             This enviroment is tagged as {{environment_tag}} and is cluster {{token}}
+  - path: /home/core/.toolboxrc
+    owner: core
+    content: |
+      TOOLBOX_DOCKER_IMAGE=coco/coco-toolbox
+      TOOLBOX_DOCKER_TAG=latest
+      TOOLBOX_USER=root
+
