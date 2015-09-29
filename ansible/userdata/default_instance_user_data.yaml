@@ -37,7 +37,7 @@ coreos:
           Description=Authorized keys timer
           
           [Timer]
-          OnUnitActiveSec=1min
+          OnActiveSec=1min
           
           [Install]
           WantedBy=timers.target
