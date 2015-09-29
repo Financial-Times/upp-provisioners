@@ -19,6 +19,49 @@ coreos:
     etcd_request_timeout: 3.0
     metadata: host_type=stateless
   units:
+    - name: authorized_keys.service
+      command: start
+      content: |
+          [Unit]
+          Description=Update authorized_keys
+
+          [Service]
+          Type=oneshot
+          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
+          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
+          ExecStart=/bin/sh -c "cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 600 /home/core/.ssh/authorized_keys"
+    - name: authorized_keys.timer
+      command: start
+      content: |
+          [Unit]
+          Description=Authorized keys timer
+          
+          [Timer]
+          OnUnitActiveSec=1min
+          
+          [Install]
+          WantedBy=timers.target
+    - name: swapon.service
+      command: start
+      content: |
+          [Unit]
+          Description=Create swap
+
+          [Service]
+          Type=oneshot
+          Environment="SWAPFILE=/swapfile"
+          RemainAfterExit=true
+          ExecStartPre=/usr/bin/touch ${SWAPFILE}
+          ExecStartPre=/usr/bin/fallocate -l 4096m ${SWAPFILE}
+          ExecStartPre=/usr/bin/chmod 600 ${SWAPFILE}
+          ExecStartPre=/usr/sbin/mkswap ${SWAPFILE}
+          ExecStartPre=/usr/sbin/losetup -f ${SWAPFILE}
+          ExecStart=/usr/bin/sh -c "/sbin/swapon $(/usr/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
+          ExecStop=/usr/bin/sh -c "/sbin/swapoff $(/usr/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
+          ExecStopPost=/usr/bin/sh -c "/usr/sbin/losetup -d $(/usr/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
+
+          [Install]
+          WantedBy=multi-user.target
     - name: etcd2.service
       command: start
     - name: fleet.service
@@ -46,28 +89,6 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl set /ft/config/binary-writer/bucket '{{binary_writer_bucket}}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/synthetic-image-publication-monitor-aws/test-uuid '{{aws_image_monitor_test_uuid}}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/synthetic-image-publication-monitor-ucs/test-uuid '{{ucs_image_monitor_test_uuid}}' > /dev/null;"
-    - name: authorized_keys.service
-      command: start
-      content: |
-          [Unit]
-          Description=Update authorized_keys
-
-          [Service]
-          Type=oneshot
-          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
-          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
-          ExecStart=/bin/sh -c "cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 600 /home/core/.ssh/authorized_keys"
-    - name: authorized_keys.timer
-      command: start
-      content: |
-          [Unit]
-          Description=Authorized keys timer
-          
-          [Timer]
-          OnUnitActiveSec=1min
-          
-          [Install]
-          WantedBy=timers.target
     - name: bootstrap.service
       command: start
       content: |
@@ -81,27 +102,6 @@ coreos:
           ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done"
           ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service"
           ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.timer https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.timer && fleetctl start /tmp/deployer.timer"
-    - name: swapon.service
-      command: start
-      content: |
-          [Unit]
-          Description=Create swap
-
-          [Service]
-          Type=oneshot
-          Environment="SWAPFILE=/swapfile"
-          RemainAfterExit=true
-          ExecStartPre=/usr/bin/touch ${SWAPFILE}
-          ExecStartPre=/usr/bin/fallocate -l 4096m ${SWAPFILE}
-          ExecStartPre=/usr/bin/chmod 600 ${SWAPFILE}
-          ExecStartPre=/usr/sbin/mkswap ${SWAPFILE}
-          ExecStartPre=/usr/sbin/losetup -f ${SWAPFILE}
-          ExecStart=/usr/bin/sh -c "/sbin/swapon $(/usr/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
-          ExecStop=/usr/bin/sh -c "/sbin/swapoff $(/usr/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
-          ExecStopPost=/usr/bin/sh -c "/usr/sbin/losetup -d $(/usr/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
-
-          [Install]
-          WantedBy=multi-user.target
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
