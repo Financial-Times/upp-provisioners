@@ -26,9 +26,10 @@ coreos:
 
           [Service]
           Type=oneshot
+          ExecStartPre=/bin/sh -c "mkdir -p /home/core/.ssh && touch /home/core/.ssh/authorized_keys"
           ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
           ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
-          ExecStart=/bin/sh -c "cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 600 /home/core/.ssh/authorized_keys"
+          ExecStart=/bin/sh -c "cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 700 /home/core/.ssh && chmod 600 /home/core/.ssh/authorized_keys && chown -R core:core /home/core/.ssh"
     - name: authorized_keys.timer
       command: start
       content: |
@@ -36,6 +37,7 @@ coreos:
           Description=Authorized keys timer
 
           [Timer]
+          OnBootSec=1min
           OnUnitActiveSec=1min
 
           [Install]
