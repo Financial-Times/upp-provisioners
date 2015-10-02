@@ -4,7 +4,8 @@
   vars:
     region: eu-west-1
     az: b
-    ami: ami-83e9c8f4 #eu-west-1 HMV 766.3.0
+    ami: ami-eb97bc9c #eu-west-1 HMV 766.4.0 (stable)
+    #ami: ami-c3cae3b4 #eu-west-1 HMV CoreOS 815.0.0 (alpha)
     insecure_registry: up-registry.ft.com
     env: p
     ipcode: P295
@@ -74,6 +75,11 @@
           - proto: tcp
             from_port: 80
             to_port: 80
+            cidr_ip: 0.0.0.0/0
+          # Allow 443 from everywhere
+          - proto: tcp
+            from_port: 443
+            to_port: 443
             cidr_ip: 0.0.0.0/0
           # Allow internal requests
           - proto: tcp
