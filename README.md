@@ -41,9 +41,9 @@ BINARY_WRITER_BUCKET=xxxxxxxx
 AWS_MONITOR_TEST_UUID=xxxxxxxx
 UCS_MONITOR_TEST_UUID=xxxxxxxx
 
-# [optional]
+## Location of your unit definition file
 SERVICE_DEFINITION_LOCATION=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/services.yaml
-# make a unique identifier (you can use this to search your splunk logs as well)
+## make a unique identifier (this will be used for DNS tunnel, splunk, AWS tags)
 ENVIRONMENT_TAG=xxxx
 ```
 
