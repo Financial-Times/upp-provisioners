@@ -242,7 +242,7 @@
           coco-environment-tag: "{{environment_tag}}"
 
     - set_fact:
-      persistent_tag:1
+        persistent_tag:1
 
     - name: Provision m3.large persistent instance
       ec2:
@@ -277,7 +277,7 @@
           coco-environment-tag: "{{environment_tag}}"
 
     - set_fact:
-      persistent_tag:2
+        persistent_tag:2
       
     - name: Provision m3.large persistent instance
       ec2:
@@ -312,7 +312,7 @@
           coco-environment-tag: "{{environment_tag}}"
 
     - set_fact:
-      persistent_tag:3
+        persistent_tag:3
       
     - name: Provision m3.large persistent instance
       ec2:
