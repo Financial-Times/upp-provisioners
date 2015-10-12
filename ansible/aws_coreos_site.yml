@@ -23,24 +23,26 @@
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
         state: present
-        cidr_block: 172.23.0.0/16
+        cidr_block: 172.24.0.0/16
         resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS", "teamDL": "george.angel@ft.com}"}
         subnets:
-          - cidr: 172.23.0.0/18
+          - cidr: 172.24.0.0/18
             az:  "{{ region }}a"
             resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS subnet A", "teamDL": "george.angel@ft.com}"}
 
-          - cidr: 172.23.64.0/18
+          - cidr: 172.24.64.0/18
             az:  "{{ region }}b"
             resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS subnet B", "teamDL": "george.angel@ft.com}"}
 
-          - cidr: 172.23.128.0/18
+          - cidr: 172.24.128.0/18
             az:  "{{ region }}c"
             resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS subnet C", "teamDL": "george.angel@ft.com}"}
         internet_gateway: True
         route_tables:
           - subnets:
-              - 172.23.0.0/16
+              - 172.24.0.0/18
+              - 172.24.64.0/18
+              - 172.24.128.0/18
             routes:
               - dest: 0.0.0.0/0
                 gw: igw
@@ -91,7 +93,7 @@
           - proto: tcp
             from_port: 0
             to_port: 65535
-            cidr_ip: 172.23.0.0/16
+            cidr_ip: 172.24.0.0/16
         rules_egress:
           - proto: tcp
             from_port: 0
@@ -273,10 +275,6 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
-      register: ec2_persistent
-
-    - debug: msg="ec2_persistent ips {{ item.public_ip }}"
-      with_items: "{{ ec2_persistent.tagged_instances }}"
 
     - set_fact:
       persistent_tag:2
@@ -312,10 +310,6 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
-      register: ec2_persistent
-
-    - debug: msg="ec2_persistent ips {{ item.public_ip }}"
-      with_items: "{{ ec2_persistent.tagged_instances }}"
 
     - set_fact:
       persistent_tag:3
@@ -351,8 +345,4 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
-      register: ec2_persistent
-
-    - debug: msg="ec2_persistent ips {{ item.public_ip }}"
-      with_items: "{{ ec2_persistent.tagged_instances }}"
 
