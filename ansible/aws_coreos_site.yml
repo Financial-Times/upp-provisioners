@@ -3,7 +3,6 @@
 
   vars:
     region: eu-west-1
-    az: b
     ami: ami-eb97bc9c #eu-west-1 HMV 766.4.0 (stable)
     #ami: ami-c3cae3b4 #eu-west-1 HMV CoreOS 815.0.0 (alpha)
     env: p
@@ -24,16 +23,26 @@
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
         state: present
-        cidr_block: 172.23.0.0/16
+        cidr_block: 172.24.0.0/16
         resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS", "teamDL": "george.angel@ft.com}"}
         subnets:
-          - cidr: 172.23.0.0/16
-            az:  "{{ region }}{{az}}"
-            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS", "teamDL": "george.angel@ft.com}"}
+          - cidr: 172.24.0.0/18
+            az:  "{{ region }}a"
+            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS subnet A", "teamDL": "george.angel@ft.com}"}
+
+          - cidr: 172.24.64.0/18
+            az:  "{{ region }}b"
+            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS subnet B", "teamDL": "george.angel@ft.com}"}
+
+          - cidr: 172.24.128.0/18
+            az:  "{{ region }}c"
+            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS subnet C", "teamDL": "george.angel@ft.com}"}
         internet_gateway: True
         route_tables:
           - subnets:
-              - 172.23.0.0/16
+              - 172.24.0.0/18
+              - 172.24.64.0/18
+              - 172.24.128.0/18
             routes:
               - dest: 0.0.0.0/0
                 gw: igw
@@ -84,7 +93,7 @@
           - proto: tcp
             from_port: 0
             to_port: 65535
-            cidr_ip: 172.23.0.0/16
+            cidr_ip: 172.24.0.0/16
         rules_egress:
           - proto: tcp
             from_port: 0
@@ -123,6 +132,8 @@
         security_group_ids: '{{fleet_group.group_id}}'
         subnets:
           - "{{ vpc.subnets[0].id }}"
+          - "{{ vpc.subnets[1].id }}"
+          - "{{ vpc.subnets[2].id }}"
         listeners:
           - protocol: http
             load_balancer_port: 80
@@ -152,7 +163,7 @@
         image: "{{ami}}"
         instance_type: m3.large
         wait: true
-        exact_count: 2
+        exact_count: 1
         user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
         vpc_subnet_id: "{{ vpc.subnets[0].id }}"
         assign_public_ip: yes
@@ -161,9 +172,9 @@
             volume_size: 30
             delete_on_termination: true
         count_tag:
-          Name: "ftstt{{cp.msg}}-caw1{{az}}-eu-p"
+          Name: "ftstt{{cp.msg}}-caw1a-eu-p"
         instance_tags:
-          Name: "ftstt{{cp.msg}}-caw1{{az}}-eu-p"
+          Name: "ftstt{{cp.msg}}-caw1a-eu-p"
           environment: "{{env}}"
           ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -171,10 +182,64 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
-      register: ec2_small
 
-    - debug: msg="ec2_small ips {{ item.public_ip }}"
-      with_items: "{{ ec2_small.tagged_instances }}"
+    - name: Provision m3.large instances
+      ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        group: "coreos-up-{{ cp.msg }}"
+        image: "{{ami}}"
+        instance_type: m3.large
+        wait: true
+        exact_count: 1
+        user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
+        vpc_subnet_id: "{{ vpc.subnets[1].id }}"
+        assign_public_ip: yes
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 30
+            delete_on_termination: true
+        count_tag:
+          Name: "ftstt{{cp.msg}}-caw1b-eu-p"
+        instance_tags:
+          Name: "ftstt{{cp.msg}}-caw1b-eu-p"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
+          coco-environment-tag: "{{environment_tag}}"
+
+    - name: Provision m3.large instances
+      ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        group: "coreos-up-{{ cp.msg }}"
+        image: "{{ami}}"
+        instance_type: m3.large
+        wait: true
+        exact_count: 1
+        user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
+        vpc_subnet_id: "{{ vpc.subnets[2].id }}"
+        assign_public_ip: yes
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 30
+            delete_on_termination: true
+        count_tag:
+          Name: "ftstt{{cp.msg}}-caw1c-eu-p"
+        instance_tags:
+          Name: "ftstt{{cp.msg}}-caw1c-eu-p"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
+          coco-environment-tag: "{{environment_tag}}"
 
     - name: Provision m3.large persistent instance
       ec2:
@@ -197,9 +262,9 @@
             volume_size: 200
             delete_on_termination: true
         count_tag:
-          Name: "ftpr1{{cp.msg}}-caw1{{az}}-eu-p"
+          Name: "ftpr1{{cp.msg}}-caw1a-eu-p"
         instance_tags:
-          Name: "ftpr1{{cp.msg}}-caw1{{az}}-eu-p"
+          Name: "ftpr1{{cp.msg}}-caw1a-eu-p"
           environment: "{{env}}"
           ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -207,10 +272,6 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
-      register: ec2_persistent
-
-    - debug: msg="ec2_persistent ips {{ item.public_ip }}"
-      with_items: "{{ ec2_persistent.tagged_instances }}"
 
     - name: Provision m3.large persistent instance
       ec2:
@@ -223,7 +284,7 @@
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_2.yaml') }}"
-        vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+        vpc_subnet_id: "{{ vpc.subnets[1].id }}"
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
@@ -233,9 +294,9 @@
             volume_size: 200
             delete_on_termination: true
         count_tag:
-          Name: "ftpr2{{cp.msg}}-caw1{{az}}-eu-p"
+          Name: "ftpr2{{cp.msg}}-caw1b-eu-p"
         instance_tags:
-          Name: "ftpr2{{cp.msg}}-caw1{{az}}-eu-p"
+          Name: "ftpr2{{cp.msg}}-caw1b-eu-p"
           environment: "{{env}}"
           ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -243,10 +304,6 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
-      register: ec2_persistent
-
-    - debug: msg="ec2_persistent ips {{ item.public_ip }}"
-      with_items: "{{ ec2_persistent.tagged_instances }}"
 
     - name: Provision m3.large persistent instance
       ec2:
@@ -259,7 +316,7 @@
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_3.yaml') }}"
-        vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+        vpc_subnet_id: "{{ vpc.subnets[2].id }}"
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
@@ -269,9 +326,9 @@
             volume_size: 200
             delete_on_termination: true
         count_tag:
-          Name: "ftpr3{{cp.msg}}-caw1{{az}}-eu-p"
+          Name: "ftpr3{{cp.msg}}-caw1c-eu-p"
         instance_tags:
-          Name: "ftpr3{{cp.msg}}-caw1{{az}}-eu-p"
+          Name: "ftpr3{{cp.msg}}-caw1c-eu-p"
           environment: "{{env}}"
           ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -279,8 +336,4 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
-      register: ec2_persistent
-
-    - debug: msg="ec2_persistent ips {{ item.public_ip }}"
-      with_items: "{{ ec2_persistent.tagged_instances }}"
 
