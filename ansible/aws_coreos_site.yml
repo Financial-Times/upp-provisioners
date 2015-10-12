@@ -15,9 +15,6 @@
     - keys.yaml
 
   tasks:
-    - set_fact:
-        cp: "{{ token | regex_replace('^https?:\\/\\/[\\w\\.]*\\/([\\w]{8})[\\w]*$', '\\1') }}"
-
     - ec2_vpc:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
@@ -55,7 +52,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: "coreos-up-{{ cp.msg }}"
+        name: "coreos-up-{{clusterid}}"
         description: Fleet security group
         vpc_id: "{{ vpc.vpc_id }}"
         rules:
@@ -114,7 +111,7 @@
         region: "{{region}}"
         state: present
         tags:
-          Name: "coreos-up-{{ cp.msg }}"
+          Name: "coreos-up-{{clusterid}}"
           env: "{{env}}"
           ipcode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -127,7 +124,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        name: "coreos-up-{{cp.msg}}"
+        name: "coreos-up-{{clusterid}}"
         state: present
         security_group_ids: '{{fleet_group.group_id}}'
         subnets:
@@ -150,7 +147,7 @@
       register: cluster_elb
 
     - name: tag ELB
-      shell: ". /.venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names coreos-up-{{cp.msg}} --tags Key=Name,Value=coreos-up-{{cp.msg}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}} Key=coco-environment-tag,Value={{environment_tag}}"
+      shell: ". /.venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names coreos-up-{{clusterid}} --tags Key=Name,Value=coreos-up-{{clusterid}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}} Key=coco-environment-tag,Value={{environment_tag}}"
 
     - debug: msg="cluster_elb dns {{ cluster_elb.elb.dns_name }}"
 
@@ -159,7 +156,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "coreos-up-{{ cp.msg }}"
+        group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
         instance_type: m3.large
         wait: true
@@ -172,9 +169,9 @@
             volume_size: 30
             delete_on_termination: true
         count_tag:
-          Name: "ftstt{{cp.msg}}-caw1a-eu-p"
+          Name: "ftstt{{clusterid}}-caw1a-eu-p"
         instance_tags:
-          Name: "ftstt{{cp.msg}}-caw1a-eu-p"
+          Name: "ftstt{{clusterid}}-caw1a-eu-p"
           environment: "{{env}}"
           ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -188,7 +185,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "coreos-up-{{ cp.msg }}"
+        group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
         instance_type: m3.large
         wait: true
@@ -201,9 +198,9 @@
             volume_size: 30
             delete_on_termination: true
         count_tag:
-          Name: "ftstt{{cp.msg}}-caw1b-eu-p"
+          Name: "ftstt{{clusterid}}-caw1b-eu-p"
         instance_tags:
-          Name: "ftstt{{cp.msg}}-caw1b-eu-p"
+          Name: "ftstt{{clusterid}}-caw1b-eu-p"
           environment: "{{env}}"
           ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -217,7 +214,7 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "coreos-up-{{ cp.msg }}"
+        group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
         instance_type: m3.large
         wait: true
@@ -230,9 +227,9 @@
             volume_size: 30
             delete_on_termination: true
         count_tag:
-          Name: "ftstt{{cp.msg}}-caw1c-eu-p"
+          Name: "ftstt{{clusterid}}-caw1c-eu-p"
         instance_tags:
-          Name: "ftstt{{cp.msg}}-caw1c-eu-p"
+          Name: "ftstt{{clusterid}}-caw1c-eu-p"
           environment: "{{env}}"
           ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -242,19 +239,19 @@
           coco-environment-tag: "{{environment_tag}}"
 
     - set_fact:
-        persistent_tag:1
+        persistent_tag: 1
 
     - name: Provision m3.large persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "coreos-up-{{ cp.msg }}"
+        group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
         instance_type: m3.large
         wait: true
         exact_count: 1
-        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_1.yaml') }}"
+        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
         vpc_subnet_id: "{{ vpc.subnets[0].id }}"
         assign_public_ip: yes
         volumes:
@@ -265,9 +262,9 @@
             volume_size: 200
             delete_on_termination: true
         count_tag:
-          Name: "ftpr1{{cp.msg}}-caw1a-eu-p"
+          Name: "ftpr1{{clusterid}}-caw1a-eu-p"
         instance_tags:
-          Name: "ftpr1{{cp.msg}}-caw1a-eu-p"
+          Name: "ftpr1{{clusterid}}-caw1a-eu-p"
           environment: "{{env}}"
           ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -277,19 +274,19 @@
           coco-environment-tag: "{{environment_tag}}"
 
     - set_fact:
-        persistent_tag:2
+        persistent_tag: 2
       
     - name: Provision m3.large persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "coreos-up-{{ cp.msg }}"
+        group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
         instance_type: m3.large
         wait: true
         exact_count: 1
-        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_2.yaml') }}"
+        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
         vpc_subnet_id: "{{ vpc.subnets[1].id }}"
         assign_public_ip: yes
         volumes:
@@ -300,9 +297,9 @@
             volume_size: 200
             delete_on_termination: true
         count_tag:
-          Name: "ftpr2{{cp.msg}}-caw1b-eu-p"
+          Name: "ftpr2{{clusterid}}-caw1b-eu-p"
         instance_tags:
-          Name: "ftpr2{{cp.msg}}-caw1b-eu-p"
+          Name: "ftpr2{{clusterid}}-caw1b-eu-p"
           environment: "{{env}}"
           ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
@@ -312,19 +309,19 @@
           coco-environment-tag: "{{environment_tag}}"
 
     - set_fact:
-        persistent_tag:3
+        persistent_tag: 3
       
     - name: Provision m3.large persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{region}}"
-        group: "coreos-up-{{ cp.msg }}"
+        group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
         instance_type: m3.large
         wait: true
         exact_count: 1
-        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data_3.yaml') }}"
+        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
         vpc_subnet_id: "{{ vpc.subnets[2].id }}"
         assign_public_ip: yes
         volumes:
@@ -335,9 +332,9 @@
             volume_size: 200
             delete_on_termination: true
         count_tag:
-          Name: "ftpr3{{cp.msg}}-caw1c-eu-p"
+          Name: "ftpr3{{clusterid}}-caw1c-eu-p"
         instance_tags:
-          Name: "ftpr3{{cp.msg}}-caw1c-eu-p"
+          Name: "ftpr3{{clusterid}}-caw1c-eu-p"
           environment: "{{env}}"
           ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"

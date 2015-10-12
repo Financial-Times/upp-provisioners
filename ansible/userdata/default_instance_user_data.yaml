@@ -83,7 +83,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/wp '{{ wp_contentApi_key }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_access_key_id '{{ aws_access_key_id }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/aws/aws_secret_access_key '{{ aws_secret_access_key }}' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/elb_name 'coreos-up-{{cp.msg}}' > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/elb_name 'coreos-up-{{clusterid}}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/cms-notifier/post-credentials '{{ cms_notifier_credentials }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/konstructor/api-key '{{ konstructor_api_key }}' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl set /ft/config/environment_tag '{{environment_tag}}' > /dev/null;"
