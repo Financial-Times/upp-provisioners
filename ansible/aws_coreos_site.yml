@@ -239,6 +239,9 @@
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
 
+    - vars:
+      persistent_tag:1
+
     - name: Provision m3.large persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
@@ -275,6 +278,9 @@
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
       with_items: "{{ ec2_persistent.tagged_instances }}"
 
+    - vars:
+      persistent_tag:2
+      
     - name: Provision m3.large persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
@@ -311,6 +317,9 @@
     - debug: msg="ec2_persistent ips {{ item.public_ip }}"
       with_items: "{{ ec2_persistent.tagged_instances }}"
 
+    - vars:
+      persistent_tag:3
+      
     - name: Provision m3.large persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
