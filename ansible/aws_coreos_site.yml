@@ -11,6 +11,7 @@
     description: "CoreOS-Universal-Publishing"
     teamDL: "george.angel@ft.com"
     environment_tag: default
+    instanceType: m4.large
   vars_files:
     - keys.yaml
 
@@ -158,36 +159,7 @@
         region: "{{region}}"
         group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
-        instance_type: m3.large
-        wait: true
-        exact_count: 1
-        user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
-        vpc_subnet_id: "{{ vpc.subnets[0].id }}"
-        assign_public_ip: yes
-        volumes:
-          - device_name: /dev/xvda
-            volume_size: 30
-            delete_on_termination: true
-        count_tag:
-          Name: "ftstt{{clusterid}}-caw1a-eu-p"
-        instance_tags:
-          Name: "ftstt{{clusterid}}-caw1a-eu-p"
-          environment: "{{env}}"
-          ipCode: "{{ipcode}}"
-          systemCode: "{{systemCode}}"
-          description: "{{description}}"
-          teamDL: "{{teamDL}}"
-          stopSchedule: "nostop"
-          coco-environment-tag: "{{environment_tag}}"
-
-    - name: Provision m3.large instances
-      ec2:
-        aws_access_key: "{{ aws_access_key_id }}"
-        aws_secret_key: "{{ aws_secret_access_key }}"
-        region: "{{region}}"
-        group: "coreos-up-{{clusterid}}"
-        image: "{{ami}}"
-        instance_type: m3.large
+        instance_type: "{{instanceType}}"
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
@@ -216,7 +188,7 @@
         region: "{{region}}"
         group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
-        instance_type: m3.large
+        instance_type: "{{instanceType}}"
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
@@ -248,7 +220,7 @@
         region: "{{region}}"
         group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
-        instance_type: m3.large
+        instance_type: "{{instanceType}}" 
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
@@ -283,7 +255,7 @@
         region: "{{region}}"
         group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
-        instance_type: m3.large
+        instance_type: "{{instanceType}}" 
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
@@ -318,7 +290,7 @@
         region: "{{region}}"
         group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
-        instance_type: m3.large
+        instance_type: "{{instanceType}}"
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
