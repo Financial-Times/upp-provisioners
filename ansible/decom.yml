@@ -1,0 +1,36 @@
+- hosts: localhost
+  connection: local
+
+  vars:
+    region: eu-west-1
+
+  tasks:
+    - name: Terminate instances
+      ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        state: absent
+        instance_ids: "{{instanceIds}}"
+
+    - name: Delete cluster-elb
+      ec2_elb_lb:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        name: "coreos-up-{{clusterid}}"
+        state: absent
+
+    - name: Wait 120s for instances+elb to be terminated and release enis
+      shell: "sleep 120"
+
+    - name: Delete fleet security group
+      ec2_group:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        name: "coreos-up-{{clusterid}}"
+        description: Fleet security group
+        state: absent
+
+

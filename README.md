@@ -60,3 +60,12 @@ ENVIRONMENT_TAG=xxxx
     --env "UCS_MONITOR_TEST_UUID=$UCS_MONITOR_TEST_UUID" coco-provisioner
 ```
 
+## Decomission environment
+```sh
+[sudo] docker run --env "TOKEN_URL=$TOKEN_URL" \
+  --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+  --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+  --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+  coco-provisioner /bin/bash /decom.sh
+```
+
