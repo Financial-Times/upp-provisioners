@@ -6,6 +6,8 @@ coreos:
   etcd2:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
     discovery: {{token}}
+    heartbeat-interval: 300
+    election-timeout: 3000
     # multi-region and multi-cloud deployments need to use $public_ipv4
     advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
     initial-advertise-peer-urls: http://$private_ipv4:2380
@@ -14,8 +16,6 @@ coreos:
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
     listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
   fleet:
-    # needed for key-register.service
-    etcd_servers: http://127.0.0.1:2379
     # allow etcd to slow down at times
     etcd_request_timeout: 3.0
     metadata: host_type=stateless
@@ -74,8 +74,6 @@ coreos:
       content: |
           [Unit]
           Description=Add secret keys to etcd2
-          After=etcd2.service
-          Requires=etcd2.service
 
           [Service]
           Type=oneshot
