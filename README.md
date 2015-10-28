@@ -41,8 +41,8 @@ BINARY_WRITER_BUCKET=xxxxxxxx
 AWS_MONITOR_TEST_UUID=xxxxxxxx
 UCS_MONITOR_TEST_UUID=xxxxxxxx
 
-## Location of your unit definition file
-SERVICE_DEFINITION_LOCATION=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/services.yaml
+## Base uri where your unit definition file and service files are expected to be.
+SERVICES_DEFINITION_ROOT_URI=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/
 ## make a unique identifier (this will be used for DNS tunnel, splunk, AWS tags)
 ENVIRONMENT_TAG=xxxx
 ```
@@ -51,7 +51,7 @@ ENVIRONMENT_TAG=xxxx
 ```bash
 [sudo] docker run --env "VAULT_PASS=$VAULT_PASS" \
     --env "TOKEN_URL=$TOKEN_URL" \
-    --env "SERVICE_DEFINITION_LOCATION=$SERVICE_DEFINITION_LOCATION" \
+    --env "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
     --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
