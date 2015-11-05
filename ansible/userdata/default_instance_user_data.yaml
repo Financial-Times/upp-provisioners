@@ -101,8 +101,8 @@ coreos:
           [Service]
           Type=oneshot
           ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done"
-          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/v1/deployer.service && fleetctl start /tmp/deployer.service"
-          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.timer https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/v1/deployer.timer && fleetctl start /tmp/deployer.timer"
+          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service"
+          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.timer https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.timer && fleetctl start /tmp/deployer.timer"
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
