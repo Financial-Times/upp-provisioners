@@ -66,12 +66,17 @@
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: 194.117.242.0/24
+            cidr_ip: 194.117.242.0/23
           # aws - jumpbox
           - proto: tcp
             from_port: 22
             to_port: 22
             cidr_ip: 52.16.117.250/32
+          # Garton M - home
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 81.187.140.32/32
           # aws - jumpbox fleet API
           - proto: tcp
             from_port: 49153
