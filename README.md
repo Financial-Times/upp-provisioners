@@ -45,6 +45,8 @@ UCS_MONITOR_TEST_UUID=xxxxxxxx
 SERVICES_DEFINITION_ROOT_URI=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/
 ## make a unique identifier (this will be used for DNS tunnel, splunk, AWS tags)
 ENVIRONMENT_TAG=xxxx
+## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco). Optional, defaults to Prod UCS proxy: https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com
+BRIDGING_MESSAGE_QUEUE_PROXY=xxxx
 ```
 
 ## Run the image
@@ -57,7 +59,8 @@ ENVIRONMENT_TAG=xxxx
     --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     --env "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
     --env "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
-    --env "UCS_MONITOR_TEST_UUID=$UCS_MONITOR_TEST_UUID" coco-provisioner
+    --env "UCS_MONITOR_TEST_UUID=$UCS_MONITOR_TEST_UUID" \
+    --env "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY"	coco-provisioner
 ```
 
 ## Decomission environment
