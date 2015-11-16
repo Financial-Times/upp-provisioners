@@ -66,6 +66,7 @@ BRIDGING_MESSAGE_QUEUE_PROXY=xxxx
 ## Decomission environment
 ```sh
 [sudo] docker run --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+  --env "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
   coco-provisioner /bin/bash /decom.sh

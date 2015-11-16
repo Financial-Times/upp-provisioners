@@ -7,7 +7,6 @@ echo "ClusterID: $CLUSTER_ID"
 ## activate virtual environment
 . .venv/bin/activate
 
-export AWS_DEFAULT_REGION=eu-west-1
 INSTANCE_IDS=$(aws ec2 describe-instances --filter Name=tag:coco-environment-tag,Values=$ENVIRONMENT_TAG | jq '{"instanceIds": [.Reservations[].Instances[].InstanceId]}')
 INSTANCE_IDS=`echo $INSTANCE_IDS`
 echo "Instances: $INSTANCE_IDS"
