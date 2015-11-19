@@ -10,6 +10,8 @@ RUN echo "[localhost]" > ~/.ansible_hosts \
 
 ADD provision.sh /
 ADD decom.sh /
+ADD cluster-id-extractor /
+RUN ln -s /cluster-id-extractor /usr/local/bin/cluster-id-extractor
 ADD ansible/ /ansible
 
 CMD /bin/bash provision.sh
