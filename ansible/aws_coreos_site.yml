@@ -3,7 +3,7 @@
 
   vars:
     region: eu-west-1
-    ami: ami-eb97bc9c #eu-west-1 HMV 766.4.0 (stable)
+    ami: ami-55d20b26 #eu-west-1 HMV 766.5.0 (stable)
     #ami: ami-c3cae3b4 #eu-west-1 HMV CoreOS 815.0.0 (alpha)
     env: p
     ipcode: P295
