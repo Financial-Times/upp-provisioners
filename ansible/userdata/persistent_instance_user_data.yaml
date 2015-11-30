@@ -44,6 +44,12 @@ coreos:
 
           [Install]
           WantedBy=timers.target
+    - name: docker.service
+      drop-ins:
+        - name: 10-turn-off-logging.conf
+          content: |
+            [Service]
+            Environment="DOCKER_OPTS=--log-driver=none"
     - name: swapon.service
       command: start
       content: |
