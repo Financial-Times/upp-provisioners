@@ -37,9 +37,10 @@ AWS_ACCESS_KEY_ID=xxxxxxxx
 ## S3 bucket name to write to (up stack specific)
 BINARY_WRITER_BUCKET=xxxxxxxx
 
-## `uuidgen` each of these when creating new cluster
+## `uuidgen` or set manually each of these when creating new cluster, otherwise: they will be automatically generated during the cluster setup (in this case it is not required to pass them at `docker run`)
 AWS_MONITOR_TEST_UUID=xxxxxxxx
 UCS_MONITOR_TEST_UUID=xxxxxxxx
+COCO_MONITOR_TEST_UUID=xxxxxxxx
 
 ## Base uri where your unit definition file and service files are expected to be.
 SERVICES_DEFINITION_ROOT_URI=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/
