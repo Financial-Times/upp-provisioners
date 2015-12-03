@@ -89,6 +89,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '{{services_definition_root_uri}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/binary-writer/bucket '{{binary_writer_bucket}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-aws/test-uuid '{{aws_image_monitor_test_uuid}}' || echo 'Already set' > /dev/null;"
+		  ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-coco/test-uuid '{{coco_image_monitor_test_uuid}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-ucs/test-uuid '{{ucs_image_monitor_test_uuid}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/kafka-bridge/ucs_queue_proxy_addrs '{{bridging_message_queue_proxy}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}' || echo 'Already set' > /dev/null;"

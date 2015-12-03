@@ -14,6 +14,7 @@ CLUSTERID=`echo $TOKEN_URL | sed "s/http.*\///g" | cut -c1-8`
   aws_secret_access_key=$AWS_SECRET_ACCESS_KEY \
   binary_writer_bucket=$BINARY_WRITER_BUCKET \
   aws_image_monitor_test_uuid=$AWS_MONITOR_TEST_UUID \
+  coco_image_monitor_test_uuid=$COCO_MONITOR_TEST_UUID \
   ucs_image_monitor_test_uuid=$UCS_MONITOR_TEST_UUID \
   bridging_message_queue_proxy=${BRIDGING_MESSAGE_QUEUE_PROXY:=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com} \
   environment_tag=${ENVIRONMENT_TAG:=default}" \
