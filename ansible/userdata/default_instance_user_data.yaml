@@ -18,16 +18,6 @@ coreos:
     etcd_request_timeout: 3.0
     metadata: host_type=stateless
   units:
-    - name: logstash-cert.service
-      command: start
-      content: |
-          [Unit]
-          Description=Add logstash certificate
-
-          [Service]
-          Type=oneshot
-          ExecStart=/bin/sh -c "mkdir -p /etc/ssl/logstash-forwarder && echo '{{ logstash_forwarder_crt }}' | base64 --decode > /etc/ssl/logstash-forwarder/logstash-forwarder.crt"
-
     - name: authorized_keys.service
       command: start
       content: |
@@ -103,6 +93,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-ucs/test-uuid '{{ucs_image_monitor_test_uuid}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/kafka-bridge/ucs_queue_proxy_addrs '{{bridging_message_queue_proxy}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}' || echo 'Already set' > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/logstash-forwarder/cert '{{ logstash_forwarder_crt }}' || echo 'Already set' > /dev/null;"
     - name: bootstrap.service
       command: start
       content: |
