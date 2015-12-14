@@ -89,10 +89,11 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '{{services_definition_root_uri}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/binary-writer/bucket '{{binary_writer_bucket}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-aws/test-uuid '{{aws_image_monitor_test_uuid}}' || echo 'Already set' > /dev/null;"
-		  ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-coco/test-uuid '{{coco_image_monitor_test_uuid}}' || echo 'Already set' > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-coco/test-uuid '{{coco_image_monitor_test_uuid}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-ucs/test-uuid '{{ucs_image_monitor_test_uuid}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/kafka-bridge/ucs_queue_proxy_addrs '{{bridging_message_queue_proxy}}' || echo 'Already set' > /dev/null;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}' || echo 'Already set' > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/logstash-forwarder/cert '{{ logstash_forwarder_crt }}' || echo 'Already set' > /dev/null;"
     - name: bootstrap.service
       command: start
       content: |
@@ -105,6 +106,7 @@ coreos:
           Type=oneshot
           ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done"
           ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service"
+    
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
@@ -118,5 +120,4 @@ write_files:
     content: |
       TOOLBOX_DOCKER_IMAGE=coco/coco-toolbox
       TOOLBOX_DOCKER_TAG=latest
-      TOOLBOX_USER=root
-
+      TOOLBOX_USER=root 
