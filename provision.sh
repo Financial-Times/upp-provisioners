@@ -6,7 +6,6 @@ echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> /etc/boto.cfg
 echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> /etc/boto.cfg
 if [ -z "$AWS_MONITOR_TEST_UUID"]; then AWS_MONITOR_TEST_UUID=$(uuidgen); fi
 if [ -z "$COCO_MONITOR_TEST_UUID"]; then COCO_MONITOR_TEST_UUID=$(uuidgen); fi
-if [ -z "$UCS_MONITOR_TEST_UUID"]; then UCS_MONITOR_TEST_UUID=$(uuidgen); fi
 
 CLUSTERID=`echo $TOKEN_URL | sed "s/http.*\///g" | cut -c1-8`
 
@@ -19,7 +18,6 @@ CLUSTERID=`echo $TOKEN_URL | sed "s/http.*\///g" | cut -c1-8`
   binary_writer_bucket=$BINARY_WRITER_BUCKET \
   aws_image_monitor_test_uuid=$AWS_MONITOR_TEST_UUID \
   coco_image_monitor_test_uuid=$COCO_MONITOR_TEST_UUID \
-  ucs_image_monitor_test_uuid=$UCS_MONITOR_TEST_UUID \
   bridging_message_queue_proxy=${BRIDGING_MESSAGE_QUEUE_PROXY:=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com} \
   environment_tag=${ENVIRONMENT_TAG:=default}" \
   --vault-password-file=/vault.pass

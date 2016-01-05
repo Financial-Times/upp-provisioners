@@ -90,7 +90,6 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/binary-writer/bucket '{{binary_writer_bucket}}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-aws/test-uuid '{{aws_image_monitor_test_uuid}}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-coco/test-uuid '{{coco_image_monitor_test_uuid}}' > /dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-ucs/test-uuid '{{ucs_image_monitor_test_uuid}}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/kafka-bridge/ucs_queue_proxy_addrs '{{bridging_message_queue_proxy}}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/logstash-forwarder/cert '{{ logstash_forwarder_crt }}' > /dev/null 2>&1 || true;"

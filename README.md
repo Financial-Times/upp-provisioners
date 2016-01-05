@@ -39,7 +39,6 @@ BINARY_WRITER_BUCKET=xxxxxxxx
 
 ## `uuidgen` or set manually each of these when creating new cluster, otherwise: they will be automatically generated during the cluster setup (in this case it is not required to pass them at `docker run`)
 AWS_MONITOR_TEST_UUID=xxxxxxxx
-UCS_MONITOR_TEST_UUID=xxxxxxxx
 COCO_MONITOR_TEST_UUID=xxxxxxxx
 
 ## Base uri where your unit definition file and service files are expected to be.
@@ -61,7 +60,6 @@ BRIDGING_MESSAGE_QUEUE_PROXY=xxxx
     --env "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
     --env "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
     --env "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
-    --env "UCS_MONITOR_TEST_UUID=$UCS_MONITOR_TEST_UUID" \
     --env "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY"	coco-provisioner
 ```
 
