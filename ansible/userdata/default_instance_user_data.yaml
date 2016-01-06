@@ -6,8 +6,6 @@ coreos:
   etcd2:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
     discovery: {{token}}
-    heartbeat-interval: 300
-    election-timeout: 3000
     # multi-region and multi-cloud deployments need to use $public_ipv4
     advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
     initial-advertise-peer-urls: http://$private_ipv4:2380
@@ -85,22 +83,24 @@ coreos:
           [Service]
           Type=oneshot
           ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && break || sleep 2; done"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wp '{{ wp_contentApi_key }}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_access_key_id '{{ aws_access_key_id }}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_secret_access_key '{{ aws_secret_access_key }}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/elb_name 'coreos-up-{{clusterid}}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/cms-notifier/post-credentials '{{ cms_notifier_credentials }}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/konstructor/api-key '{{ konstructor_api_key }}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/kafka-bridge/authorization_key '{{bridging_message_queue_proxy_authorization_key}}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag '{{environment_tag}}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/aws_region '{{region}}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_url 'https://ingest.splunk.glb.ft.com/coco-up/fleet' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '{{services_definition_root_uri}}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/binary-writer/bucket '{{binary_writer_bucket}}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-aws/test-uuid '{{aws_image_monitor_test_uuid}}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-ucs/test-uuid '{{ucs_image_monitor_test_uuid}}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/kafka-bridge/ucs_queue_proxy_addrs '{{bridging_message_queue_proxy}}' || echo 'Already set' > /dev/null;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}' || echo 'Already set' > /dev/null;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wp '{{ wp_contentApi_key }}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_access_key_id '{{ aws_access_key_id }}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_secret_access_key '{{ aws_secret_access_key }}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/elb_name 'coreos-up-{{clusterid}}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/cms-notifier/post-credentials '{{ cms_notifier_credentials }}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/konstructor/api-key '{{ konstructor_api_key }}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/kafka-bridge/authorization_key '{{bridging_message_queue_proxy_authorization_key}}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag '{{environment_tag}}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/aws_region '{{region}}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_url 'https://ingest.splunk.glb.ft.com/coco-up/fleet' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '{{services_definition_root_uri}}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/binary-writer/bucket '{{binary_writer_bucket}}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-aws/test-uuid '{{aws_image_monitor_test_uuid}}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-coco/test-uuid '{{coco_image_monitor_test_uuid}}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-ucs/test-uuid '{{ucs_image_monitor_test_uuid}}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/kafka-bridge/ucs_queue_proxy_addrs '{{bridging_message_queue_proxy}}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/logstash-forwarder/cert '{{ logstash_forwarder_crt }}' > /dev/null 2>&1 || true;"
     - name: bootstrap.service
       command: start
       content: |
@@ -113,6 +113,7 @@ coreos:
           Type=oneshot
           ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done"
           ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service"
+    
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
@@ -126,5 +127,4 @@ write_files:
     content: |
       TOOLBOX_DOCKER_IMAGE=coco/coco-toolbox
       TOOLBOX_DOCKER_TAG=latest
-      TOOLBOX_USER=root
-
+      TOOLBOX_USER=root 
