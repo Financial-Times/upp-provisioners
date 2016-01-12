@@ -63,6 +63,26 @@ BRIDGING_MESSAGE_QUEUE_PROXY=xxxx
     --env "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY"	coco-provisioner
 ```
 
+## Setup HTTPS support
+To access URLs from the cluster through HTTPS, we need to add support for this in the load balancer
+
+* log on to one of the machines in AWS
+* pick a HC url, like `foo-up.ft.com`, and execute `dig foo-up.ft.com`
+* the answer section will look something like this:
+
+```
+;; ANSWER SECTION:
+foo-up.ft.com.        600    IN    CNAME    bar1426.eu-west-1.elb.amazonaws.com.
+```
+
+* This is the ELB for the cluster on which the HC is running: `bar1426.eu-west-1.elb.amazonaws.com`
+
+* in the AWS console > EC2 > Load Balancers > search for the LB
+* click on it > Listeners > Edit > Add HTTPS on instance port `8080`
+* to know which SSL certificate to choose, check what the LBs of other clusters (which have https enabled) are using
+* save and try if it works, ex. `https://foo-up.ft.com`
+* you can also remove HTTP support if needed
+
 ## Decomission environment
 ```sh
 [sudo] docker run --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
