@@ -19,5 +19,6 @@ ansible-playbook -i ~/.ansible_hosts /ansible/decom.yml \
   aws_access_key_id=$AWS_ACCESS_KEY_ID \ 
   aws_secret_access_key=$AWS_SECRET_ACCESS_KEY \
   region=$AWS_DEFAULT_REGION \
-  environment_tag=${ENVIRONMENT_TAG}"
+  environment_tag=${ENVIRONMENT_TAG} \
+  region_tag=${REGION_TAG}"
 

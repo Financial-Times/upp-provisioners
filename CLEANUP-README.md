@@ -2,7 +2,7 @@
 
 * Go to http://awslogin.internal.ft.com/InfraProd and log in 
 
-* Under EC2 Instances, search for your instances by $ENVIRONMENT_TAG and terminate.
+* Under EC2 Instances, search for your instances by "$ENVIRONMENT_TAG-$REGION_TAG" and terminate.
 
 * Under Load Balancers: find and delete your ELB
 
@@ -10,7 +10,7 @@
 
 * The next day, you can delete the Security Group: find your group and delete:
 
-    * In search bar, use `tag:coco-environment-tag :` followed by value for $ENVIRONMENT_TAG
+    * In search bar, use `tag:coco-environment-tag :` followed by value for "$ENVIRONMENT_TAG-$REGION_TAG"
 
 ## TODO
 
