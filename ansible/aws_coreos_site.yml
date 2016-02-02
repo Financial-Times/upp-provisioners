@@ -11,7 +11,6 @@
     description: "CoreOS-Universal-Publishing"
     teamDL: "george.angel@ft.com"
     environment_tag: default
-    region_tag: uk
     instanceType: m4.large
   vars_files:
     - keys.yaml
@@ -124,7 +123,7 @@
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
-          coco-environment-tag: "{{environment_tag}}-{{region_tag}}"
+          coco-environment-tag: "{{environment_tag}}"
 
     - name: cluster-elb
       ec2_elb_lb:
@@ -154,7 +153,7 @@
       register: cluster_elb
 
     - name: tag ELB
-      shell: ". /.venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names coreos-up-{{clusterid}} --tags Key=Name,Value=coreos-up-{{clusterid}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}} Key=coco-environment-tag,Value={{environment_tag}}-{{region_tag}}"
+      shell: ". /.venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names coreos-up-{{clusterid}} --tags Key=Name,Value=coreos-up-{{clusterid}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}} Key=coco-environment-tag,Value={{environment_tag}}"
 
     - debug: msg="cluster_elb dns {{ cluster_elb.elb.dns_name }}"
 
@@ -185,7 +184,7 @@
           description: "{{description}}"
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
-          coco-environment-tag: "{{environment_tag}}-{{region_tag}}"
+          coco-environment-tag: "{{environment_tag}}"
 
     - name: Provision m3.large instances
       ec2:
@@ -214,7 +213,7 @@
           description: "{{description}}"
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
-          coco-environment-tag: "{{environment_tag}}-{{region_tag}}"
+          coco-environment-tag: "{{environment_tag}}"
 
     - set_fact:
         persistent_tag: 1
@@ -249,7 +248,7 @@
           description: "{{description}}"
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
-          coco-environment-tag: "{{environment_tag}}-{{region_tag}}"
+          coco-environment-tag: "{{environment_tag}}"
 
     - set_fact:
         persistent_tag: 2
@@ -284,7 +283,7 @@
           description: "{{description}}"
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
-          coco-environment-tag: "{{environment_tag}}-{{region_tag}}"
+          coco-environment-tag: "{{environment_tag}}"
 
     - set_fact:
         persistent_tag: 3
@@ -319,5 +318,5 @@
           description: "{{description}}"
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
-          coco-environment-tag: "{{environment_tag}}-{{region_tag}}"
+          coco-environment-tag: "{{environment_tag}}"
 
