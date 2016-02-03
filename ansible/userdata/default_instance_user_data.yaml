@@ -91,7 +91,6 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/konstructor/api-key '{{ konstructor_api_key }}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/kafka-bridge/authorization_key '{{bridging_message_queue_proxy_authorization_key}}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag '{{environment_tag}}' > /dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/region_tag '{{region_tag}}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/aws_region '{{region}}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_url 'https://ingest.splunk.glb.ft.com/coco-up/fleet' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '{{services_definition_root_uri}}' > /dev/null 2>&1 || true;"
@@ -121,7 +120,7 @@ write_files:
       ListenStream=0.0.0.0:49153
   - path: /etc/motd.d/env.conf
     content: |
-            This enviroment is tagged as {{environment_tag}}-{{region_tag}} and is cluster {{token}}
+            This enviroment is tagged as {{environment_tag}} and is cluster {{token}}
   - path: /home/core/.toolboxrc
     owner: core
     content: |
