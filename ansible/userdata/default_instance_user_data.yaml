@@ -100,6 +100,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/kafka-bridge/ucs_queue_proxy_addrs '{{bridging_message_queue_proxy}}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/logstash-forwarder/cert '{{ logstash_forwarder_crt }}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl set /ft/_credentials/methode-api/authorization_key '{{ methode_api_proxy_authorization_key }}' > /dev/null;"
     - name: bootstrap.service
       command: start
       content: |
