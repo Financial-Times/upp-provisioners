@@ -101,6 +101,8 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/logstash-forwarder/cert '{{ logstash_forwarder_crt }}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/methode-api/authorization_key '{{ methode_api_proxy_authorization_key }}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/metadata-services/username '{{ metadata_services_username }}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/metadata-services/password '{{ metadata_services_password }}' > /dev/null 2>&1 || true;"
     - name: bootstrap.service
       command: start
       content: |
