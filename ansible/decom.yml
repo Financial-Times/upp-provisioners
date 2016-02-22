@@ -3,6 +3,8 @@
 
   vars:
     region: eu-west-1
+  vars_files:
+    - keys.yaml
 
   tasks:
     - name: Terminate instances
@@ -21,6 +23,12 @@
         name: "coreos-up-{{clusterid}}"
         state: absent
 
+    - name: Delete DNS tunnel record
+      shell: "curl -s -L -X DELETE -H \"Content-Length: 0\" -H \"Accept: application/json\" -H \"Authorization: Basic {{konstructor_api_key}} \" \"https://konstructor.ft.com/v1/dns/delete?zone=ft.com&name={{environment_tag}}-tunnel-up\""
+
+    - name: Delete DNS elb record
+      shell: "curl -s -L -X DELETE -H \"Content-Length: 0\" -H \"Accept: application/json\" -H \"Authorization: Basic {{konstructor_api_key}} \" \"https://konstructor.ft.com/v1/dns/delete?zone=ft.com&name={{environment_tag}}-up\""
+
     - name: Wait 120s for instances+elb to be terminated and release enis
       shell: "sleep 120"
 
@@ -32,5 +40,4 @@
         name: "coreos-up-{{clusterid}}"
         description: Fleet security group
         state: absent
-
 
