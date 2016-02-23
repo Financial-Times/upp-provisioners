@@ -22,3 +22,15 @@ CLUSTERID=`echo $TOKEN_URL | sed "s/http.*\///g" | cut -c1-8`
   environment_tag=${ENVIRONMENT_TAG:=default}" \
   --vault-password-file=/vault.pass
 
+echo "Default:"
+echo "--------"
+cat default.template
+echo "Persistent 1:"
+echo "--------"
+cat persistent1.template
+echo "Persistent 2:"
+echo "--------"
+cat persistent2.template
+echo "Persistent 3:"
+echo "--------"
+cat persistent3.template
