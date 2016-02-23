@@ -1,0 +1,38 @@
+- hosts: localhost
+  connection: local
+
+  vars:
+    region: eu-west-1
+    ami: ami-c26bcab1 #eu-west-1 HMV 835.9.0 (stable)
+    #ami: ami-c3cae3b4 #eu-west-1 HMV CoreOS 815.0.0 (alpha)
+    env: p
+    ipcode: P295
+    systemCode: "CoreOS-Universal-Publishing"
+    description: "CoreOS-Universal-Publishing"
+    teamDL: "george.angel@ft.com"
+    environment_tag: default
+    instanceType: m4.large
+  vars_files:
+    - keys.yaml
+
+  tasks:
+    - name: Default
+      debug: msg="{{lookup('template', 'userdata/default_instance_user_data.yaml') | to_nice_yaml }}"
+
+    - set_fact:
+        persistent_tag: 1
+
+    - name: Persistent 1
+      debug: msg="{{lookup('template', 'userdata/persistent_instance_user_data.yaml')}}"
+
+    - set_fact:
+        persistent_tag: 2
+
+    - name: Persistent 2
+      debug: msg="{{lookup('template', 'userdata/persistent_instance_user_data.yaml')}}"
+
+    - set_fact:
+        persistent_tag: 3
+
+    - name: Persistent 3
+      debug: msg="{{lookup('template', 'userdata/persistent_instance_user_data.yaml')}}"

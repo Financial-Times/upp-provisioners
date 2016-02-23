@@ -8,8 +8,7 @@ RUN echo "[localhost]" > ~/.ansible_hosts \
  && . .venv/bin/activate \
  && pip install ansible boto awscli
 
-ADD provision.sh /
-ADD decom.sh /
+ADD *.sh /
 ADD cluster-id-extractor /
 RUN ln -s /cluster-id-extractor /usr/local/bin/cluster-id-extractor
 ADD ansible/ /ansible
