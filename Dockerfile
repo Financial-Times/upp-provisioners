@@ -13,5 +13,6 @@ ADD cluster-id-extractor /
 RUN ln -s /cluster-id-extractor /usr/local/bin/cluster-id-extractor
 ADD ansible/ /ansible
 
-CMD /bin/bash provision.sh
+ENTRYPOINT ["/bin/bash", "-c"]
+CMD provision.sh
 
