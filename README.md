@@ -51,7 +51,8 @@ BRIDGING_MESSAGE_QUEUE_PROXY=xxxx
 
 ## Run the image
 ```bash
-[sudo] docker run --env "VAULT_PASS=$VAULT_PASS" \
+[sudo] docker run \
+    --env "VAULT_PASS=$VAULT_PASS" \
     --env "TOKEN_URL=$TOKEN_URL" \
     --env "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
     --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
@@ -60,7 +61,7 @@ BRIDGING_MESSAGE_QUEUE_PROXY=xxxx
     --env "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
     --env "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
     --env "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
-    --env "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY"	coco-provisioner
+    --env "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" coco-provisioner
 ```
 
 ## Setup HTTPS support
@@ -85,7 +86,9 @@ foo-up.ft.com.        600    IN    CNAME    bar1426.eu-west-1.elb.amazonaws.com.
 
 ## Decomission environment
 ```sh
-[sudo] docker run --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+[sudo] docker run \
+  --env "VAULT_PASS=$VAULT_PASS" \
+  --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
   --env "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
