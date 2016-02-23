@@ -17,7 +17,7 @@
 
   tasks:
     - name: Default
-      debug: msg="{{lookup('template', 'userdata/default_instance_user_data.yaml') | to_nice_yaml }}"
+      debug: msg="{{lookup('template', 'userdata/default_instance_user_data.yaml')}}"
 
     - set_fact:
         persistent_tag: 1
