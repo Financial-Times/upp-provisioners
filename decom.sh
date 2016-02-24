@@ -12,6 +12,8 @@ INSTANCE_IDS=$(aws ec2 describe-instances --filter Name=tag:coco-environment-tag
 INSTANCE_IDS=`echo $INSTANCE_IDS`
 echo "Instances: $INSTANCE_IDS"
 
+echo $VAULT_PASS > /vault.pass
+
 ansible-playbook -i ~/.ansible_hosts /ansible/decom.yml \
   --extra-vars "$INSTANCE_IDS" \
   --extra-vars " \
@@ -19,5 +21,5 @@ ansible-playbook -i ~/.ansible_hosts /ansible/decom.yml \
   aws_access_key_id=$AWS_ACCESS_KEY_ID \ 
   aws_secret_access_key=$AWS_SECRET_ACCESS_KEY \
   region=$AWS_DEFAULT_REGION \
-  environment_tag=${ENVIRONMENT_TAG}"
-
+  environment_tag=${ENVIRONMENT_TAG}" \
+  --vault-password-file=/vault.pass
