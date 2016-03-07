@@ -4,8 +4,8 @@
 echo "[Credentials]" >> /etc/boto.cfg
 echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> /etc/boto.cfg
 echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> /etc/boto.cfg
-if [ -z "$AWS_MONITOR_TEST_UUID"]; then AWS_MONITOR_TEST_UUID=$(uuidgen); fi
-if [ -z "$COCO_MONITOR_TEST_UUID"]; then COCO_MONITOR_TEST_UUID=$(uuidgen); fi
+if [ -z "$AWS_MONITOR_TEST_UUID" ]; then AWS_MONITOR_TEST_UUID=$(uuidgen); fi
+if [ -z "$COCO_MONITOR_TEST_UUID" ]; then COCO_MONITOR_TEST_UUID=$(uuidgen); fi
 
 CLUSTERID=`echo $TOKEN_URL | sed "s/http.*\///g" | cut -c1-8`
 
