@@ -95,7 +95,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/metadata-services/password '{{ metadata_services_password }}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/methode-api/authorization_key '{{ methode_api_proxy_authorization_key }}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/public-access '{{ public_access_credentials }}' > /dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/vulcan/authorization_header '{{ vulcan_internal_authorization_header }}' > /dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/vulcand/authorization_header '{{ vulcan_internal_authorization_header }}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wp '{{ wp_contentApi_key }}' > /dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag '{{environment_tag}}' > /dev/null 2>&1 || true;"
