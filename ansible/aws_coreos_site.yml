@@ -118,8 +118,8 @@
         state: present
         tags:
           Name: "coreos-up-{{clusterid}}"
-          env: "{{env}}"
-          ipcode: "{{ipcode}}"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
           systemCode: "{{systemCode}}"
           description: "{{description}}"
           teamDL: "{{teamDL}}"
