@@ -37,7 +37,8 @@ export AWS_ACCESS_KEY_ID=xxxxxxxx
 ## S3 bucket name to write image binaries to (up stack specific)
 export BINARY_WRITER_BUCKET=xxxxxxxx
 
-## Is this needed?
+## Only needed for decomissioning
+## To create a cluster in another region, manually edit the provisioner
 export AWS_DEFAULT_REGION=xxxxx
 
 ## `uuidgen` or set manually each of these when creating new cluster, otherwise: they will be automatically generated during the cluster setup (in this case it is not required to pass them at `docker run`)
