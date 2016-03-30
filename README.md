@@ -99,3 +99,13 @@ foo-up.ft.com.        600    IN    CNAME    bar1426.eu-west-1.elb.amazonaws.com.
   coco-provisioner /bin/bash /decom.sh
 ```
 
+Sometimes clean up takes a long time and ELBs/Security Groups still get left behind. Other ways to clean up:
+
+```
+# List all coreos security groups
+aws ec2 describe-security-groups | jq -r '.SecurityGroups[] | .GroupName + " " + .GroupId'  | grep coreos
+
+# Delete coreos security groups not in use, does not sort - will fail on any group that is being used
+aws ec2 describe-security-groups | jq -r '.SecurityGroups[] | .GroupName + " " + .GroupId'  | grep coreos | awk '{print $2}' | xargs -I {} -n1 sh -c 'aws ec2 delete-security-group --group-id {} || echo {} is active'
+```
+
