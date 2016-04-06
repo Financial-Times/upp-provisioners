@@ -11,7 +11,7 @@
     description: "CoreOS-Universal-Publishing"
     teamDL: "george.angel@ft.com"
     environment_tag: default
-    instanceType: m4.large
+    instanceType: m4.xlarge
   vars_files:
     - keys.yaml
 
