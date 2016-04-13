@@ -82,6 +82,11 @@
             from_port: 49153
             to_port: 49153
             cidr_ip: 52.16.117.250/32
+          # VPN client's outbound IP via tun0 interface
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 62.25.64.1/32
           # Allow 80 from everywhere
           - proto: tcp
             from_port: 80
