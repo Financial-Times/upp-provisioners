@@ -117,6 +117,8 @@ coreos:
           Description=Start fleet services
           After=fleet.service
           Requires=fleet.service
+          # Only run on first boot
+          ConditionPathExists=!/var/lib/format-done
 
           [Service]
           Type=oneshot
