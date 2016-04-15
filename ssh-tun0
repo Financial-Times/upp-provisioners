@@ -123,14 +123,14 @@ else
   echo "Found active VPN interface ${VPN_IF}"
 fi
 
-RECORD="${IPADDR}/32 dev ${VPN_IF}"
+RECORD="${IPADDR}/32 dev ${VPN_IF}" # Set value of routing table record so it can be easily added and removed with variable reference
 
-addRecord ${RECORD}
+addRecord ${RECORD} # Add routing table record
 
-if [[ -z "${USERNAME}" ]]; then
+if [[ -z "${USERNAME}" ]]; then # Establish SSH session with or without username
   openSSHSession "${IPADDR}"
 else
   openSSHSession "${USERNAME}@${IPADDR}"
 fi
 
-ctrl_c
+ctrl_c # Prompt for routing table record removal
