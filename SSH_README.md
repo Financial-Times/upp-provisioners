@@ -66,6 +66,38 @@ Before changing the default route you need to open VPN connection. Fiddling with
 
 ### Linux
 
+Linux users can either manually change default route or alternatively use helper script [coco-provisiner/ssh-tun0](https://github.com/Financial-Times/coco-provisioner/blob/master/ssh-tun0) that alters the routing table and establishes SSH session to given host.
+
+##### ssh-tun0 script
+
+Here is example how to use ssh-tun script to connect to / disconnect from CoreOS cluster.
+
+```
+# CONNECTING
+$ coco-provisioner/ssh-tun0 core@xp-tunnel-up.ft.com
+
+Setting sudo prefix /usr/bin/sudo for user jussi
+Resolving IP for hostname xp-tunnel-up.ft.com
+ssh server host xp-tunnel-up.ft.com has IP 52.50.72.70
+Found active VPN interface tun0
+Adding route 52.50.72.70/32 dev tun0
+Route 52.50.72.70/32 dev tun0 successfully added
+Last login: Mon Apr 18 08:15:37 2016 from 172.24.121.215
+CoreOS alpha (1010.1.0)
+This enviroment is tagged as xp and is cluster https://discovery.etcd.io/b9b5d08c15f6365084a21dc3e0791865
+core@ip-172-24-121-215 ~ $ 
+
+# DISCONNECTING
+core@ip-172-24-121-215 ~ $ exit
+logout
+
+Connection to 52.50.72.70 closed.
+Do you want to remove routing table record 52.50.72.70/32 dev tun0? [y/n]: y
+Route 52.50.72.70/32 dev tun0 successfully deleted
+```
+
+##### _Changing default route manually..._
+
 ##### Discovering VPN interface IP address
 
  1. Open Terminal and run command ``` netstat -i ```
