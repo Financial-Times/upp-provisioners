@@ -70,7 +70,7 @@ Linux users can either manually change default route or alternatively use helper
 
 ##### ssh-tun0 script
 
-Here is example how to use ssh-tun script to connect to / disconnect from CoreOS cluster.
+Here is example how to use [ssh-tun script](https://github.com/Financial-Times/coco-provisioner/blob/master/ssh-tun0)  to connect to / disconnect from CoreOS cluster.
 
 ```
 # CONNECTING
