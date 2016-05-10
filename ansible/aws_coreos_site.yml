@@ -6,7 +6,7 @@
     ami: ami-c26bcab1 #eu-west-1 HMV 835.9.0 (stable)
     #ami: ami-c3cae3b4 #eu-west-1 HMV CoreOS 815.0.0 (alpha)
     env: p
-    ipcode: P295
+    ipcode: P196
     systemCode: "CoreOS-Universal-Publishing"
     description: "CoreOS-Universal-Publishing"
     teamDL: "george.angel@ft.com"
@@ -22,19 +22,19 @@
         region: "{{region}}"
         state: present
         cidr_block: 172.24.0.0/16
-        resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS", "teamDL": "george.angel@ft.com}"}
+        resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS", "teamDL": "george.angel@ft.com}"}
         subnets:
           - cidr: 172.24.0.0/18
             az:  "{{ region }}a"
-            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS subnet A", "teamDL": "george.angel@ft.com}"}
+            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet A", "teamDL": "george.angel@ft.com}"}
 
           - cidr: 172.24.64.0/18
             az:  "{{ region }}b"
-            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS subnet B", "teamDL": "george.angel@ft.com}"}
+            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet B", "teamDL": "george.angel@ft.com}"}
 
           - cidr: 172.24.128.0/18
             az:  "{{ region }}c"
-            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P295", "systemCode": "CoreOS", "description": "CoreOS subnet C", "teamDL": "george.angel@ft.com}"}
+            resource_tags: {"Name": "coreos", "env": "p", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet C", "teamDL": "george.angel@ft.com}"}
         internet_gateway: True
         route_tables:
           - subnets:

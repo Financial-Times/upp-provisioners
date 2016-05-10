@@ -1,0 +1,24 @@
+## Get a new etcd token for a new cluster, 5 refers to the number of initial boxes in the cluster:
+## `curl https://discovery.etcd.io/new?size=5`
+export TOKEN_URL=https://discovery.etcd.io/3fb8c31450fdabc1efb34fcf1e5905dc
+
+## Secret used during provision to decrypt keys - get it off your closest buddy!
+export VAULT_PASS=JKs5PSnGsa5mSO52Zb0wRqLzyWzJFgIY9CkTTZzhxKQ=
+
+## AWS API keys, get these off your buddy too
+export AWS_ACCESS_KEY_ID=AKIAIPNGDRSPINOV5LRA
+export AWS_SECRET_ACCESS_KEY=ZmlR9GRkR4QRV1Jt71PlOrqon1Nyp10+rYwj12tR
+
+## S3 bucket name to write to (up stack specific)
+#BINARY_WRITER_BUCKET=xxxxxxxx
+
+## `uuidgen` or set manually each of these when creating new cluster, otherwise: they will be automatically generated during the cluster setup (in this case it is not required to pass them at `docker run`)
+#AWS_MONITOR_TEST_UUID=xxxxxxxx
+#COCO_MONITOR_TEST_UUID=xxxxxxxx
+
+## Base uri where your unit definition file and service files are expected to be.
+export SERVICES_DEFINITION_ROOT_URI=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/
+## make a unique identifier (this will be used for DNS tunnel, splunk, AWS tags)
+export ENVIRONMENT_TAG=dynpub-keytest2
+## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco). Optional, defaults to Prod UCS proxy: https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com
+#BRIDGING_MESSAGE_QUEUE_PROXY=xxxx
