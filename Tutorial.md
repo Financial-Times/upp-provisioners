@@ -5,10 +5,15 @@ By the time you finish this you will have deployed your own private CoCo cluster
 
 At a high level you will:
 1. (#Setup SSH)
-1. Create a branch of the services to be run
+
+1. Create a repository and define two services to be run
+
 1. Create a new CoCo cluster
+
 1. Nurse it to health
+
 1. Deploy a new service
+
 1. Decommission the cluster
 
 ## Setup SSH
@@ -42,27 +47,56 @@ ssh-add
   ssh-add -K
   ```
 
-## Creating an environment branch
+## Create a services repository
 
-1. Checkout the [up-service-file](https://github.com/Financial-Times/up-service-files) repository
+1. Create a public accessible repository. Probably the easiest way to do this is to create a public repo on [GitHub](https://github.com).
 
-  ```bash
-  git clone git@github.com:Financial-Times/up-service-files.git
+1. Create a service rosta
+
+  You will need to create a `services.yml`, which will contain details of the services you want to run in the cluster.  Define one service by adding the following:
+
+  ```yaml
+  services:
+  - name: my-app@.service
+    count: 2
   ```
 
-This repository contains definitions of the services you'll deploy.
+  In the UPP CoCo stack each service typically has a main `@.service` which contains details of the service and a second `-sidekick@.service` file which is used to monitor the service. For the purpose of this tutorial we'll just have the main service definition.
 
-1. Create a branch
+1. Create the service definitions
 
-Since we want to deploy a 'private' service which may or may not get deployed to production environment, you need to create a branch from master. Replace myBranch with something more imaginative:
+  All services run as systemd like entities through (fleet)[https://coreos.com/fleet/docs/latest/launching-containers-fleet.html].
 
-  ```bash
-  cd up-service-files
-  git checkout -b myBranch
-  git push --set-upstream myBranch
+  Create a file called `my-app@.service` and add the following
+
+  ```
+  [Unit]
+  Description=MyApp
+  After=docker.service
+  Requires=docker.service
+
+  [Service]
+  TimeoutStartSec=0
+  ExecStartPre=-/usr/bin/docker kill busybox1
+  ExecStartPre=-/usr/bin/docker rm busybox1
+  ExecStartPre=/usr/bin/docker pull busybox
+  ExecStart=/usr/bin/docker run --name busybox1 busybox /bin/sh -c "trap 'exit 0' INT TERM; while true; do echo Hello World; sleep 3; done"
+  ExecStop=/usr/bin/docker stop busybox1
   ```
 
-You should periodically re-sync your private by issuing a `git rebase master` within your branch.
+  The `[Unit]` section lets you define dependencies, in this particular case we want to make sure docker is available before we try to use it!
+
+  The `[Service]` section is the nuts and bolts of how you launch your service. Essentially the `ExecStartPre` get run before the main `ExecStart` and `ExecStop` runs when you want to stop the service.
+
+###_[Service] in a bit more detail_
+
+    You'll notice that in the `ExecStartPre` section we tidy up anything left over from a previously running instance of the server. The `ExecStartPre=-/usr/bin/docker kill busybox1` and `ExecStartPre=-/usr/bin/docker rm busybox1` kill the service if it is running and remove the container.
+
+    Following this we get the latest 'busybox' docker image using `ExecStartPre=/usr/bin/docker pull busybox`.
+
+    The service is finally launched via `ExecStart=/usr/bin/docker run --name busybox1 busybox /bin/sh -c "trap 'exit 0' INT TERM; while true; do echo Hello World; sleep 3; done"` which will simply print "Hello World" every three seconds unless it receives a term signal.
+
+1. Commmit and push you recent additions
 
 ## Create a CoCo cluster
 There are a set of instructions in the (/README.md) file.
@@ -85,13 +119,12 @@ There are a set of instructions in the (/README.md) file.
 
   CoCo Provisioner needs to know a few details:
 
-  | ENV VAR | Comments | Suggested / default value |
-  | --- | --- | --- |
-  | SERVICES_DEFINITION_ROOT_URI | Service definitions
-  | TOKEN_URL | The etcd token identifying this cluster | ``curl https://discovery.etcd.io/new?size=5`` |
-  | AWS_MONITOR_TEST_UUID |  | ``curl -s  https://www.uuidgenerator.net/api/version4`` |
-  | COCO_MONITOR_TEST_UUID |  | ``curl -s  https://www.uuidgenerator.net/api/version4`` |
-  | BRIDGING_MESSAGE_QUEUE_PROXY |  |  |
+| ENV VAR | Comments | Suggested / default value |
+| --- | --- | --- |
+| SERVICES_DEFINITION_ROOT_URI | Service definitions
+| TOKEN_URL | The etcd token identifying this cluster | ``curl https://discovery.etcd.io/new?size=5`` |
+| AWS_MONITOR_TEST_UUID |  | `curl -s  https://www.uuidgenerator.net/api/version4` |
+| COCO_MONITOR_TEST_UUID |  | ``curl -s  https://www.uuidgenerator.net/api/version4`` |
 
 
 1. Run the provisioner
@@ -104,12 +137,10 @@ There are a set of instructions in the (/README.md) file.
       --env "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
       --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
       --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-      --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
-      --env "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
-      --env "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
-      --env "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
-      --env "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" coco-provisioner
+      --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" coco-provisioner
   ```
+
+  There are some additional parameters which can be passed, however we won't need them for the moment since they configure CoCo's settings so it can access Kafka etc.
 
 1. All being well you will now have a CoCo cluster. It is unlikely to be heathy when it starts. To verify that the cluster has been started goto the [AWS console](http://awslogin.internal.ft.com/) and goto the eu-west-1 view of running EC2 instances. In the filter field enter the value of the `ENVIRONMENT_TAG` used to create the cluster.
 
@@ -134,7 +165,31 @@ There are a set of instructions in the (/README.md) file.
 
 _That was the easy bit ! Now it's time to nurse it to health_
 
-# Nursing CoCo to health
+# Deploying your own UPP stack
+
+## Creating an environment branch
+
+1. Checkout the [up-service-file](https://github.com/Financial-Times/up-service-files) repository
+
+  ```bash
+  git clone git@github.com:Financial-Times/up-service-files.git
+  ```
+
+This repository contains definitions of the services you'll deploy.
+
+1. Create a branch
+
+Since we want to deploy a 'private' service which may or may not get deployed to production environment, you need to create a branch from master. Replace myBranch with something more imaginative:
+
+  ```bash
+  cd up-service-files
+  git checkout -b myBranch
+  git push --set-upstream myBranch
+  ```
+
+## Keeping yourself up to date
+
+You should periodically re-sync your private by issuing a `git rebase master` within your branch.
 
 1. Checking the deployer
 
@@ -174,5 +229,3 @@ _That was the easy bit ! Now it's time to nurse it to health_
     ```bash
     ssh $ENVIRONMENT_TAG-tunnel-up
     ```
-
-    
