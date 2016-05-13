@@ -18,28 +18,28 @@ At a high level you will:
 
 ## Setup SSH
 1. If you haven't already, generate a pair of SSH keys:
-```bash
-ssh-keygen
-```
+  ```bash
+  ssh-keygen
+  ```
 
 1. Edit your ssh config:
-```bash
-vi ~/.ssh/config
-```
+  ```bash
+  vi ~/.ssh/config
+  ```
 
 1. Add the following lines:
-```
-Host *tunnel-up.ft.com
-  ForwardAgent yes
-  User core
-  StrictHostKeyChecking no
-  UserKnownHostsFile /dev/null
-```
+  ```
+  Host *tunnel-up.ft.com
+    ForwardAgent yes
+    User core
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+  ```
 
 1. Add your SSH keys to the SSH agent:
-```bash
-ssh-add
-```
+  ```bash
+  ssh-add
+  ```
 
   This needs to be done [every time the machine boots](http://unix.stackexchange.com/questions/140075/ssh-add-is-not-persistent-between-reboots), on OSX this problem can be avoided by adding them to OSX keychain:
 
@@ -88,7 +88,7 @@ ssh-add
 
   The `[Service]` section is the nuts and bolts of how you launch your service. Essentially the `ExecStartPre` get run before the main `ExecStart` and `ExecStop` runs when you want to stop the service.
 
-###_[Service] in a bit more detail_
+###A bit more detail
 
     You'll notice that in the `ExecStartPre` section we tidy up anything left over from a previously running instance of the server. The `ExecStartPre=-/usr/bin/docker kill busybox1` and `ExecStartPre=-/usr/bin/docker rm busybox1` kill the service if it is running and remove the container.
 
@@ -96,7 +96,9 @@ ssh-add
 
     The service is finally launched via `ExecStart=/usr/bin/docker run --name busybox1 busybox /bin/sh -c "trap 'exit 0' INT TERM; while true; do echo Hello World; sleep 3; done"` which will simply print "Hello World" every three seconds unless it receives a term signal.
 
-1. Commmit and push you recent additions
+    See [Getting started with Systemd](https://coreos.com/docs/launching-containers/launching/getting-started-with-systemd/) for a more thorough explanation of these and other directives.
+
+1. Commit and push you recent additions
 
 ## Create a CoCo cluster
 There are a set of instructions in the (/README.md) file.
