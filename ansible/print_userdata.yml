@@ -9,7 +9,7 @@
     ipcode: P295
     systemCode: "CoreOS-Universal-Publishing"
     description: "CoreOS-Universal-Publishing"
-    teamDL: "george.angel@ft.com"
+    teamDL: "universal.publishing.platform@ft.com"
     environment_tag: default
     instanceType: m4.large
   vars_files:
