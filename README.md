@@ -1,23 +1,14 @@
-#Docker image to provision a cluster
-
-*Note if your user is not part of the docker group, run commands with sudo.*
+# Docker image to provision a cluster
 
 ## Set up SSH
 
 See [SSH_README.md](/SSH_README.md/)
 
-## [optional] USE LATEST STABLE AMI
-
-Check [this page](https://coreos.com/os/docs/latest/booting-on-ec2.html) for the HVM ami-xxxxxx id
-for your EC2 region.
-
-You can replace the vars->ami value in [ansible/aws_coreos_site.yml](/ansible/aws_coreos_site.yml/)
-with this latest id.
-
 ## Building
+
 ```bash
 # Build the image
-[sudo] docker build -t coco-provisioner .
+docker build -t coco-provisioner .
 ```
 
 ## Set all the required variables
@@ -28,18 +19,18 @@ with this latest id.
 export TOKEN_URL=`curl https://discovery.etcd.io/new?size=5`
 
 ## Secret used during provision to decrypt keys - get it off your closest buddy!
-export VAULT_PASS=xxxxxxxx
+export VAULT_PASS=
 
 ## AWS API keys, get these off your buddy too
-export AWS_SECRET_ACCESS_KEY=xxxxxxx
-export AWS_ACCESS_KEY_ID=xxxxxxxx
+export AWS_SECRET_ACCESS_KEY=
+export AWS_ACCESS_KEY_ID=
 
 ## S3 bucket name to write image binaries to (up stack specific)
-export BINARY_WRITER_BUCKET=xxxxxxxx
+export BINARY_WRITER_BUCKET=
 
 ## Only needed for decomissioning
 ## To create a cluster in another region, manually edit the provisioner
-export AWS_DEFAULT_REGION=xxxxx
+export AWS_DEFAULT_REGION=
 
 ## `uuidgen` or set manually each of these when creating new cluster, otherwise: they will be automatically generated during the cluster setup (in this case it is not required to pass them at `docker run`)
 export AWS_MONITOR_TEST_UUID=`uuidgen`
@@ -48,24 +39,24 @@ export COCO_MONITOR_TEST_UUID=`uuidgen`
 ## Base uri where your unit definition file and service files are expected to be.
 export SERVICES_DEFINITION_ROOT_URI=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/
 ## make a unique identifier (this will be used for DNS tunnel, splunk, AWS tags)
-export ENVIRONMENT_TAG=xxxx
+export ENVIRONMENT_TAG=
 ## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco). Optional, defaults to Prod UCS proxy: https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com
-export BRIDGING_MESSAGE_QUEUE_PROXY=xxxx #[Optional]
+export BRIDGING_MESSAGE_QUEUE_PROXY= #[Optional]
 ```
 
 ## Run the image
 ```bash
-[sudo] docker run \
-    --env "VAULT_PASS=$VAULT_PASS" \
-    --env "TOKEN_URL=$TOKEN_URL" \
-    --env "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
-    --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
-    --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-    --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
-    --env "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
-    --env "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
-    --env "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
-    --env "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" coco-provisioner
+docker run \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "TOKEN_URL=$TOKEN_URL" \
+    -e "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
+    -e "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
+    -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
+    -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" coco-provisioner
 ```
 
 ## Setup HTTPS support
@@ -90,7 +81,7 @@ foo-up.ft.com.        600    IN    CNAME    bar1426.eu-west-1.elb.amazonaws.com.
 
 ## Decomission environment
 ```sh
-[sudo] docker run \
+docker run \
   --env "VAULT_PASS=$VAULT_PASS" \
   --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
   --env "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
