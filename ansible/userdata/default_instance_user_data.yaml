@@ -92,7 +92,6 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/varnish/htpasswd '{{ varnish_access_credentials }}'                                 >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/kafka-bridge/authorization_key '{{bridging_message_queue_proxy_authorization_key}}' >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/konstructor/api-key '{{ konstructor_api_key }}'                                     >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/logstash-forwarder/cert '{{ logstash_forwarder_crt }}'                              >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/metadata-services/username '{{ metadata_services_username }}'                       >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/metadata-services/password '{{ metadata_services_password }}'                       >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/methode-api/authorization_key '{{ methode_api_proxy_authorization_key }}'           >/dev/null 2>&1 || true;"
