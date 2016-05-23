@@ -80,13 +80,14 @@ foo-up.ft.com.        600    IN    CNAME    bar1426.eu-west-1.elb.amazonaws.com.
 * you can also remove HTTP support if needed
 
 ## Decomission environment
+
 ```sh
 docker run \
-  --env "VAULT_PASS=$VAULT_PASS" \
-  --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
-  --env "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
-  --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
-  --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+  -e "VAULT_PASS=$VAULT_PASS" \
+  -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+  -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+  -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+  -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
   coco-provisioner /bin/bash /decom.sh
 ```
 
