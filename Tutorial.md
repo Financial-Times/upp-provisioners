@@ -23,29 +23,30 @@ Set up SSH
 ----------
 
 1. If you haven't already, generate a pair of SSH keys:
-```sh
-ssh-keygen
-```
+
+        sh
+        ssh-keygen
 
 1. Edit your ssh config:
-```sh
-vi ~/.ssh/config
-```
+
+        sh
+        vi ~/.ssh/config
 
 1. Add the following lines:
-```
-Host *tunnel-up.ft.com
-  ForwardAgent yes
-  User core
-  StrictHostKeyChecking no
-  UserKnownHostsFile /dev/null
-```
+
+        Host *tunnel-up.ft.com
+            ForwardAgent yes
+            User core
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
 
 1. Add your SSH keys to the SSH agent:
-```sh
-ssh-add
-```
-  This needs to be done [every time the machine boots](http://unix.stackexchange.com/questions/140075/ssh-add-is-not-persistent-between-reboots), on OSX this problem can be avoided by adding them to OSX keychain:
+
+        sh
+        ssh-add
+
+    NB. This needs to be done [every time the machine boots](http://unix.stackexchange.com/questions/140075/ssh-add-is-not-persistent-between-reboots).
+        On OSX this problem can be avoided by adding them to the OSX keychain.
 
 Create a service repository
 ---------------------------
