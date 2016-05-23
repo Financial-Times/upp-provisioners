@@ -80,7 +80,7 @@ CoCo needs to know which services you want to deploy, the easiest way to store t
 
 1. Create the service definitions:
 
-    All services run as `systemd` like entities through (fleet)[https://coreos.com/fleet/docs/latest/launching-containers-fleet.html].
+    All services run as `systemd` like entities through [fleet](https://coreos.com/fleet/docs/latest/launching-containers-fleet.html).
 
     Create a file called `my-app@.service` and add the following:
 

@@ -1,17 +1,30 @@
-# Docker image to provision a cluster
+Docker image to provision a cluster
+===================================
 
-## Set up SSH
+
+Tutorial
+--------
+
+If you're looking to provision a new cluster, the [tutorial](Tutorial.md) might be a better place to start than here. 
+
+
+Set up SSH
+----------
 
 See [SSH_README.md](/SSH_README.md/)
 
-## Building
+
+Building
+--------
 
 ```bash
 # Build the image
 docker build -t coco-provisioner .
 ```
 
-## Set all the required variables
+
+Set all the required variables
+------------------------------
 
 ```bash
 ## Get a new etcd token for a new cluster, 5 refers to the number of initial boxes in the cluster:
@@ -44,7 +57,10 @@ export ENVIRONMENT_TAG=
 export BRIDGING_MESSAGE_QUEUE_PROXY= #[Optional]
 ```
 
-## Run the image
+
+Run the image
+-------------
+
 ```bash
 docker run \
     -e "VAULT_PASS=$VAULT_PASS" \
@@ -59,7 +75,10 @@ docker run \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" coco-provisioner
 ```
 
-## Setup HTTPS support
+
+Set up HTTPS support
+--------------------
+
 To access URLs from the cluster through HTTPS, we need to add support for this in the load balancer of this cluster
 
 * log on to one of the machines in AWS
@@ -79,7 +98,8 @@ foo-up.ft.com.        600    IN    CNAME    bar1426.eu-west-1.elb.amazonaws.com.
 * save and try if it works, ex. `https://foo-up.ft.com`
 * you can also remove HTTP support if needed
 
-## Decomission environment
+Decommission an environment
+---------------------------
 
 ```sh
 docker run \
@@ -91,7 +111,7 @@ docker run \
   coco-provisioner /bin/bash /decom.sh
 ```
 
-Sometimes clean up takes a long time and ELBs/Security Groups still get left behind. Other ways to clean up:
+Sometimes cleanup takes a long time and ELBs/Security Groups still get left behind. Other ways to clean up:
 
 ```sh
 # List all coreos security groups
