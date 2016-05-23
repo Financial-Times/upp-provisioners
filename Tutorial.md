@@ -53,60 +53,69 @@ Create a service repository
 
 CoCo needs to know which services you want to deploy, the easiest way to store the services is to have them in a public git repository.
 
-1. Create a public accessible repository. Probably the easiest way to do this is to create a public repo on [GitHub](https://github.com).
+1. Create a [publicly accessible GitHub repository](https://github.com/new) called `coco-cluster`:
+
+    1. Initialize with a README, a Go gitignore and an MIT license.
+    2. Clone it to your desktop.
 
 1. Create a service roster:
+
     You will need to create a `services.yaml` file, which will contain details of the services you want to run in the cluster.
     Define one service by adding the following:
 
-  ```yaml
-  services:
-  - name: my-app@.service
-    count: 1
-  - name: tunnel-registrator.service
-    uri: https://raw.githubusercontent.com/Financial-Times/up-service-files/master/tunnel-registrator.service
-  ```
+        services:
+        - name: my-app@.service
+          count: 1
+        - name: tunnel-registrator.service
+          uri: https://raw.githubusercontent.com/Financial-Times/up-service-files/master/tunnel-registrator.service
+
     The first service `name: my-app@.service` is going to be our service, and for now just one instance of it is needed.
 
-    The second service `name: tunnel-registrator.service` makes it easier to SSH into the cluster. The service definition will be loaded from the URI that is specified.
+    The second service `name: tunnel-registrator.service` makes it easier to SSH into the cluster.
+    The service definition will be loaded from the URI that is specified.
 
     In the UPP CoCo stack each service typically has a main `@.service` which contains details of the service and a
     second `-sidekick@.service` file which is used to monitor the service. For the purpose of this tutorial we'll
     just have the main service definition.
 
-1. Create the service definitions
+1. Create the service definitions:
 
-  All services run as systemd like entities through (fleet)[https://coreos.com/fleet/docs/latest/launching-containers-fleet.html].
+    All services run as `systemd` like entities through (fleet)[https://coreos.com/fleet/docs/latest/launching-containers-fleet.html].
 
-  Create a file called `my-app@.service` and add the following
-  ```systemd
-  [Unit]
-  Description=MyApp
-  After=docker.service
-  Requires=docker.service
+    Create a file called `my-app@.service` and add the following:
 
-  [Service]
-  TimeoutStartSec=0
-  ExecStartPre=-/usr/bin/docker kill %p-%i
-  ExecStartPre=-/usr/bin/docker rm %p-%i
-  ExecStartPre=/usr/bin/docker pull busybox
-  ExecStart=/usr/bin/docker run --name %p-%i busybox /bin/sh -c "trap 'exit 0' INT TERM; while true; do echo Hello World; sleep 3; done"
-  ExecStop=/usr/bin/docker stop %p-%i
-  ```
+        [Unit]
+        Description=MyApp
+        After=docker.service
+        Requires=docker.service
 
-  The `[Unit]` section lets you define dependencies, in this particular case we want to make sure docker is available before we try to use it!
+        [Service]
+        TimeoutStartSec=0
+        ExecStartPre=-/usr/bin/docker kill %p-%i
+        ExecStartPre=-/usr/bin/docker rm %p-%i
+        ExecStartPre=/usr/bin/docker pull busybox
+        ExecStart=/usr/bin/docker run --name %p-%i busybox /bin/sh -c "trap 'exit 0' INT TERM; while true; do echo Hello World; sleep 3; done"
+        ExecStop=/usr/bin/docker stop %p-%i
 
-  The `[Service]` section is the nuts and bolts of how you launch your service. Essentially the `ExecStartPre` get run before the main `ExecStart` and `ExecStop` runs when you want to stop the service.
+    The `[Unit]` section lets you define dependencies, in this particular case we want to make sure docker is available
+    before we try to use it!
 
-  You'll notice that in the `ExecStartPre` section we tidy up anything left over from a previously running instance of the server. The `ExecStartPre=-/usr/bin/docker kill %p-%i` and `ExecStartPre=-/usr/bin/docker rm  %p-%i` kill the container and remove the container. The `%p-%i` value is a combination of the service name and instance number.
+    The `[Service]` section is the nuts and bolts of how you launch your service. Essentially the `ExecStartPre` commands get executed
+    before the main `ExecStart`, and `ExecStop` runs when you want to stop the service.
 
-  Following this we get the latest 'busybox' docker image using `ExecStartPre=/usr/bin/docker pull busybox`.
+    You'll notice that in the `ExecStartPre` section we tidy up anything left over from a previously running instance of the server.
+    The `ExecStartPre=-/usr/bin/docker kill %p-%i` and `ExecStartPre=-/usr/bin/docker rm  %p-%i` kill the container and remove the
+    container. The `%p-%i` value is a combination of the service name and instance number.
 
-  The service is finally launched via `ExecStart=/usr/bin/docker run --name busybox1 busybox /bin/sh -c "trap 'exit 0' INT TERM; while true; do echo Hello World; sleep 3; done"` which will simply print "Hello World" every three seconds unless it receives a term signal.
+    Following this we get the latest 'busybox' docker image using `ExecStartPre=/usr/bin/docker pull busybox`.
 
-  See [Getting started with Systemd](https://coreos.com/docs/launching-containers/launching/getting-started-with-systemd/) for a more thorough explanation of these and other directives.
+    The service is finally launched via the `ExecStart` command, which will simply print "Hello World" every three seconds
+    unless it receives a term signal.
 
-1. Commit and push you recent additions
+    See [Getting started with Systemd](https://coreos.com/docs/launching-containers/launching/getting-started-with-systemd/)
+    for a more thorough explanation of these and other directives.
+
+1. Commit and push your recent additions.
 
 
 Create a CoCo cluster
@@ -240,3 +249,9 @@ Every three seconds you should see a new line being written. Press <kbd>Ctrl</kb
 Summary
 -------
 In the tutorial you have created a new service to deploy, build a new cluster and deployed the service to the cluster. This means you have become familiar with some back CoCo concepts and fleet/docker commands.
+
+
+Questions
+---------
+
+1. Should I create the GitHub repo in the Financial-Times organization? If so it needs a different naming convention, e.g. `duffj-coco-cluster`.
