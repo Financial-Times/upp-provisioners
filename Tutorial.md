@@ -127,58 +127,68 @@ There are a set of instructions in the [main README file](/README.md) which may 
 The CoCo Provisioner is a docker image, so ensure you have docker installed and are able to carry out
 simple docker commands.
 
-  *NB. If you feel like it, there is now a 'native' docker available for
+    *NB. If you feel like it, there is now a 'native' docker available for
 Windows and OSX rather than the toolbox, see [Beta programme](https://beta.docker.com/docs/features-overview/) for details.*
 
 1. Clone this repository:
-```bash
-git clone git@github.com:Financial-Times/coco-provisioner.git
-```
+
+        git clone git@github.com:Financial-Times/coco-provisioner.git
 
 1. Build this docker image:
-```bash
-cd coco-provisioner
-eval "$(docker-machine env default)" # if you are using VM-based docker
-docker build .
-```
 
-1. Set configuration parameters:
+        cd coco-provisioner
+        eval "$(docker-machine env default)" # if you are using VM-based docker
+        docker build  -t coco-provisioner .
+
+    *NB. It should produce output that resembles this: `Successfully built c8a17a2a29b5`*
+
+1. Set configuration parameters by exporting environment variables (`export NAME=VALUE`):
 
 
   |          ENV VAR               |      Comments                             |                 Suggested / default value             |
   | ------------------------------ | ----------------------------------------- | ----------------------------------------------------- |
-  | `ENVIRONMENT_TAG`              | An identifier for YOUR cluster            |
-  | `SERVICES_DEFINITION_ROOT_URI` | Service definitions                       |                                                       |
+  | `ENVIRONMENT_TAG`              | An identifier for YOUR cluster            | [your-github-username]-coco-cluster                   |
+  | `SERVICES_DEFINITION_ROOT_URI` | Service definitions                       | See below.                                            |
   | `TOKEN_URL`                    | The etcd token identifying this cluster   | `curl -s https://discovery.etcd.io/new?size=5`        |
-  | `VAULT_PASS`                   | The password to unlock the ansiable vault | Ask a friend about this                               |
+  | `VAULT_PASS`                   | The password to unlock the ansible vault  | Ask a friend about this                               |
   | `AWS_SECRET_ACCESS_KEY`        | As its name implies                       | Ask a friend about this                               |
   | `AWS_ACCESS_KEY_ID`            | As its name implies                       | Ask a friend about this                               |
 
-  *Note*
-  The value for 'SERVICES_DEFINITION_ROOT_URI' should point at the repository [created earlier](#Create-a-services-repository). It takes the form of `https://raw.githubusercontent.com/Owner/Repo/branch/`, for example the UPP stack is located at 'https://raw.githubusercontent.com/Financial-Times/up-service-files/master/'
+   The value for `SERVICES_DEFINITION_ROOT_URI` should point at the repository [created earlier](#Create-a-service-repository).
+   It takes the form of `https://raw.githubusercontent.com/Owner/Repo/branch/`, for example the UPP stack is located at
+   https://raw.githubusercontent.com/Financial-Times/up-service-files/master/. To construct this URL:
+   
+   1. Browse to the root of your `coco-cluster` repository in the GitHub web UI
+   1. Click on the `services.yaml` file.
+   1. Copy the *Raw* URL and delete `services.yaml` from the end.
 
-  When you (re)create a cluster, always make sure that the token value used by the TOKEN_URL is different.
+   *NB. When you (re)create a cluster, always make sure that the token value used by the `TOKEN_URL` is different.*
 
 1. Run the provisioner:
 
-    (NB. You may need to run this as root, if this is the case `sudo` first.)
-  ```bash
-  docker run \
-      --env "VAULT_PASS=$VAULT_PASS" \
-      --env "TOKEN_URL=$TOKEN_URL" \
-      --env "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
-      --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
-      --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-      --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" coco-provisioner
-  ```
+    *NB. You may need to run this as root, if this is the case `sudo` first.*
 
-  There are some additional parameters which can be passed, however we won't need them for the moment since they configure CoCo's settings so it can access Kafka etc.
+        #!/usr/bin/env bash
+        docker run \
+            --env "VAULT_PASS=$VAULT_PASS" \
+            --env "TOKEN_URL=$TOKEN_URL" \
+            --env "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
+            --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+            --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+            --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" coco-provisioner
+
+    *NB. There are some additional parameters which can be passed, however we won't need them for the moment since they configure CoCo's
+    settings so it can access Kafka etc.*
+    
+    *NB. You can dump the above command into an executable file called `provision.bash` if you like.*
+    
+    *NB. If you get a message saying something like "docker: Cannot connect to the Docker daemon", you will need to run
+    the Docker Quickstart Terminal then try again.*
 
 1. All being well you will now have a CoCo cluster.
 
     1. To verify that the cluster has been started, go to the [AWS console](http://awslogin.internal.ft.com/) and go to the
-eu-west-1 (Ireland) view of running EC2 instances.
-
+    eu-west-1 (Ireland) view of running EC2 instances.
     1. In the filter field enter the value of the `ENVIRONMENT_TAG` used to create the cluster.
     *NB. Wait for all your servers to be in a running state before you move on!*
 
@@ -246,12 +256,18 @@ Every three seconds you should see a new line being written. Press <kbd>Ctrl</kb
 
   1. Check the logs of one of the new instances: `fleetctl journal -f my-app@2.service`
 
+
 Summary
 -------
-In the tutorial you have created a new service to deploy, build a new cluster and deployed the service to the cluster. This means you have become familiar with some back CoCo concepts and fleet/docker commands.
+
+In the tutorial you have created a new service to deploy, build a new cluster and deployed the service to the cluster.
+This means you have become familiar with some back CoCo concepts and fleet/docker commands.
 
 
 Questions
 ---------
 
-1. Should I create the GitHub repo in the Financial-Times organization? If so it needs a different naming convention, e.g. `duffj-coco-cluster`.
+1. Should I create the GitHub repo in the Financial-Times organization? If so it needs a different naming convention,
+e.g. `duffj-coco-cluster`.
+1. Suggested value for `ENVIRONMENT_TAG`?
+1. Do I need a personal pair of AWS keys? Or is there a shared set I can/should use?
