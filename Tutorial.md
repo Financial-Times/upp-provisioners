@@ -53,9 +53,10 @@ Create a service repository
 
 CoCo needs to know which services you want to deploy, the easiest way to store the services is to have them in a public git repository.
 
-1. Create a [publicly accessible GitHub repository](https://github.com/new) called `coco-cluster`:
+1. Create a [publicly accessible GitHub repository](https://github.com/new) in your personal account (i.e. not at the Financial-Times
+organization level) called `coco-cluster`:
 
-    1. Initialize with a README, a Go gitignore and an MIT license.
+    1. Initialize with a README, a Go `.gitignore` file and an MIT license.
     2. Clone it to your desktop.
 
 1. Create a service roster:
@@ -124,11 +125,10 @@ Create a CoCo cluster
 There are a set of instructions in the [main README file](/README.md) which may be of use reading.
 
 1. Set up a local instance of docker by downloading and installing [Docker Toolbox](https://www.docker.com/products/docker-toolbox).
-The CoCo Provisioner is a docker image, so ensure you have docker installed and are able to carry out
-simple docker commands.
+The CoCo Provisioner is a docker image, so ensure you have docker installed and are able to carry out simple docker commands.
 
-    *NB. If you feel like it, there is now a 'native' docker available for
-Windows and OSX rather than the toolbox, see [Beta programme](https://beta.docker.com/docs/features-overview/) for details.*
+    *NB. If you feel like it, there is now a 'native' docker available for Windows and OSX rather than the toolbox.
+    See [Beta programme](https://beta.docker.com/docs/features-overview/) for details.*
 
 1. Clone this repository:
 
@@ -153,6 +153,7 @@ Windows and OSX rather than the toolbox, see [Beta programme](https://beta.docke
   | `VAULT_PASS`                   | The password to unlock the ansible vault  | In LastPass: coco-provisioner-ansible-vault-pass      |
   | `AWS_SECRET_ACCESS_KEY`        | As its name implies                       | In LastPass: infraprod-coco-aws-provisioning-keys     |
   | `AWS_ACCESS_KEY_ID`            | As its name implies                       | In LastPass: infraprod-coco-aws-provisioning-keys     |
+  | `AWS_DEFAULT_REGION`           | As its name implies                       | `eu-west-1`                                           |
 
    The value for `SERVICES_DEFINITION_ROOT_URI` should point at the repository [created earlier](#Create-a-service-repository).
    It takes the form of `https://raw.githubusercontent.com/Owner/Repo/branch/`, for example the UPP stack is located at
@@ -168,7 +169,7 @@ Windows and OSX rather than the toolbox, see [Beta programme](https://beta.docke
 
     *NB. You may need to run this as root, if this is the case `sudo` first.*
 
-        #!/usr/bin/env bash
+        cd coco-provisioner
         docker run \
             --env "VAULT_PASS=$VAULT_PASS" \
             --env "TOKEN_URL=$TOKEN_URL" \
@@ -187,7 +188,7 @@ Windows and OSX rather than the toolbox, see [Beta programme](https://beta.docke
 
 1. All being well you will now have a CoCo cluster.
 
-    1. To verify that the cluster has been started, go to the [AWS console](http://awslogin.internal.ft.com/), InfraProd account, and 
+    1. To verify that the cluster has been started, go to the [AWS console](http://awslogin.internal.ft.com/), InfraProd account, and
     go to the eu-west-1 (Ireland) view of running EC2 instances.
     1. In the filter field enter the value of the `ENVIRONMENT_TAG` used to create the cluster.
     *NB. Wait for all your servers to be in a running state before you move on!*
@@ -214,29 +215,24 @@ If this is deploying or barfing it's unlikely that your cluster is healthy.
 
 1. See what's running:
 
-        ```bash
         $ fleetctl list-units
         UNIT                        MACHINE                    ACTIVE  SUB
         deployer.service            57efbeaf.../172.24.86.114  active  running
         my-app@1.service            b15dff35.../172.24.11.41   active  running
         tunnel-registrator.service  b74cf51a.../172.24.147.242 active  exited
-        ```
 
     The deployer checks the `services.yaml` file and monitors it every minute for changes. When a change occurs, for example the number
     of services are increased, the deployer acts on the change.
 
 1. Tail the deployer log:
 
-        ```bash
         fleetctl journal --lines=100 deployer
-        ```
 
     All being well, the deployer will just work, but it has been known to go [a bit Pete Tong](https://en.wikipedia.org/wiki/Pete_Tong)
     so do check it.
 
 1. Tail your service log:
 
-        ```bash
         fleetctl journal -f my-app@1.service
         -- Logs begin at Mon 2016-05-16 13:59:54 UTC. --
         May 16 14:45:56 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
@@ -244,28 +240,43 @@ If this is deploying or barfing it's unlikely that your cluster is healthy.
         May 16 14:46:02 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
         May 16 14:46:05 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
         May 16 14:46:08 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
-        ```
 
-Every three seconds you should see a new line being written. Press `<kbd>Ctrl</kbd>+<kbd>C</kbd>` to stop tailing the log.
+    Every three seconds you should see a new line being written. Press `<kbd>Ctrl</kbd>+<kbd>C</kbd>` to stop tailing the log.
 
-1. Increase the number of instances running.
-  1. Modify the services.yaml so that it specifies two instances, as shown in this extract:
-  ```yaml
-  - name: my-app@.service
-    count: 2
-  ```
+1. Increase the number of instances running:
 
-  1. Commit and push the changes.
+    1. Modify your `services.yaml` file so that it specifies two instances, as shown in this extract:
 
-  1. Tail the deployer to see the number of services increase using :
-  ```bash
-  fleetctl journal -f deployer.service
-  ```
-  Once the change has been detected a second instance of the service should start.
+            - name: my-app@.service
+              count: 2
 
-  1. Check the running units using `fleetctl list-units`
+    1. Commit and push the changes.
 
-  1. Check the logs of one of the new instances: `fleetctl journal -f my-app@2.service`
+    1. Destroy the service so that the deployer can recreate it:
+
+            fleetctl destroy my-app@1
+
+    1. Tail the deployer to see the number of services increase using:
+
+            fleetctl journal -f deployer.service
+
+        Once the change has been detected a second instance of the service should start.
+
+    1. Check the running units using `fleetctl list-units`
+
+    1. Check the logs of one of the new instances: `fleetctl journal -f my-app@2.service`
+
+
+1. Finally, destroy the cluster you have just worked so hard to create (this command uses the environment variables you exported earlier):
+
+        cd coco-provisioner
+        docker run \
+          -e "VAULT_PASS=$VAULT_PASS" \
+          -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+          -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+          -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+          -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+          coco-provisioner /bin/bash /decom.sh
 
 
 Summary
@@ -274,11 +285,4 @@ Summary
 In the tutorial you have created a new service to deploy, build a new cluster and deployed the service to the cluster.
 This means you have become familiar with some back CoCo concepts and fleet/docker commands.
 
-
-Questions
----------
-
-1. Should I create the GitHub repo in the Financial-Times organization? If so it needs a different naming convention,
-e.g. `duffj-coco-cluster`.
-1. Suggested value for `ENVIRONMENT_TAG`?
-1. Do I need a personal pair of AWS keys? Or is there a shared set I can/should use?
+For further help, or if any of the stuff above doesn't work, come and find us in [#co-co](https://financialtimes.slack.com/messages/co-co/).
