@@ -252,7 +252,8 @@ If this is deploying or barfing it's unlikely that your cluster is healthy.
 
     1. Commit and push the changes.
 
-    1. Destroy the service so that the deployer can recreate it:
+    1. Destroy the service so that the deployer can recreate it (NB. this step shouldn't be necessary, see
+    [coco-fleet deployer issue #42](https://github.com/Financial-Times/coco-fleet-deployer/issues/42) for more information):
 
             fleetctl destroy my-app@1
 
