@@ -150,9 +150,9 @@ Windows and OSX rather than the toolbox, see [Beta programme](https://beta.docke
   | `ENVIRONMENT_TAG`              | An identifier for YOUR cluster            | [your-github-username]-coco-cluster                   |
   | `SERVICES_DEFINITION_ROOT_URI` | Service definitions                       | See below.                                            |
   | `TOKEN_URL`                    | The etcd token identifying this cluster   | `curl -s https://discovery.etcd.io/new?size=5`        |
-  | `VAULT_PASS`                   | The password to unlock the ansible vault  | Ask a friend about this                               |
-  | `AWS_SECRET_ACCESS_KEY`        | As its name implies                       | Ask a friend about this                               |
-  | `AWS_ACCESS_KEY_ID`            | As its name implies                       | Ask a friend about this                               |
+  | `VAULT_PASS`                   | The password to unlock the ansible vault  | In LastPass: coco-provisioner-ansible-vault-pass      |
+  | `AWS_SECRET_ACCESS_KEY`        | As its name implies                       | In LastPass: infraprod-coco-aws-provisioning-keys     |
+  | `AWS_ACCESS_KEY_ID`            | As its name implies                       | In LastPass: infraprod-coco-aws-provisioning-keys     |
 
    The value for `SERVICES_DEFINITION_ROOT_URI` should point at the repository [created earlier](#Create-a-service-repository).
    It takes the form of `https://raw.githubusercontent.com/Owner/Repo/branch/`, for example the UPP stack is located at
@@ -187,8 +187,8 @@ Windows and OSX rather than the toolbox, see [Beta programme](https://beta.docke
 
 1. All being well you will now have a CoCo cluster.
 
-    1. To verify that the cluster has been started, go to the [AWS console](http://awslogin.internal.ft.com/) and go to the
-    eu-west-1 (Ireland) view of running EC2 instances.
+    1. To verify that the cluster has been started, go to the [AWS console](http://awslogin.internal.ft.com/), InfraProd account, and 
+    go to the eu-west-1 (Ireland) view of running EC2 instances.
     1. In the filter field enter the value of the `ENVIRONMENT_TAG` used to create the cluster.
     *NB. Wait for all your servers to be in a running state before you move on!*
 
@@ -201,41 +201,52 @@ Windows and OSX rather than the toolbox, see [Beta programme](https://beta.docke
 
   Check you can resolve these hosts by running a `dig` or `nslookup`.
 
+
 Check the deployer
 ------------------
-The deployer is responsible for setting the desired state for the cluster, which is defined by the services.yml file. If this is deploying or barfing it's unlikely that your cluster is healthy.
+
+The deployer is responsible for setting the desired state for the cluster, which is defined by the services.yml file.
+If this is deploying or barfing it's unlikely that your cluster is healthy.
 
 1. SSH onto the cluster:
-```bash
-ssh $ENVIRONMENT_TAG-tunnel-up.ft.com
-```
+
+        ssh $ENVIRONMENT_TAG-tunnel-up.ft.com
+
 1. See what's running:
-```bash
-$ fleetctl list-units
-UNIT                        MACHINE                    ACTIVE  SUB
-deployer.service            57efbeaf.../172.24.86.114  active  running
-my-app@1.service            b15dff35.../172.24.11.41   active  running
-tunnel-registrator.service  b74cf51a.../172.24.147.242 active  exited
-```
-The deployer checks the services.yaml and monitors it for changes. When a change occurs, for example the number of services are increased, the deployer acts on the change.
+
+        ```bash
+        $ fleetctl list-units
+        UNIT                        MACHINE                    ACTIVE  SUB
+        deployer.service            57efbeaf.../172.24.86.114  active  running
+        my-app@1.service            b15dff35.../172.24.11.41   active  running
+        tunnel-registrator.service  b74cf51a.../172.24.147.242 active  exited
+        ```
+
+    The deployer checks the `services.yaml` file and monitors it every minute for changes. When a change occurs, for example the number
+    of services are increased, the deployer acts on the change.
 
 1. Tail the deployer log:
-```bash
-fleetctl journal --lines=100 deployer
-```
-All being well, the deployer will just work, but it has been known to go [a bit Pete Tong](https://en.wikipedia.org/wiki/Pete_Tong) so do check it.
+
+        ```bash
+        fleetctl journal --lines=100 deployer
+        ```
+
+    All being well, the deployer will just work, but it has been known to go [a bit Pete Tong](https://en.wikipedia.org/wiki/Pete_Tong)
+    so do check it.
 
 1. Tail your service log:
-```bash
-fleetctl journal -f my-app@1.service
--- Logs begin at Mon 2016-05-16 13:59:54 UTC. --
-May 16 14:45:56 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
-May 16 14:45:59 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
-May 16 14:46:02 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
-May 16 14:46:05 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
-May 16 14:46:08 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
-```
-Every three seconds you should see a new line being written. Press <kbd>Ctrl</kbd>+<kbd>C</kbd> to stop tailing the log.
+
+        ```bash
+        fleetctl journal -f my-app@1.service
+        -- Logs begin at Mon 2016-05-16 13:59:54 UTC. --
+        May 16 14:45:56 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
+        May 16 14:45:59 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
+        May 16 14:46:02 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
+        May 16 14:46:05 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
+        May 16 14:46:08 ip-172-24-11-41.eu-west-1.compute.internal docker[1134]: Hello World
+        ```
+
+Every three seconds you should see a new line being written. Press `<kbd>Ctrl</kbd>+<kbd>C</kbd>` to stop tailing the log.
 
 1. Increase the number of instances running.
   1. Modify the services.yaml so that it specifies two instances, as shown in this extract:
