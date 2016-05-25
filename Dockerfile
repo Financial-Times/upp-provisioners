@@ -6,7 +6,7 @@ RUN echo "[localhost]" > ~/.ansible_hosts \
  && mkdir .venv \
  && virtualenv .venv \
  && . .venv/bin/activate \
- && pip install ansible boto awscli
+ && pip install ansible==2.0.1.0 boto awscli
 
 ADD *.sh /
 ADD cluster-id-extractor /
