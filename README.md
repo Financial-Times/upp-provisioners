@@ -117,7 +117,10 @@ Sometimes cleanup takes a long time and ELBs/Security Groups still get left behi
 # List all coreos security groups
 aws ec2 describe-security-groups | jq -r '.SecurityGroups[] | .GroupName + " " + .GroupId' | grep coreos
 
-# Delete coreos security groups not in use, does not sort - will fail on any group that is being used
+# Delete coreos security groups not in use, does not filter - will fail on any group that is being used
 aws ec2 describe-security-groups | jq -r '.SecurityGroups[] | .GroupName + " " + .GroupId' | grep coreos | awk '{print $2}' | xargs -I {} -n1 sh -c 'aws ec2 delete-security-group --group-id {} || echo {} is active'
+
+# Delete ELBs that have no instances AND there are no instances with the same group name (stopped) as the ELB
+aws elb describe-load-balancers | jq -r '.LoadBalancerDescriptions[] | select(.Instances==[]) | .LoadBalancerName' | grep coreos | xargs -I {} sh -c "aws ec2 describe-instances --filters "Name=tag-key,Values=coco-environment-tag" | jq -e '.Reservations[].Instances[].SecurityGroups[] | select(.GroupName==\"{}\")' >/dev/null 2>&1 || echo {}" | xargs -n1 -I {} aws elb delete-load-balancer --load-balancer-name {}
 ```
 
