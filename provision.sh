@@ -10,7 +10,7 @@ if [ -z "$COCO_MONITOR_TEST_UUID" ]; then COCO_MONITOR_TEST_UUID=$(uuidgen); fi
 CLUSTERID=`echo $TOKEN_URL | sed "s/http.*\///g" | cut -c1-8`
 AMI=`curl -s https://coreos.com/dist/aws/aws-stable.json | jq -r '.["eu-west-1"].hvm'`
 
-. .venv/bin/activate && echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/aws_coreos_site.yml --extra-vars " \
+. .venv/bin/activate && echo $VAULT_PASS > /vault.pass && ansible-playbook -vvv -i ~/.ansible_hosts /ansible/aws_coreos_site.yml --extra-vars " \
   clusterid=$CLUSTERID \
   ami=$AMI \
   token=$TOKEN_URL \
