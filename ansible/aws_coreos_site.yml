@@ -177,7 +177,7 @@
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
-            volume_size: 30
+            volume_size: 100
             delete_on_termination: true
         count_tag:
           Name: "ftstt{{clusterid}}-caw1b-eu-p"
@@ -206,7 +206,7 @@
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
-            volume_size: 30
+            volume_size: 100
             delete_on_termination: true
         count_tag:
           Name: "ftstt{{clusterid}}-caw1c-eu-p"
@@ -238,7 +238,7 @@
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
-            volume_size: 30
+            volume_size: 100
             delete_on_termination: true
           - device_name: /dev/xvdf
             volume_size: 200
@@ -273,7 +273,7 @@
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
-            volume_size: 30
+            volume_size: 100
             delete_on_termination: true
           - device_name: /dev/xvdf
             volume_size: 200
@@ -308,7 +308,7 @@
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
-            volume_size: 30
+            volume_size: 100
             delete_on_termination: true
           - device_name: /dev/xvdf
             volume_size: 200
