@@ -32,9 +32,11 @@ Set all the required variables
 export TOKEN_URL=`curl https://discovery.etcd.io/new?size=5`
 
 ## Secret used during provision to decrypt keys - get it off your closest buddy!
+## Lastpass: coco-provisioner-ansible-vault-pass
 export VAULT_PASS=
 
 ## AWS API keys, get these off your buddy too
+## Lastpass: infraprod-coco-aws-provisioning-keys
 export AWS_SECRET_ACCESS_KEY=
 export AWS_ACCESS_KEY_ID=
 
@@ -55,6 +57,9 @@ export SERVICES_DEFINITION_ROOT_URI=https://raw.githubusercontent.com/Financial-
 export ENVIRONMENT_TAG=
 ## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco). Optional, defaults to Prod UCS proxy: https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com
 export BRIDGING_MESSAGE_QUEUE_PROXY= #[Optional]
+##Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
+Lastpass: CoCo Basic Auth
+export CLUSTER_BASIC_HTTP_CREDENTIALS=
 ```
 
 
@@ -72,7 +77,8 @@ docker run \
     -e "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
     -e "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
     -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
-    -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" coco-provisioner
+    -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
+    -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" coco-provisioner
 ```
 
 

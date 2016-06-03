@@ -21,6 +21,7 @@ AMI=`curl -s https://coreos.com/dist/aws/aws-stable.json | jq -r '.["eu-west-1"]
   aws_image_monitor_test_uuid=$AWS_MONITOR_TEST_UUID \
   coco_image_monitor_test_uuid=$COCO_MONITOR_TEST_UUID \
   bridging_message_queue_proxy=${BRIDGING_MESSAGE_QUEUE_PROXY:=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com} \
+  varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \
   environment_tag=${ENVIRONMENT_TAG:=default}" \
   --vault-password-file=/vault.pass
 
