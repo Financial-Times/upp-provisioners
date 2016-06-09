@@ -2,7 +2,7 @@
 
 coreos:
   update:
-    reboot-strategy: best-effort
+    reboot-strategy: off
   etcd2:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
     discovery: {{token}}
