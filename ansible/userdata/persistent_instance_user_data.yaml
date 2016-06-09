@@ -20,6 +20,10 @@ coreos:
     etcd_request_timeout: 3.0
     metadata: host_type=persistent,persistent_tag={{persistent_tag}}
   units:
+    - name: update-engine.service
+      command: stop
+    - name: locksmithd.service
+      command: stop
     - name: authorized_keys.service
       command: start
       content: |
