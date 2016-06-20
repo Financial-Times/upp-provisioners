@@ -60,6 +60,10 @@ export BRIDGING_MESSAGE_QUEUE_PROXY= #[Optional]
 ##Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
 Lastpass: CoCo Basic Auth
 export CLUSTER_BASIC_HTTP_CREDENTIALS=
+##Gateway content api host to access UPP content that the cluster read endpoints (e.g. CPR & CPR-preview) are mapped to. 
+##The default is prod DNS name given by Mashery but if we are creating a cluster not for prod then some different DNS name may be required, e.g. http://test.api.ft.com or some such
+export API_HOST=http://api.ft.com
+
 ```
 
 
@@ -78,6 +82,7 @@ docker run \
     -e "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
     -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
+    -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" coco-provisioner
 ```
 
