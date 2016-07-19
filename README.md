@@ -65,8 +65,8 @@ export CLUSTER_BASIC_HTTP_CREDENTIALS=
 export API_HOST=http://api.ft.com
 
 ##URLs to Bertha endpoints  for accessing to specific Google Spreadsheet data.
-##AUTHORS_BERTHA_URL refers to the spredsheet of curated authors data.
-##ROLES_BERTHA_URL refers to the spredsheet of roles for curated authors.
+##AUTHORS_BERTHA_URL refers to the spreadsheet of curated authors data.
+##ROLES_BERTHA_URL refers to the spreadsheet of roles for curated authors.
 export AUTHORS_BERTHA_URL=http://bertha.site.example/123456XYZ/Authors
 export ROLES_BERTHA_URL=http://bertha.site.example/123456XYZ/Roles
 ```
