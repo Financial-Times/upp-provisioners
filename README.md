@@ -37,8 +37,8 @@ export VAULT_PASS=
 
 ## AWS API keys, get these off your buddy too
 ## Lastpass: infraprod-coco-aws-provisioning-keys
-export AWS_SECRET_ACCESS_KEY=
 export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
 
 ## S3 bucket name to write image binaries to (up stack specific)
 export BINARY_WRITER_BUCKET=
