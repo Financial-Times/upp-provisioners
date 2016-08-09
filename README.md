@@ -64,6 +64,7 @@ export BRIDGING_MESSAGE_QUEUE_PROXY=https://kafka-proxy-iw-uk-p-1.glb.ft.com,htt
 export CLUSTER_BASIC_HTTP_CREDENTIALS=
 
 ## Gateway content api hostname (not URL) to access UPP content that the cluster read endpoints (e.g. CPR & CPR-preview) are mapped to. 
+## Defaults to Prod if left blank.
 ## Prod: api.ft.com
 ## Pre-Prod: test.api.ft.com
 export API_HOST=
