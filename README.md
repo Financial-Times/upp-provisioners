@@ -63,12 +63,6 @@ export CLUSTER_BASIC_HTTP_CREDENTIALS=
 ##Gateway content api host to access UPP content that the cluster read endpoints (e.g. CPR & CPR-preview) are mapped to. 
 ##The default is prod DNS name given by Mashery but if we are creating a cluster not for prod then some different DNS name may be required, e.g. http://test.api.ft.com or some such
 export API_HOST=http://api.ft.com
-
-##URLs to Bertha endpoints  for accessing to specific Google Spreadsheet data.
-##AUTHORS_BERTHA_URL refers to the spreadsheet of curated authors data.
-##ROLES_BERTHA_URL refers to the spreadsheet of roles for curated authors.
-export AUTHORS_BERTHA_URL=http://bertha.site.example/123456XYZ/Authors
-export ROLES_BERTHA_URL=http://bertha.site.example/123456XYZ/Roles
 ```
 
 
