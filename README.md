@@ -60,9 +60,9 @@ export BRIDGING_MESSAGE_QUEUE_PROXY= #[Optional]
 ##Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
 Lastpass: CoCo Basic Auth
 export CLUSTER_BASIC_HTTP_CREDENTIALS=
-##Gateway content api host to access UPP content that the cluster read endpoints (e.g. CPR & CPR-preview) are mapped to. 
-##The default is prod DNS name given by Mashery but if we are creating a cluster not for prod then some different DNS name may be required, e.g. http://test.api.ft.com or some such
-export API_HOST=http://api.ft.com
+##Gateway content api hostname (not URL) to access UPP content that the cluster read endpoints (e.g. CPR & CPR-preview) are mapped to. 
+##The default is prod DNS name given by Mashery but if we are creating a cluster not for prod then some different DNS name may be required, e.g. test.api.ft.com or some such
+export API_HOST=api.ft.com
 ```
 
 
