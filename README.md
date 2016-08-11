@@ -117,20 +117,19 @@ Decommission an environment
 ---------------------------
 
 ```
-## Secret used during provision to decrypt keys - get it off your closest buddy!
+## Secret used during decommissioning to decrypt keys - stored in LastPass.
 ## Lastpass: coco-provisioner-ansible-vault-pass
 export VAULT_PASS=
 
-## AWS API keys, get these off your buddy too
+## AWS API keys for decommissioning - stored in LastPass.
 ## Lastpass: infraprod-coco-aws-provisioning-keys
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 
-## Only needed for decomissioning
-## To create a cluster in another region, manually edit the provisioner
-export AWS_DEFAULT_REGION=
+## AWS region containing cluster to be decommissioned.
+export AWS_DEFAULT_REGION=eu-west-1
 
-## make a unique identifier (this will be used for DNS tunnel, splunk, AWS tags)
+## Cluster environment tag to decommission.
 export ENVIRONMENT_TAG=
 ```
 
