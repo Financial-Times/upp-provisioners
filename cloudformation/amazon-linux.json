@@ -1,0 +1,41 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Coco management server built on Amazon Linux with FT integration",
+    "Resources": {
+        "Example": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "IamInstanceProfile": "FT-Linux-Role",
+                "ImageId": "ami-c39604b0",
+                "InstanceType": "t2.micro",
+                "SecurityGroupIds": ["sg-7cfe9a19", "sg-4b1f7f2e"],
+                "SubnetId": "subnet-bc5d68c8",
+                "Tags": [
+                    { "Key": "Name", "Value": "Coco " },
+                    { "Key": "description", "Value": "UP, Coco management server" },
+                    { "Key": "environment", "Value": "d" },
+                    { "Key": "ipCode", "Value": "P196" },
+                    { "Key": "ec2Powercycle", "Value": "\{\"start\": \"0 9 * * 1-5\", \"stop\": \"55 15 * * 1-5\"\}" },
+                    { "Key": "systemCode", "Value": "Content-Containers" },
+                    { "Key": "teamDL", "Value": "universal.publishing.platform@ft.com" }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash\n",
+                                "/usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh /\n",
+                                "bash /bootstrap.sh -s cloudenablement -e d\n",
+                                "/usr/bin/yum install -y docker git golang\n",
+                                "/bin/mkdir -p ~/gopath\n",
+                                "/bin/echo export GOPATH=\"~/gopath\" >> ~/.bashrc\n",
+                                "source  ~/.bashrc\n"
+                            ]
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
