@@ -15,7 +15,7 @@
                     { "Key": "description", "Value": "UP, Coco management server" },
                     { "Key": "environment", "Value": "d" },
                     { "Key": "ipCode", "Value": "P196" },
-                    { "Key": "ec2Powercycle", "Value": "\{\"start\": \"0 9 * * 1-5\", \"stop\": \"55 15 * * 1-5\"\}" },
+                    { "Key": "ec2Powercycle", "Value": "{\"start\": \"0 9 * * 1-5\", \"stop\": \"55 15 * * 1-5\"}" },
                     { "Key": "systemCode", "Value": "Content-Containers" },
                     { "Key": "teamDL", "Value": "universal.publishing.platform@ft.com" }
                 ],
@@ -30,7 +30,7 @@
                                 "/usr/bin/yum install -y docker git golang\n",
                                 "/bin/mkdir -p ~/gopath\n",
                                 "/bin/echo export GOPATH=\"~/gopath\" >> ~/.bashrc\n",
-                                "source  ~/.bashrc\n"
+                                "/usr/bin/yum update -y\n"
                             ]
                         ]
                     }
