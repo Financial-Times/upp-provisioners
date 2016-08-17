@@ -69,8 +69,11 @@ export CLUSTER_BASIC_HTTP_CREDENTIALS=
 ## Pre-Prod: test.api.ft.com
 export API_HOST=
 
-#For publishing videos, the brightcove-notifier and brightcove-metadata-preprocessor must connect to the Brightcove API with an id like this: 47628783001
+# For publishing videos, the brightcove-notifier and brightcove-metadata-preprocessor must connect to the Brightcove API with an id like this: 47628783001
 export BRIGHTCOVE_ACCOUNT_ID=
+
+# You could find the keys in LastPass under the name: Brightcove
+export BRIGHTCOVE_AUTH=
 ```
 
 
@@ -92,6 +95,7 @@ docker run \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
     -e "BRIGHTCOVE_ACCOUNT_ID=$BRIGHTCOVE_ACCOUNT_ID" \
+    -e "BRIGHTCOVE_AUTH=$BRIGHTCOVE_AUTH" \
     coco-provisioner
 ```
 
