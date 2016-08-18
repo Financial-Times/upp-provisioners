@@ -69,6 +69,9 @@ export CLUSTER_BASIC_HTTP_CREDENTIALS=
 ## Pre-Prod: test.api.ft.com
 export API_HOST=
 
+# Unused here, but useful in decomissioning.
+export AWS_DEFAULT_REGION=eu-west-1
+
 # For publishing videos, the brightcove-notifier and brightcove-metadata-preprocessor must connect to the Brightcove API with an id like this: 47628783001
 export BRIGHTCOVE_ACCOUNT_ID=
 
