@@ -1,7 +1,10 @@
 # Coco Management Server
 
 Coco Management Server is an Amazon Linux server with FT integration (ldap authentication, etc.).
-Management Server provides Docker runtime, Go devevlopment environment and utilities such as Git client.
+
+Management Server provides Docker runtime, Go development environment and utilities such as Git client.
+
+
 
 ## Usage
 
