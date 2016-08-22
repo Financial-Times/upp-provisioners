@@ -68,6 +68,15 @@ export CLUSTER_BASIC_HTTP_CREDENTIALS=
 ## Prod: api.ft.com
 ## Pre-Prod: test.api.ft.com
 export API_HOST=
+
+# Unused here, but useful in decomissioning.
+export AWS_DEFAULT_REGION=eu-west-1
+
+# For publishing videos, the brightcove-notifier and brightcove-metadata-preprocessor must connect to the Brightcove API with an id like this: 47628783001
+export BRIGHTCOVE_ACCOUNT_ID=
+
+# You could find the keys in LastPass under the name: Brightcove
+export BRIGHTCOVE_AUTH=
 ```
 
 
@@ -87,7 +96,10 @@ docker run \
     -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
-    -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" coco-provisioner
+    -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
+    -e "BRIGHTCOVE_ACCOUNT_ID=$BRIGHTCOVE_ACCOUNT_ID" \
+    -e "BRIGHTCOVE_AUTH=$BRIGHTCOVE_AUTH" \
+    coco-provisioner
 ```
 
 
