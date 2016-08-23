@@ -31,21 +31,19 @@ Set all the required variables
 ## `curl https://discovery.etcd.io/new?size=5`
 export TOKEN_URL=`curl https://discovery.etcd.io/new?size=5`
 
-## Secret used during provision to decrypt keys - get it off your closest buddy!
+## Secret used during provision to decrypt keys - stored in LastPass.
 ## Lastpass: coco-provisioner-ansible-vault-pass
 export VAULT_PASS=
 
-## AWS API keys, get these off your buddy too
+## AWS API keys for provisioning (not for use by services) - stored in LastPass.
 ## Lastpass: infraprod-coco-aws-provisioning-keys
-export AWS_SECRET_ACCESS_KEY=
 export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
 
-## S3 bucket name to write image binaries to (up stack specific)
+## S3 bucket name to write image binaries to.
+## Prod: com.ft.imagepublish.prod
+## Pre-Prod: com.ft.coco-imagepublish.pre-prod
 export BINARY_WRITER_BUCKET=
-
-## Only needed for decomissioning
-## To create a cluster in another region, manually edit the provisioner
-export AWS_DEFAULT_REGION=
 
 ## `uuidgen` or set manually each of these when creating new cluster, otherwise: they will be automatically generated during the cluster setup (in this case it is not required to pass them at `docker run`)
 export AWS_MONITOR_TEST_UUID=`uuidgen`
@@ -53,16 +51,32 @@ export COCO_MONITOR_TEST_UUID=`uuidgen`
 
 ## Base uri where your unit definition file and service files are expected to be.
 export SERVICES_DEFINITION_ROOT_URI=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/
+
 ## make a unique identifier (this will be used for DNS tunnel, splunk, AWS tags)
 export ENVIRONMENT_TAG=
-## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco). Optional, defaults to Prod UCS proxy: https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com
-export BRIDGING_MESSAGE_QUEUE_PROXY= #[Optional]
-##Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
-Lastpass: CoCo Basic Auth
+
+## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco). 
+## This should always point at Prod - use separate service files to bridge from Test into lower environments.
+export BRIDGING_MESSAGE_QUEUE_PROXY=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com
+
+## Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
+## See Lastpass: 'CoCo Basic Auth' for current cluster values.
 export CLUSTER_BASIC_HTTP_CREDENTIALS=
-##Gateway content api host to access UPP content that the cluster read endpoints (e.g. CPR & CPR-preview) are mapped to. 
-##The default is prod DNS name given by Mashery but if we are creating a cluster not for prod then some different DNS name may be required, e.g. http://test.api.ft.com or some such
-export API_HOST=http://api.ft.com
+
+## Gateway content api hostname (not URL) to access UPP content that the cluster read endpoints (e.g. CPR & CPR-preview) are mapped to. 
+## Defaults to Prod if left blank.
+## Prod: api.ft.com
+## Pre-Prod: test.api.ft.com
+export API_HOST=
+
+# Unused here, but useful in decomissioning.
+export AWS_DEFAULT_REGION=eu-west-1
+
+# For publishing videos, the brightcove-notifier and brightcove-metadata-preprocessor must connect to the Brightcove API with an id like this: 47628783001
+export BRIGHTCOVE_ACCOUNT_ID=
+
+# You could find the keys in LastPass under the name: Brightcove
+export BRIGHTCOVE_AUTH=
 
 ##URLs to Bertha endpoints for accessing to specific Google Spreadsheet data. Used in publishing cluster
 ##AUTHORS_BERTHA_URL refers to the spreadsheet of curated authors data.
@@ -90,7 +104,10 @@ docker run \
     -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
-    -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" coco-provisioner
+    -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
+    -e "BRIGHTCOVE_ACCOUNT_ID=$BRIGHTCOVE_ACCOUNT_ID" \
+    -e "BRIGHTCOVE_AUTH=$BRIGHTCOVE_AUTH" \
+    coco-provisioner
 ```
 
 
@@ -118,6 +135,25 @@ foo-up.ft.com.        600    IN    CNAME    bar1426.eu-west-1.elb.amazonaws.com.
 
 Decommission an environment
 ---------------------------
+
+```
+## Secret used during decommissioning to decrypt keys - stored in LastPass.
+## Lastpass: coco-provisioner-ansible-vault-pass
+export VAULT_PASS=
+
+## AWS API keys for decommissioning - stored in LastPass.
+## Lastpass: infraprod-coco-aws-provisioning-keys
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
+
+## AWS region containing cluster to be decommissioned.
+export AWS_DEFAULT_REGION=eu-west-1
+
+## Cluster environment tag to decommission.
+export ENVIRONMENT_TAG=
+```
+
+
 
 ```sh
 docker run \
