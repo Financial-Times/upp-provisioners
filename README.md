@@ -77,6 +77,14 @@ export BRIGHTCOVE_ACCOUNT_ID=
 
 # You could find the keys in LastPass under the name: Brightcove
 export BRIGHTCOVE_AUTH=
+
+##URLs to Bertha endpoints for accessing to specific Google Spreadsheet data. Used in publishing cluster
+##AUTHORS_BERTHA_URL refers to the spreadsheet of curated authors data.
+##ROLES_BERTHA_URL refers to the spreadsheet of roles for curated authors.
+##MAPPINGS_BERTHA_URL refers to the spreadsheet of mappings between Brightcove video tags and TME IDs
+export AUTHORS_BERTHA_URL=http://bertha.site.example/123456XYZ/Authors
+export ROLES_BERTHA_URL=http://bertha.site.example/123456XYZ/Roles
+export MAPPINGS_BERTHA_URL=http://bertha.site.example/123456XYZ/Mapping
 ```
 
 
