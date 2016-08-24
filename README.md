@@ -72,19 +72,6 @@ export API_HOST=
 # Unused here, but useful in decomissioning.
 export AWS_DEFAULT_REGION=eu-west-1
 
-# For publishing videos, the brightcove-notifier and brightcove-metadata-preprocessor must connect to the Brightcove API with an id like this: 47628783001
-export BRIGHTCOVE_ACCOUNT_ID=
-
-# You could find the keys in LastPass under the name: Brightcove
-export BRIGHTCOVE_AUTH=
-
-##URLs to Bertha endpoints for accessing to specific Google Spreadsheet data. Used in publishing cluster
-##AUTHORS_BERTHA_URL refers to the spreadsheet of curated authors data.
-##ROLES_BERTHA_URL refers to the spreadsheet of roles for curated authors.
-##MAPPINGS_BERTHA_URL refers to the spreadsheet of mappings between Brightcove video tags and TME IDs
-export AUTHORS_BERTHA_URL=http://bertha.site.example/123456XYZ/Authors
-export ROLES_BERTHA_URL=http://bertha.site.example/123456XYZ/Roles
-export MAPPINGS_BERTHA_URL=http://bertha.site.example/123456XYZ/Mapping
 ```
 
 
@@ -105,8 +92,6 @@ docker run \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
-    -e "BRIGHTCOVE_ACCOUNT_ID=$BRIGHTCOVE_ACCOUNT_ID" \
-    -e "BRIGHTCOVE_AUTH=$BRIGHTCOVE_AUTH" \
     coco-provisioner
 ```
 
