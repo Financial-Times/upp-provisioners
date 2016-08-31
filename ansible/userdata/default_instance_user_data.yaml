@@ -145,3 +145,9 @@ write_files:
       TOOLBOX_DOCKER_IMAGE=coco/coco-toolbox
       TOOLBOX_DOCKER_TAG=latest
       TOOLBOX_USER=root 
+  - path: /etc/systemd/journald.conf.d/10-override-config.conf
+    content: |
+      [Journal]
+      MaxLevelConsole=crit
+      Compress=false
+      
