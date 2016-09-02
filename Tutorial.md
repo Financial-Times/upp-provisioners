@@ -130,18 +130,6 @@ The CoCo Provisioner is a docker image, so ensure you have docker installed and 
     *NB. If you feel like it, there is now a 'native' docker available for Windows and OSX rather than the toolbox.
     See [Beta programme](https://beta.docker.com/docs/features-overview/) for details.*
 
-1. Clone this repository:
-
-        git clone git@github.com:Financial-Times/coco-provisioner.git
-
-1. Build this docker image:
-
-        cd coco-provisioner
-        eval "$(docker-machine env default)" # if you are using VM-based docker
-        docker build  -t coco-provisioner .
-
-    *NB. It should produce output that resembles this: `Successfully built c8a17a2a29b5`*
-
 1. Set configuration parameters by exporting environment variables (`export NAME=VALUE`):
 
 
@@ -169,14 +157,13 @@ The CoCo Provisioner is a docker image, so ensure you have docker installed and 
 
     *NB. You may need to run this as root, if this is the case `sudo` first.*
 
-        cd coco-provisioner
         docker run \
             --env "VAULT_PASS=$VAULT_PASS" \
             --env "TOKEN_URL=$TOKEN_URL" \
             --env "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
             --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
             --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-            --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" coco-provisioner
+            --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" coco/coco-provisioner:v1.0.0
 
     *NB. There are some additional parameters which can be passed, however we won't need them for the moment since they configure CoCo's
     settings so it can access Kafka etc.*
@@ -270,14 +257,13 @@ If this is deploying or barfing it's unlikely that your cluster is healthy.
 
 1. Finally, destroy the cluster you have just worked so hard to create (this command uses the environment variables you exported earlier):
 
-        cd coco-provisioner
         docker run \
           -e "VAULT_PASS=$VAULT_PASS" \
           -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
           -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
           -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
           -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-          coco-provisioner /bin/bash /decom.sh
+          coco/coco-provisioner:v1.0.0 /bin/bash /decom.sh
 
 
 Summary
