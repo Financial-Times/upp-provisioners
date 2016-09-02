@@ -13,13 +13,44 @@ Set up SSH
 
 See [SSH_README.md](/SSH_README.md/)
 
+Provision a delivery cluster
+------------------------------
+
+```bash
+## Set all the environment variables required to provision a cluster. These variables are stored in LastPass
+## For PROD cluster
+## LastPass: Delivery cluster provisioning setup
+## For TEST cluster
+## LastPass: TEST Delivery cluster provisioning setup
+
+## Run docker command
+docker run \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "TOKEN_URL=$TOKEN_URL" \
+    -e "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
+    -e "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
+    -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
+    -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
+    -e "API_HOST=$API_HOST" \
+    -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
+    coco/coco-provisioner:v1.0.0
+
+## If the cluster is running, set up HTTPS support (see below)
+```
+
+Getting started
+---------------
 
 Building
 --------
 
 ```bash
 # Build the image
-docker build -t coco-provisioner .
+docker build -t coco/coco-provisioner .
 ```
 
 
@@ -27,6 +58,12 @@ Set all the required variables
 ------------------------------
 
 ```bash
+## You can also find all the setup stored in LastPass
+## For PROD cluster
+## LastPass: Delivery cluster provisioning setup
+## For TEST cluster
+## LastPass: TEST Delivery cluster provisioning setup
+
 ## Get a new etcd token for a new cluster, 5 refers to the number of initial boxes in the cluster:
 ## `curl https://discovery.etcd.io/new?size=5`
 export TOKEN_URL=`curl https://discovery.etcd.io/new?size=5`
@@ -92,7 +129,7 @@ docker run \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
-    coco-provisioner
+    coco/coco-provisioner
 ```
 
 
@@ -147,7 +184,7 @@ docker run \
   -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-  coco-provisioner /bin/bash /decom.sh
+  coco/coco-provisioner:v1.0.0 /bin/bash /decom.sh
 ```
 
 Sometimes cleanup takes a long time and ELBs/Security Groups still get left behind. Other ways to clean up:
