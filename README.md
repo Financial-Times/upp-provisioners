@@ -7,78 +7,27 @@ Tutorial
 
 If you're looking to provision a new cluster, the [tutorial](Tutorial.md) might be a better place to start than here. 
 
+For developers
+--------------
+
+If you want to build the docker image locally and provision a cluster with that image, see [the developer readme](DEVELOPER_README.md)
 
 Set up SSH
 ----------
 
 See [SSH_README.md](/SSH_README.md/)
 
-
-Building
---------
-
-```bash
-# Build the image
-docker build -t coco-provisioner .
-```
-
-
-Set all the required variables
+Provision a delivery cluster
 ------------------------------
 
 ```bash
-## Get a new etcd token for a new cluster, 5 refers to the number of initial boxes in the cluster:
-## `curl https://discovery.etcd.io/new?size=5`
-export TOKEN_URL=`curl https://discovery.etcd.io/new?size=5`
+## Set all the environment variables required to provision a cluster. These variables are stored in LastPass
+## For PROD cluster
+## LastPass: PROD Delivery cluster provisioning setup
+## For TEST cluster
+## LastPass: TEST Delivery cluster provisioning setup
 
-## Secret used during provision to decrypt keys - stored in LastPass.
-## Lastpass: coco-provisioner-ansible-vault-pass
-export VAULT_PASS=
-
-## AWS API keys for provisioning (not for use by services) - stored in LastPass.
-## Lastpass: infraprod-coco-aws-provisioning-keys
-export AWS_ACCESS_KEY_ID=
-export AWS_SECRET_ACCESS_KEY=
-
-## S3 bucket name to write image binaries to.
-## Prod: com.ft.imagepublish.prod
-## Pre-Prod: com.ft.coco-imagepublish.pre-prod
-export BINARY_WRITER_BUCKET=
-
-## `uuidgen` or set manually each of these when creating new cluster, otherwise: they will be automatically generated during the cluster setup (in this case it is not required to pass them at `docker run`)
-export AWS_MONITOR_TEST_UUID=`uuidgen`
-export COCO_MONITOR_TEST_UUID=`uuidgen`
-
-## Base uri where your unit definition file and service files are expected to be.
-export SERVICES_DEFINITION_ROOT_URI=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/
-
-## make a unique identifier (this will be used for DNS tunnel, splunk, AWS tags)
-export ENVIRONMENT_TAG=
-
-## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco). 
-## This should always point at Prod - use separate service files to bridge from Test into lower environments.
-export BRIDGING_MESSAGE_QUEUE_PROXY=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com
-
-## Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
-## See Lastpass: 'CoCo Basic Auth' for current cluster values.
-export CLUSTER_BASIC_HTTP_CREDENTIALS=
-
-## Gateway content api hostname (not URL) to access UPP content that the cluster read endpoints (e.g. CPR & CPR-preview) are mapped to. 
-## Defaults to Prod if left blank.
-## Prod: api.ft.com
-## Pre-Prod: test.api.ft.com
-export API_HOST=
-
-# Unused here, but useful in decomissioning.
-export AWS_DEFAULT_REGION=eu-west-1
-
-```
-
-
-Run the image
--------------
-
-```bash
+## Run docker command
 docker run \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "TOKEN_URL=$TOKEN_URL" \
@@ -92,9 +41,10 @@ docker run \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
-    coco-provisioner
-```
+    coco/coco-provisioner:v1.0.0
 
+## If the cluster is running, set up HTTPS support (see below)
+```
 
 Set up HTTPS support
 --------------------
@@ -147,7 +97,7 @@ docker run \
   -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-  coco-provisioner /bin/bash /decom.sh
+  coco/coco-provisioner:v1.0.0 /bin/bash /decom.sh
 ```
 
 Sometimes cleanup takes a long time and ELBs/Security Groups still get left behind. Other ways to clean up:
