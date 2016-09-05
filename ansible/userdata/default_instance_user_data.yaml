@@ -39,11 +39,11 @@ coreos:
       content: |
           [Unit]
           Description=Authorized keys timer
-          
+
           [Timer]
           OnBootSec=1min
           OnUnitActiveSec=1min
-          
+
           [Install]
           WantedBy=timers.target
     - name: docker.service
@@ -109,6 +109,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag '{{environment_tag}}'                                                     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/api_host '{{api_host}}'                                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/aws_region '{{region}}'                                                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/cache-max-age 10                                                                          >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_url 'https://ingest.splunk.glb.ft.com/coco-up/fleet'              >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '{{services_definition_root_uri}}'                           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/binary-writer/bucket '{{binary_writer_bucket}}'                                           >/dev/null 2>&1 || true;"
@@ -130,7 +131,7 @@ coreos:
           ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done"
           ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service"
           ExecStartPost=/usr/bin/touch /var/lib/format-done
-    
+
 write_files:
   - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
     content: |
@@ -144,10 +145,9 @@ write_files:
     content: |
       TOOLBOX_DOCKER_IMAGE=coco/coco-toolbox
       TOOLBOX_DOCKER_TAG=latest
-      TOOLBOX_USER=root 
+      TOOLBOX_USER=root
   - path: /etc/systemd/journald.conf.d/10-override-config.conf
     content: |
       [Journal]
       MaxLevelConsole=crit
       Compress=false
-      
