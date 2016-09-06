@@ -6,7 +6,7 @@
             "Type": "AWS::EC2::Instance",
             "Properties": {
                 "IamInstanceProfile": "FT-Linux-Role",
-                "ImageId": "ami-c39604b0",
+                "ImageId": "ami-f9dd458a",
                 "InstanceType": "t2.micro",
                 "SecurityGroupIds": ["sg-1beb8b7e", "sg-9591fbf0"],
                 "SubnetId": "subnet-c96755bd",
