@@ -28,7 +28,7 @@
                                 "#!/bin/bash\n",
                                 "# FT Base Bootstrap\n",
                                 "/usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh /\n",
-                                "bash /bootstrap.sh -s cloudenablement -e d\n",
+                                "bash /bootstrap.sh -s eng -e d\n",
                                 "# Install Docker and Go environments\n",
                                 "/usr/bin/yum install -y docker git golang\n",
                                 "/bin/mkdir -p ~/gopath\n",
