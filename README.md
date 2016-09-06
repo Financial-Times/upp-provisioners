@@ -10,7 +10,7 @@ If you're looking to provision a new cluster, the [tutorial](Tutorial.md) might 
 For developers
 --------------
 
-If you want to build the docker image locally and provision a cluster with that image, see [the developer readme](DEVELOPER_README.md)
+If you want to adjust provisioner's code, see [the developer readme](DEVELOPER_README.md) AND [the change process for provisioner](https://sites.google.com/a/ft.com/technology/systems/dynamic-semantic-publishing/coco/change-process-for-provisioner)
 
 Set up SSH
 ----------
