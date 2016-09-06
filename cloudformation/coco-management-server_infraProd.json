@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Coco management server built on Amazon Linux with FT integration",
+    "Description": "Coco management server built on Amazon Linux with FT integration - InfraProd",
     "Resources": {
         "CocoManagementServer": {
             "Type": "AWS::EC2::Instance",
@@ -8,14 +8,14 @@
                 "IamInstanceProfile": "FT-Linux-Role",
                 "ImageId": "ami-c39604b0",
                 "InstanceType": "t2.micro",
-                "SecurityGroupIds": ["sg-7cfe9a19", "sg-4b1f7f2e"],
-                "SubnetId": "subnet-bc5d68c8",
+                "SecurityGroupIds": ["sg-1beb8b7e", "sg-9591fbf0"],
+                "SubnetId": "subnet-c96755bd",
                 "Tags": [
                     { "Key": "Name", "Value": "CocoManagementServer" },
                     { "Key": "description", "Value": "UP, Coco management server" },
                     { "Key": "environment", "Value": "d" },
                     { "Key": "ipCode", "Value": "P196" },
-                    { "Key": "ec2Powercycle", "Value": "{ \"start\": \"0 9 * * 1-5\", \"stop\": \"55 15 * * 1-5\" }" },
+                    { "Key": "ec2Powercycle", "Value": "{ \"start\": \"0 8 * * 1-5\", \"stop\": \"55 17 * * 1-5\" }" },
                     { "Key": "systemCode", "Value": "Content-Containers" },
                     { "Key": "teamDL", "Value": "universal.publishing.platform@ft.com" },
                     { "Key": "stopSchedule", "Value": "nostop" }
