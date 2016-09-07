@@ -9,7 +9,7 @@ Docker image to provision a cluster
 **[Provision a delivery cluster](#provision-a-delivery-cluster)**  
 **[Set up HTTPS support](#set-up-https-support)**  
 **[Decommission an environment](#decommission-an-environment)**  
-**[Coco Management Server](#tutorial)**  
+**[Coco Management Server](#coco-management-server)**  
 
 Tutorial
 --------
