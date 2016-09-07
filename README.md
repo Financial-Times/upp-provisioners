@@ -2,6 +2,15 @@ Docker image to provision a cluster
 ===================================
 
 
+### Table of Contents
+**[Tutorial](#tutorial)**  
+**[For developer](#for-developers)**  
+**[Set up SSH](#set-up-ssh)**  
+**[Provision a delivery cluster](#provision-a-delivery-cluster)**  
+**[Set up HTTPS support](#set-up-https-support)**  
+**[Decommission an environment](#decommission-an-environment)**  
+**[Coco Management Server](#coco-management-server)**  
+
 Tutorial
 --------
 
@@ -45,6 +54,8 @@ docker run \
 
 ## If the cluster is running, set up HTTPS support (see below)
 ```
+
+If you need a Docker runtime environment to provision a cluster you can set up [Coco Management Server](https://github.com/Financial-Times/coco-provisioner/blob/master/cloudformation/README.md) in AWS.
 
 Set up HTTPS support
 --------------------
@@ -113,3 +124,7 @@ aws ec2 describe-security-groups | jq -r '.SecurityGroups[] | .GroupName + " " +
 aws elb describe-load-balancers | jq -r '.LoadBalancerDescriptions[] | select(.Instances==[]) | .LoadBalancerName' | grep coreos | xargs -I {} sh -c "aws ec2 describe-instances --filters "Name=tag-key,Values=coco-environment-tag" | jq -e '.Reservations[].Instances[].SecurityGroups[] | select(.GroupName==\"{}\")' >/dev/null 2>&1 || echo {}" | xargs -n1 -I {} aws elb delete-load-balancer --load-balancer-name {}
 ```
 
+Coco Management Server
+---------------------------
+
+See details in [cloudformation/README.md](https://github.com/Financial-Times/coco-provisioner/blob/master/cloudformation/README.md)
