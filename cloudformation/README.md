@@ -13,7 +13,7 @@ Management Server provides Docker runtime, Go development environment and utilit
 1. Log on to AWS Console and go to CloudFormation view
 2. Click _Create Stack_ button
 3. Select _Upload a template to Amazon S3_ and click _Browse_ button
-4. Select the template you wish to upload, then click _Next_ button
+4. Select the CloudFormation template (cloudformation/*.json) that you wish to upload, then click _Next_ button
 5. Provide _Stack name_ and click _Next_ button
 6. In _Options_ view click _Next_ button
 7. In _Review_ view click _Create_ button to create the stack
