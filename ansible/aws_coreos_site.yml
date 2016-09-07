@@ -184,6 +184,7 @@
         volumes:
           - device_name: /dev/xvda
             volume_size: 100
+            volume_type: gp2
             delete_on_termination: true
         count_tag:
           Name: "ftstt{{clusterid}}-caw1b-eu-p"
@@ -213,6 +214,7 @@
         volumes:
           - device_name: /dev/xvda
             volume_size: 100
+            volume_type: gp2
             delete_on_termination: true
         count_tag:
           Name: "ftstt{{clusterid}}-caw1c-eu-p"
@@ -245,9 +247,11 @@
         volumes:
           - device_name: /dev/xvda
             volume_size: 100
+            volume_type: gp2
             delete_on_termination: true
           - device_name: /dev/xvdf
             volume_size: 200
+            volume_type: gp2
             delete_on_termination: true
         count_tag:
           Name: "ftpr1{{clusterid}}-caw1a-eu-p"
@@ -280,9 +284,11 @@
         volumes:
           - device_name: /dev/xvda
             volume_size: 100
+            volume_type: gp2
             delete_on_termination: true
           - device_name: /dev/xvdf
             volume_size: 200
+            volume_type: gp2
             delete_on_termination: true
         count_tag:
           Name: "ftpr2{{clusterid}}-caw1b-eu-p"
@@ -315,9 +321,11 @@
         volumes:
           - device_name: /dev/xvda
             volume_size: 100
+            volume_type: gp2
             delete_on_termination: true
           - device_name: /dev/xvdf
             volume_size: 200
+            volume_type: gp2
             delete_on_termination: true
         count_tag:
           Name: "ftpr3{{clusterid}}-caw1c-eu-p"
