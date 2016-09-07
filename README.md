@@ -55,6 +55,8 @@ docker run \
 ## If the cluster is running, set up HTTPS support (see below)
 ```
 
+If you need a Docker runtime environment to provision a cluster you can set up [Coco Management Server](https://github.com/Financial-Times/coco-provisioner/blob/master/cloudformation/README.md) in AWS.
+
 Set up HTTPS support
 --------------------
 
