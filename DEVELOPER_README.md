@@ -51,7 +51,7 @@ export ENVIRONMENT_TAG=
 ## Set the FT environment type
 ## For PROD: p
 ## For TEST: t
-export ENVIRONMENT_TAG=
+export ENVIRONMENT_TYPE=
 
 ## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco). 
 ## This should always point at Prod - use separate service files to bridge from Test into lower environments.
