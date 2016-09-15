@@ -50,6 +50,7 @@ docker run \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     coco/coco-provisioner:v1.0.2
 
 ## If the cluster is running, set up HTTPS support (see below)
