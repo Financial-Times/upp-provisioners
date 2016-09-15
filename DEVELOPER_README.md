@@ -48,6 +48,11 @@ export SERVICES_DEFINITION_ROOT_URI=https://raw.githubusercontent.com/Financial-
 ## make a unique identifier (this will be used for DNS tunnel, splunk, AWS tags)
 export ENVIRONMENT_TAG=
 
+## Set the FT environment type
+## For PROD: p
+## For TEST: t
+export ENVIRONMENT_TAG=
+
 ## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco). 
 ## This should always point at Prod - use separate service files to bridge from Test into lower environments.
 export BRIDGING_MESSAGE_QUEUE_PROXY=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com
@@ -79,6 +84,7 @@ docker run \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
     -e "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
     -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
