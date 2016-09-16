@@ -23,6 +23,7 @@ AMI=`curl -s https://coreos.com/dist/aws/aws-stable.json | jq -r '.["eu-west-1"]
   bridging_message_queue_proxy=${BRIDGING_MESSAGE_QUEUE_PROXY:=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com} \
   varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \
   api_host=${API_HOST:=api.ft.com} \
-  environment_tag=${ENVIRONMENT_TAG:=default}" \
+  environment_tag=${ENVIRONMENT_TAG:=default} \
+  environment_type=${ENVIRONMENT_TYPE:=p}" \
   --vault-password-file=/vault.pass
 

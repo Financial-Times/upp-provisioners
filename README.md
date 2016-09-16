@@ -50,7 +50,8 @@ docker run \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
-    coco/coco-provisioner:v1.0.2
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    coco/coco-provisioner:v1.0.3
 
 ## If the cluster is running, set up HTTPS support (see below)
 ```
@@ -108,7 +109,7 @@ docker run \
   -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-  coco/coco-provisioner:v1.0.2 /bin/bash /decom.sh
+  coco/coco-provisioner:v1.0.3 /bin/bash /decom.sh
 ```
 
 Sometimes cleanup takes a long time and ELBs/Security Groups still get left behind. Other ways to clean up:
