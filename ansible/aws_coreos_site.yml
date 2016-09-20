@@ -149,9 +149,11 @@
           - "{{ vpc.subnets[1].id }}"
           - "{{ vpc.subnets[2].id }}"
         listeners:
-          - protocol: http
-            load_balancer_port: 80
+          - protocol: https
+            load_balancer_port: 443
+            instance_protocol: http
             instance_port: 80
+            ssl_certificate_id: "arn:aws:iam::027104099916:server-certificate/wildcard.ft.com"
         purge_listeners: True
         health_check:
           ping_protocol: tcp # options are http, https, ssl, tcp
