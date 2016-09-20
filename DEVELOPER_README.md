@@ -67,7 +67,7 @@ export CLUSTER_BASIC_HTTP_CREDENTIALS=
 ## Pre-Prod: test.api.ft.com
 export API_HOST=
 
-# Unused here, but useful in decomissioning.
+# Region to create the cluster.
 export AWS_DEFAULT_REGION=eu-west-1
 
 ```
@@ -91,6 +91,7 @@ docker run \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
+    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     coco/coco-provisioner
 ```
 
