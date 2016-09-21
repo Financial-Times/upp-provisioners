@@ -29,6 +29,9 @@ See [SSH_README.md](/SSH_README.md/)
 Provision a delivery cluster
 ------------------------------
 
+Currently, attempting to provision a cluster in `us-east-1` with an environment type of `t` causes the security group creation to fail.
+Everything else works fine - `t` or `p` clusters in `eu-west-1`, and `p` clusters in `us-east-1`.
+
 ```bash
 ## Set all the environment variables required to provision a cluster. These variables are stored in LastPass
 ## For PROD cluster
@@ -44,6 +47,7 @@ docker run \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \ 
     -e "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
     -e "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
     -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
@@ -51,7 +55,7 @@ docker run \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
-    coco/coco-provisioner:v1.0.7
+    coco/coco-provisioner:v1.0.8
 
 ```
 
@@ -86,7 +90,7 @@ docker run \
   -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-  coco/coco-provisioner:v1.0.7 /bin/bash /decom.sh
+  coco/coco-provisioner:v1.0.8 /bin/bash /decom.sh
 ```
 
 Sometimes cleanup takes a long time and ELBs/Security Groups still get left behind. Other ways to clean up:
