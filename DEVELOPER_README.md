@@ -76,6 +76,9 @@ export AWS_DEFAULT_REGION=eu-west-1
 Run the locally created image
 -----------------------------
 
+Currently, attempting to provision a cluster in `us-east-1` with an environment type of `t` causes the security group creation to fail.
+Everything else works fine - `t` or `p` clusters in `eu-west-1`, and `p` clusters in `us-east-1`.
+
 ```bash
 docker run \
     -e "VAULT_PASS=$VAULT_PASS" \
