@@ -35,8 +35,8 @@
         name: "coreos-up-{{clusterid}}"
         state: absent
 
-    - name: Wait 60s for elb to be terminated and release enis
-      shell: "sleep 60"
+    - name: Wait 120s for elb to be terminated and release enis
+      shell: "sleep 120"
 
     - name: Delete fleet security group
       ec2_group:
