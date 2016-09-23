@@ -55,7 +55,7 @@ docker run \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
-    coco/coco-provisioner:v1.0.8
+    coco/coco-provisioner:v1.0.9
 
 ```
 
@@ -90,20 +90,7 @@ docker run \
   -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-  coco/coco-provisioner:v1.0.8 /bin/bash /decom.sh
-```
-
-Sometimes cleanup takes a long time and ELBs/Security Groups still get left behind. Other ways to clean up:
-
-```sh
-# List all coreos security groups
-aws ec2 describe-security-groups | jq -r '.SecurityGroups[] | .GroupName + " " + .GroupId' | grep coreos
-
-# Delete coreos security groups not in use, does not filter - will fail on any group that is being used
-aws ec2 describe-security-groups | jq -r '.SecurityGroups[] | .GroupName + " " + .GroupId' | grep coreos | awk '{print $2}' | xargs -I {} -n1 sh -c 'aws ec2 delete-security-group --group-id {} || echo {} is active'
-
-# Delete ELBs that have no instances AND there are no instances with the same group name (stopped) as the ELB
-aws elb describe-load-balancers | jq -r '.LoadBalancerDescriptions[] | select(.Instances==[]) | .LoadBalancerName' | grep coreos | xargs -I {} sh -c "aws ec2 describe-instances --filters "Name=tag-key,Values=coco-environment-tag" | jq -e '.Reservations[].Instances[].SecurityGroups[] | select(.GroupName==\"{}\")' >/dev/null 2>&1 || echo {}" | xargs -n1 -I {} aws elb delete-load-balancer --load-balancer-name {}
+  coco/coco-provisioner:v1.0.9 /bin/bash /decom.sh
 ```
 
 Coco Management Server
