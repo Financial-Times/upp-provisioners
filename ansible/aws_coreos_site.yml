@@ -343,3 +343,6 @@
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
 
+    - name: Cluster tunnel DNS address
+      debug: msg="Cluster tunnel DNS address - {{ environment_tag }}-tunnel-up.ft.com"
+
