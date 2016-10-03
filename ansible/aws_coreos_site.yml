@@ -169,6 +169,10 @@
 
     - debug: msg="cluster_elb dns {{ cluster_elb.elb.dns_name }}"
 
+    - name: Set termination protection for production clusters
+      set_fact:
+        termination_protection: "{% if env == 'p' %}yes{% else %}no{% endif %}"
+
     - name: Provision m3.large instances
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
@@ -198,6 +202,7 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
+        termination_protection: "{{ termination_protection }}"
 
     - name: Provision m3.large instances
       ec2:
@@ -228,6 +233,7 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
+        termination_protection: "{{ termination_protection }}"
 
     - set_fact:
         persistent_tag: 1
@@ -266,6 +272,7 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
+        termination_protection: "{{ termination_protection }}"
 
     - set_fact:
         persistent_tag: 2
@@ -304,6 +311,7 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
+        termination_protection: "{{ termination_protection }}"
 
     - set_fact:
         persistent_tag: 3
@@ -342,6 +350,7 @@
           teamDL: "{{teamDL}}"
           stopSchedule: "nostop"
           coco-environment-tag: "{{environment_tag}}"
+        termination_protection: "{{ termination_protection }}"
 
     - name: Cluster tunnel DNS address
       debug: msg="Cluster tunnel DNS address - {{ environment_tag }}-tunnel-up.ft.com"
