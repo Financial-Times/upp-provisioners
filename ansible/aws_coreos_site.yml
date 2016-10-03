@@ -171,7 +171,7 @@
 
     - name: Set termination protection for production clusters
       set_fact:
-        termination_protection: "{% if env == 'p' %} 'yes' {% else %} 'no' {% endif %}"
+        termination_protection: "{% if env == 'p' %}yes{% else %}no{% endif %}"
 
     - name: Provision m3.large instances
       ec2:
