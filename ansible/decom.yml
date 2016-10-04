@@ -17,32 +17,32 @@
 
     - name: Delete DNS tunnel record
       uri:
-        url: https://dns-api.in.ft.com/v2/
+        url: "https://dns-api.in.ft.com/v2/"
         method: DELETE
-        HEADER_x-api-key: {{konstructor_api_key}}
+        HEADER_x-api-key: "{{konstructor_api_key}}"
         body:
-          zone: ft.com
-          name: {{environment_tag}}-tunnel-up
+          zone: "ft.com"
+          name: "{{environment_tag}}-tunnel-up"
         body_format: json
       
     - name: Delete DNS ELB record
       uri:
-        url: https://dns-api.in.ft.com/v2/
+        url: "https://dns-api.in.ft.com/v2/"
         method: DELETE
-        HEADER_x-api-key: {{konstructor_api_key}}
+        HEADER_x-api-key: "{{konstructor_api_key}}"
         body:
-          zone: ft.com
-          name: {{environment_tag}}-up
+          zone: "ft.com"
+          name: "{{environment_tag}}-up"
         body_format: json
 
     - name: Delete DNS ELB read record
       uri:
-        url: https://dns-api.in.ft.com/v2/
+        url: "https://dns-api.in.ft.com/v2/"
         method: DELETE
-        HEADER_x-api-key: {{konstructor_api_key}}
+        HEADER_x-api-key: "{{konstructor_api_key}}"
         body:
-          zone: ft.com
-          name: {{environment_tag}}-up-read
+          zone: "ft.com"
+          name: "{{environment_tag}}-up-read"
         body_format: json
 
     - name: Wait 120s for instances to be terminated and release enis
