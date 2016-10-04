@@ -16,13 +16,28 @@
         instance_ids: "{{instanceIds}}"
 
     - name: Delete DNS tunnel record
-      shell: "curl -s -L -X DELETE -H \"Content-Length: 0\" -H \"Accept: application/json\" -H \"Authorization: Basic {{konstructor_api_key}} \" \"https://konstructor.ft.com/v1/dns/delete?zone=ft.com&name={{environment_tag}}-tunnel-up\""
+      uri:
+        url: https://dns-api.in.ft.com/v2/
+        method: DELETE
+        HEADER_Content-Type: application/json
+        HEADER_x-api-key: {{konstructor_api_key}}
+        body: "{\"zone\":\"ft.com\",\"name\":\"{{environment_tag}}-tunnel-up\"}"
+      
+    - name: Delete DNS ELB record
+      uri:
+        url: https://dns-api.in.ft.com/v2/
+        method: DELETE
+        HEADER_Content-Type: application/json
+        HEADER_x-api-key: {{konstructor_api_key}}
+        body: "{\"zone\":\"ft.com\",\"name\":\"{{environment_tag}}-up\"}"
 
-    - name: Delete DNS elb record
-      shell: "curl -s -L -X DELETE -H \"Content-Length: 0\" -H \"Accept: application/json\" -H \"Authorization: Basic {{konstructor_api_key}} \" \"https://konstructor.ft.com/v1/dns/delete?zone=ft.com&name={{environment_tag}}-up\""
-
-    - name: Delete DNS elb read record
-      shell: "curl -s -L -X DELETE -H \"Content-Length: 0\" -H \"Accept: application/json\" -H \"Authorization: Basic {{konstructor_api_key}} \" \"https://konstructor.ft.com/v1/dns/delete?zone=ft.com&name={{environment_tag}}-up-read\""
+      - name: Delete DNS ELB read record
+      uri:
+        url: https://dns-api.in.ft.com/v2/
+        method: DELETE
+        HEADER_Content-Type: application/json
+        HEADER_x-api-key: {{konstructor_api_key}}
+        body: "{\"zone\":\"ft.com\",\"name\":\"{{environment_tag}}-up-read\"}"
 
     - name: Wait 120s for instances to be terminated and release enis
       shell: "sleep 120"
