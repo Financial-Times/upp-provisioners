@@ -7,14 +7,6 @@
     - keys.yaml
 
   tasks:
-    - name: Terminate instances
-      ec2:
-        aws_access_key: "{{ aws_access_key_id }}"
-        aws_secret_key: "{{ aws_secret_access_key }}"
-        region: "{{region}}"
-        state: absent
-        instance_ids: "{{instanceIds}}"
-
     - name: Delete DNS tunnel record
       uri:
         url: "https://dns-api.in.ft.com/v2/"
@@ -33,16 +25,6 @@
         body:
           zone: "ft.com"
           name: "{{environment_tag}}-up"
-        body_format: json
-
-    - name: Delete DNS ELB read record
-      uri:
-        url: "https://dns-api.in.ft.com/v2/"
-        method: DELETE
-        HEADER_x-api-key: "{{konstructor_api_key}}"
-        body:
-          zone: "ft.com"
-          name: "{{environment_tag}}-up-read"
         body_format: json
 
     - name: Wait 120s for instances to be terminated and release enis
