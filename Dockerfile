@@ -8,8 +8,6 @@ RUN echo "[localhost]" > ~/.ansible_hosts \
  && . .venv/bin/activate \
  && pip install ansible==2.0.2.0 boto awscli
 
-ENV HOME=/root
-
 ADD *.sh /
 ADD cluster-id-extractor /
 RUN ln -s /cluster-id-extractor /usr/local/bin/cluster-id-extractor
