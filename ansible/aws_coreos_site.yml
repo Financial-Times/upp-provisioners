@@ -82,11 +82,6 @@
             from_port: 22
             to_port: 22
             cidr_ip: 194.117.242.0/23
-          # Garton M - home
-          - proto: tcp
-            from_port: 22
-            to_port: 22
-            cidr_ip: 81.187.140.32/32
           # VPN client's outbound IP via tun0 interface
           - proto: tcp
             from_port: 22
