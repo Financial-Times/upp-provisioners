@@ -22,6 +22,7 @@ coreos:
   units:
     - name: update-engine.service
       command: stop
+      mask: true
     - name: locksmithd.service
       command: stop
     - name: authorized_keys.service
