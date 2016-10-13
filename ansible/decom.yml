@@ -23,8 +23,9 @@
         body:
           zone: "ft.com"
           name: "{{environment_tag}}-tunnel-up"
+          emailAddress: "euan.finlay@ft.com"
         body_format: json
-      
+
     - name: Delete DNS ELB record
       uri:
         url: "https://dns-api.in.ft.com/v2/"
@@ -33,6 +34,7 @@
         body:
           zone: "ft.com"
           name: "{{environment_tag}}-up"
+          emailAddress: "euan.finlay@ft.com"
         body_format: json
 
     - name: Wait 120s for instances to be terminated and release enis
@@ -57,4 +59,3 @@
         name: "coreos-up-{{clusterid}}"
         description: Fleet security group
         state: absent
-
