@@ -23,7 +23,7 @@
         body:
           zone: "ft.com"
           name: "{{environment_tag}}-tunnel-up"
-          emailAddress: "universal.publishing.platform@ft.com"
+          emailAddress: "euan.finlay@ft.com"
         body_format: json
 
     - name: Delete DNS ELB record
@@ -34,7 +34,7 @@
         body:
           zone: "ft.com"
           name: "{{environment_tag}}-up"
-          emailAddress: "universal.publishing.platform@ft.com"
+          emailAddress: "euan.finlay@ft.com"
         body_format: json
 
     - name: Wait 120s for instances to be terminated and release enis
