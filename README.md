@@ -55,7 +55,8 @@ docker run \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
-    coco/coco-provisioner:v1.0.16
+    -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
+    coco/coco-provisioner:v1.0.17
 
 ```
 
@@ -90,11 +91,10 @@ docker run \
   -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-  coco/coco-provisioner:v1.0.16 /bin/bash /decom.sh
+  coco/coco-provisioner:v1.0.17 /bin/bash /decom.sh
 ```
 
 Coco Management Server
 ---------------------------
 
 See details in [cloudformation/README.md](https://github.com/Financial-Times/coco-provisioner/blob/master/cloudformation/README.md)
-
