@@ -20,7 +20,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -vvv -i ~/.ansible_hosts /ans
   region=$AWS_DEFAULT_REGION \
   token=$TOKEN_URL \
   services_definition_root_uri=${SERVICES_DEFINITION_ROOT_URI:=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/} \
-  aws_access_key_id=$AWS_ACCESS_KEY_ID \ 
+  aws_access_key_id=$AWS_ACCESS_KEY_ID \
   aws_secret_access_key=$AWS_SECRET_ACCESS_KEY \
   binary_writer_bucket=$BINARY_WRITER_BUCKET \
   aws_image_monitor_test_uuid=$AWS_MONITOR_TEST_UUID \
@@ -29,6 +29,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -vvv -i ~/.ansible_hosts /ans
   varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \
   api_host=${API_HOST:=api.ft.com} \
   environment_tag=${ENVIRONMENT_TAG:=default} \
-  environment_type=${ENVIRONMENT_TYPE:=p}" \
+  environment_type=${ENVIRONMENT_TYPE:=p} \
+  splunk_hec_url=${SPLUNK_HEC_URL:=https://http-inputs-financialtimes.splunkcloud.com/services/collector/event} \
+  splunk_hec_token=${SPLUNK_HEC_TOKEN}" \
   --vault-password-file=/vault.pass
-
