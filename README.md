@@ -39,7 +39,8 @@ Everything else works fine - `t` or `p` clusters in `eu-west-1`, and `p` cluster
 ## For TEST cluster
 ## LastPass: TEST Delivery cluster provisioning setup
 
-## Run docker command
+## Pull latest stable image and run docker command
+docker pull coco/coco-provisioner:latest
 docker run \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "TOKEN_URL=$TOKEN_URL" \
@@ -56,7 +57,9 @@ docker run \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
-    coco/coco-provisioner:v1.0.17
+    coco/coco-provisioner:latest
+
+## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'
 
 ```
 
@@ -85,13 +88,16 @@ export ENVIRONMENT_TAG=
 
 
 ```sh
+docker pull coco/coco-provisioner:latest
 docker run \
   -e "VAULT_PASS=$VAULT_PASS" \
   -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
   -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-  coco/coco-provisioner:v1.0.17 /bin/bash /decom.sh
+  coco/coco-provisioner:latest /bin/bash /decom.sh
+
+## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'
 ```
 
 Coco Management Server
