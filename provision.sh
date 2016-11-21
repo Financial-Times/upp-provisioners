@@ -29,6 +29,8 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -vvv -i ~/.ansible_hosts /ans
   varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \
   api_host=${API_HOST:=api.ft.com} \
   ces_endpoint=${CES_ENDPOINT} \
+  upp_gateway_host=${UPP_GATEWAY_HOST:=upp-uk-gateway.in.ft.com} \
+  upp_gateway_port=${UPP_GATEWAY_PORT:=443} \
   environment_tag=${ENVIRONMENT_TAG:=default} \
   environment_type=${ENVIRONMENT_TYPE:=p} \
   splunk_hec_url=${SPLUNK_HEC_URL:=https://http-inputs-financialtimes.splunkcloud.com/services/collector/event} \
