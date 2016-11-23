@@ -77,6 +77,9 @@ export UPP_GATEWAY_PORT=443
 # Region to create the cluster.
 export AWS_DEFAULT_REGION=eu-west-1
 
+# ces_host is set to ces-test.in.ft.com by default in ansible vault. For prod clusters etcd key must be set manually
+# etcdctl set /ft/_credentials/ces/host {prod_host_url}
+
 ```
 
 
@@ -100,7 +103,6 @@ docker run \
     -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
-    -e "CES_ENDPOINT=$CES_ENDPOINT" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "UPP_GATEWAY_HOST=$UPP_GATEWAY_HOST" \

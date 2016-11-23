@@ -103,7 +103,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/username '{{ tme_username }}'                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/password '{{ tme_password }}'                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/token '{{ tme_token }}'                                                         >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/ces/endpoint '{{ ces_endpoint }}'                                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/ces/host '{{ ces_host }}'                                                           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}'                                 >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wp '{{ wp_contentApi_key }}'                                                        >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/kafka-bridge-pub-pre-prod/authorization_key '{{ pub_pre_prod_credentials }}'        >/dev/null 2>&1 || true;"
