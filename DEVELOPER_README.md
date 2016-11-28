@@ -67,8 +67,20 @@ export CLUSTER_BASIC_HTTP_CREDENTIALS=
 ## Pre-Prod: test.api.ft.com
 export API_HOST=
 
+## UPP Gateway hostname and port (not URL) to access varnish.
+## Prod: upp-uk-gateway.in.ft.com
+## Pre-Prod or lower: upp-uk-gateway-test.in.ft.com
+## Port will always be 443
+export UPP_GATEWAY_HOST=
+export UPP_GATEWAY_PORT=443
+
 # Region to create the cluster.
 export AWS_DEFAULT_REGION=eu-west-1
+
+## Cname to access CES host in aws/ftp2
+## Prod: ces.in.ft.com
+## Pre-Prod or lower: ces-test.in.ft.com
+export CES_HOST=
 
 ```
 
@@ -93,9 +105,10 @@ docker run \
     -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
     -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
-    -e "CES_ENDPOINT=$CES_ENDPOINT" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+    -e "UPP_GATEWAY_HOST=$UPP_GATEWAY_HOST" \
+    -e "UPP_GATEWAY_PORT=$UPP_GATEWAY_PORT" \
     coco/coco-provisioner
 ```
 
