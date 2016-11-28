@@ -71,14 +71,16 @@ export API_HOST=
 ## Prod: upp-uk-gateway.in.ft.com
 ## Pre-Prod or lower: upp-uk-gateway-test.in.ft.com
 ## Port will always be 443
-export UPP_GATEWAY_HOST=upp-uk-gateway.in.ft.com
+export UPP_GATEWAY_HOST=
 export UPP_GATEWAY_PORT=443
 
 # Region to create the cluster.
 export AWS_DEFAULT_REGION=eu-west-1
 
-# ces_host is set to ces-test.in.ft.com by default in ansible vault. For prod clusters etcd key must be set manually
-# etcdctl set /ft/_credentials/ces/host {prod_host_url}
+## Cname to access CES host in aws/ftp2
+## Prod: ces.in.ft.com
+## Pre-Prod or lower: ces-test.in.ft.com
+export CES_HOST=
 
 ```
 
