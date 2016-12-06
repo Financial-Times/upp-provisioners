@@ -1,0 +1,358 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  A template to spin up 3 EC2 instances.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: Network Configuration
+      Parameters:
+      - VPC
+      - AvailabilityZone
+      - SubnetId
+
+    - Label:
+        default: Amazon EC2 Instance Configuration
+      Parameters:
+      - InstanceType
+      - InstanceKey
+      - InstanceSubnet
+      - PrimarySecurityGroup
+      - AssignPublicIP
+
+    - Label:
+        default: FT Required Tags
+      Parameters:
+      - TagEnvironment
+      - TagTeamDL
+      - TagSystemCode
+      - TagIpCode
+      - TagDescription
+      - TagName
+      - TagStopSchedule
+      - Tagec2Powercycle
+
+    ParameterLabels:
+      InstanceType:
+        default: Instance Type
+      InstanceKey:
+        default: Instance EC2 User Key
+      InstanceSubnet:
+        default: Subnet instance is in
+      PrimarySecurityGroup:
+        default: Primary Security Group
+      AssignPublicIP:
+        default: Assign Public IP?
+
+Parameters:
+  VPC:
+    Description: This is the VPC the stack will be deployed inside.
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-36639c52
+
+  PrimarySecurityGroup:
+    Description: The primary security group used by instance.
+    Type: AWS::EC2::SecurityGroup::Id
+    Default: sg-5ca92c3a
+
+  AvailabilityZoneA:
+    Description: Availability zone A to install the resources into.
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: eu-west-1a
+
+  AvailabilityZoneB:
+    Description: Availability zone B to install the resources into.
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: eu-west-1b
+
+  AvailabilityZoneC:
+    Description: Availability zone C to install the resources into.
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: eu-west-1c
+
+  InstanceType:
+    Description: The type and size of the instance. Check documentation for recommended types.
+    Type: String
+    AllowedValues:
+    - t2.nano
+    - t2.micro
+    - t2.small
+    - t2.medium
+    - t2.large
+    - m4.large
+    - m4.xlarge
+    - m4.2xlarge
+    - m4.4xlarge
+    - m4.10xlarge
+    - m4.16xlarge
+    - m3.medium
+    - m3.large
+    - m3.xlarge
+    - m3.2xlarge
+    - c4.large
+    - c4.xlarge
+    - c4.2xlarge
+    - c4.4xlarge
+    - c4.8xlarge
+    - c3.large
+    - c3.xlarge
+    - c3.2xlarge
+    - c3.4xlarge
+    - c3.8xlarge
+    - p2.xlarge
+    - p2.8xlarge
+    - p2.16xlarge
+    - g2.2xlarge
+    - g2.8xlarge
+    - x1.32xlarge
+    - r3.large
+    - r3.xlarge
+    - r3.2xlarge
+    - r3.4xlarge
+    - r3.8xlarge
+    - i2.xlarge
+    - i2.2xlarge
+    - i2.4xlarge
+    - i2.8xlarge
+    - d2.xlarge
+    - d2.2xlarge
+    - d2.4xlarge
+    - d2.8xlarge
+    Default: t2.small
+
+  InstanceSubnetA:
+    Description: The subnets to assign to the Instance.
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-62731214
+
+  InstanceSubnetB:
+    Description: The subnets to assign to the Instance.
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-6f803737
+
+  InstanceSubnetC:
+    Description: The subnets to assign to the Instance.
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-44a1d420
+
+  InstanceKey:
+    Description: EC2User Key
+    Type: String
+    Default: jussi.heinonen.universal.publishing
+
+  AssignPublicIP:
+    Description: Whether to assign a public IP. This must be true for public subnets and false for private subnets
+    Type: String
+    Default: 'true'
+    AllowedValues:
+      - 'true'
+      - 'false'
+
+  ImageId:
+    Description: The AMI to be used, this MUST be an Amazon Linux image for the userdata to build correctly. A default is given.
+    Type: String
+    Default: ami-9398d3e0
+
+  TagEnvironment:
+    Description: Tag detail for the Environment
+    Type: String
+    Default: d
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+
+  TagTeamDL:
+    Description: Tag detail for the TeamDL
+    ConstraintDescription: There must be a valid email address for the TeamDL Topic
+    Type: String
+    Default: universal.publishing.platform@ft.com
+    AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+
+  TagSystemCode:
+    Description: Tag detail for the SystemCode
+    Type: String
+    Default: UPP Neo4j HA
+
+  TagIpCode:
+    Description: Tag detail for the ipCode
+    Type: String
+    Default: P196
+
+  TagDescription:
+    Description: Tag detail for the describing the instance.
+    Type: String
+    Default: Neo4j HA Cluster
+    AllowedPattern : ([a-zA-Z0-9].*)
+
+  TagStopSchedule:
+    Description: Tag detail for the when the instance is to be powered off.
+    Type: String
+    Default: never
+
+  Tagec2Powercycle:
+    Description: Tag detail for the when the insta
+    Type: String
+    Default: '{ "start": "0 8 * * 1-5", "stop": "55 17 * * 1-5" }'
+
+Conditions:
+  HasKeyName:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: InstanceKey
+
+Resources:
+  Neo4j1:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType:
+        Ref: InstanceType
+      AvailabilityZone:
+        Ref: AvailabilityZoneA
+      ImageId:
+        Ref: ImageId
+      KeyName:
+        Fn::If:
+        - HasKeyName
+        - Ref: InstanceKey
+        - Ref: AWS::NoValue
+      NetworkInterfaces:
+        - AssociatePublicIpAddress:
+            Ref: AssignPublicIP
+          DeviceIndex: "0"
+          GroupSet:
+            - Ref: PrimarySecurityGroup
+          SubnetId:
+            Ref: InstanceSubnetA
+      Tags:
+      - Key: environment
+        Value:
+          Ref: TagEnvironment
+      - Key: teamDL
+        Value:
+          Ref: TagTeamDL
+      - Key: systemCode
+        Value:
+          Ref: TagSystemCode
+      - Key: ipCode
+        Value:
+          Ref: TagIpCode
+      - Key: description
+        Value:
+          Ref: TagDescription
+      - Key: stopSchedule
+        Value:
+          Ref: TagStopSchedule
+      - Key: ec2Powercycle
+        Value:
+          Ref: Tagec2Powercycle
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+  Neo4j2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType:
+        Ref: InstanceType
+      AvailabilityZone:
+        Ref: AvailabilityZoneB
+      ImageId:
+        Ref: ImageId
+      KeyName:
+        Fn::If:
+        - HasKeyName
+        - Ref: InstanceKey
+        - Ref: AWS::NoValue
+      NetworkInterfaces:
+        - AssociatePublicIpAddress:
+            Ref: AssignPublicIP
+          DeviceIndex: "0"
+          GroupSet:
+            - Ref: PrimarySecurityGroup
+          SubnetId:
+            Ref: InstanceSubnetB
+      Tags:
+      - Key: environment
+        Value:
+          Ref: TagEnvironment
+      - Key: teamDL
+        Value:
+          Ref: TagTeamDL
+      - Key: systemCode
+        Value:
+          Ref: TagSystemCode
+      - Key: ipCode
+        Value:
+          Ref: TagIpCode
+      - Key: description
+        Value:
+          Ref: TagDescription
+      - Key: stopSchedule
+        Value:
+          Ref: TagStopSchedule
+      - Key: ec2Powercycle
+        Value:
+          Ref: Tagec2Powercycle
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+  Neo4j3:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType:
+        Ref: InstanceType
+      AvailabilityZone:
+        Ref: AvailabilityZoneC
+      ImageId:
+        Ref: ImageId
+      KeyName:
+        Fn::If:
+        - HasKeyName
+        - Ref: InstanceKey
+        - Ref: AWS::NoValue
+      NetworkInterfaces:
+        - AssociatePublicIpAddress:
+            Ref: AssignPublicIP
+          DeviceIndex: "0"
+          GroupSet:
+            - Ref: PrimarySecurityGroup
+          SubnetId:
+            Ref: InstanceSubnetC
+      Tags:
+      - Key: environment
+        Value:
+          Ref: TagEnvironment
+      - Key: teamDL
+        Value:
+          Ref: TagTeamDL
+      - Key: systemCode
+        Value:
+          Ref: TagSystemCode
+      - Key: ipCode
+        Value:
+          Ref: TagIpCode
+      - Key: description
+        Value:
+          Ref: TagDescription
+      - Key: stopSchedule
+        Value:
+          Ref: TagStopSchedule
+      - Key: ec2Powercycle
+        Value:
+          Ref: Tagec2Powercycle
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+
+Outputs:
+  InstanceId:
+    Description: InstanceId of the newly created EC2 instance
+    Value:
+      Ref: Neo4j1
+  PrivateIP:
+    Description: Private IP address of the newly created EC2 instance
+    Value:
+      !GetAtt Neo4j1.PrivateIp
