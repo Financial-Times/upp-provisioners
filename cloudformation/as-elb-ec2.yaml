@@ -1,0 +1,429 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Simple template for an ELB with sample monitoring and SNS for reporting.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: Network Configuration
+      Parameters:
+      - VPC
+      - SecurityGroups
+      - Subnets
+    - Label:
+        default: Amazon EC2 Auto Scaling Configuration
+      Parameters:
+      - InstanceType
+      - AvailabilityZone1
+      - InstanceKey
+    - Label:
+        default: ELB Configuration
+      Parameters:
+      - LoadBalancerName
+      - ListeningPort
+      - HostPort
+
+    ParameterLabels:
+      SecurityGroups:
+        default: Security Groups
+      AutoGroupAvailabilityZones:
+        deafault: Auto Group Availability Zones
+      InstanceType:
+        default: Instance Type
+      InstanceKey:
+        default: Instance EC2 User Key
+      SecurityGroup:
+        default: Security Groups
+      LoadBalancerName:
+        default: Load Balancer Name
+      ListeningPort:
+        default: ELB Listening Port
+      HostPort:
+        default: Host Connection Port
+
+Parameters:
+  VPC:
+    Description: This is the VPC the stack will be deployed inside.
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-36639c52
+
+  SecurityGroup:
+    Description: The primary security group used by instance.
+    Type: AWS::EC2::SecurityGroup::Id
+    Default: sg-5ca92c3a
+
+  LoadBalancerName1:
+    Description: Name of the load balancer in auto-scaling group 1
+    Type: String
+    MinLength: 1
+    MaxLength: 41
+    Default: Neo4j-1
+  LoadBalancerName2:
+    Description: Name of the load balancer in auto-scaling group 2
+    Type: String
+    MinLength: 1
+    MaxLength: 41
+    Default: Neo4j-2
+  LoadBalancerName3:
+    Description: Name of the load balancer in auto-scaling group 3
+    Type: String
+    MinLength: 1
+    MaxLength: 41
+    Default: Neo4j-3
+
+  Subnet1:
+    Description: The subnets to assign to the Instance.
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-62731214
+  Subnet2:
+    Description: The subnets to assign to the Instance.
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-6f803737
+  Subnet3:
+    Description: The subnets to assign to the Instance.
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-44a1d420
+
+  HostPort:
+    Description: The Listening port on the instance
+    Type: Number
+    Default: 7474
+
+  ListeningPort:
+    Description: The Listening port on the Loadbalancer
+    Type: Number
+    Default: 7474
+
+  InstanceType:
+    Description: The type and size of the instance. Check documentation for recommended types.
+    Type: String
+    AllowedValues:
+    - t2.nano
+    - t2.micro
+    - t2.small
+    - t2.medium
+    - t2.large
+    - m4.large
+    - m4.xlarge
+    - m4.2xlarge
+    - m4.4xlarge
+    - m4.10xlarge
+    - m4.16xlarge
+    - c4.large
+    - c4.xlarge
+    - c4.2xlarge
+    - c4.4xlarge
+    - c4.8xlarge
+    - c3.large
+    - c3.xlarge
+    - c3.2xlarge
+    - c3.4xlarge
+    - c3.8xlarge
+    - g2.2xlarge
+    - g2.8xlarge
+    - r3.large
+    - r3.xlarge
+    - r3.2xlarge
+    - r3.4xlarge
+    - r3.8xlarge
+    - i2.xlarge
+    - i2.2xlarge
+    - i2.4xlarge
+    - i2.8xlarge
+    - d2.xlarge
+    - d2.2xlarge
+    - d2.4xlarge
+    - d2.8xlarge
+    Default: t2.small
+
+  AvailabilityZone1:
+    Description: Availability zone to install the resources into.
+    Type: String
+    Default: eu-west-1a
+  AvailabilityZone2:
+    Description: Availability zone to install the resources into.
+    Type: String
+    Default: eu-west-1b
+  AvailabilityZone3:
+    Description: Availability zone to install the resources into.
+    Type: String
+    Default: eu-west-1c
+
+  InstanceKey:
+    Description: EC2User Key
+    Type: String
+    Default: jussi.heinonen.universal.publishing
+
+  ImageId:
+    Description: The AMI to be used, this MUST be an Amazon Linux image for the userdata to build correctly. A default is given.
+    Type: String
+    Default: ami-9398d3e0
+
+  Subnet1:
+    Description: The subnets to assign to the Instance.
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-62731214
+  Subnet2:
+    Description: The subnets to assign to the Instance.
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-6f803737
+  Subnet3:
+    Description: The subnets to assign to the Instance.
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-44a1d420
+
+  IamInstanceProfile:
+    Description: What IAM profile to give to this instance - for future use. Currently has to be FT-Linux-Role
+    Type: String
+    Default: FT-Linux-Role
+
+  TagEnvironment:
+    Description: Tag detail for the Environment
+    Type: String
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+      - 'int'
+    Default: d
+  TagTeamDL:
+    Description: Tag of the TeamDL.
+    Type: String
+    ConstraintDescription: There must be a valid email address for the TeamDL
+    AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    Default: universal.publishing.platform@ft.com
+  TagSystemCode:
+    Description: Tag detail for the SystemCode
+    Type: String
+    Default: UPP Neo4j HA
+  TagIpCode:
+    Description: Tag detail for the ipCode
+    Type: String
+    Default: P196
+  TagDescription:
+    Description: Tag detail for the describing the instance.
+    Type: String
+    Default: Neo4j HA Cluster
+  TagName:
+    Description: Tag detail for the Name used in the console of the instance. NOT THE HOSTNAME OF THE INSTANCE.
+    Type: String
+    Default: Neo4j HA Cluster
+  TagStopSchedule:
+    Description: Tag detail for the when the instance is to be powered off.
+    Type: String
+    Default: none
+
+Conditions:
+  HasKeyName:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: InstanceKey
+
+Resources:
+  #auto-scaling groups
+  Neo4jGroup1:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn:
+    - LoadBalancer1
+    - LoadBalancer2
+    - LoadBalancer3
+    Properties:
+      AvailabilityZones:
+        - !Ref AvailabilityZone1
+      LaunchConfigurationName:
+        Ref: LaunchConfig
+      MinSize: '1'
+      MaxSize: '1'
+      LoadBalancerNames:
+      - Ref: LoadBalancer1
+      VPCZoneIdentifier:
+        - !Ref Subnet1
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+        PropagateAtLaunch: true
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+        PropagateAtLaunch: true
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+        PropagateAtLaunch: true
+      - Key: ipCode
+        Value: !Ref TagIpCode
+        PropagateAtLaunch: true
+      - Key: description
+        Value: !Ref TagDescription
+        PropagateAtLaunch: true
+      - Key: Name
+        Value: !Ref TagName
+        PropagateAtLaunch: true
+      - Key: stopSchedule
+        Value: !Ref TagStopSchedule
+        PropagateAtLaunch: true
+  Neo4jGroup2:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn:
+      - LoadBalancer1
+      - LoadBalancer2
+      - LoadBalancer3
+    Properties:
+      AvailabilityZones:
+        - !Ref AvailabilityZone2
+      LaunchConfigurationName:
+        Ref: LaunchConfig
+      MinSize: '1'
+      MaxSize: '1'
+      LoadBalancerNames:
+      - Ref: LoadBalancer2
+      VPCZoneIdentifier:
+        - !Ref Subnet2
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+        PropagateAtLaunch: true
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+        PropagateAtLaunch: true
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+        PropagateAtLaunch: true
+      - Key: ipCode
+        Value: !Ref TagIpCode
+        PropagateAtLaunch: true
+      - Key: description
+        Value: !Ref TagDescription
+        PropagateAtLaunch: true
+      - Key: Name
+        Value: !Ref TagName
+        PropagateAtLaunch: true
+      - Key: stopSchedule
+        Value: !Ref TagStopSchedule
+        PropagateAtLaunch: true
+  Neo4jGroup3:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn:
+      - LoadBalancer1
+      - LoadBalancer2
+      - LoadBalancer3
+    Properties:
+      AvailabilityZones:
+        - !Ref AvailabilityZone3
+      LaunchConfigurationName:
+        Ref: LaunchConfig
+      MinSize: '1'
+      MaxSize: '1'
+      LoadBalancerNames:
+      - Ref: LoadBalancer3
+      VPCZoneIdentifier:
+        - !Ref Subnet3
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+        PropagateAtLaunch: true
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+        PropagateAtLaunch: true
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+        PropagateAtLaunch: true
+      - Key: ipCode
+        Value: !Ref TagIpCode
+        PropagateAtLaunch: true
+      - Key: description
+        Value: !Ref TagDescription
+        PropagateAtLaunch: true
+      - Key: Name
+        Value: !Ref TagName
+        PropagateAtLaunch: true
+      - Key: stopSchedule
+        Value: !Ref TagStopSchedule
+        PropagateAtLaunch: true
+
+  LaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      SecurityGroups:
+        - !Ref SecurityGroup
+      InstanceType: !Ref InstanceType
+      ImageId: ami-31328842
+      AssociatePublicIpAddress: true
+      KeyName:
+        Fn::If:
+        - HasKeyName
+        - Ref: InstanceKey
+        - Ref: AWS::NoValue
+      IamInstanceProfile: !Ref IamInstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          #/usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh .
+          #bash ./bootstrap.sh -s ${AvailabilityZone1} -e ${LoadBalancer1}
+          #yum install -y httpd
+          #echo "TestPage" > /var/www/html/index.html
+          #service httpd start
+
+  #Load Balancers
+  LoadBalancer1:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      LoadBalancerName: !Ref LoadBalancerName1
+      Listeners:
+      - InstancePort: !Ref HostPort
+        LoadBalancerPort: !Ref ListeningPort
+        Protocol: HTTP
+      Subnets:
+        - !Ref Subnet1
+      SecurityGroups:
+        - !Ref SecurityGroup
+      ConnectionDrainingPolicy:
+        Enabled: 'true'
+        Timeout: '20'
+      Scheme: internal
+  LoadBalancer2:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      LoadBalancerName: !Ref LoadBalancerName2
+      Listeners:
+      - InstancePort: !Ref HostPort
+        LoadBalancerPort: !Ref ListeningPort
+        Protocol: HTTP
+      Subnets:
+        - !Ref Subnet2
+      SecurityGroups:
+        - !Ref SecurityGroup
+      ConnectionDrainingPolicy:
+        Enabled: 'true'
+        Timeout: '20'
+      Scheme: internal
+  LoadBalancer3:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      LoadBalancerName: !Ref LoadBalancerName3
+      Listeners:
+      - InstancePort: !Ref HostPort
+        LoadBalancerPort: !Ref ListeningPort
+        Protocol: HTTP
+      Subnets:
+        - !Ref Subnet3
+      SecurityGroups:
+        - !Ref SecurityGroup
+      ConnectionDrainingPolicy:
+        Enabled: 'true'
+        Timeout: '20'
+      Scheme: internal
+
+Outputs:
+  ELBDNS:
+    Description: Private IP address of the newly created EC2 instance
+    Value: !GetAtt LoadBalancer1.DNSName
+
+  InstanceId:
+    Description: InstanceId of the newly created EC2 instance
+    Value: !Ref LaunchConfig
+
+  #PrivateIP:
+  #  Description: Private IP address of the newly created EC2 instance
+  #  Value: !GetAtt MyAutoInstance.PrivateIp
