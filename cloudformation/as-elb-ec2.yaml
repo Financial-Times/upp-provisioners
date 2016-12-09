@@ -89,12 +89,12 @@ Parameters:
   HostPort:
     Description: The Listening port on the instance
     Type: Number
-    Default: 7474
+    Default: 5001
 
   ListeningPort:
     Description: The Listening port on the Loadbalancer
     Type: Number
-    Default: 7474
+    Default: 5001
 
   InstanceType:
     Description: The type and size of the instance. Check documentation for recommended types.
@@ -359,11 +359,11 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          #/usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh .
+          # Update Name tag
+          /usr/bin/aws ec2 --region $(/usr/bin/wget -q -O - http://169.254.169.254/latest/meta-data/hostname | cut -d . -f 2) delete-tags --resources $(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id) --tags Key=Name
+          /usr/bin/aws ec2 --region $(/usr/bin/wget -q -O - http://169.254.169.254/latest/meta-data/hostname | cut -d . -f 2) create-tags --resources $(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id) --tags Key=Name,Value=$(wget -q -O - http://169.254.169.254/latest/meta-data/hostname)
+          /usr/bin/yum install -y puppet3
           #bash ./bootstrap.sh -s ${AvailabilityZone1} -e ${LoadBalancer1}
-          #yum install -y httpd
-          #echo "TestPage" > /var/www/html/index.html
-          #service httpd start
 
   #Load Balancers
   LoadBalancer1:
@@ -373,7 +373,7 @@ Resources:
       Listeners:
       - InstancePort: !Ref HostPort
         LoadBalancerPort: !Ref ListeningPort
-        Protocol: HTTP
+        Protocol: TCP
       Subnets:
         - !Ref Subnet1
       SecurityGroups:
@@ -389,7 +389,7 @@ Resources:
       Listeners:
       - InstancePort: !Ref HostPort
         LoadBalancerPort: !Ref ListeningPort
-        Protocol: HTTP
+        Protocol: TCP
       Subnets:
         - !Ref Subnet2
       SecurityGroups:
@@ -405,7 +405,7 @@ Resources:
       Listeners:
       - InstancePort: !Ref HostPort
         LoadBalancerPort: !Ref ListeningPort
-        Protocol: HTTP
+        Protocol: TCP
       Subnets:
         - !Ref Subnet3
       SecurityGroups:
