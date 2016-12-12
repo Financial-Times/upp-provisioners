@@ -1,3 +1,7 @@
 #!/bin/bash
 
-echo "Happy Mondays!"
+OUTPUT="/tmp/output.txt"
+
+echo "Happy Mondays!" > ${OUTPUT}
+puppet --version >> ${OUTPUT}
+git --version >> ${OUTPUT}
