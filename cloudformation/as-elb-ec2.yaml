@@ -157,6 +157,11 @@ Parameters:
     Type: String
     Default: '10'
 
+  DeploymentScriptURL:
+    Description: Deployment script URL
+    Type: String
+    Default: https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/deploy.sh
+
   InstanceKey:
     Description: EC2User Key
     Type: String
@@ -376,7 +381,8 @@ Resources:
           /sbin/mkfs.ext4 /dev/sdc
           # Install packages for deployment
           /usr/bin/yum install -y puppet3 git
-          # Example command showing how to reference CloudFormation template variables in userdata ./bootstrap.sh -s ${AvailabilityZone1} -e ${LoadBalancer1}
+          # Pull and execute deployment script
+          /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash
 
   #Load Balancers
   LoadBalancer1:
