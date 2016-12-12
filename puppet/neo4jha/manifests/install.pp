@@ -14,6 +14,10 @@ class neo4jha::install {
     ensure  => link,
     target  => '/usr/lib/jvm/jre-1.8.0-openjdk/bin/java'
   }
+  file { '/etc/alternatives/jre':
+    ensure  => link,
+    target  => '/usr/lib/jvm/jre-1.8.0-openjdk'
+  }
 
 
 }
