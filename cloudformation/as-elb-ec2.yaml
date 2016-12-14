@@ -224,7 +224,7 @@ Parameters:
   TagStopSchedule:
     Description: Tag detail for the when the instance is to be powered off.
     Type: String
-    Default: none
+    Default: nostop
 
 Conditions:
   HasKeyName:
