@@ -60,6 +60,7 @@ docker run \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
+    -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
     coco/coco-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'

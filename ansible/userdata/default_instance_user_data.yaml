@@ -124,6 +124,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/upp-gateway/host '{{upp_gateway_host}}'                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/upp-gateway/port '{{upp_gateway_port}}'                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/ces/host '{{ces_host}}'                                                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/aws_es_endpoint '{{aws_es_endpoint}}'                                                     >/dev/null 2>&1 || true;"
     - name: bootstrap.service
       command: start
       content: |
