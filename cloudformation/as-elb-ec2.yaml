@@ -1,7 +1,7 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
 Description: >
-  Template to spin-up Neo4j HA cluster and ELBs
+  Template to spin-up Neo4j HA cluster, ELBs and an ALB
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -23,8 +23,6 @@ Metadata:
         default: ELB Configuration
       Parameters:
       - LoadBalancerName
-      - ListeningPort
-      - HostPort
 
     ParameterLabels:
       SecurityGroups:
@@ -41,14 +39,12 @@ Metadata:
         default: Load Balancer Name
       ListeningPort:
         default: ELB Listening Port
-      HostPort:
-        default: Host Connection Port
 
 Parameters:
   VPC:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id
-    Default: vpc-36639c52
+    Default: vpc-5674e132
 
   SecurityGroup:
     Description: The primary security group used by instance.
@@ -86,16 +82,6 @@ Parameters:
     Description: The subnets to assign to the Instance.
     Type: AWS::EC2::Subnet::Id
     Default: subnet-44a1d420
-
-  HostPort:
-    Description: The Listening port on the instance
-    Type: Number
-    Default: 5001
-
-  ListeningPort:
-    Description: The Listening port on the Loadbalancer
-    Type: Number
-    Default: 5001
 
   InstanceType:
     Description: The type and size of the instance. Check documentation for recommended types.
@@ -241,6 +227,7 @@ Resources:
     - LoadBalancer1
     - LoadBalancer2
     - LoadBalancer3
+    - Alb
     Properties:
       AvailabilityZones:
         - !Ref AvailabilityZone1
@@ -250,6 +237,9 @@ Resources:
       MaxSize: '1'
       LoadBalancerNames:
       - Ref: LoadBalancer1
+      TargetGroupARNs:
+      - Ref: AlbTargetGroup7474
+      - Ref: AlbTargetGroup7687
       VPCZoneIdentifier:
         - !Ref Subnet1
       Tags:
@@ -280,6 +270,7 @@ Resources:
       - LoadBalancer1
       - LoadBalancer2
       - LoadBalancer3
+      - Alb
     Properties:
       AvailabilityZones:
         - !Ref AvailabilityZone2
@@ -289,6 +280,9 @@ Resources:
       MaxSize: '1'
       LoadBalancerNames:
       - Ref: LoadBalancer2
+      TargetGroupARNs:
+      - Ref: AlbTargetGroup7474
+      - Ref: AlbTargetGroup7687
       VPCZoneIdentifier:
         - !Ref Subnet2
       Tags:
@@ -319,6 +313,7 @@ Resources:
       - LoadBalancer1
       - LoadBalancer2
       - LoadBalancer3
+      - Alb
     Properties:
       AvailabilityZones:
         - !Ref AvailabilityZone3
@@ -328,6 +323,9 @@ Resources:
       MaxSize: '1'
       LoadBalancerNames:
       - Ref: LoadBalancer3
+      TargetGroupARNs:
+      - Ref: AlbTargetGroup7474
+      - Ref: AlbTargetGroup7687
       VPCZoneIdentifier:
         - !Ref Subnet3
       Tags:
@@ -374,25 +372,128 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          # Update Name tag
-          /usr/bin/aws ec2 --region $(/usr/bin/wget -q -O - http://169.254.169.254/latest/meta-data/hostname | cut -d . -f 2) delete-tags --resources $(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id) --tags Key=Name
-          /usr/bin/aws ec2 --region $(/usr/bin/wget -q -O - http://169.254.169.254/latest/meta-data/hostname | cut -d . -f 2) create-tags --resources $(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id) --tags Key=Name,Value=$(wget -q -O - http://169.254.169.254/latest/meta-data/hostname)
-          # Create ext4 filesystem on EBS volume
-          /sbin/mkfs.ext4 /dev/sdc
-          # Install packages for deployment
-          /usr/bin/yum install -y puppet3 git
           # Pull and execute deployment script
           /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash
 
-  #Load Balancers
+  #Application Load Balancers
+  Alb:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Name: !Sub ${AWS::StackName}-neo4j-alb
+      Scheme: internet-facing
+      SecurityGroups:
+        - sg-5ca92c3a
+        - sg-7bea721d
+      Subnets:
+        - !Ref Subnet1
+        - !Ref Subnet2
+        - !Ref Subnet3
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+  AlbTargetGroup7474:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub ${AWS::StackName}-neo4j-7474
+      Port: 7474
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      HealthCheckIntervalSeconds: 5
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /
+      HealthCheckPort: 7474
+      HealthCheckTimeoutSeconds: 3
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+  AlbTargetGroup7687:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub ${AWS::StackName}-neo4j-7687
+      Port: 7687
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      HealthCheckIntervalSeconds: 5
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /
+      HealthCheckPort: 7474
+      HealthCheckTimeoutSeconds: 3
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+  AlbListener7474:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: AlbTargetGroup7474
+      LoadBalancerArn:
+        Ref: Alb
+      Port: 80
+      Protocol: HTTP
+  AlbListener7687:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: AlbTargetGroup7687
+      LoadBalancerArn:
+        Ref: Alb
+      Port: 7687
+      Protocol: HTTP
+
+  #Elastic Load Balancers
   LoadBalancer1:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-neo1
+      LoadBalancerName: !Sub ${AWS::StackName}-neo1-ELB
       Listeners:
-      - InstancePort: !Ref HostPort
-        LoadBalancerPort: !Ref ListeningPort
-        Protocol: TCP
+      - LoadBalancerPort: '7473'
+        InstancePort: '7473'
+        Protocol: 'HTTP'
+      - LoadBalancerPort: '7474'
+        InstancePort: '7474'
+        Protocol: 'HTTP'
+      - LoadBalancerPort: '7687'
+        InstancePort: '7687'
+        Protocol: 'HTTP'
+      - LoadBalancerPort: '5000'
+        InstancePort: '5000'
+        Protocol: 'TCP'
+      - LoadBalancerPort: '6000'
+        InstancePort: '6000'
+        Protocol: 'TCP'
+      - LoadBalancerPort: '7000'
+        InstancePort: '7000'
+        Protocol: 'TCP'
       Subnets:
         - !Ref Subnet1
       SecurityGroups:
@@ -401,14 +502,38 @@ Resources:
         Enabled: 'true'
         Timeout: '20'
       Scheme: internal
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
   LoadBalancer2:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-neo2
+      LoadBalancerName: !Sub ${AWS::StackName}-neo2-ELB
       Listeners:
-      - InstancePort: !Ref HostPort
-        LoadBalancerPort: !Ref ListeningPort
-        Protocol: TCP
+      - LoadBalancerPort: '7473'
+        InstancePort: '7473'
+        Protocol: 'HTTP'
+      - LoadBalancerPort: '7474'
+        InstancePort: '7474'
+        Protocol: 'HTTP'
+      - LoadBalancerPort: '7687'
+        InstancePort: '7687'
+        Protocol: 'HTTP'
+      - LoadBalancerPort: '5000'
+        InstancePort: '5000'
+        Protocol: 'TCP'
+      - LoadBalancerPort: '6000'
+        InstancePort: '6000'
+        Protocol: 'TCP'
+      - LoadBalancerPort: '7000'
+        InstancePort: '7000'
+        Protocol: 'TCP'
       Subnets:
         - !Ref Subnet2
       SecurityGroups:
@@ -417,14 +542,38 @@ Resources:
         Enabled: 'true'
         Timeout: '20'
       Scheme: internal
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
   LoadBalancer3:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-neo3
+      LoadBalancerName: !Sub ${AWS::StackName}-neo3-ELB
       Listeners:
-      - InstancePort: !Ref HostPort
-        LoadBalancerPort: !Ref ListeningPort
-        Protocol: TCP
+      - LoadBalancerPort: '7473'
+        InstancePort: '7473'
+        Protocol: 'HTTP'
+      - LoadBalancerPort: '7474'
+        InstancePort: '7474'
+        Protocol: 'HTTP'
+      - LoadBalancerPort: '7687'
+        InstancePort: '7687'
+        Protocol: 'HTTP'
+      - LoadBalancerPort: '5000'
+        InstancePort: '5000'
+        Protocol: 'TCP'
+      - LoadBalancerPort: '6000'
+        InstancePort: '6000'
+        Protocol: 'TCP'
+      - LoadBalancerPort: '7000'
+        InstancePort: '7000'
+        Protocol: 'TCP'
       Subnets:
         - !Ref Subnet3
       SecurityGroups:
@@ -433,6 +582,15 @@ Resources:
         Enabled: 'true'
         Timeout: '20'
       Scheme: internal
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
 
 Outputs:
   ELBDNS:
@@ -442,6 +600,7 @@ Outputs:
   InstanceId:
     Description: InstanceId of the newly created EC2 instance
     Value: !Ref LaunchConfig
+
 
   #PrivateIP:
   #  Description: Private IP address of the newly created EC2 instance
