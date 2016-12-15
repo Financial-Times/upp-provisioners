@@ -146,7 +146,7 @@ Parameters:
   DeploymentScriptURL:
     Description: Deployment script URL
     Type: String
-    Default: https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/deploy.sh
+    Default: https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/bootstrap.sh
 
   InstanceKey:
     Description: EC2User Key
