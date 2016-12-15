@@ -10,8 +10,8 @@
 
 class neo4jha ($profile = 'dev') {
   $parentdir = '/opt/neo4j'
-  $package      = "neo4j-enterprise-3.1.0-RC1-unix.tar.gz"
-  $neo4j_home   = "${parentdir}/neo4j-enterprise-3.1.0-RC1"
+  $package      = "neo4j-enterprise-3.1.0-unix.tar.gz"
+  $neo4j_home   = "${parentdir}/neo4j-enterprise-3.1.0"
   $downloadurl  = "https://neo4j.com/artifact.php?name=${package}"
   $username     = 'neo4j'
 
