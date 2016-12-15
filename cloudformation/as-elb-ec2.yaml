@@ -558,7 +558,7 @@ Resources:
       Listeners:
       - LoadBalancerPort: '7473'
         InstancePort: '7473'
-        Protocol: 'HTTP'
+        Protocol: 'HTTPS'
       - LoadBalancerPort: '7474'
         InstancePort: '7474'
         Protocol: 'HTTP'
