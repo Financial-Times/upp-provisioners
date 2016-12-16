@@ -18,7 +18,7 @@ dbms.directories.import=import
 
 # Whether requests to Neo4j are authenticated.
 # To disable authentication, uncomment this line
-#dbms.security.auth_enabled=false
+dbms.security.auth_enabled=false
 
 # Enable this to be able to upgrade a store from an older version.
 #dbms.allow_format_migration=true
@@ -27,8 +27,8 @@ dbms.directories.import=import
 # calculated based on available system resources.
 # Uncomment these lines to set specific initial and maximum
 # heap size.
-#dbms.memory.heap.initial_size=512m
-#dbms.memory.heap.max_size=512m
+dbms.memory.heap.initial_size=<%= scope['neo4jha::java_xms'] %>
+dbms.memory.heap.max_size=<%= scope['neo4jha::java_xmx'] %>
 
 # The amount of memory to use for mapping the store files, in bytes (or
 # kilobytes with the 'k' suffix, megabytes with 'm' and gigabytes with 'g').

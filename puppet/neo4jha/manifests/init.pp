@@ -14,6 +14,8 @@ class neo4jha ($profile = 'dev') {
   $neo4j_home   = "${parentdir}/neo4j-enterprise-3.1.0"
   $downloadurl  = "https://neo4j.com/artifact.php?name=${package}"
   $username     = 'neo4j'
+  $java_xms     = '512m'
+  $java_xmx     = '768m'
 
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 

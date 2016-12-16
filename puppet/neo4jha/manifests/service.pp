@@ -4,6 +4,7 @@ class neo4jha::service {
     enable      => true,
     ensure      => running,
     hasrestart  => true,
+    subscribe   => File["${::neo4jha::neo4j_home}/conf/neo4j.conf"]
   }
 
 }
