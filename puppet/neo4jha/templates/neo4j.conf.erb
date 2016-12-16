@@ -46,6 +46,13 @@ dbms.memory.heap.max_size=<%= scope['neo4jha::java_xmx'] %>
 # To allow remote backups, uncomment this line:
 #dbms.backup.address=0.0.0.0:6362
 
+# Graphite integration
+# http://neo4j.com/docs/operations-manual/current/monitoring/metrics/
+metrics.graphite.enabled=<%= scope['neo4jha::gr_enabled'] %>
+metrics.graphite.server=<%= scope['neo4jha::gr_host'] %>
+metrics.graphite.interval=<%= scope['neo4jha::gr_interval'] %>
+metrics.prefix=<%= scope['neo4jha::gr_namespace'] %>
+
 #*****************************************************************
 # Network connector configuration
 #*****************************************************************

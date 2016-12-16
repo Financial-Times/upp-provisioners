@@ -16,6 +16,11 @@ class neo4jha ($profile = 'dev') {
   $username     = 'neo4j'
   $java_xms     = '512m'
   $java_xmx     = '768m'
+  $stackname    = 'local'
+  $gr_host      = 'graphite.ft.com:2003'
+  $gr_namespace = "content.dev.neo4jha.${stackname}"
+  $gr_interval  = "1m"
+  $gr_enabled   = "false"
 
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
