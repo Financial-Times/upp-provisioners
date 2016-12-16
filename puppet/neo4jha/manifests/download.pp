@@ -18,7 +18,7 @@ class neo4jha::download {
       user    => "${::neo4jha::username}",
       cwd     => "${::neo4jha::parentdir}",
       unless  => "test -f ${::neo4jha::parentdir}/${::neo4jha::package}",
-      command => "cp /mnt/neo/neo4j-enterprise-3.1.0-RC1-unix.tar.gz .",
+      command => "cp /mnt/neo/${::neo4jha::package} .",
       require => File["$::neo4jha::parentdir"]
     }
   }
