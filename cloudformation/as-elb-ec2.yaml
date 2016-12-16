@@ -474,7 +474,7 @@ Resources:
   LoadBalancer1:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-neo1-ELB
+      LoadBalancerName: !Sub ${AWS::StackName}-neo4j-ELB-1
       Listeners:
       - LoadBalancerPort: '7473'
         InstancePort: '7473'
@@ -514,7 +514,7 @@ Resources:
   LoadBalancer2:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-neo2-ELB
+      LoadBalancerName: !Sub ${AWS::StackName}-neo4j-ELB-2
       Listeners:
       - LoadBalancerPort: '7473'
         InstancePort: '7473'
@@ -554,7 +554,7 @@ Resources:
   LoadBalancer3:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-neo3-ELB
+      LoadBalancerName: !Sub ${AWS::StackName}-neo4j-ELB-3
       Listeners:
       - LoadBalancerPort: '7473'
         InstancePort: '7473'
