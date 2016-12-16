@@ -8,7 +8,7 @@ STACKNAME=$(getStackName)
 
 time for each in $(aws elb --region eu-west-1 describe-load-balancers --output text --query LoadBalancerDescriptions[].DNSName); do
 #time for each in $(echo $CMD); do
-  if [[ "$(echo $each | grep -i "${STACKNAME}" > /dev/null; echo $?)" == "0" ]]; then
+  if [[ "$(echo $each | grep -i "internal-${STACKNAME}" > /dev/null; echo $?)" == "0" ]]; then
     info append
     ELBS+=( "$each" )
   fi
