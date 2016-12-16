@@ -55,19 +55,19 @@ Parameters:
     Description: Name of the load balancer in auto-scaling group 1
     Type: String
     MinLength: 1
-    MaxLength: 41
+    MaxLength: 32
     Default: Neo4j-1
   LoadBalancerName2:
     Description: Name of the load balancer in auto-scaling group 2
     Type: String
     MinLength: 1
-    MaxLength: 41
+    MaxLength: 32
     Default: Neo4j-2
   LoadBalancerName3:
     Description: Name of the load balancer in auto-scaling group 3
     Type: String
     MinLength: 1
-    MaxLength: 41
+    MaxLength: 32
     Default: Neo4j-3
 
   Subnet1:
@@ -474,7 +474,7 @@ Resources:
   LoadBalancer1:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-neo4j-ELB-1
+      LoadBalancerName: !Sub ${AWS::StackName}-ELB-1
       Listeners:
       - LoadBalancerPort: '7473'
         InstancePort: '7473'
@@ -514,7 +514,7 @@ Resources:
   LoadBalancer2:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-neo4j-ELB-2
+      LoadBalancerName: !Sub ${AWS::StackName}-ELB-2
       Listeners:
       - LoadBalancerPort: '7473'
         InstancePort: '7473'
@@ -554,7 +554,7 @@ Resources:
   LoadBalancer3:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-neo4j-ELB-3
+      LoadBalancerName: !Sub ${AWS::StackName}-ELB-3
       Listeners:
       - LoadBalancerPort: '7473'
         InstancePort: '7473'
