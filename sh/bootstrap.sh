@@ -26,7 +26,7 @@ else
 fi
 
 #Lookup ELB DNS names for this stack
-INITIAL_HOSTS=$(./initial_hosts.sh)
+INITIAL_HOSTS=$(sh/initial_hosts.sh)
 if [[ -z ${INITIAL_HOSTS} ]]; then
   echo "Failed to lookup initial hosts. Exit 1." >> ${OUTPUT}
   exit 1
