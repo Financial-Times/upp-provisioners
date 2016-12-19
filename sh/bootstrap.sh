@@ -17,7 +17,7 @@ puppet --version >> ${OUTPUT}
 git --version >> ${OUTPUT}
 
 cd /tmp
-if [[ -d "./up-neo4j-ha-cluster.git" ]]; then
+if [[ -d "./up-neo4j-ha-cluster" ]]; then
     cd up-neo4j-ha-cluster/
     git pull
 else
