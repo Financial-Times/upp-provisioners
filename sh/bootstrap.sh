@@ -24,7 +24,12 @@ if [[ -z ${INITIAL_HOSTS} ]]; then
 fi
 
 cd /tmp
-git clone https://github.com/Financial-Times/up-neo4j-ha-cluster.git >> ${OUTPUT}
-cd up-neo4j-ha-cluster/
+if [[ -d "./up-neo4j-ha-cluster.git" ]]; then
+    cd up-neo4j-ha-cluster/
+    git pull
+else
+  git clone https://github.com/Financial-Times/up-neo4j-ha-cluster.git >> ${OUTPUT}
+  cd up-neo4j-ha-cluster/
+fi
 sudo puppet apply --modulepath ./puppet -e "class { 'neo4jha': profile => 'prod', initial_hosts => "${INITIAL_HOSTS}" }" >> ${OUTPUT}
 echo  "END - $(date)" >> ${OUTPUT}
