@@ -32,5 +32,5 @@ if [[ -z ${INITIAL_HOSTS} ]]; then
   exit 1
 fi
 
-sudo puppet apply --modulepath ./puppet -e "class { 'neo4jha': profile => 'prod', initial_hosts => "${INITIAL_HOSTS}" }" >> ${OUTPUT}
+sudo puppet apply --modulepath ./puppet -e "class { 'neo4jha': profile => 'prod', initial_hosts => \"${INITIAL_HOSTS}\" }" >> ${OUTPUT}
 echo  "END - $(date)" >> ${OUTPUT}
