@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OUTPUT="/tmp/deployment.log"
+OUTPUT="/tmp/bootstrap.log"
 
 echo  "BEGIN - $(date)" > ${OUTPUT}
 # Update Name tag
@@ -30,6 +30,8 @@ INITIAL_HOSTS=$(sh/initial_hosts.sh)
 if [[ -z ${INITIAL_HOSTS} ]]; then
   echo "Failed to lookup initial hosts. Exit 1." >> ${OUTPUT}
   exit 1
+else
+  echo "INITIAL_HOSTS=${INITIAL_HOSTS}" >> ${OUTPUT}
 fi
 
 sudo puppet apply --modulepath ./puppet -e "class { 'neo4jha': profile => 'prod', initial_hosts => \"${INITIAL_HOSTS}\" }" >> ${OUTPUT}
