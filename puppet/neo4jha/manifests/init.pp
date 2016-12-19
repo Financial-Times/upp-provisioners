@@ -23,6 +23,7 @@ class neo4jha ( $profile = 'dev',
   $gr_namespace   = "content.dev.neo4jha.${stackname}"
   $gr_interval    = "1m"
   $gr_enabled     = "false"
+  $log_level      = "DEBUG"
 
 
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }

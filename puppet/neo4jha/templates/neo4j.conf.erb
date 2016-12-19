@@ -139,7 +139,7 @@ dbms.connector.https.listen_address=:7473
 # The security log is always enabled when `dbms.security.auth_enabled=true`, and resides in `logs/security.log`.
 
 # Log level for the security log. One of DEBUG, INFO, WARN and ERROR.
-#dbms.logs.security.level=INFO
+dbms.logs.security.level=<%= scope['neo4jha::log_level'] %>
 
 # Threshold for rotation of the security log.
 #dbms.logs.security.rotation.size=20m
