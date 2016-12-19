@@ -5,7 +5,7 @@ source $(dirname $0)/functions.sh || echo "Failed to source functions"
 declare -a ELBS
 STACKNAME=$(getStackName)
 
-time for each in $(aws elb --region $(getRegion) describe-load-balancers --output text --query LoadBalancerDescriptions[].DNSName); do
+for each in $(aws elb --region $(getRegion) describe-load-balancers --output text --query LoadBalancerDescriptions[].DNSName); do
   if [[ "$(echo $each | grep -i "internal-${STACKNAME}-" > /dev/null; echo $?)" == "0" ]]; then
     ELBS+=( "$each" )
   fi
