@@ -16,5 +16,6 @@ if [[ "${#ELBS[*]}" -eq "0" ]]; then #If number of records is 0 fail visibly
 else
   for each in ${ELBS[*]}; do
     INITIAL_HOSTS+="${each}:5000,"
-    echo "${INITIAL_HOSTS::-1}" #echo without trailing comma
+  done
+  echo "${INITIAL_HOSTS::-1}" #echo without trailing comma
 fi
