@@ -16,13 +16,6 @@ echo "Hostname set" >> ${OUTPUT}
 puppet --version >> ${OUTPUT}
 git --version >> ${OUTPUT}
 
-#Lookup ELB DNS names for this stack
-INITIAL_HOSTS=$(./initial_hosts.sh)
-if [[ -z ${INITIAL_HOSTS} ]]; then
-  echo "Failed to lookup initial hosts. Exit 1." >> ${OUTPUT}
-  exit 1
-fi
-
 cd /tmp
 if [[ -d "./up-neo4j-ha-cluster.git" ]]; then
     cd up-neo4j-ha-cluster/
@@ -31,5 +24,13 @@ else
   git clone https://github.com/Financial-Times/up-neo4j-ha-cluster.git >> ${OUTPUT}
   cd up-neo4j-ha-cluster/
 fi
+
+#Lookup ELB DNS names for this stack
+INITIAL_HOSTS=$(./initial_hosts.sh)
+if [[ -z ${INITIAL_HOSTS} ]]; then
+  echo "Failed to lookup initial hosts. Exit 1." >> ${OUTPUT}
+  exit 1
+fi
+
 sudo puppet apply --modulepath ./puppet -e "class { 'neo4jha': profile => 'prod', initial_hosts => "${INITIAL_HOSTS}" }" >> ${OUTPUT}
 echo  "END - $(date)" >> ${OUTPUT}
