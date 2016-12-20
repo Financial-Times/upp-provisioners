@@ -25,7 +25,7 @@ else
   cd up-neo4j-ha-cluster/
 fi
 
-#Lookup ELB DNS names for this stack
+#Lookup PrivateIP for each instance
 INITIAL_HOSTS=$(sh/initial_hosts.sh)
 if [[ -z ${INITIAL_HOSTS} ]]; then
   echo "Failed to lookup initial hosts. Exit 1." >> ${OUTPUT}
