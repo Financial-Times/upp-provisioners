@@ -1,7 +1,7 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
 Description: >
-  Template to spin-up Neo4j HA cluster, ELBs and an ALB
+  Template to spin-up Neo4j HA cluster and an ALB
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -224,9 +224,6 @@ Resources:
   Neo4jGroup1:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn:
-    - LoadBalancer1
-    - LoadBalancer2
-    - LoadBalancer3
     - Alb
     Properties:
       AvailabilityZones:
@@ -235,8 +232,6 @@ Resources:
         Ref: LaunchConfig
       MinSize: '1'
       MaxSize: '1'
-      LoadBalancerNames:
-      - Ref: LoadBalancer1
       TargetGroupARNs:
       - Ref: AlbTargetGroup7474
       - Ref: AlbTargetGroup7687
@@ -267,9 +262,6 @@ Resources:
   Neo4jGroup2:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn:
-      - LoadBalancer1
-      - LoadBalancer2
-      - LoadBalancer3
       - Alb
     Properties:
       AvailabilityZones:
@@ -278,8 +270,6 @@ Resources:
         Ref: LaunchConfig
       MinSize: '1'
       MaxSize: '1'
-      LoadBalancerNames:
-      - Ref: LoadBalancer2
       TargetGroupARNs:
       - Ref: AlbTargetGroup7474
       - Ref: AlbTargetGroup7687
@@ -310,9 +300,6 @@ Resources:
   Neo4jGroup3:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn:
-      - LoadBalancer1
-      - LoadBalancer2
-      - LoadBalancer3
       - Alb
     Properties:
       AvailabilityZones:
@@ -321,8 +308,6 @@ Resources:
         Ref: LaunchConfig
       MinSize: '1'
       MaxSize: '1'
-      LoadBalancerNames:
-      - Ref: LoadBalancer3
       TargetGroupARNs:
       - Ref: AlbTargetGroup7474
       - Ref: AlbTargetGroup7687
@@ -375,7 +360,7 @@ Resources:
           # Pull and execute deployment script
           /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash
 
-  #Application Load Balancers
+  #Application Load Balancer
   Alb:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
     Properties:
@@ -470,132 +455,10 @@ Resources:
       Port: 7687
       Protocol: HTTP
 
-  #Elastic Load Balancers
-  LoadBalancer1:
-    Type: AWS::ElasticLoadBalancing::LoadBalancer
-    Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-ELB-1
-      Listeners:
-      - LoadBalancerPort: '7473'
-        InstancePort: '7473'
-        Protocol: 'HTTP'
-      - LoadBalancerPort: '7474'
-        InstancePort: '7474'
-        Protocol: 'HTTP'
-      - LoadBalancerPort: '7687'
-        InstancePort: '7687'
-        Protocol: 'HTTP'
-      - LoadBalancerPort: '5000'
-        InstancePort: '5000'
-        Protocol: 'TCP'
-      - LoadBalancerPort: '6000'
-        InstancePort: '6000'
-        Protocol: 'TCP'
-      - LoadBalancerPort: '7000'
-        InstancePort: '7000'
-        Protocol: 'TCP'
-      Subnets:
-        - !Ref Subnet1
-      SecurityGroups:
-        - !Ref SecurityGroup
-      ConnectionDrainingPolicy:
-        Enabled: 'true'
-        Timeout: '20'
-      Scheme: internal
-      Tags:
-      - Key: environment
-        Value: !Ref TagEnvironment
-      - Key: teamDL
-        Value: !Ref TagTeamDL
-      - Key: systemCode
-        Value: !Ref TagSystemCode
-      - Key: ipCode
-        Value: !Ref TagIpCode
-  LoadBalancer2:
-    Type: AWS::ElasticLoadBalancing::LoadBalancer
-    Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-ELB-2
-      Listeners:
-      - LoadBalancerPort: '7473'
-        InstancePort: '7473'
-        Protocol: 'HTTP'
-      - LoadBalancerPort: '7474'
-        InstancePort: '7474'
-        Protocol: 'HTTP'
-      - LoadBalancerPort: '7687'
-        InstancePort: '7687'
-        Protocol: 'HTTP'
-      - LoadBalancerPort: '5000'
-        InstancePort: '5000'
-        Protocol: 'TCP'
-      - LoadBalancerPort: '6000'
-        InstancePort: '6000'
-        Protocol: 'TCP'
-      - LoadBalancerPort: '7000'
-        InstancePort: '7000'
-        Protocol: 'TCP'
-      Subnets:
-        - !Ref Subnet2
-      SecurityGroups:
-        - !Ref SecurityGroup
-      ConnectionDrainingPolicy:
-        Enabled: 'true'
-        Timeout: '20'
-      Scheme: internal
-      Tags:
-      - Key: environment
-        Value: !Ref TagEnvironment
-      - Key: teamDL
-        Value: !Ref TagTeamDL
-      - Key: systemCode
-        Value: !Ref TagSystemCode
-      - Key: ipCode
-        Value: !Ref TagIpCode
-  LoadBalancer3:
-    Type: AWS::ElasticLoadBalancing::LoadBalancer
-    Properties:
-      LoadBalancerName: !Sub ${AWS::StackName}-ELB-3
-      Listeners:
-      - LoadBalancerPort: '7473'
-        InstancePort: '7473'
-        Protocol: 'HTTP'
-      - LoadBalancerPort: '7474'
-        InstancePort: '7474'
-        Protocol: 'HTTP'
-      - LoadBalancerPort: '7687'
-        InstancePort: '7687'
-        Protocol: 'HTTP'
-      - LoadBalancerPort: '5000'
-        InstancePort: '5000'
-        Protocol: 'TCP'
-      - LoadBalancerPort: '6000'
-        InstancePort: '6000'
-        Protocol: 'TCP'
-      - LoadBalancerPort: '7000'
-        InstancePort: '7000'
-        Protocol: 'TCP'
-      Subnets:
-        - !Ref Subnet3
-      SecurityGroups:
-        - !Ref SecurityGroup
-      ConnectionDrainingPolicy:
-        Enabled: 'true'
-        Timeout: '20'
-      Scheme: internal
-      Tags:
-      - Key: environment
-        Value: !Ref TagEnvironment
-      - Key: teamDL
-        Value: !Ref TagTeamDL
-      - Key: systemCode
-        Value: !Ref TagSystemCode
-      - Key: ipCode
-        Value: !Ref TagIpCode
-
 Outputs:
   ELBDNS:
     Description: Private IP address of the newly created EC2 instance
-    Value: !GetAtt LoadBalancer1.DNSName
+    Value: !GetAtt Alb.DNSName
 
   InstanceId:
     Description: InstanceId of the newly created EC2 instance
