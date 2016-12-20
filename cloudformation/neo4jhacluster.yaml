@@ -456,13 +456,9 @@ Resources:
       Protocol: HTTP
 
 Outputs:
-  ELBDNS:
-    Description: Private IP address of the newly created EC2 instance
+  AlbDNS:
+    Description: DNS name of newly created Application Load Balancer
     Value: !GetAtt Alb.DNSName
-
-  InstanceId:
-    Description: InstanceId of the newly created EC2 instance
-    Value: !Ref LaunchConfig
 
 
   #PrivateIP:
