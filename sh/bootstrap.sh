@@ -12,7 +12,7 @@ echo "Hostname set" >> ${OUTPUT}
 /sbin/mkfs.ext4 /dev/sdc >> ${OUTPUT}
 
 # Install packages for deployment
-/usr/bin/yum install -y puppet3 git >> ${OUTPUT}
+/usr/bin/yum install -y puppet3 git tcpdump >> ${OUTPUT}
 puppet --version >> ${OUTPUT}
 git --version >> ${OUTPUT}
 
