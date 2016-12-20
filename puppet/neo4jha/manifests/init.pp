@@ -9,7 +9,7 @@
 #
 
 class neo4jha ( $profile = 'dev',
-                $initial_hosts  = "host1:5000,host2:5000,host3:5000",
+                $initial_hosts,
                 $cluster_size = '3') {
   $parentdir      = '/opt/neo4j'
   $package        = "neo4j-enterprise-3.1.0-unix.tar.gz"
