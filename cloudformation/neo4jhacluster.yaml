@@ -1,7 +1,7 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
 Description: >
-  Template to spin-up Neo4j HA cluster and an ALB
+  Template to spin-up Neo4j HA cluster and 2 ALB's
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -224,7 +224,8 @@ Resources:
   Neo4jGroup1:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn:
-    - Alb
+    - ReadAlb
+    - WriteAlb
     Properties:
       AvailabilityZones:
         - !Ref AvailabilityZone1
@@ -233,8 +234,10 @@ Resources:
       MinSize: '1'
       MaxSize: '1'
       TargetGroupARNs:
-      - Ref: AlbTargetGroup7474
-      - Ref: AlbTargetGroup7687
+      - Ref: ReadAlbTargetGroup7474
+      - Ref: ReadAlbTargetGroup7687
+      - Ref: WriteAlbTargetGroup7474
+      - Ref: WriteAlbTargetGroup7687
       VPCZoneIdentifier:
         - !Ref Subnet1
       Tags:
@@ -262,7 +265,8 @@ Resources:
   Neo4jGroup2:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn:
-      - Alb
+    - ReadAlb
+    - WriteAlb
     Properties:
       AvailabilityZones:
         - !Ref AvailabilityZone2
@@ -271,8 +275,10 @@ Resources:
       MinSize: '1'
       MaxSize: '1'
       TargetGroupARNs:
-      - Ref: AlbTargetGroup7474
-      - Ref: AlbTargetGroup7687
+      - Ref: ReadAlbTargetGroup7474
+      - Ref: ReadAlbTargetGroup7687
+      - Ref: WriteAlbTargetGroup7474
+      - Ref: WriteAlbTargetGroup7687
       VPCZoneIdentifier:
         - !Ref Subnet2
       Tags:
@@ -300,7 +306,8 @@ Resources:
   Neo4jGroup3:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn:
-      - Alb
+    - ReadAlb
+    - WriteAlb
     Properties:
       AvailabilityZones:
         - !Ref AvailabilityZone3
@@ -309,8 +316,10 @@ Resources:
       MinSize: '1'
       MaxSize: '1'
       TargetGroupARNs:
-      - Ref: AlbTargetGroup7474
-      - Ref: AlbTargetGroup7687
+      - Ref: ReadAlbTargetGroup7474
+      - Ref: ReadAlbTargetGroup7687
+      - Ref: WriteAlbTargetGroup7474
+      - Ref: WriteAlbTargetGroup7687
       VPCZoneIdentifier:
         - !Ref Subnet3
       Tags:
@@ -360,11 +369,11 @@ Resources:
           # Pull and execute deployment script
           /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash
 
-  #Application Load Balancer
-  Alb:
+  #Application Read Load Balancer
+  ReadAlb:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
     Properties:
-      Name: !Sub ${AWS::StackName}-neo4j-alb
+      Name: !Sub ${AWS::StackName}-neo4j-read-alb
       Scheme: internet-facing
       SecurityGroups:
         - sg-5ca92c3a
@@ -382,10 +391,10 @@ Resources:
         Value: !Ref TagSystemCode
       - Key: ipCode
         Value: !Ref TagIpCode
-  AlbTargetGroup7474:
+  ReadAlbTargetGroup7474:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub ${AWS::StackName}-neo4j-7474
+      Name: !Sub ${AWS::StackName}-neo4j-read-7474
       Port: 7474
       Protocol: HTTP
       VpcId: !Ref VPC
@@ -407,10 +416,10 @@ Resources:
         Value: !Ref TagSystemCode
       - Key: ipCode
         Value: !Ref TagIpCode
-  AlbTargetGroup7687:
+  ReadAlbTargetGroup7687:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub ${AWS::StackName}-neo4j-7687
+      Name: !Sub ${AWS::StackName}-neo4j-read-7687
       Port: 7687
       Protocol: HTTP
       VpcId: !Ref VPC
@@ -432,33 +441,131 @@ Resources:
         Value: !Ref TagSystemCode
       - Key: ipCode
         Value: !Ref TagIpCode
-  AlbListener7474:
+  ReadAlbListener7474:
     Type: "AWS::ElasticLoadBalancingV2::Listener"
     Properties:
       DefaultActions:
         - Type: forward
           TargetGroupArn:
-            Ref: AlbTargetGroup7474
+            Ref: ReadAlbTargetGroup7474
       LoadBalancerArn:
-        Ref: Alb
+        Ref: ReadAlb
       Port: 80
       Protocol: HTTP
-  AlbListener7687:
+  ReadAlbListener7687:
     Type: "AWS::ElasticLoadBalancingV2::Listener"
     Properties:
       DefaultActions:
         - Type: forward
           TargetGroupArn:
-            Ref: AlbTargetGroup7687
+            Ref: ReadAlbTargetGroup7687
       LoadBalancerArn:
-        Ref: Alb
+        Ref: ReadAlb
+      Port: 7687
+      Protocol: HTTP
+
+  #Application Write Load Balancer
+  WriteAlb:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Name: !Sub ${AWS::StackName}-neo4j-write-alb
+      Scheme: internet-facing
+      SecurityGroups:
+        - sg-5ca92c3a
+        - sg-7bea721d
+      Subnets:
+        - !Ref Subnet1
+        - !Ref Subnet2
+        - !Ref Subnet3
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+  WriteAlbTargetGroup7474:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub ${AWS::StackName}-neo4j-write-7474
+      Port: 7474
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      HealthCheckIntervalSeconds: 5
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /db/manage/server/core/writable
+      HealthCheckPort: 7474
+      HealthCheckTimeoutSeconds: 3
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+  WriteAlbTargetGroup7687:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub ${AWS::StackName}-neo4j-write-7687
+      Port: 7687
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      HealthCheckIntervalSeconds: 5
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /db/manage/server/core/writable
+      HealthCheckPort: 7474
+      HealthCheckTimeoutSeconds: 3
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+  WriteAlbListener7474:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: WriteAlbTargetGroup7474
+      LoadBalancerArn:
+        Ref: WriteAlb
+      Port: 80
+      Protocol: HTTP
+  WriteAlbListener7687:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: WriteAlbTargetGroup7687
+      LoadBalancerArn:
+        Ref: WriteAlb
       Port: 7687
       Protocol: HTTP
 
 Outputs:
-  AlbDNS:
-    Description: DNS name of newly created Application Load Balancer
-    Value: !GetAtt Alb.DNSName
+  ReadAlbDNS:
+    Description: DNS name of newly created Application Read Load Balancer
+    Value: !GetAtt ReadAlb.DNSName
+  WriteAlbDNS:
+    Description: DNS name of newly created Application Write Load Balancer
+    Value: !GetAtt WriteAlb.DNSName
 
 
   #PrivateIP:

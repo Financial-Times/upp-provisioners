@@ -2,7 +2,7 @@
 
 Basic useful feature list:
 
- * Deploy cluster of 3 Neo4j nodes with 3 ELBs and an ALB
+ * Deploy cluster of 3 Neo4j nodes with 1 Read and 1 Write ALB
 
 
 ## CloudFormation
@@ -11,7 +11,7 @@ Upload [neo4jhacluster.yaml](https://github.com/Financial-Times/up-neo4j-ha-clus
 
 You need to specify unique _Stack name_ in CF configuration. Otherwise use defaul values.
 
-Once stack has been deployed you should be able to find your EC2 instances and Load Balancer by searching object with the stack name.
+Once stack has been deployed you should be able to find your EC2 instances and Load Balancers by searching object with the stack name.
 
 ## SSH onto cluster nodes
 
