@@ -10,6 +10,8 @@ echo "Setting hostname in AWS console" >> ${OUTPUT}
 echo "Hostname set" >> ${OUTPUT}
 # Create ext4 filesystem on EBS volume
 /sbin/mkfs.ext4 /dev/sdc >> ${OUTPUT}
+# Mount EBS to opt
+mount /dev/xvdc /opt/
 
 # Install packages for deployment
 /usr/bin/yum install -y puppet3 git tcpdump >> ${OUTPUT}
