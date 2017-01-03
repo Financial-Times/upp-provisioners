@@ -24,15 +24,15 @@
         resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS", "teamDL": "universal.publishing.platform@ft.com}"}
         subnets:
           - cidr: 172.24.0.0/18
-            az: "{{ zones[0] }}"
+            az:  "{{region}}a"
             resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet A", "teamDL": "universal.publishing.platform@ft.com}"}
 
           - cidr: 172.24.64.0/18
-            az: "{{ zones[1] }}"
+            az:  "{{region}}{% if region == 'us-east-1' %}c{% else %}b{% endif %}"
             resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet B", "teamDL": "universal.publishing.platform@ft.com}"}
 
           - cidr: 172.24.128.0/18
-            az: "{{ zones[2] }}"
+            az:  "{{region}}{% if region == 'us-east-1' %}d{% else %}c{% endif %}"
             resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet C", "teamDL": "universal.publishing.platform@ft.com}"}
 
           # AlertLogic/CloudInsight subnets. Not used by Coco cluster.
