@@ -24,15 +24,15 @@
         resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS", "teamDL": "universal.publishing.platform@ft.com}"}
         subnets:
           - cidr: 172.24.0.0/18
-            az: "{{ zones[0] }}"
+            az:  "{{region}}a"
             resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet A", "teamDL": "universal.publishing.platform@ft.com}"}
 
           - cidr: 172.24.64.0/18
-            az: "{{ zones[1] }}"
+            az:  "{{region}}{% if region == 'us-east-1' %}c{% else %}b{% endif %}"
             resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet B", "teamDL": "universal.publishing.platform@ft.com}"}
 
           - cidr: 172.24.128.0/18
-            az: "{{ zones[2] }}"
+            az:  "{{region}}{% if region == 'us-east-1' %}d{% else %}c{% endif %}"
             resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet C", "teamDL": "universal.publishing.platform@ft.com}"}
 
           # AlertLogic/CloudInsight subnets. Not used by Coco cluster.
@@ -52,7 +52,7 @@
               - 172.24.0.0/18
               - 172.24.64.0/18
               - 172.24.128.0/18
-              # AlertLogic/CloudInsight routing tables. Not used by Coco cluster. 
+              # AlertLogic/CloudInsight routing tables. Not used by Coco cluster.
               - 172.24.192.0/28
               - 172.24.192.16/28
               - 172.24.192.32/28
@@ -82,11 +82,16 @@
             from_port: 22
             to_port: 22
             cidr_ip: 194.117.242.0/23
-          # VPN client's outbound IP via tun0 interface
+          # EU VPN Client
           - proto: tcp
             from_port: 22
             to_port: 22
             cidr_ip: 62.25.64.1/32
+          # US VPN Client
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 64.210.200.1/32
           # Allow 80 from everywhere
           - proto: tcp
             from_port: 80
@@ -240,7 +245,7 @@
         region: "{{region}}"
         group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
-        instance_type: "{{instanceType}}" 
+        instance_type: "{{instanceType}}"
         wait: true
         exact_count: 1
         ebs_optimized: true
@@ -271,7 +276,7 @@
 
     - set_fact:
         persistent_tag: 2
-      
+
     - name: Provision m3.large persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
@@ -279,7 +284,7 @@
         region: "{{region}}"
         group: "coreos-up-{{clusterid}}"
         image: "{{ami}}"
-        instance_type: "{{instanceType}}" 
+        instance_type: "{{instanceType}}"
         wait: true
         exact_count: 1
         ebs_optimized: true
@@ -310,7 +315,7 @@
 
     - set_fact:
         persistent_tag: 3
-      
+
     - name: Provision m3.large persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
@@ -349,4 +354,3 @@
 
     - name: Cluster tunnel DNS address
       debug: msg="Cluster tunnel DNS address - {{ environment_tag }}-tunnel-up.ft.com"
-
