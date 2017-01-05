@@ -71,15 +71,15 @@ Parameters:
     Default: Neo4j-3
 
   Subnet1:
-    Description: The subnets to assign to the Instance.
+    Description: Subnet 172.24.0.0/18, eu-west-1a
     Type: AWS::EC2::Subnet::Id
     Default: subnet-62731214
   Subnet2:
-    Description: The subnets to assign to the Instance.
+    Description: Subnet 172.24.64.0/18, eu-west-1b
     Type: AWS::EC2::Subnet::Id
     Default: subnet-6f803737
   Subnet3:
-    Description: The subnets to assign to the Instance.
+    Description: Subnet 172.24.128.0/18, eu-west-1c
     Type: AWS::EC2::Subnet::Id
     Default: subnet-44a1d420
 
@@ -164,19 +164,6 @@ Parameters:
     Description: SnapshotId of the EBS Snapshot used to provision the disks.
     Type: String
     Default: snap-0c6f401b30f324398
-
-  Subnet1:
-    Description: The subnets to assign to the Instance.
-    Type: AWS::EC2::Subnet::Id
-    Default: subnet-62731214
-  Subnet2:
-    Description: The subnets to assign to the Instance.
-    Type: AWS::EC2::Subnet::Id
-    Default: subnet-6f803737
-  Subnet3:
-    Description: The subnets to assign to the Instance.
-    Type: AWS::EC2::Subnet::Id
-    Default: subnet-44a1d420
 
   IamInstanceProfile:
     Description: What IAM profile to give to this instance - for future use. Currently has to be FT-Linux-Role
