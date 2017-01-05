@@ -19,5 +19,10 @@ class neo4jha::install {
     target  => '/usr/lib/jvm/jre-1.8.0-openjdk'
   }
 
+  # Link the mounted data directory to the Neo instance
+  file { "${::neo4jha::neo4j_home}/data":
+    ensure  => link,
+    target  => '/var/neo4j/data'
+  }
 
 }
