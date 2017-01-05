@@ -26,17 +26,22 @@ class neo4jha::install {
     owner    => "${::neo4jha::username}",
     group    => "${::neo4jha::username}"
   }
+
   mount { '/var/neo4j':
     ensure => mounted,
     device => '/dev/xvdc',
-    fstype => ext4 
+    fstype => 'ext4',
+    name => '/var/neo4j',
+    options => 'defaults'
   }
 
   # Link the mounted data directory to the Neo instance
   file { "${::neo4jha::neo4j_home}/data":
     ensure  => link,
     target  => '/var/neo4j/data',
-    force   => true
+    force   => true,
+    owner    => "${::neo4jha::username}",
+    group    => "${::neo4jha::username}"
   }
 
 }
