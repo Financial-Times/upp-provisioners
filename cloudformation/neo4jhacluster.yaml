@@ -18,7 +18,7 @@ Metadata:
       - InstanceType
       - AvailabilityZone1
       - InstanceKey
-      - EBSVolumeSize
+      - EbsSnapshot
     - Label:
         default: ELB Configuration
       Parameters:
@@ -116,6 +116,12 @@ Parameters:
     - r3.2xlarge
     - r3.4xlarge
     - r3.8xlarge
+    - r4.large
+    - r4.xlarge
+    - r4.2xlarge
+    - r4.4xlarge
+    - r4.8xlarge
+    - r4.16xlarge
     - i2.xlarge
     - i2.2xlarge
     - i2.4xlarge
@@ -139,11 +145,6 @@ Parameters:
     Type: String
     Default: eu-west-1c
 
-  EBSVolumeSize:
-    Description: Size (GB) of the EBS volume attached to each instance
-    Type: String
-    Default: '10'
-
   DeploymentScriptURL:
     Description: Deployment script URL
     Type: String
@@ -158,6 +159,11 @@ Parameters:
     Description: The AMI to be used, this MUST be an Amazon Linux image for the userdata to build correctly. A default is given.
     Type: String
     Default: ami-9398d3e0
+
+  EbsSnapshot:
+    Description: SnapshotId of the EBS Snapshot used to provision the disks.
+    Type: String
+    Default: snap-0c6f401b30f324398
 
   Subnet1:
     Description: The subnets to assign to the Instance.
@@ -363,7 +369,8 @@ Resources:
       BlockDeviceMappings:
       - DeviceName: "/dev/sdc"
         Ebs:
-          VolumeSize: !Ref EBSVolumeSize
+          VolumeType: gp2
+          SnapshotId: !Ref EbsSnapshot
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
@@ -572,3 +579,4 @@ Outputs:
   #PrivateIP:
   #  Description: Private IP address of the newly created EC2 instance
   #  Value: !GetAtt MyAutoInstance.PrivateIp
+  
