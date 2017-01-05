@@ -19,10 +19,24 @@ class neo4jha::install {
     target  => '/usr/lib/jvm/jre-1.8.0-openjdk'
   }
 
+  # Mount the drive.
+  file { "/var/neo4j":
+    ensure  => directory,
+    force   => true,
+    owner    => "${::neo4jha::username}",
+    group    => "${::neo4jha::username}"
+  }
+  mount { '/var/neo4j':
+    ensure => mounted,
+    device => '/dev/xvdc',
+    fstype => ext4 
+  }
+
   # Link the mounted data directory to the Neo instance
   file { "${::neo4jha::neo4j_home}/data":
     ensure  => link,
-    target  => '/var/neo4j/data'
+    target  => '/var/neo4j/data',
+    force   => true
   }
 
 }
