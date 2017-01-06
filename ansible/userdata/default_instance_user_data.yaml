@@ -159,3 +159,5 @@ write_files:
       [Journal]
       MaxLevelConsole=crit
       Compress=false
+      RateLimitInterval=0
+      RateLimitBurst=0
