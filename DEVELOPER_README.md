@@ -82,6 +82,9 @@ export AWS_DEFAULT_REGION=eu-west-1
 ## Pre-Prod or lower: ces-test.in.ft.com
 export CES_HOST=
 
+## prod: https://methodeapi.glb.ft.com
+## pre-prod and lower: https://methodeapi-test.ft.com
+export METHODE_API=
 ```
 
 
