@@ -82,6 +82,8 @@ export AWS_DEFAULT_REGION=eu-west-1
 ## Pre-Prod or lower: ces-test.in.ft.com
 export CES_HOST=
 
+export SPLUNK_HEC_TOKEN=
+
 ## prod: https://methodeapi.glb.ft.com
 ## pre-prod and lower: https://methodeapi-test.ft.com
 export METHODE_API=
@@ -112,6 +114,8 @@ docker run \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "UPP_GATEWAY_HOST=$UPP_GATEWAY_HOST" \
     -e "UPP_GATEWAY_PORT=$UPP_GATEWAY_PORT" \
+    -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
+    -e "METHODE_API=$METHODE_API" \
     coco/coco-provisioner
 ```
 
