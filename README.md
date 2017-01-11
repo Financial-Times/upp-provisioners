@@ -61,6 +61,7 @@ docker run \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
+    -e "METHODE_API=$METHODE_API"
     coco/coco-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'

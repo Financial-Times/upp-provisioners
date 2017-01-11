@@ -35,5 +35,6 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -vvv -i ~/.ansible_hosts /ans
   environment_type=${ENVIRONMENT_TYPE:=p} \
   splunk_hec_url=${SPLUNK_HEC_URL:=https://http-inputs-financialtimes.splunkcloud.com/services/collector/event} \
   splunk_hec_token=${SPLUNK_HEC_TOKEN} \
-  aws_es_endpoint=${AWS_ES_ENDPOINT}" \
+  aws_es_endpoint=${AWS_ES_ENDPOINT} \
+  methode_api=${METHODE_API}" \
   --vault-password-file=/vault.pass
