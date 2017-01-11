@@ -83,7 +83,7 @@ export AWS_DEFAULT_REGION=eu-west-1
 export CES_HOST=
 
 ## The ElasticSearch domain used for concept-search
-export AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT=
+export AWS_ES_ENDPOINT=
 export SPLUNK_HEC_TOKEN=
 
 ## prod: https://methodeapi.glb.ft.com
