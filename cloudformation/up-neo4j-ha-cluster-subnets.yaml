@@ -75,6 +75,17 @@ Resources:
         Ref: PublicSubnet1Cidr
       AvailabilityZone:
         Ref: AvailabilityZone1
+      Tags:
+      - Key: Name
+        Value: Neo4j HA Public Subnet 1
+      - Key: environment
+        Value: p
+      - Key: teamDL
+        Value: Universal.Publishing.Platform@ft.com
+      - Key: systemCode
+        Value: Neo4j HA Cluster
+      - Key: ipCode
+        Value: P196
   PublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -84,6 +95,17 @@ Resources:
         Ref: PublicSubnet2Cidr
       AvailabilityZone:
         Ref: AvailabilityZone2
+      Tags:
+      - Key: Name
+        Value: Neo4j HA Public Subnet 2
+      - Key: environment
+        Value: p
+      - Key: teamDL
+        Value: Universal.Publishing.Platform@ft.com
+      - Key: systemCode
+        Value: Neo4j HA Cluster
+      - Key: ipCode
+        Value: P196
   PublicSubnet3:
     Type: AWS::EC2::Subnet
     Properties:
@@ -93,6 +115,17 @@ Resources:
         Ref: PublicSubnet3Cidr
       AvailabilityZone:
         Ref: AvailabilityZone3
+      Tags:
+      - Key: Name
+        Value: Neo4j HA Public Subnet 3
+      - Key: environment
+        Value: p
+      - Key: teamDL
+        Value: Universal.Publishing.Platform@ft.com
+      - Key: systemCode
+        Value: Neo4j HA Cluster
+      - Key: ipCode
+        Value: P196
   # Private subnets
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
@@ -103,6 +136,17 @@ Resources:
         Ref: PrivateSubnet1Cidr
       AvailabilityZone:
         Ref: AvailabilityZone1
+      Tags:
+      - Key: Name
+        Value: Neo4j HA Private Subnet 1
+      - Key: environment
+        Value: p
+      - Key: teamDL
+        Value: Universal.Publishing.Platform@ft.com
+      - Key: systemCode
+        Value: Neo4j HA Cluster
+      - Key: ipCode
+        Value: P196
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -112,6 +156,17 @@ Resources:
         Ref: PrivateSubnet2Cidr
       AvailabilityZone:
         Ref: AvailabilityZone2
+      Tags:
+      - Key: Name
+        Value: Neo4j HA Private Subnet 2
+      - Key: environment
+        Value: p
+      - Key: teamDL
+        Value: Universal.Publishing.Platform@ft.com
+      - Key: systemCode
+        Value: Neo4j HA Cluster
+      - Key: ipCode
+        Value: P196
   PrivateSubnet3:
     Type: AWS::EC2::Subnet
     Properties:
@@ -121,6 +176,17 @@ Resources:
         Ref: PrivateSubnet3Cidr
       AvailabilityZone:
         Ref: AvailabilityZone3
+      Tags:
+      - Key: Name
+        Value: Neo4j HA Private Subnet 3
+      - Key: environment
+        Value: p
+      - Key: teamDL
+        Value: Universal.Publishing.Platform@ft.com
+      - Key: systemCode
+        Value: Neo4j HA Cluster
+      - Key: ipCode
+        Value: P196
   # Public subnet route table association
   PublicSubnet1Route:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -162,21 +228,18 @@ Resources:
   NatGW1:
     Type: AWS::EC2::NatGateway
     Properties:
-      AllocationId:
-        Ref: ElasticIP1
+      AllocationId: !GetAtt ElasticIP1.AllocationId
       SubnetId:
         Ref: PublicSubnet1
   NatGW2:
     Type: AWS::EC2::NatGateway
     Properties:
-      AllocationId:
-        Ref: ElasticIP2
+      AllocationId: !GetAtt ElasticIP2.AllocationId
       SubnetId:
         Ref: PublicSubnet2
   NatGW3:
     Type: AWS::EC2::NatGateway
     Properties:
-      AllocationId:
-        Ref: ElasticIP3
+      AllocationId: !GetAtt ElasticIP3.AllocationId
       SubnetId:
         Ref: PublicSubnet3
