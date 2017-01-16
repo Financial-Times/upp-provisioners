@@ -256,6 +256,7 @@ If this is deploying or barfing it's unlikely that your cluster is healthy.
 
 
 1. Finally, destroy the cluster you have just worked so hard to create (this command uses the environment variables you exported earlier):
+
 Note: make sure to disable termination protection for each machine before, otherwise the decom will not work: find your instances in AWS console, and for each of them right click -> Instance Settings -> Change Termination Protection -> Yes, Disable.
 
         docker run \
