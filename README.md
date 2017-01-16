@@ -72,7 +72,7 @@ If you need a Docker runtime environment to provision a cluster you can set up [
 
 Decommission an environment
 ---------------------------
-
+Note: make sure to disable termination protection for each machine before, otherwise the decom will not work: find your instances in AWS console, and for each of them right click -> Instance Settings -> Change Termination Protection -> Yes, Disable.
 ```
 ## Secret used during decommissioning to decrypt keys - stored in LastPass.
 ## Lastpass: coco-provisioner-ansible-vault-pass
