@@ -16,6 +16,7 @@
         instance_ids: "{{instanceIds}}"
 
     - name: Delete DNS tunnel record
+      ignore_errors: yes
       uri:
         url: "https://dns-api.in.ft.com/v2/"
         method: DELETE
@@ -27,6 +28,7 @@
         body_format: json
 
     - name: Delete DNS ELB record
+      ignore_errors: yes
       uri:
         url: "https://dns-api.in.ft.com/v2/"
         method: DELETE
