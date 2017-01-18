@@ -110,6 +110,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/kafka-bridge-pub-prod/authorization_key '{{ pub_prod_credentials }}'                >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/upp-gateway/authorization_key '{{ upp_gateway_credentials }}'                       >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag '{{environment_tag}}'                                                     >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/cluster_id '{{clusterid}}'                                                                >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/api_host '{{api_host}}'                                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/aws_region '{{region}}'                                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/cache-max-age 10                                                                          >/dev/null 2>&1 || true;"
