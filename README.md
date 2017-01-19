@@ -29,8 +29,7 @@ See [SSH_README.md](/SSH_README.md/)
 Provision a delivery cluster
 ------------------------------
 
-Currently, attempting to provision a cluster in `us-east-1` with an environment type of `t` causes the security group creation to fail.
-Everything else works fine - `t` or `p` clusters in `eu-west-1`, and `p` clusters in `us-east-1`.
+You can provision `t` or `p` clusters in `eu-west-1` and `us-east-1`.
 
 ```bash
 ## Set all the environment variables required to provision a cluster. These variables are stored in LastPass

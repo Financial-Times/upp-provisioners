@@ -95,8 +95,7 @@ export METHODE_API=
 Run the locally created image
 -----------------------------
 
-Currently, attempting to provision a cluster in `us-east-1` with an environment type of `t` causes the security group creation to fail.
-Everything else works fine - `t` or `p` clusters in `eu-west-1`, and `p` clusters in `us-east-1`.
+You can provision `t` or `p` clusters in `eu-west-1` and `us-east-1`.
 
 ```bash
 docker run \
