@@ -10,33 +10,23 @@ Metadata:
         default: Network Configuration
       Parameters:
       - VPC
-      - SecurityGroups
       - Subnets
     - Label:
         default: Amazon EC2 Auto Scaling Configuration
       Parameters:
       - InstanceType
-      - AvailabilityZone1
+      - ImageId
+      - IamInstanceProfile
       - InstanceKey
       - EbsSnapshot
-    - Label:
-        default: ELB Configuration
-      Parameters:
-      - LoadBalancerName
 
     ParameterLabels:
-      SecurityGroups:
-        default: Security Groups
       AutoGroupAvailabilityZones:
         deafault: Auto Group Availability Zones
       InstanceType:
         default: Instance Type
       InstanceKey:
         default: Instance EC2 User Key
-      SecurityGroup:
-        default: Security Groups
-      LoadBalancerName:
-        default: Load Balancer Name
       ListeningPort:
         default: ELB Listening Port
 
@@ -44,126 +34,53 @@ Parameters:
   VPC:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id
-    Default: vpc-5674e132
-
-  SecurityGroup:
-    Description: The primary security group used by instance.
-    Type: AWS::EC2::SecurityGroup::Id
-    Default: sg-5ca92c3a
-
-  LoadBalancerName1:
-    Description: Name of the load balancer in auto-scaling group 1
-    Type: String
-    MinLength: 1
-    MaxLength: 32
-    Default: Neo4j-1
-  LoadBalancerName2:
-    Description: Name of the load balancer in auto-scaling group 2
-    Type: String
-    MinLength: 1
-    MaxLength: 32
-    Default: Neo4j-2
-  LoadBalancerName3:
-    Description: Name of the load balancer in auto-scaling group 3
-    Type: String
-    MinLength: 1
-    MaxLength: 32
-    Default: Neo4j-3
+    Default: vpc-9fcb94fb
 
   Subnet1:
     Description: Subnet 172.24.0.0/18, eu-west-1a
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-62731214
+    Default: subnet-5fedc029
   Subnet2:
     Description: Subnet 172.24.64.0/18, eu-west-1b
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-6f803737
+    Default: subnet-791d351d
   Subnet3:
     Description: Subnet 172.24.128.0/18, eu-west-1c
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-44a1d420
+    Default: subnet-d56b1e8d
 
   InstanceType:
     Description: The type and size of the instance. Check documentation for recommended types.
     Type: String
     AllowedValues:
-    - t2.nano
-    - t2.micro
-    - t2.small
-    - t2.medium
-    - t2.large
-    - t2.xlarge
     - m4.large
     - m4.xlarge
     - m4.2xlarge
     - m4.4xlarge
     - m4.10xlarge
     - m4.16xlarge
-    - c4.large
-    - c4.xlarge
-    - c4.2xlarge
-    - c4.4xlarge
-    - c4.8xlarge
-    - c3.large
-    - c3.xlarge
-    - c3.2xlarge
-    - c3.4xlarge
-    - c3.8xlarge
-    - g2.2xlarge
-    - g2.8xlarge
-    - r3.large
-    - r3.xlarge
-    - r3.2xlarge
-    - r3.4xlarge
-    - r3.8xlarge
     - r4.large
     - r4.xlarge
     - r4.2xlarge
     - r4.4xlarge
     - r4.8xlarge
     - r4.16xlarge
-    - i2.xlarge
-    - i2.2xlarge
-    - i2.4xlarge
-    - i2.8xlarge
-    - d2.xlarge
-    - d2.2xlarge
-    - d2.4xlarge
-    - d2.8xlarge
-    Default: t2.small
-
-  AvailabilityZone1:
-    Description: Availability zone to install the resources into.
-    Type: String
-    Default: eu-west-1a
-  AvailabilityZone2:
-    Description: Availability zone to install the resources into.
-    Type: String
-    Default: eu-west-1b
-  AvailabilityZone3:
-    Description: Availability zone to install the resources into.
-    Type: String
-    Default: eu-west-1c
-
-  DeploymentScriptURL:
-    Description: Deployment script URL
-    Type: String
-    Default: https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/bootstrap.sh
+    Default: r4.xlarge
 
   InstanceKey:
     Description: EC2User Key
-    Type: String
+    Type: AWS::EC2::KeyPair::KeyName
     Default: jussi.heinonen.universal.publishing
 
   ImageId:
-    Description: The AMI to be used, this MUST be an Amazon Linux image for the userdata to build correctly. A default is given.
-    Type: String
-    Default: ami-9398d3e0
+    Description: The CoreOS AMI to be used.
+    Type: AWS::EC2::Image::Id
+    Default: ami-1eddf56d
 
   EbsSnapshot:
     Description: SnapshotId of the EBS Snapshot used to provision the disks.
     Type: String
-    Default: snap-0c6f401b30f324398
+    Default: snap-0a0a1a16da41eb387
 
   IamInstanceProfile:
     Description: What IAM profile to give to this instance - for future use. Currently has to be FT-Linux-Role
@@ -196,11 +113,11 @@ Parameters:
   TagDescription:
     Description: Tag detail for the describing the instance.
     Type: String
-    Default: Neo4j HA Cluster
+    Default: Neo4j Cluster
   TagName:
     Description: Tag detail for the Name used in the console of the instance. NOT THE HOSTNAME OF THE INSTANCE.
     Type: String
-    Default: Neo4j HA Cluster
+    Default: Neo4j Cluster
   TagStopSchedule:
     Description: Tag detail for the when the instance is to be powered off.
     Type: String
@@ -214,6 +131,87 @@ Conditions:
       - Ref: InstanceKey
 
 Resources:
+
+  # Neo4J security group
+  Neo4JSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Bolt access for Neo4J
+      VpcId: !Ref VPC
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 7687
+        ToPort: 7687
+        CidrIp: 0.0.0.0/0
+
+  # CoreOS security group
+  CoreOSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: CoreOS access
+      VpcId: !Ref VPC
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode 
+      SecurityGroupIngress:
+      # OSB + LDNWebPerf
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 82.136.1.214/32
+      # XP - Cluj Office
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 194.117.242.0/23
+      # EU VPN Client
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 62.25.64.1/32
+      # US VPN Client
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 64.210.200.1/32
+      # Allow 80 from everywhere
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      # Allow 443 from everywhere
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+      # Allow internal requests
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 172.24.0.0/16
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 0.0.0.0/0
+      # Allow timesync/ntp out
+      - IpProtocol: udp
+        FromPort: 123
+        ToPort: 123
+        CidrIp: 0.0.0.0/0
+
+
   #auto-scaling groups
   Neo4jGroup1:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -222,7 +220,7 @@ Resources:
     - WriteAlb
     Properties:
       AvailabilityZones:
-        - !Ref AvailabilityZone1
+        - !Select [0, !GetAZs '']
       LaunchConfigurationName:
         Ref: LaunchConfig
       MinSize: '1'
@@ -263,7 +261,7 @@ Resources:
     - WriteAlb
     Properties:
       AvailabilityZones:
-        - !Ref AvailabilityZone2
+        - !Select [1, !GetAZs '']
       LaunchConfigurationName:
         Ref: LaunchConfig
       MinSize: '1'
@@ -304,7 +302,7 @@ Resources:
     - WriteAlb
     Properties:
       AvailabilityZones:
-        - !Ref AvailabilityZone3
+        - !Select [2, !GetAZs '']
       LaunchConfigurationName:
         Ref: LaunchConfig
       MinSize: '1'
@@ -343,7 +341,7 @@ Resources:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       SecurityGroups:
-        - !Ref SecurityGroup
+        - !Ref CoreOSSecurityGroup
       InstanceType: !Ref InstanceType
       ImageId: ami-31328842
       AssociatePublicIpAddress: true
@@ -359,10 +357,8 @@ Resources:
           VolumeType: gp2
           SnapshotId: !Ref EbsSnapshot
       UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash
-          # Pull and execute deployment script
-          /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash
+        Fn::Base64: 
+          Fn::Join: ["", ["#cloud-config\n", "\n", "coreos:\n", "    update:\n", "        reboot-strategy: off\n", "    etcd2:\n", "        discovery: {{token}}\n", "        advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001\n", "        initial-advertise-peer-urls: http://$private_ipv4:2380\n", "        listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001\n", "        listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001\n", "    units:\n", "    - name: authorized_keys.service\n", "      command: start\n", "      content: |\n", "          [Unit]\n", "          Description=Update authorized_keys\n", "\n", "          [Service]\n", "          Type=oneshot\n", "          ExecStartPre=/bin/sh -c \"mkdir -p /home/core/.ssh && touch /home/core/.ssh/authorized_keys\"\n", "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512\"\n", "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys\"\n", "          ExecStart=/bin/sh -c \"cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 700 /home/core/.ssh && chmod 600 /home/core/.ssh/authorized_keys && chown -R core:core /home/core/.ssh\"\n", "    - name: authorized_keys.timer\n", "      command: start\n", "      content: |\n", "          [Unit]\n", "          Description=Authorized keys timer\n", "\n", "          [Timer]\n", "          OnBootSec=1min\n", "          OnUnitActiveSec=1min\n", "\n", "          [Install]\n", "          WantedBy=timers.target\n", "    - name: docker.service\n", "      drop-ins:\n", "        - name: 10-turn-off-logging.conf\n", "          content: |\n", "            [Service]\n", "            Environment=\"DOCKER_OPTS=--log-driver=none\"\n", "      command: start\n", "\n", "\n", "\n", "write_files:\n", "  - path: /etc/systemd/journald.conf.d/10-override-config.conf\n", "    content: |\n", "      [Journal]\n", "      MaxLevelConsole=crit\n", "      Compress=false\n", "      RateLimitInterval=0\n", "      RateLimitBurst=0\n", "  - path: /etc/motd.d/env.conf\n", "    content: |\n", "            This enviroment is tagged as {{environment_tag}} and is cluster {{token}}\n"]]
 
   #Application Read Load Balancer
   ReadAlb:
@@ -371,8 +367,8 @@ Resources:
       Name: !Sub ${AWS::StackName}-neo4j-read-alb
       Scheme: internet-facing
       SecurityGroups:
-        - sg-5ca92c3a
-        - sg-7bea721d
+        - !Ref CoreOSSecurityGroup
+        - !Ref Neo4JSecurityGroup
       Subnets:
         - !Ref Subnet1
         - !Ref Subnet2
@@ -466,8 +462,8 @@ Resources:
       Name: !Sub ${AWS::StackName}-neo4j-write-alb
       Scheme: internet-facing
       SecurityGroups:
-        - sg-5ca92c3a
-        - sg-7bea721d
+        - !Ref CoreOSSecurityGroup
+        - !Ref Neo4JSecurityGroup
       Subnets:
         - !Ref Subnet1
         - !Ref Subnet2
@@ -563,7 +559,4 @@ Outputs:
     Value: !GetAtt WriteAlb.DNSName
 
 
-  #PrivateIP:
-  #  Description: Private IP address of the newly created EC2 instance
-  #  Value: !GetAtt MyAutoInstance.PrivateIp
   
