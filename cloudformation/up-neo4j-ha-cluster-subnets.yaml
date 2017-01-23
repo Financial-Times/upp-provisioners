@@ -39,31 +39,53 @@ Parameters:
   PublicSubnet1Cidr:
     Description: CIDR for Public subnet 1
     Type: String
-    Default: 172.24.250.0/28
+    Default: 172.24.240.0/24
   PublicSubnet2Cidr:
     Description: CIDR for Public subnet 2
     Type: String
-    Default: 172.24.250.16/28
+    Default: 172.24.241.16/24
   PublicSubnet3Cidr:
     Description: CIDR for Public subnet 3
     Type: String
-    Default: 172.24.250.32/28
+    Default: 172.24.242.32/24
   PrivateSubnet1Cidr:
     Description: CIDR for Private subnet 1
     Type: String
-    Default: 172.24.251.0/24
+    Default: 172.24.250.0/24
   PrivateSubnet2Cidr:
     Description: CIDR for Private subnet 2
     Type: String
-    Default: 172.24.252.0/24
+    Default: 172.24.251.0/24
   PrivateSubnet3Cidr:
     Description: CIDR for Private subnet 3
     Type: String
-    Default: 172.24.253.0/24
+    Default: 172.24.252.0/24
   PublicSubnetRouteTableId:
     Description: RouteTableId for public subnets
     Type: String
     Default: rtb-4f85d32b
+  TagEnvironment:
+    Description: Tag detail for the Environment
+    Type: String
+    Default: p
+  TagTeamDL:
+    Description: Tag of the TeamDL.
+    Type: String
+    ConstraintDescription: There must be a valid email address for the TeamDL
+    AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    Default: universal.publishing.platform@ft.com
+  TagSystemCode:
+    Description: Tag detail for the SystemCode
+    Type: String
+    Default: UPP Neo4j HA
+  TagIpCode:
+    Description: Tag detail for the ipCode
+    Type: String
+    Default: P196
+  TagDescription:
+    Description: Tag detail for the describing the instance.
+    Type: String
+    Default: Subnets for Neo4j HA Cluster
 Resources:
   # Public subnets
   PublicSubnet1:
@@ -79,13 +101,15 @@ Resources:
       - Key: Name
         Value: Neo4j HA Public Subnet 1
       - Key: environment
-        Value: p
+        Value: !Ref TagEnvironment
       - Key: teamDL
-        Value: Universal.Publishing.Platform@ft.com
+        Value: !Ref TagTeamDL
       - Key: systemCode
-        Value: Neo4j HA Cluster
+        Value: !Ref TagSystemCode
       - Key: ipCode
-        Value: P196
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
   PublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -99,13 +123,15 @@ Resources:
       - Key: Name
         Value: Neo4j HA Public Subnet 2
       - Key: environment
-        Value: p
+        Value: !Ref TagEnvironment
       - Key: teamDL
-        Value: Universal.Publishing.Platform@ft.com
+        Value: !Ref TagTeamDL
       - Key: systemCode
-        Value: Neo4j HA Cluster
+        Value: !Ref TagSystemCode
       - Key: ipCode
-        Value: P196
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
   PublicSubnet3:
     Type: AWS::EC2::Subnet
     Properties:
@@ -119,13 +145,15 @@ Resources:
       - Key: Name
         Value: Neo4j HA Public Subnet 3
       - Key: environment
-        Value: p
+        Value: !Ref TagEnvironment
       - Key: teamDL
-        Value: Universal.Publishing.Platform@ft.com
+        Value: !Ref TagTeamDL
       - Key: systemCode
-        Value: Neo4j HA Cluster
+        Value: !Ref TagSystemCode
       - Key: ipCode
-        Value: P196
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
   # Private subnets
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
@@ -140,13 +168,15 @@ Resources:
       - Key: Name
         Value: Neo4j HA Private Subnet 1
       - Key: environment
-        Value: p
+        Value: !Ref TagEnvironment
       - Key: teamDL
-        Value: Universal.Publishing.Platform@ft.com
+        Value: !Ref TagTeamDL
       - Key: systemCode
-        Value: Neo4j HA Cluster
+        Value: !Ref TagSystemCode
       - Key: ipCode
-        Value: P196
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -160,13 +190,15 @@ Resources:
       - Key: Name
         Value: Neo4j HA Private Subnet 2
       - Key: environment
-        Value: p
+        Value: !Ref TagEnvironment
       - Key: teamDL
-        Value: Universal.Publishing.Platform@ft.com
+        Value: !Ref TagTeamDL
       - Key: systemCode
-        Value: Neo4j HA Cluster
+        Value: !Ref TagSystemCode
       - Key: ipCode
-        Value: P196
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
   PrivateSubnet3:
     Type: AWS::EC2::Subnet
     Properties:
@@ -180,13 +212,15 @@ Resources:
       - Key: Name
         Value: Neo4j HA Private Subnet 3
       - Key: environment
-        Value: p
+        Value: !Ref TagEnvironment
       - Key: teamDL
-        Value: Universal.Publishing.Platform@ft.com
+        Value: !Ref TagTeamDL
       - Key: systemCode
-        Value: Neo4j HA Cluster
+        Value: !Ref TagSystemCode
       - Key: ipCode
-        Value: P196
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
   # Public subnet route table association
   PublicSubnet1Route:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -209,6 +243,108 @@ Resources:
         Ref: PublicSubnetRouteTableId
       SubnetId:
         Ref: PublicSubnet3
+  # Route Tables for private subnets
+  PrivateSubnet1RouteTable:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId:
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: Neo4j HA Private Subnet 1 RouteTable
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
+  PrivateSubnet2RouteTable:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId:
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: Neo4j HA Private Subnet 2 RouteTable
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
+  PrivateSubnet3RouteTable:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId:
+        Ref: VPC
+      Tags:
+      - Key: Name
+        Value: Neo4j HA Private Subnet 3 RouteTable
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
+  # Route table association with Private subneta
+  PrivateSubnet1RouteAssociate:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId:
+        Ref: PrivateSubnet1RouteTable
+      SubnetId:
+        Ref: PrivateSubnet1
+  PrivateSubnet2RouteAssociate:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId:
+        Ref: PrivateSubnet2RouteTable
+      SubnetId:
+        Ref: PrivateSubnet2
+  PrivateSubnet3RouteAssociate:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId:
+        Ref: PrivateSubnet3RouteTable
+      SubnetId:
+        Ref: PrivateSubnet3
+  # Private subnet routes via NAT Gateway
+  PrivateSubnet1RouteViaNATGW:
+    Type: "AWS::EC2::Route"
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: NatGW1
+      RouteTableId:
+        Ref: PrivateSubnet1RouteTable
+  PrivateSubnet2RouteViaNATGW:
+    Type: "AWS::EC2::Route"
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: NatGW2
+      RouteTableId:
+        Ref: PrivateSubnet2RouteTable
+  PrivateSubnet3RouteViaNATGW:
+    Type: "AWS::EC2::Route"
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: NatGW3
+      RouteTableId:
+        Ref: PrivateSubnet3RouteTable
   # NAT Gateways with ElasticIPs for Public subnets
   ElasticIP1:
     Type: AWS::EC2::EIP
