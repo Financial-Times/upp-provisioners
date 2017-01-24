@@ -46,6 +46,20 @@ Once you have [set up AWS credentials](http://docs.aws.amazon.com/cli/latest/use
 
 ---
 
+### [up-neo4j-ha-cluster-subnets-jumpbox.yaml](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/cloudformation/up-neo4j-ha-cluster-subnets-jumpbox.yaml)
+
+Stack that creates an EC2 instance and a security group that allows SSH access from known subnets and IP addresses.
+
+##### Create stack
+
+`aws cloudformation create-stack --stack-name up-neo4j-ha-cluster-subnets-jumpbox --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets-jumpbox.yaml`
+
+##### Delete stack
+
+`aws cloudformation delete-stack --stack-name up-neo4j-ha-cluster-subnets-jumpbox`
+
+---
+
 ### [neo4jhacluster.yaml](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/cloudformation/neo4jhacluster.yaml)
 
 Documentation for this template to be added soon....
