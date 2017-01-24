@@ -97,6 +97,7 @@ Resources:
         Ref: PublicSubnet1Cidr
       AvailabilityZone:
         Ref: AvailabilityZone1
+      MapPublicIpOnLaunch: true
       Tags:
       - Key: Name
         Value: Neo4j HA Public Subnet 1
@@ -119,6 +120,7 @@ Resources:
         Ref: PublicSubnet2Cidr
       AvailabilityZone:
         Ref: AvailabilityZone2
+      MapPublicIpOnLaunch: true
       Tags:
       - Key: Name
         Value: Neo4j HA Public Subnet 2
@@ -141,6 +143,7 @@ Resources:
         Ref: PublicSubnet3Cidr
       AvailabilityZone:
         Ref: AvailabilityZone3
+      MapPublicIpOnLaunch: true
       Tags:
       - Key: Name
         Value: Neo4j HA Public Subnet 3
