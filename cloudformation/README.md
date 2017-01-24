@@ -28,7 +28,7 @@ Stack is designed to be managed from the command line using AWS CLI. See [Run co
 
 Once you have [set up AWS credentials](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) you can use the following commands to manage the stack.
 
- ##### Validate template
+##### Validate template
 
  `aws cloudformation validate-template --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets.yaml`
 
