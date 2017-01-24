@@ -19,6 +19,16 @@ Metadata:
       - IamInstanceProfile
       - InstanceKey
       - EbsSnapshot
+    - Label:
+        default: Cluster Configuration Options
+      Parameters:
+      - EtcdToken
+      - KonstructorAPIKey
+      - ServicesDefinitionRootURI
+      - CocoEnvironmentTag
+      - SplunkHecURL
+      - SplunkHecToken
+
 
     ParameterLabels:
       AutoGroupAvailabilityZones:
@@ -31,6 +41,35 @@ Metadata:
         default: ELB Listening Port
 
 Parameters:
+
+  KonstructorAPIKey:
+    Description: API Key used to access Konstructor DNS
+    Type: String
+
+  ServicesDefinitionRootURI:
+    Description: Root URI for the deployer to find service files.
+    Type: String
+  
+  CocoEnvironmentTag:
+    Description: Which enviroment this cluster is attached to (eg. prod-uk).  Must be no more than 12 characters.
+    Type: String
+
+  SplunkHecURL: 
+    Description: HEC Ingestion URL for Splunk
+    Type: String
+
+  SplunkHecToken:
+    Description: HEC Ingestion Token for Splunk
+    Type: String
+
+  EtcdToken:
+    Description: Etcd token, generate from https://discovery.etcd.io/new?size=3
+    Type: String
+    Default: https://discovery.etcd.io/3cbfe5ac4de02d43eed20429ef765f7b
+
+
+
+
   VPC:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id
@@ -66,6 +105,8 @@ Parameters:
     - r4.8xlarge
     - r4.16xlarge
     Default: r4.xlarge
+
+
 
   InstanceKey:
     Description: EC2User Key
@@ -213,18 +254,16 @@ Resources:
 
 
   #auto-scaling groups
-  Neo4jGroup1:
+  Neo4jGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn:
     - ReadAlb
     - WriteAlb
     Properties:
-      AvailabilityZones:
-        - !Select [0, !GetAZs '']
       LaunchConfigurationName:
         Ref: LaunchConfig
-      MinSize: '1'
-      MaxSize: '1'
+      MinSize: '3'
+      MaxSize: '3'
       TargetGroupARNs:
       - Ref: ReadAlbTargetGroup7474
       - Ref: ReadAlbTargetGroup7687
@@ -232,87 +271,7 @@ Resources:
       - Ref: WriteAlbTargetGroup7687
       VPCZoneIdentifier:
         - !Ref Subnet1
-      Tags:
-      - Key: environment
-        Value: !Ref TagEnvironment
-        PropagateAtLaunch: true
-      - Key: teamDL
-        Value: !Ref TagTeamDL
-        PropagateAtLaunch: true
-      - Key: systemCode
-        Value: !Ref TagSystemCode
-        PropagateAtLaunch: true
-      - Key: ipCode
-        Value: !Ref TagIpCode
-        PropagateAtLaunch: true
-      - Key: description
-        Value: !Ref TagDescription
-        PropagateAtLaunch: true
-      - Key: Name
-        Value: !Ref TagName
-        PropagateAtLaunch: true
-      - Key: stopSchedule
-        Value: !Ref TagStopSchedule
-        PropagateAtLaunch: true
-  Neo4jGroup2:
-    Type: AWS::AutoScaling::AutoScalingGroup
-    DependsOn:
-    - ReadAlb
-    - WriteAlb
-    Properties:
-      AvailabilityZones:
-        - !Select [1, !GetAZs '']
-      LaunchConfigurationName:
-        Ref: LaunchConfig
-      MinSize: '1'
-      MaxSize: '1'
-      TargetGroupARNs:
-      - Ref: ReadAlbTargetGroup7474
-      - Ref: ReadAlbTargetGroup7687
-      - Ref: WriteAlbTargetGroup7474
-      - Ref: WriteAlbTargetGroup7687
-      VPCZoneIdentifier:
         - !Ref Subnet2
-      Tags:
-      - Key: environment
-        Value: !Ref TagEnvironment
-        PropagateAtLaunch: true
-      - Key: teamDL
-        Value: !Ref TagTeamDL
-        PropagateAtLaunch: true
-      - Key: systemCode
-        Value: !Ref TagSystemCode
-        PropagateAtLaunch: true
-      - Key: ipCode
-        Value: !Ref TagIpCode
-        PropagateAtLaunch: true
-      - Key: description
-        Value: !Ref TagDescription
-        PropagateAtLaunch: true
-      - Key: Name
-        Value: !Ref TagName
-        PropagateAtLaunch: true
-      - Key: stopSchedule
-        Value: !Ref TagStopSchedule
-        PropagateAtLaunch: true
-  Neo4jGroup3:
-    Type: AWS::AutoScaling::AutoScalingGroup
-    DependsOn:
-    - ReadAlb
-    - WriteAlb
-    Properties:
-      AvailabilityZones:
-        - !Select [2, !GetAZs '']
-      LaunchConfigurationName:
-        Ref: LaunchConfig
-      MinSize: '1'
-      MaxSize: '1'
-      TargetGroupARNs:
-      - Ref: ReadAlbTargetGroup7474
-      - Ref: ReadAlbTargetGroup7687
-      - Ref: WriteAlbTargetGroup7474
-      - Ref: WriteAlbTargetGroup7687
-      VPCZoneIdentifier:
         - !Ref Subnet3
       Tags:
       - Key: environment
@@ -343,7 +302,7 @@ Resources:
       SecurityGroups:
         - !Ref CoreOSSecurityGroup
       InstanceType: !Ref InstanceType
-      ImageId: ami-31328842
+      ImageId: !Ref ImageId
       AssociatePublicIpAddress: true
       KeyName:
         Fn::If:
@@ -358,13 +317,115 @@ Resources:
           SnapshotId: !Ref EbsSnapshot
       UserData:
         Fn::Base64: 
-          Fn::Join: ["", ["#cloud-config\n", "\n", "coreos:\n", "    update:\n", "        reboot-strategy: off\n", "    etcd2:\n", "        discovery: {{token}}\n", "        advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001\n", "        initial-advertise-peer-urls: http://$private_ipv4:2380\n", "        listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001\n", "        listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001\n", "    units:\n", "    - name: authorized_keys.service\n", "      command: start\n", "      content: |\n", "          [Unit]\n", "          Description=Update authorized_keys\n", "\n", "          [Service]\n", "          Type=oneshot\n", "          ExecStartPre=/bin/sh -c \"mkdir -p /home/core/.ssh && touch /home/core/.ssh/authorized_keys\"\n", "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512\"\n", "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys\"\n", "          ExecStart=/bin/sh -c \"cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 700 /home/core/.ssh && chmod 600 /home/core/.ssh/authorized_keys && chown -R core:core /home/core/.ssh\"\n", "    - name: authorized_keys.timer\n", "      command: start\n", "      content: |\n", "          [Unit]\n", "          Description=Authorized keys timer\n", "\n", "          [Timer]\n", "          OnBootSec=1min\n", "          OnUnitActiveSec=1min\n", "\n", "          [Install]\n", "          WantedBy=timers.target\n", "    - name: docker.service\n", "      drop-ins:\n", "        - name: 10-turn-off-logging.conf\n", "          content: |\n", "            [Service]\n", "            Environment=\"DOCKER_OPTS=--log-driver=none\"\n", "      command: start\n", "\n", "\n", "\n", "write_files:\n", "  - path: /etc/systemd/journald.conf.d/10-override-config.conf\n", "    content: |\n", "      [Journal]\n", "      MaxLevelConsole=crit\n", "      Compress=false\n", "      RateLimitInterval=0\n", "      RateLimitBurst=0\n", "  - path: /etc/motd.d/env.conf\n", "    content: |\n", "            This enviroment is tagged as {{environment_tag}} and is cluster {{token}}\n"]]
+          Fn::Join: ["", [
+              "#cloud-config\n",
+              "\n",
+              "coreos:\n",
+              "    update:\n",
+              "        reboot-strategy: off\n",
+              "    etcd2:\n",
+              "        discovery: ", !Ref EtcdToken, "\n",
+              "        advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001\n",
+              "        initial-advertise-peer-urls: http://$private_ipv4:2380\n",
+              "        listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001\n",
+              "        listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001\n",
+              "    units:\n",
+              "    - name: authorized_keys.service\n",
+              "      command: start\n",
+              "      content: |\n",
+              "          [Unit]\n",
+              "          Description=Update authorized_keys\n",
+              "\n",
+              "          [Service]\n",
+              "          Type=oneshot\n",
+              "          ExecStartPre=/bin/sh -c \"mkdir -p /home/core/.ssh && touch /home/core/.ssh/authorized_keys\"\n",
+              "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512\"\n",
+              "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys\"\n",
+              "          ExecStart=/bin/sh -c \"cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 700 /home/core/.ssh && chmod 600 /home/core/.ssh/authorized_keys && chown -R core:core /home/core/.ssh\"\n",
+              "    - name: authorized_keys.timer\n",
+              "      command: start\n",
+              "      content: |\n",
+              "          [Unit]\n",
+              "          Description=Authorized keys timer\n",
+              "\n",
+              "          [Timer]\n",
+              "          OnBootSec=1min\n",
+              "          OnUnitActiveSec=1min\n",
+              "\n",
+              "          [Install]\n",
+              "          WantedBy=timers.target\n",
+              "    - name: docker.service\n",
+              "      drop-ins:\n",
+              "        - name: 10-turn-off-logging.conf\n",
+              "          content: |\n",
+              "            [Service]\n",
+              "            Environment=\"DOCKER_OPTS=--log-driver=none\"\n",
+              "      command: start\n",
+              "    - name: etcd2.service\n",
+              "      command: start\n",
+              "    - name: fleet.service\n",
+              "      command: start\n",
+              "    - name: key-register.service\n",
+              "      command: start\n",
+              "      content: |\n",
+              "          [Unit]\n",
+              "          Description=Add secret keys to etcd2",
+              "          # Only run on first boot (creates the file at the end of the execution)",
+              "          ConditionPathExists=!/var/lib/format-done",
+              "\n",
+              "          [Service]\n",
+              "          Type=oneshot\n",
+              "          ExecStartPre=/bin/sh -c \"while true; do etcdctl cluster-health && break || sleep 2; done\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/_credentials/konstructor/api-key ", !Ref KonstructorAPIKey, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/environment_tag ", !Ref CocoEnvironmentTag, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/services-definition-root-uri ", !Ref ServicesDefinitionRootURI, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/splunk-forwarder/splunk_hec_url ", !Ref SplunkHecURL, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/splunk-forwarder/splunk_hec_token ", !Ref SplunkHecToken, " >/dev/null 2>&1 || true;\"\n",
+              "    - name: vol-neo4j.mount\n",
+              "      command: start\n",
+              "      content: |\n",
+              "          [Mount]\n",
+              "           What=/dev/xvdf\n",
+              "           Where=/vol/neo4j\n",
+              "           Type=ext4\n",
+              "    - name: bootstrap.service\n",
+              "      command: start\n",
+              "      content: |\n",
+              "          [Unit]\n",
+              "          Description=Start fleet services\n",
+              "          After=fleet.service\n",
+              "          Requires=fleet.service\n",
+              "          # Only run on first boot\n",
+              "          ConditionPathExists=!/var/lib/format-done\n",
+              "\n",
+              "          [Service]\n",
+              "          Type=oneshot\n",
+              "          ExecStartPre=/bin/sh -c \"while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done\"\n",
+              "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service\"\n",
+              "          ExecStartPost=/usr/bin/touch /var/lib/format-done\n",
+              "\n",
+              "write_files:\n",
+              "  - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf\n",
+              "    content: |\n",
+              "      [Socket]\n",
+              "      ListenStream=0.0.0.0:49153\n",
+              "  - path: /etc/systemd/journald.conf.d/10-override-config.conf\n",
+              "    content: |\n",
+              "      [Journal]\n",
+              "      MaxLevelConsole=crit\n",
+              "      Compress=false\n",
+              "      RateLimitInterval=0\n",
+              "      RateLimitBurst=0\n",
+              "  - path: /etc/motd.d/env.conf\n",
+              "    content: |\n",
+              "            This persistent enviroment is tagged as ", !Ref CocoEnvironmentTag, " and is cluster ", !Ref EtcdToken, "\n"
+              ]]
 
   #Application Read Load Balancer
   ReadAlb:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
     Properties:
-      Name: !Sub ${AWS::StackName}-neo4j-read-alb
+      Name: !Sub ${AWS::StackName}-read-alb
       Scheme: internet-facing
       SecurityGroups:
         - !Ref CoreOSSecurityGroup
@@ -385,7 +446,7 @@ Resources:
   ReadAlbTargetGroup7474:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub ${AWS::StackName}-neo4j-read-7474
+      Name: !Sub ${AWS::StackName}-read-7474
       Port: 7474
       Protocol: HTTP
       VpcId: !Ref VPC
@@ -410,7 +471,7 @@ Resources:
   ReadAlbTargetGroup7687:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub ${AWS::StackName}-neo4j-read-7687
+      Name: !Sub ${AWS::StackName}-read-7687
       Port: 7687
       Protocol: HTTP
       VpcId: !Ref VPC
@@ -459,7 +520,7 @@ Resources:
   WriteAlb:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
     Properties:
-      Name: !Sub ${AWS::StackName}-neo4j-write-alb
+      Name: !Sub ${AWS::StackName}-write-alb
       Scheme: internet-facing
       SecurityGroups:
         - !Ref CoreOSSecurityGroup
@@ -480,7 +541,7 @@ Resources:
   WriteAlbTargetGroup7474:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub ${AWS::StackName}-neo4j-write-7474
+      Name: !Sub ${AWS::StackName}-write-7474
       Port: 7474
       Protocol: HTTP
       VpcId: !Ref VPC
@@ -505,7 +566,7 @@ Resources:
   WriteAlbTargetGroup7687:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub ${AWS::StackName}-neo4j-write-7687
+      Name: !Sub ${AWS::StackName}-write-7687
       Port: 7687
       Protocol: HTTP
       VpcId: !Ref VPC
@@ -557,6 +618,3 @@ Outputs:
   WriteAlbDNS:
     Description: DNS name of newly created Application Write Load Balancer
     Value: !GetAtt WriteAlb.DNSName
-
-
-  
