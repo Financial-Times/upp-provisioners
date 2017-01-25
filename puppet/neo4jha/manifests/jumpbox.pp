@@ -10,7 +10,7 @@ class neo4jha::jumpbox {
     content => '/var/log/jumpbox* {
       rotate 5
       weekly
-      }'
+      }
   file { '/etc/sudoers.d':
     ensure  => 'directory'
   }
