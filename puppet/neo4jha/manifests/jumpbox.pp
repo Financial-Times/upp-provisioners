@@ -13,6 +13,7 @@ class neo4jha::jumpbox {
   ->
   file { '/etc/sudoers.d/jumpbox':
     ensure  => 'file',
-    content => '%sudoers ALL=(ALL) NOPASSWD:ALL\n'
+    content => '%sudoers ALL=(ALL) NOPASSWD:ALL
+    '
   }
 }
