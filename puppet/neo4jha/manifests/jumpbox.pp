@@ -11,7 +11,7 @@ class neo4jha::jumpbox {
       rotate 5
       weekly
       }'
-  file { '/etc/sudoers.d'
+  file { '/etc/sudoers.d':
     ensure  => 'directory'
   }
   ->
