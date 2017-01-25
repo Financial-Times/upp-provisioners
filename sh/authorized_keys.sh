@@ -4,9 +4,11 @@ source $(dirname $0)/functions.sh || echo "Failed to source functions.sh"
 
 CWD="/opt/up"
 CACHED_SHA512="${CWD}/authorized_keys.sha512"
-REMOTE_SHA512="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
+#REMOTE_SHA512="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
+REMOTE_SHA512="file:///mnt/neo/authorized_keys.sha512"
 CACHED_KEYS="${CWD}/authorized_keys"
-REMOTE_KEYS="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
+#REMOTE_KEYS="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
+REMOTE_KEYS="file:///mnt/neo/authorized_keys"
 unset INITIAL_RUN #Ensure INITIAL_RUN is unset
 declare -A CACHED_KV=()
 declare -A REMOTE_KV=()
@@ -15,14 +17,23 @@ ADMINS=( 'jussi.heinonen' 'euan.finlay' 'sorin.buliarca' )
 
 addUser() {
   username=$(convertUsername $1)
+  if [[ "$(isAdminUser $username)" == "0" ]]; then
+    group='sudoers'
+  else
+    group='plebs'
+  fi
   pubkey="$2"
   puppet apply -e "
-  user { \"$username\": ensure => 'present', managehome => true }
+  user { \"$username\":
+  ensure => 'present',
+  managehome => true,
+  groups => \"${group}\" }
   file { \"${USERHOMEROOT}/$username/.ssh\":
   ensure => 'directory',
   owner => \"${username}\",
   group => \"${username}\",
   }
+
   file { \"${USERHOMEROOT}/$username/.ssh/authorized_keys\":
   ensure => 'file',
   content => \"${pubkey} ${username}@ft.com\\n\",
@@ -84,6 +95,12 @@ compareSha512() {
   fi
 }
 
+createGroups() {
+  puppet apply -e "
+  group { 'sudoers': ensure => 'present' }
+  group { 'plebs': ensure => 'present' }"
+}
+
 deleteUser() {
   username=$(convertUsername $1)
   puppet apply -e "user { \"$username\": ensure => 'absent', managehome => true }"
@@ -93,6 +110,17 @@ downloadFile() {
   #arg1 - output file name
   #arg2 - URL to download file from
   curl -sSL --connect-timeout 5 -o $1 $2 || errorAndExit "$(date '+%x %X') Failed to download $2. Exit 1." 1
+}
+
+isAdminUser() {
+  #Checks username against array ADMINS to determined whether user is admin
+  user="$1"
+  for each in ${ADMINS[@]}; do
+    if [[ "${user,,}" == ${each,,}  ]]; then #Notation ,, lowercases variable value
+      echo 0
+      break
+    fi
+  done
 }
 
 loopArrayKeyValues() {
@@ -150,6 +178,7 @@ if [[ ! -f "${CACHED_SHA512}" || ! -f "${CACHED_KEYS}" ]]; then
   mkdir -p ${CWD} #Ensure work directory exists
   downloadFile ${CACHED_SHA512} ${REMOTE_SHA512}
   downloadFile ${CACHED_KEYS} ${REMOTE_KEYS}
+  createGroups
   bulkAddUsers
 else
   if [[ $(compareSha512 ${CACHED_SHA512} ${REMOTE_SHA512}) -eq "0" ]]; then
@@ -158,6 +187,7 @@ else
     info "Cached file ${CACHED_SHA512} is different than remote file ${REMOTE_SHA512}"
     downloadFile ${CACHED_SHA512}.new ${REMOTE_SHA512}
     downloadFile ${CACHED_KEYS}.new ${REMOTE_KEYS}
+    createGroups
     compareFiles ${CACHED_KEYS} ${CACHED_KEYS}.new
     mv -f ${CACHED_SHA512}.new ${REMOTE_SHA512}
     mv -f ${CACHED_KEYS}.new ${REMOTE_KEYS}
