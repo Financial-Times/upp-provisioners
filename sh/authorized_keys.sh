@@ -88,7 +88,7 @@ compareFiles() {
 }
 
 compareSha512() {
-  if [[ "$(cat $1)" == "$(curl -sSL --connect-timeout 5 $2)" ]]; then
+  if [[ "$(cat $1)" == "$(curl -sSL --connect-timeout 10 $2)" ]]; then
     echo 0
   else
     echo 1
@@ -109,7 +109,7 @@ deleteUser() {
 downloadFile() {
   #arg1 - output file name
   #arg2 - URL to download file from
-  curl -sSL --connect-timeout 5 -o $1 $2 || errorAndExit "$(date '+%x %X') Failed to download $2. Exit 1." 1
+  curl -sSL --connect-timeout 10 -o $1 $2 || errorAndExit "$(date '+%x %X') Failed to download $2. Exit 1." 1
 }
 
 isAdminUser() {
