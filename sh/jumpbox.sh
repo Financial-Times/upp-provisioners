@@ -2,7 +2,7 @@
 
 OUTPUT="/var/log/jumpbox.log"
 ROOTDIR='/tmp'
-echo  "BEGIN - $(date)" > ${OUTPUT}
+echo  "BEGIN - $(date)" >> ${OUTPUT}
 # Update Name tag
 if [[ "$(ping -c 1 -w 1 169.254.169.254 ; echo $?)" -ne "1" ]]; then
   echo "Setting hostname in AWS console" >> ${OUTPUT}
@@ -27,5 +27,5 @@ else
 fi
 
 puppet apply --modulepath ./puppet -e "class { 'neo4jha::jumpbox': }" >> ${OUTPUT}
-
+sh/authorized_keys.sh
 echo  "END - $(date)" >> ${OUTPUT}
