@@ -1,12 +1,12 @@
 declare -A ARGS
 
 errorAndExit() {
-  echo -e "\e[31m$1\e[0m"
+  echo -e "\e[31m$(date '+%x %X') ERROR: $1\e[0m"
   exit $2
 }
 
 info() {
-  echo -e "\e[34m${1}\e[0m"
+  echo -e "\e[34m$(date '+%x %X') INFO: ${1}\e[0m"
 }
 
 getInstanceId() {
@@ -57,4 +57,8 @@ processCliArgs() {
       ARGS[${each}]="true"
     fi
   done
+}
+
+warn() {
+  echo -e "\e[33m$(date '+%x %X') WARNING: ${1}\e[0m"
 }
