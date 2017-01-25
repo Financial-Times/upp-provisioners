@@ -4,11 +4,11 @@ source $(dirname $0)/functions.sh || echo "Failed to source functions.sh"
 
 CWD="/opt/up"
 CACHED_SHA512="${CWD}/authorized_keys.sha512"
-#REMOTE_SHA512="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
-REMOTE_SHA512="file:///mnt/neo/authorized_keys.sha512"
+REMOTE_SHA512="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
+#REMOTE_SHA512="file:///mnt/neo/authorized_keys.sha512"
 CACHED_KEYS="${CWD}/authorized_keys"
-#REMOTE_KEYS="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
-REMOTE_KEYS="file:///mnt/neo/authorized_keys"
+REMOTE_KEYS="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
+#REMOTE_KEYS="file:///mnt/neo/authorized_keys"
 unset INITIAL_RUN #Ensure INITIAL_RUN is unset
 declare -A CACHED_KV=()
 declare -A REMOTE_KV=()
