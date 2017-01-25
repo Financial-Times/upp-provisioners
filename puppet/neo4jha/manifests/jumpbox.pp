@@ -7,18 +7,12 @@ class neo4jha::jumpbox {
   }
 
   file { '/etc/logrotate.d/jumpbox':
-    content => '/var/log/jumpbox* {
-      rotate 5
-      weekly
-      }
-  file { '/etc/sudoers.d':
-    ensure  => 'directory'
+    content => '/var/log/jumpbox* {\nrotate 5\nweekly }'
   }
+  file { '/etc/sudoers.d': ensure  => 'directory' }
   ->
   file { '/etc/sudoers.d/jumpbox':
     ensure  => 'file',
     content => '%sudoers ALL=(ALL) NOPASSWD:ALL\n'
-  }
-
   }
 }
