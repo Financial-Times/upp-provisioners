@@ -189,7 +189,7 @@ else
     downloadFile ${CACHED_KEYS}.new ${REMOTE_KEYS}
     createGroups
     compareFiles ${CACHED_KEYS} ${CACHED_KEYS}.new
-    mv -f ${CACHED_SHA512}.new ${REMOTE_SHA512}
-    mv -f ${CACHED_KEYS}.new ${REMOTE_KEYS}
+    mv -f ${CACHED_SHA512}.new ${CACHED_SHA512}
+    mv -f ${CACHED_KEYS}.new ${CACHED_KEYS}
   fi
 fi
