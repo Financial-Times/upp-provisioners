@@ -139,7 +139,7 @@ Parameters:
     - d2.2xlarge
     - d2.4xlarge
     - d2.8xlarge
-    Default: t2.small
+    Default: t2.micro
 
 Conditions:
   HasKeyName:
