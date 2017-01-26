@@ -21,9 +21,13 @@ Metadata:
       - PublicSubnetRouteTableId
 Parameters:
   VPC:
-    Description: This is the VPC the stack will be deployed inside.
+    Description: This is VPC where Sematic cluster lives today (26.1.2017)
     Type: AWS::EC2::VPC::Id
-    Default: vpc-5674e132
+    Default: vpc-9fcb94fb
+  PublicSubnetRouteTableId:
+    Description: RouteTableId associated with VPC. If updating VPC ID remember to update also this value. 
+    Type: String
+    Default: rtb-6d739b0a
   AvailabilityZone1:
     Description: Availability zone 1
     Type: AWS::EC2::AvailabilityZone::Name
@@ -60,10 +64,6 @@ Parameters:
     Description: CIDR for Private subnet 3
     Type: String
     Default: 172.24.252.0/24
-  PublicSubnetRouteTableId:
-    Description: RouteTableId for public subnets
-    Type: String
-    Default: rtb-4f85d32b
   TagEnvironment:
     Description: Tag detail for the Environment
     Type: String

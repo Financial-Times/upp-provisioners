@@ -36,6 +36,19 @@ Once you have [set up AWS credentials](http://docs.aws.amazon.com/cli/latest/use
 
 `aws cloudformation create-stack --stack-name up-neo4j-ha-cluster-subnets --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets.yaml`
 
+##### Create stack in non-default VPC
+
+To create stack in other than default VPC you will need to specify the VPC ID and Route Table associated with VPC.
+You can find this information via AWS console.
+
+Once you have details you can can pass them as command line parameters in the following way.
+
+```
+aws cloudformation create-stack --stack-name up-neo4j-ha-cluster-subnets-semantic --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets.yaml \
+--parameters ParameterKey=VPC,ParameterValue=vpc-9fcb94fb,UsePreviousValue=False \
+--parameters ParameterKey=PublicSubnetRouteTableId,ParameterValue=rtb-6d739b0a,UsePreviousValue=false
+```
+
 ##### Update stack
 
 `aws cloudformation update-stack --stack-name up-neo4j-ha-cluster-subnets --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets.yaml`
