@@ -62,6 +62,10 @@ Parameters:
     Description: HEC Ingestion Token for Splunk
     Type: String
 
+  ExtraNeoConf:
+    Description: URL for extra Neo4J conf
+    Type: String
+
   EtcdToken:
     Description: Etcd token, generate from https://discovery.etcd.io/new?size=3
     Type: String
@@ -78,15 +82,15 @@ Parameters:
   Subnet1:
     Description: Subnet 172.24.0.0/18, eu-west-1a
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-5fedc029
+    Default: subnet-5587b723
   Subnet2:
     Description: Subnet 172.24.64.0/18, eu-west-1b
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-791d351d
+    Default: subnet-d8d8a180
   Subnet3:
     Description: Subnet 172.24.128.0/18, eu-west-1c
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-d56b1e8d
+    Default: subnet-4af6ca2e
 
   InstanceType:
     Description: The type and size of the instance. Check documentation for recommended types.
@@ -121,7 +125,7 @@ Parameters:
   EbsSnapshot:
     Description: SnapshotId of the EBS Snapshot used to provision the disks.
     Type: String
-    Default: snap-0a0a1a16da41eb387
+    Default: snap-08ce671d2f33e9e5d
 
   IamInstanceProfile:
     Description: What IAM profile to give to this instance - for future use. Currently has to be FT-Linux-Role
@@ -186,6 +190,8 @@ Resources:
         Value: !Ref TagTeamDL
       - Key: systemCode
         Value: !Ref TagSystemCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 7687
@@ -204,7 +210,9 @@ Resources:
       - Key: teamDL
         Value: !Ref TagTeamDL
       - Key: systemCode
-        Value: !Ref TagSystemCode 
+        Value: !Ref TagSystemCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
       SecurityGroupIngress:
       # OSB + LDNWebPerf
       - IpProtocol: tcp
@@ -295,6 +303,9 @@ Resources:
       - Key: stopSchedule
         Value: !Ref TagStopSchedule
         PropagateAtLaunch: true
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+        PropagateAtLaunch: true
 
   LaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
@@ -381,18 +392,19 @@ Resources:
               "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/services-definition-root-uri ", !Ref ServicesDefinitionRootURI, " >/dev/null 2>&1 || true;\"\n",
               "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/splunk-forwarder/splunk_hec_url ", !Ref SplunkHecURL, " >/dev/null 2>&1 || true;\"\n",
               "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/splunk-forwarder/splunk_hec_token ", !Ref SplunkHecToken, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/neo4j/extra-conf-url ", !Ref ExtraNeoConf, " >/dev/null 2>&1 || true;\"\n",
               "    - name: vol-neo4j.mount\n",
               "      command: start\n",
               "      content: |\n",
               "          [Mount]\n",
-              "           What=/dev/xvdf\n",
+              "           What=/dev/xvdc\n",
               "           Where=/vol/neo4j\n",
               "           Type=ext4\n",
               "    - name: bootstrap.service\n",
               "      command: start\n",
               "      content: |\n",
               "          [Unit]\n",
-              "          Description=Start fleet services\n",
+              "          Description=Bootstrap fleet services\n",
               "          After=fleet.service\n",
               "          Requires=fleet.service\n",
               "          # Only run on first boot\n",
@@ -400,11 +412,16 @@ Resources:
               "\n",
               "          [Service]\n",
               "          Type=oneshot\n",
+              "          ExecStartPre=/bin/sh -c \"systemctl restart systemd-sysctl.service\"\n",
               "          ExecStartPre=/bin/sh -c \"while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done\"\n",
               "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service\"\n",
               "          ExecStartPost=/usr/bin/touch /var/lib/format-done\n",
               "\n",
-              "write_files:\n",
+              "write_files:\n",           
+              "  - path: \"/etc/sysctl.d/50-disable-ipv6.conf\"\n",
+              "    content: |\n",
+              "      net.ipv6.conf.all.disable_ipv6=1\n",
+              "      net.ipv6.conf.default.disable_ipv6=1\n",
               "  - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf\n",
               "    content: |\n",
               "      [Socket]\n",
@@ -426,7 +443,7 @@ Resources:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
     Properties:
       Name: !Sub ${AWS::StackName}-read-alb
-      Scheme: internet-facing
+      Scheme: internal
       SecurityGroups:
         - !Ref CoreOSSecurityGroup
         - !Ref Neo4JSecurityGroup
@@ -443,6 +460,27 @@ Resources:
         Value: !Ref TagSystemCode
       - Key: ipCode
         Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+
+  ReadAlbDNSRecord:
+    Type: "AWS::Route53::RecordSet"
+    Properties: 
+      HostedZoneName: "upp"
+      Comment: "DNS name for Read ALB"
+      Name: 
+        Fn::Join:
+        - ""
+        -
+          - "neo4j-read."
+          - !Ref CocoEnvironmentTag
+      Type: "CNAME"
+      TTL: "900"
+      ResourceRecords:
+        - !GetAtt ReadAlb.DNSName
+
+
+
   ReadAlbTargetGroup7474:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -468,6 +506,8 @@ Resources:
         Value: !Ref TagSystemCode
       - Key: ipCode
         Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
   ReadAlbTargetGroup7687:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -493,6 +533,8 @@ Resources:
         Value: !Ref TagSystemCode
       - Key: ipCode
         Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
   ReadAlbListener7474:
     Type: "AWS::ElasticLoadBalancingV2::Listener"
     Properties:
@@ -521,7 +563,7 @@ Resources:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
     Properties:
       Name: !Sub ${AWS::StackName}-write-alb
-      Scheme: internet-facing
+      Scheme: internal
       SecurityGroups:
         - !Ref CoreOSSecurityGroup
         - !Ref Neo4JSecurityGroup
@@ -538,6 +580,25 @@ Resources:
         Value: !Ref TagSystemCode
       - Key: ipCode
         Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+
+  WriteAlbDNSRecord:
+    Type: "AWS::Route53::RecordSet"
+    Properties: 
+      HostedZoneName: "upp"
+      Comment: "DNS name for Write ALB"
+      Name: 
+        Fn::Join:
+        - ""
+        -
+          - "neo4j-write."
+          - !Ref CocoEnvironmentTag
+      Type: "CNAME"
+      TTL: "900"
+      ResourceRecords:
+        - !GetAtt WriteAlb.DNSName
+
   WriteAlbTargetGroup7474:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -563,6 +624,8 @@ Resources:
         Value: !Ref TagSystemCode
       - Key: ipCode
         Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
   WriteAlbTargetGroup7687:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -588,6 +651,8 @@ Resources:
         Value: !Ref TagSystemCode
       - Key: ipCode
         Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
   WriteAlbListener7474:
     Type: "AWS::ElasticLoadBalancingV2::Listener"
     Properties:
