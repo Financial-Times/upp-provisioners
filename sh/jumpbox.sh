@@ -13,10 +13,11 @@ else
   --instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id) \
   --filters "Name=tag:Name",Values="$(curl -s http://169.254.169.254/latest/meta-data/hostname)" \
   --query 'Reservations[].Instances[].PrivateIpAddress' --output text)
+
   if [[ -z ${TAGGED} ]]; then
     echo "Setting hostname in AWS console" | tee -a ${OUTPUT}
-    /usr/bin/aws ec2 --region $(/usr/bin/wget -q -O - http://169.254.169.254/latest/meta-data/hostname | cut -d . -f 2) delete-tags --resources $(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id) --tags Key=Name
-    /usr/bin/aws ec2 --region $(/usr/bin/wget -q -O - http://169.254.169.254/latest/meta-data/hostname | cut -d . -f 2) create-tags --resources $(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id) --tags Key=Name,Value=$(wget -q -O - http://169.254.169.254/latest/meta-data/hostname)
+    /usr/bin/aws ec2 --region $(curl -s http://169.254.169.254/latest/meta-data/hostname | cut -d . -f 2) delete-tags --resources $(curl -s http://169.254.169.254/latest/meta-data/instance-id) --tags Key=Name
+    /usr/bin/aws ec2 --region $(curl -s http://169.254.169.254/latest/meta-data/hostname | cut -d . -f 2) create-tags --resources $(curl -s http://169.254.169.254/latest/meta-data/instance-id) --tags Key=Name,Value=$(curl -s http://169.254.169.254/latest/meta-data/hostname)
     echo "Hostname set" | tee -a ${OUTPUT}
   else
     echo "Skip tagging" | tee -a ${OUTPUT}
