@@ -211,11 +211,8 @@ Resources:
         Value: !Ref TagTeamDL
       - Key: systemCode
         Value: !Ref TagSystemCode
-<<<<<<< HEAD
       - Key: coco-environment-tag
         Value: !Ref CocoEnvironmentTag
-=======
->>>>>>> fe5fa3ec314be613cef306cd351dbb99138d2162
       SecurityGroupIngress:
       # OSB + LDNWebPerf
       - IpProtocol: tcp
