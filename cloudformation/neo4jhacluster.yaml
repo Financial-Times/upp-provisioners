@@ -32,7 +32,7 @@ Metadata:
 
     ParameterLabels:
       AutoGroupAvailabilityZones:
-        deafault: Auto Group Availability Zones
+        default: Auto Group Availability Zones
       InstanceType:
         default: Instance Type
       InstanceKey:
@@ -49,12 +49,12 @@ Parameters:
   ServicesDefinitionRootURI:
     Description: Root URI for the deployer to find service files.
     Type: String
-  
+
   CocoEnvironmentTag:
     Description: Which enviroment this cluster is attached to (eg. prod-uk).  Must be no more than 12 characters.
     Type: String
 
-  SplunkHecURL: 
+  SplunkHecURL:
     Description: HEC Ingestion URL for Splunk
     Type: String
 
@@ -211,8 +211,11 @@ Resources:
         Value: !Ref TagTeamDL
       - Key: systemCode
         Value: !Ref TagSystemCode
+<<<<<<< HEAD
       - Key: coco-environment-tag
         Value: !Ref CocoEnvironmentTag
+=======
+>>>>>>> fe5fa3ec314be613cef306cd351dbb99138d2162
       SecurityGroupIngress:
       # OSB + LDNWebPerf
       - IpProtocol: tcp
@@ -327,7 +330,7 @@ Resources:
           VolumeType: gp2
           SnapshotId: !Ref EbsSnapshot
       UserData:
-        Fn::Base64: 
+        Fn::Base64:
           Fn::Join: ["", [
               "#cloud-config\n",
               "\n",

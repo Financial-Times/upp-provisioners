@@ -35,19 +35,15 @@ Parameters:
   VPC:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id
-    Default: vpc-5674e132
+    Default: vpc-9fcb94fb
   SubnetId:
     Description: Public subnet, Neo4j HA Public Subnet 1, eu-west-1a
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-f293a584
+    Default: subnet-5487b722
   AvailabilityZone:
     Description: AvailabilityZone to place instance into, eu-west-1a
     Type: AWS::EC2::AvailabilityZone::Name
     Default: eu-west-1a
-  SecurityGroupId:
-    Description: sg-21e9bd47 in VPC vpc-9fcb94fb, allow SSH and HTTP(S) inbound
-    Type: AWS::EC2::SecurityGroup::Id
-    Default: sg-dd5813bb
   InstanceKey:
     Description: EC2User Key
     Type: AWS::EC2::KeyPair::KeyName
@@ -90,7 +86,7 @@ Parameters:
   TagStopSchedule:
     Description: Tag detail for the when the instance is to be powered off.
     Type: String
-    Default: '{ "start": "0 9 * * 1-5", "stop": "55 17 * * *" }'
+    Default: '{ "start": "0 9 * * 1-5", "stop": "55 18 * * *" }'
   InstanceType:
     Description: The type and size of the instance. Check documentation for recommended types.
     Type: String
@@ -188,6 +184,11 @@ Resources:
         FromPort: 22
         ToPort: 22
         CidrIp: 64.210.200.1/32
+      # Allow internal requests
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 172.24.0.0/16
   # Jumpbox instane definition
   Ec2Instance:
     Type: AWS::EC2::Instance
