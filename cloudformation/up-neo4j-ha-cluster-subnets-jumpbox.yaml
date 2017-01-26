@@ -32,14 +32,26 @@ Parameters:
     Description: Deployment script URL
     Type: String
     Default: https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/jumpbox.sh
+  EipAssociationId:
+    Description: ElasticIP Association ID, IP 34.248.20.140
+    Type: String
+    Default: eipalloc-00030c64
   VPC:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id
     Default: vpc-9fcb94fb
-  SubnetId:
+  Subnet1:
     Description: Public subnet, Neo4j HA Public Subnet 1, eu-west-1a
     Type: AWS::EC2::Subnet::Id
     Default: subnet-5487b722
+  Subnet2:
+    Description: Public subnet, Neo4j HA Public Subnet 2, eu-west-1b
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-d9d8a181
+  Subnet3:
+    Description: Public subnet, Neo4j HA Public Subnet 3, eu-west-1c
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-4bf6ca2f
   AvailabilityZone:
     Description: AvailabilityZone to place instance into, eu-west-1a
     Type: AWS::EC2::AvailabilityZone::Name
@@ -189,20 +201,51 @@ Resources:
         FromPort: 0
         ToPort: 65535
         CidrIp: 172.24.0.0/16
-  # Jumpbox instane definition
-  Ec2Instance:
-    Type: AWS::EC2::Instance
+  #auto-scaling groups
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      SecurityGroupIds:
-      - Ref: JumpboxSecurityGroup
-      SubnetId:
-        Ref: SubnetId
-      AvailabilityZone:
-        Ref: AvailabilityZone
+      LaunchConfigurationName:
+        Ref: LaunchConfig
+      MinSize: '1'
+      MaxSize: '1'
+      LoadBalancerNames:
+      - Ref: Elb
+      VPCZoneIdentifier:
+        - Ref: Subnet1
+        - Ref: Subnet2
+        - Ref: Subnet3
+      Tags:
+      - Key: environment
+        Value:
+          Ref: TagEnvironment
+        PropagateAtLaunch: true
+      - Key: teamDL
+        Value:
+          Ref: TagTeamDL
+        PropagateAtLaunch: true
+      - Key: systemCode
+        Value:
+          Ref: TagSystemCode
+        PropagateAtLaunch: true
+      - Key: ipCode
+        Value:
+          Ref: TagIpCode
+        PropagateAtLaunch: true
+      - Key: description
+        Value:
+          Ref: TagDescription
+        PropagateAtLaunch: true
+  LaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      SecurityGroups:
+        - Ref: JumpboxSecurityGroup
       InstanceType:
         Ref: InstanceType
       ImageId:
         Ref: ImageId
+      #AssociatePublicIpAddress: true
       KeyName:
         Fn::If:
         - HasKeyName
@@ -210,27 +253,36 @@ Resources:
         - Ref: AWS::NoValue
       IamInstanceProfile:
         Ref: IamInstanceProfile
-      Tags:
-      - Key: environment
-        Value:
-          Ref: TagEnvironment
-      - Key: teamDL
-        Value:
-          Ref: TagTeamDL
-      - Key: systemCode
-        Value:
-          Ref: TagSystemCode
-      - Key: ipCode
-        Value:
-          Ref: TagIpCode
-      - Key: description
-        Value:
-          Ref: TagDescription
-      - Key: ec2Powercycle
-        Value:
-          Ref: TagStopSchedule
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
           # Pull and execute deployment script
           /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash
+  #Application Load Balancers
+  Elb:
+    Type: "AWS::ElasticLoadBalancing::LoadBalancer"
+    Properties:
+      Scheme: internet-facing
+      SecurityGroups:
+        - Ref: JumpboxSecurityGroup
+      Subnets:
+        - Ref: Subnet1
+        - Ref: Subnet2
+        - Ref: Subnet3
+      Listeners:
+      - InstancePort: 22
+        LoadBalancerPort: 22
+        Protocol: TCP
+      Tags:
+      - Key: Name
+        Value: !Sub ${AWS::StackName}-elb
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
