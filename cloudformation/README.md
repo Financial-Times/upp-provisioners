@@ -4,8 +4,9 @@ Documentation for Neo4j HA Cluster CloudFormation templates.
 
 ### Table of Contents
 **[Templates](#templates)**  
-**[up-neo4j-ha-cluster-subnets.yaml](#up-neo4j-ha-cluster-subnets.yaml)**  
-**[neo4jhacluster.yaml](#neo4jhacluster.yaml)**  
+**[up-neo4j-ha-cluster-subnets.yaml](#up-neo4j-ha-cluster-subnetsyaml)**  
+**[up-neo4j-ha-cluster-subnets-jumpbox.yaml](#up-neo4j-ha-cluster-subnets-jumpboxyaml)**  
+**[neo4jhacluster.yaml](##neo4jhaclusteryaml)**  
 
 
 ## Templates
