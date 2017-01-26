@@ -28,6 +28,10 @@ Metadata:
         default: Instance EC2 User Key
 
 Parameters:
+  DeploymentScriptURL:
+    Description: Deployment script URL
+    Type: String
+    Default: https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/jumpbox.sh
   VPC:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id
@@ -44,10 +48,6 @@ Parameters:
     Description: sg-21e9bd47 in VPC vpc-9fcb94fb, allow SSH and HTTP(S) inbound
     Type: AWS::EC2::SecurityGroup::Id
     Default: sg-dd5813bb
-  DeploymentScriptURL:
-    Description: Deployment script URL
-    Type: String
-    Default: https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/jumpbox.sh
   InstanceKey:
     Description: EC2User Key
     Type: AWS::EC2::KeyPair::KeyName
