@@ -314,7 +314,7 @@ Resources:
         - !Ref CoreOSSecurityGroup
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
-      AssociatePublicIpAddress: true
+      AssociatePublicIpAddress: false
       KeyName:
         Fn::If:
         - HasKeyName
