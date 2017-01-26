@@ -23,8 +23,8 @@ else
     echo "Skip tagging" | tee -a ${OUTPUT}
   fi
   # Install packages for deployment unless already installed
-  test -x $(which puppet) || /usr/bin/yum install -y puppet3 | tee -a ${OUTPUT}
-  test -x $(which git) || /usr/bin/yum install -y git | tee -a ${OUTPUT}
+  puppet --version &> /dev/null || yum install -y puppet3 | tee -a ${OUTPUT}
+  git --version &> /dev/null || yum install -y git | tee -a ${OUTPUT}
 fi
 
 cd ${ROOTDIR}
