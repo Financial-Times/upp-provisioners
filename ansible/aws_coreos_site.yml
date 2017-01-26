@@ -11,57 +11,15 @@
     teamDL: "universal.publishing.platform@ft.com"
     environment_tag: default
     instanceType: m4.xlarge
+    vpc_id: "{% if region == 'us-east-1' %}vpc-1d25657a{% else %}vpc-36639c52{% endif %}"
+    subnets_id_1: "{% if region == 'us-east-1' %}subnet-5a978b02{% else %}subnet-b59b54c3{% endif %}"
+    subnets_id_2: "{% if region == 'us-east-1' %}subnet-b9c608f0{% else %}subnet-1cba5f44{% endif %}"
+    subnets_id_3: "{% if region == 'us-east-1' %}subnet-b5b5aa9f{% else %}subnet-fcfa5e98{% endif %}"
   vars_files:
     - keys.yaml
 
   tasks:
-    - ec2_vpc:
-        aws_access_key: "{{ aws_access_key_id }}"
-        aws_secret_key: "{{ aws_secret_access_key }}"
-        region: "{{region}}"
-        state: present
-        cidr_block: 172.24.0.0/16
-        resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS", "teamDL": "universal.publishing.platform@ft.com}"}
-        subnets:
-          - cidr: 172.24.0.0/18
-            az:  "{{region}}a"
-            resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet A", "teamDL": "universal.publishing.platform@ft.com}"}
-
-          - cidr: 172.24.64.0/18
-            az:  "{{region}}{% if region == 'us-east-1' %}c{% else %}b{% endif %}"
-            resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet B", "teamDL": "universal.publishing.platform@ft.com}"}
-
-          - cidr: 172.24.128.0/18
-            az:  "{{region}}{% if region == 'us-east-1' %}d{% else %}c{% endif %}"
-            resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "CoreOS subnet C", "teamDL": "universal.publishing.platform@ft.com}"}
-
-          # AlertLogic/CloudInsight subnets. Not used by Coco cluster.
-          - cidr: 172.24.192.0/28
-            az:  "{{ region }}c"
-            resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "AlertLogic/CloudInsight subnet", "teamDL": "universal.publishing.platform@ft.com}"}
-          - cidr: 172.24.192.16/28
-            az:  "{{ region }}a"
-            resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "AlertLogic/CloudInsight subnet", "teamDL": "universal.publishing.platform@ft.com}"}
-          - cidr: 172.24.192.32/28
-            az:  "{{ region }}a"
-            resource_tags: {"Name": "coreos", "env": "{{ env }}", "ipcode": "P196", "systemCode": "CoreOS", "description": "AlertLogic/CloudInsight subnet", "teamDL": "universal.publishing.platform@ft.com}"}
-
-        internet_gateway: True
-        route_tables:
-          - subnets:
-              - 172.24.0.0/18
-              - 172.24.64.0/18
-              - 172.24.128.0/18
-              # AlertLogic/CloudInsight routing tables. Not used by Coco cluster.
-              - 172.24.192.0/28
-              - 172.24.192.16/28
-              - 172.24.192.32/28
-            routes:
-              - dest: 0.0.0.0/0
-                gw: igw
-      register: vpc
-
-    - debug: msg="VPC {{ vpc }}"
+    - debug: msg="VPC {{ vpc_id }}"
 
     - name: Set up fleet security group
       ec2_group:
@@ -70,7 +28,7 @@
         region: "{{region}}"
         name: "coreos-up-{{clusterid}}"
         description: Fleet security group
-        vpc_id: "{{ vpc.vpc_id }}"
+        vpc_id: "{{ vpc_id }}"
         rules:
           # OSB + LDNWebPerf
           - proto: tcp
@@ -144,9 +102,9 @@
         state: present
         security_group_ids: '{{fleet_group.group_id}}'
         subnets:
-          - "{{ vpc.subnets[0].id }}"
-          - "{{ vpc.subnets[1].id }}"
-          - "{{ vpc.subnets[2].id }}"
+          - "{{ subnets_id_1 }}"
+          - "{{ subnets_id_2 }}"
+          - "{{ subnets_id_3 }}"
         listeners:
           - protocol: https
             load_balancer_port: 443
@@ -184,7 +142,7 @@
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
-        vpc_subnet_id: "{{ vpc.subnets[1].id }}"
+        vpc_subnet_id: "{{ subnets_id_1 }}"
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
@@ -215,7 +173,7 @@
         wait: true
         exact_count: 1
         user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
-        vpc_subnet_id: "{{ vpc.subnets[2].id }}"
+        vpc_subnet_id: "{{ subnets_id_3 }}"
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
@@ -250,7 +208,7 @@
         exact_count: 1
         ebs_optimized: true
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
-        vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+        vpc_subnet_id: "{{ subnets_id_1 }}"
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
@@ -289,7 +247,7 @@
         exact_count: 1
         ebs_optimized: true
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
-        vpc_subnet_id: "{{ vpc.subnets[1].id }}"
+        vpc_subnet_id: "{{ subnets_id_2 }}"
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
@@ -328,7 +286,7 @@
         exact_count: 1
         ebs_optimized: true
         user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
-        vpc_subnet_id: "{{ vpc.subnets[2].id }}"
+        vpc_subnet_id: "{{ subnets_id_3 }}"
         assign_public_ip: yes
         volumes:
           - device_name: /dev/xvda
