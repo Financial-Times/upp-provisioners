@@ -18,10 +18,12 @@ else
     /usr/bin/aws ec2 --region $(/usr/bin/wget -q -O - http://169.254.169.254/latest/meta-data/hostname | cut -d . -f 2) delete-tags --resources $(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id) --tags Key=Name
     /usr/bin/aws ec2 --region $(/usr/bin/wget -q -O - http://169.254.169.254/latest/meta-data/hostname | cut -d . -f 2) create-tags --resources $(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id) --tags Key=Name,Value=$(wget -q -O - http://169.254.169.254/latest/meta-data/hostname)
     echo "Hostname set" | tee -a ${OUTPUT}
-    # Install packages for deployment unless already installed
-    test -x $(which puppet) || /usr/bin/yum install -y puppet3 | tee -a ${OUTPUT}
-    test -x $(which git) || /usr/bin/yum install -y git | tee -a ${OUTPUT}
+  else
+    echo "Skip tagging" | tee -a ${OUTPUT}
   fi
+  # Install packages for deployment unless already installed
+  test -x $(which puppet) || /usr/bin/yum install -y puppet3 | tee -a ${OUTPUT}
+  test -x $(which git) || /usr/bin/yum install -y git | tee -a ${OUTPUT}
 fi
 
 cd ${ROOTDIR}
