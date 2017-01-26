@@ -8,6 +8,7 @@ set SPLUNK_HEC_TOKEN = "${SPLUNK_HEC_TOKEN:?Splunk HEC Token not set.}"
 set SPLUNK_HEC_URL = "${SPLUNK_HEC_URL:?Splunk HEC URL not set.}"
 set KONSTRUCTOR_API_KEY = "${KONSTRUCTOR_API_KEY:?Konstructor API Key not set.}"
 set TOKEN_URL = `curl -s https://discovery.etcd.io/new?size=3`
+set NEO_EXTRA_CONF_URL = "${NEO_EXTRA_CONF_URL:?Neo4J Extra Conf URL not provided.}"
 
 read -r -d '' CF_PARAMS <<EOM
 [
@@ -39,6 +40,11 @@ read -r -d '' CF_PARAMS <<EOM
     { 
         "ParameterKey": "EtcdToken",
         "ParameterValue": "${TOKEN_URL}",
+        "UsePreviousValue": false
+    },
+    { 
+        "ParameterKey": "ExtraNeoConf",
+        "ParameterValue": "${NEO_EXTRA_CONF_URL}",
         "UsePreviousValue": false
     }
 ]
