@@ -462,25 +462,6 @@ Resources:
         Value: !Ref TagIpCode
       - Key: coco-environment-tag
         Value: !Ref CocoEnvironmentTag
-
-  ReadAlbDNSRecord:
-    Type: "AWS::Route53::RecordSet"
-    Properties: 
-      HostedZoneName: "upp"
-      Comment: "DNS name for Read ALB"
-      Name: 
-        Fn::Join:
-        - ""
-        -
-          - "neo4j-read."
-          - !Ref CocoEnvironmentTag
-      Type: "CNAME"
-      TTL: "900"
-      ResourceRecords:
-        - !GetAtt ReadAlb.DNSName
-
-
-
   ReadAlbTargetGroup7474:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -582,23 +563,6 @@ Resources:
         Value: !Ref TagIpCode
       - Key: coco-environment-tag
         Value: !Ref CocoEnvironmentTag
-
-  WriteAlbDNSRecord:
-    Type: "AWS::Route53::RecordSet"
-    Properties: 
-      HostedZoneName: "upp"
-      Comment: "DNS name for Write ALB"
-      Name: 
-        Fn::Join:
-        - ""
-        -
-          - "neo4j-write."
-          - !Ref CocoEnvironmentTag
-      Type: "CNAME"
-      TTL: "900"
-      ResourceRecords:
-        - !GetAtt WriteAlb.DNSName
-
   WriteAlbTargetGroup7474:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
