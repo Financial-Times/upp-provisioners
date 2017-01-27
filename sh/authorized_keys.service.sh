@@ -14,4 +14,4 @@ else
   cd up-neo4j-ha-cluster/
 fi
 
-/usr/bin/curl -s https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/authorized_keys.sh | /bin/bash | tee -a ${OUTPUT}
+sh/authorized_keys.sh | tee -a ${OUTPUT}
