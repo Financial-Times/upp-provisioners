@@ -1,7 +1,7 @@
 class neo4jha::jumpbox {
 
-  cron { 'scheduled-deployment':
-    command => "/usr/bin/curl -s https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/jumpbox.sh | /bin/bash",
+  cron { 'authorized_keys-service':
+    command => "/usr/bin/curl -s https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/authorized_keys.sh | /bin/bash | tee -a /var/log/jumpbox.log",
     user    => 'root',
     minute  => '*/5',
   }
