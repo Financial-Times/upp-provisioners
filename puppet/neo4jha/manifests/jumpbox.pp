@@ -1,5 +1,12 @@
 class neo4jha::jumpbox {
 
+  Exec {
+    path      => '/usr/bin:/bin:/usr/sbin:/sbin',
+    logoutput => true,
+  }
+
+  include neo4jha::jumpbox::yum
+
   cron { 'authorized_keys-service':
     command => "/usr/bin/curl -s https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/authorized_keys.service.sh | /bin/bash",
     user    => 'root',
