@@ -32,10 +32,6 @@ Parameters:
     Description: Deployment script URL
     Type: String
     Default: https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/jumpbox.sh
-  EipAssociationId:
-    Description: ElasticIP Association ID, IP 34.248.20.140
-    Type: String
-    Default: eipalloc-00030c64
   VPC:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id
@@ -52,10 +48,6 @@ Parameters:
     Description: Public subnet, Neo4j HA Public Subnet 3, eu-west-1c
     Type: AWS::EC2::Subnet::Id
     Default: subnet-4bf6ca2f
-  AvailabilityZone:
-    Description: AvailabilityZone to place instance into, eu-west-1a
-    Type: AWS::EC2::AvailabilityZone::Name
-    Default: eu-west-1a
   InstanceKey:
     Description: EC2User Key
     Type: AWS::EC2::KeyPair::KeyName
@@ -209,8 +201,6 @@ Resources:
         Ref: LaunchConfig
       MinSize: '1'
       MaxSize: '1'
-      LoadBalancerNames:
-      - Ref: Elb
       VPCZoneIdentifier:
         - Ref: Subnet1
         - Ref: Subnet2
@@ -258,31 +248,3 @@ Resources:
           #!/bin/bash
           # Pull and execute deployment script
           /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash
-  #Application Load Balancers
-  Elb:
-    Type: "AWS::ElasticLoadBalancing::LoadBalancer"
-    Properties:
-      Scheme: internet-facing
-      SecurityGroups:
-        - Ref: JumpboxSecurityGroup
-      Subnets:
-        - Ref: Subnet1
-        - Ref: Subnet2
-        - Ref: Subnet3
-      Listeners:
-      - InstancePort: 22
-        LoadBalancerPort: 22
-        Protocol: TCP
-      Tags:
-      - Key: Name
-        Value: !Sub ${AWS::StackName}-elb
-      - Key: environment
-        Value: !Ref TagEnvironment
-      - Key: teamDL
-        Value: !Ref TagTeamDL
-      - Key: systemCode
-        Value: !Ref TagSystemCode
-      - Key: ipCode
-        Value: !Ref TagIpCode
-      - Key: description
-        Value: !Ref TagDescription
