@@ -7,7 +7,7 @@
 # Author: jussi.heinonen@ft.com - 27.1.2017
 #
 #source $(dirname $0)/functions.sh || echo "Failed to source functions.sh"
-source <(/usr/bin/curl -s https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/functions.sh | /bin/bash)
+source <(/usr/bin/curl -s https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/functions.sh | /bin/bash) || echo "Failed to source functions.sh from URL endpoint"
 
 CWD="/opt/up"
 CACHED_SHA512="${CWD}/authorized_keys.sha512"
