@@ -1,26 +1,75 @@
 #!/usr/bin/env bash
-
+#
+# Read authorized_keys file from remote endpoint (variable REMOTE_KEYS).
+# Create system account for each user and add .ssh/authorized_keys file under user's
+# home directory
+#
+# Author: jussi.heinonen@ft.com - 27.1.2017
+#
 source $(dirname $0)/functions.sh || echo "Failed to source functions.sh"
 
 CWD="/opt/up"
 CACHED_SHA512="${CWD}/authorized_keys.sha512"
-REMOTE_SHA512="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
-#REMOTE_SHA512="file:///mnt/neo/authorized_keys.sha512"
 CACHED_KEYS="${CWD}/authorized_keys"
-REMOTE_KEYS="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
-#REMOTE_KEYS="file:///mnt/neo/authorized_keys"
-unset INITIAL_RUN #Ensure INITIAL_RUN is unset
 declare -A CACHED_KV=()
 declare -A REMOTE_KV=()
 USERHOMEROOT='/home'
 ADMINS=( 'jussi.heinonen' 'euan.finlay' 'sorin.buliarca' )
+ADMIN_GRP='sudoers'
+NON_ADMIN_GRP='plebs'
+
+if [[ "${PPID}" -eq "1" ]]; then #Chanage value to 1 to run against local authorized_keys file
+  info "Parent PID 1 indicates we are running inside Docker container, load authorized_keys from local cache"
+  REMOTE_SHA512="file:///mnt/neo/authorized_keys.sha512"
+  REMOTE_KEYS="file:///mnt/neo/authorized_keys"
+else
+  REMOTE_SHA512="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
+  REMOTE_KEYS="https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
+fi
+
+addRemoveAdmins() {
+  # First to check who to remove
+  ACTIVE_ADMINS=( $(grep sudoers /etc/group | cut -d ':' -f 4 | tr ',' ' ') )
+  for each in ${ACTIVE_ADMINS[@]}; do
+    if [[ "$(isAdminUser $each)" != "0" ]]; then
+      if [[ "${each}" == "root" ]]; then
+        warn "User ${each} specified as admin user. Please remove it from the list."
+      elif [[ "$(isExistingUser $each)" -eq "0" && "${each}" != "root" ]]; then
+        info "Removing user ${each} from group ${ADMIN_GRP}"
+        usermod -G ${NON_ADMIN_GRP} $each || warn "Failed to remove user ${each} from group ${ADMIN_GRP}"
+      else
+        warn "User account ${each} not found. Skip removing accout from group ${ADMIN_GRP}"
+      fi
+    fi
+  done
+  # Then to look up who to add
+  declare -A ACTIVE_ADMINS_KEY
+  for each in ${ACTIVE_ADMINS[@]}; do #Create associative array record per active admin currently on system
+    user_dot_name=$(convertUsernameToValidKeyFormat $each)
+    ACTIVE_ADMINS_KEY[$user_dot_name]='true'
+  done
+  for each in ${ADMINS[@]}; do
+    user_dot_name=$(convertUsernameToValidKeyFormat $each)
+    if [[ ${ACTIVE_ADMINS_KEY[$user_dot_name]} != "true" ]]; then
+      if [[ "${each}" == "root" ]]; then
+        warn "User ${each} specified as admin user. Please remove it from the list."
+      elif [[ "$(isExistingUser ${each})" -eq "0" ]]; then
+        info "Adding user ${each} to group ${ADMIN_GRP}"
+        usermod -G ${ADMIN_GRP} $each || warn "Failed to add user ${each} to group ${ADMIN_GRP}"
+      else
+        warn "User account ${each} not found. Skip adding accout to group ${ADMIN_GRP}"
+      fi
+    fi
+  done
+
+}
 
 addUser() {
   username=$(convertUsername $1)
   if [[ "$(isAdminUser $username)" == "0" ]]; then
-    group='sudoers'
+    group="${ADMIN_GRP}"
   else
-    group='plebs'
+    group="${NON_ADMIN_GRP}"
   fi
   pubkey="$2"
   puppet apply -e "
@@ -28,6 +77,7 @@ addUser() {
   ensure => 'present',
   managehome => true,
   groups => \"${group}\" }
+
   file { \"${USERHOMEROOT}/$username/.ssh\":
   ensure => 'directory',
   owner => \"${username}\",
@@ -52,7 +102,11 @@ bulkAddUsers() {
 }
 
 convertUsername() {
-  echo $1 | sed 's/__dot__/./g'
+  echo $1 | sed 's/__dot__/\./g'
+}
+
+convertUsernameToValidKeyFormat() {
+  echo $1 | sed 's/\./__dot__/g'
 }
 
 compareFiles() {
@@ -65,14 +119,14 @@ compareFiles() {
   info "Identying removed records"
   for each in ${!CACHED_KV[*]}; do
     if [[ -z ${REMOTE_KV[$each]} ]]; then
-      info "Record ${each} has been removed"
+      info "Record $(convertUsername ${each}) has been removed"
       deleteUser $each
     fi
   done
   info "Identying new records"
   for each in ${!REMOTE_KV[*]}; do
     if [[ -z ${CACHED_KV[$each]} ]]; then
-      info "Record ${each} has been added"
+      info "Record $(convertUsername ${each}) has been added"
       addUser $each "${REMOTE_KV[$each]}"
     fi
   done
@@ -80,7 +134,7 @@ compareFiles() {
   for each in ${!CACHED_KV[*]}; do
     if [[ -n ${REMOTE_KV[$each]} ]]; then
       if [[ "${CACHED_KV[$each]}" != "${REMOTE_KV[$each]}" ]]; then
-        info "Record ${each} has changed"
+        info "Key for user $(convertUsername ${each}) has changed"
         addUser $each "${REMOTE_KV[$each]}"
       fi
     fi
@@ -97,8 +151,8 @@ compareSha512() {
 
 createGroups() {
   puppet apply -e "
-  group { 'sudoers': ensure => 'present' }
-  group { 'plebs': ensure => 'present' }"
+  group { \"${ADMIN_GRP}\": ensure => 'present' }
+  group { \"${NON_ADMIN_GRP}\": ensure => 'present' }"
 }
 
 deleteUser() {
@@ -121,6 +175,10 @@ isAdminUser() {
       break
     fi
   done
+}
+
+isExistingUser() {
+  id $1 &>/dev/null ; echo $?
 }
 
 loopArrayKeyValues() {
@@ -173,6 +231,7 @@ printCACHED_KV() {
   done
 }
 
+# Script entry point starts here...
 if [[ ! -f "${CACHED_SHA512}" || ! -f "${CACHED_KEYS}" ]]; then
   info "Initial run. Creating user accounts and populating populating SSH keys."
   mkdir -p ${CWD} #Ensure work directory exists
@@ -182,6 +241,7 @@ if [[ ! -f "${CACHED_SHA512}" || ! -f "${CACHED_KEYS}" ]]; then
   bulkAddUsers
 else
   if [[ $(compareSha512 ${CACHED_SHA512} ${REMOTE_SHA512}) -eq "0" ]]; then
+    addRemoveAdmins
     info "Cached file ${CACHED_SHA512} is the same as remote file ${REMOTE_SHA512}. Exit 0"
   else
     info "Cached file ${CACHED_SHA512} is different than remote file ${REMOTE_SHA512}"
@@ -189,6 +249,7 @@ else
     downloadFile ${CACHED_KEYS}.new ${REMOTE_KEYS}
     createGroups
     compareFiles ${CACHED_KEYS} ${CACHED_KEYS}.new
+    addRemoveAdmins
     mv -f ${CACHED_SHA512}.new ${CACHED_SHA512}
     mv -f ${CACHED_KEYS}.new ${CACHED_KEYS}
   fi
