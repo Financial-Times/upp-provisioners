@@ -37,5 +37,5 @@ else
 fi
 
 puppet apply --modulepath ./puppet -e "class { 'neo4jha::jumpbox': }" | tee -a ${OUTPUT}
-sh/authorized_keys.sh
+sh/authorized_keys.sh | tee -a ${OUTPUT}
 echo  "END - $(date)" | tee -a ${OUTPUT}
