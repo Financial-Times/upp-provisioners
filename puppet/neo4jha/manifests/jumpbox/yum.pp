@@ -1,3 +1,3 @@
 class neo4jha::jumpbox::yum {
-  exec { 'yum update -': }
+  exec { 'yum update -y': }
 }
