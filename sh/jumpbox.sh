@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 OUTPUT="/var/log/jumpbox.log"
-ROOTDIR='/tmp'
+ROOTDIR='/opt/up'
+mkdir -p ${ROOTDIR}
 
 echo  "BEGIN - $(date)" | tee -a ${OUTPUT}
-
 if [[ "${PPID}" -eq "1" ]]; then
   echo "Parent PID 1 indicates we are running inside Docker container, skip tagging and package installation" | tee -a ${OUTPUT}
 else
