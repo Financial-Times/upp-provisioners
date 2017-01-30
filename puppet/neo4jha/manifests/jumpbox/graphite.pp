@@ -1,5 +1,5 @@
 class neo4jha::jumpbox::graphite {
-  package { 'collectd': ensure 'present', }
+  package { 'collectd': ensure => 'present', }
   ->
   file { '/etc/collectd.d':
     ensure  => 'directory',
