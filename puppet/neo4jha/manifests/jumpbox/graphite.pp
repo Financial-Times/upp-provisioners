@@ -7,7 +7,7 @@ class neo4jha::jumpbox::graphite {
   file { '/etc/collectd.d':
     ensure  => 'directory',
     recurse => true,
-    source  => "puppet:///${module_name}/graphite",
+    source  => "puppet:///modules/${module_name}/graphite",
   }
   ~>
   service { 'collectd':
