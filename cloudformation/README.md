@@ -103,3 +103,7 @@ Creating stack for environment unique-env-name
     "StackId": "arn:aws:cloudformation:eu-west-1:027104099916:stack/up-neo4j-unique-env-name/6ea4b860-edf8-11e6-a7fd-503ac9e74c61"
 }
 ```
+
+##### Delete stack
+
+`aws cloudformation delete-stack --stack-name up-neo4j-unique-env-name`
