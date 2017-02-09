@@ -125,6 +125,21 @@ write_files:
       export HISTTIMEFORMAT="%d/%m/%y %T "
       export HISTFILESIZE=10000000
       export HISTSIZE=10000000
+  - path: "/etc/profile.d/services_autocomplete.sh"
+    permissions: "0755"
+    owner: "root"
+    content: |
+      #!/bin/bash
+
+      fleetctl list-units | tail -n +2 | cut -f 1 | tr "\n" " " > /home/core/services.list
+
+      _services(){
+                      local cur=${COMP_WORDS[COMP_CWORD]}
+                      COMPREPLY=( $(compgen -W "$(<~/services.list)" -- ${cur}) )
+      }
+      complete -F _services fcres
+      complete -F _services fcjf
+      complete -F _services fcssh
   - path: "/etc/profile.d/ft_aliases.sh"
     permissions: "0755"
     owner: "root"
