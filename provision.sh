@@ -7,8 +7,8 @@ set SERVICES_DEFINITION_ROOT_URI = "${SERVICES_DEFINITION_ROOT_URI:?Service file
 set SPLUNK_HEC_TOKEN = "${SPLUNK_HEC_TOKEN:?Splunk HEC Token not set.}"
 set SPLUNK_HEC_URL = "${SPLUNK_HEC_URL:?Splunk HEC URL not set.}"
 set KONSTRUCTOR_API_KEY = "${KONSTRUCTOR_API_KEY:?Konstructor API Key not set.}"
-TOKEN_URL=$(curl -s https://discovery.etcd.io/new?size=3)
-set TOKEN_URL = "${TOKEN_URL:?Etcd2 token url not set.}"
+TOKEN_URL=$(curl --connect-timeout 5 -s https://discovery.etcd.io/new?size=3)
+set TOKEN_URL = "${TOKEN_URL:?Failed to get etcd2 token URL}"
 set NEO_EXTRA_CONF_URL = "${NEO_EXTRA_CONF_URL:?Neo4J Extra Conf URL not provided.}"
 
 read -r -d '' CF_PARAMS <<EOM
