@@ -76,4 +76,34 @@ Stack that creates an EC2 instance and a security group that allows SSH access f
 
 ### [neo4jhacluster.yaml](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/cloudformation/neo4jhacluster.yaml)
 
-Documentation for this template to be added soon....
+##### Create stack
+
+Neo4j HA Cluster is span up with script [provision.sh](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/provision.sh).
+Before running the script you must set the following environment variables.
+
+```
+export ENVIRONMENT_TAG="unique-env-name"
+export AWS_ACCESS_KEY_ID="key"
+export AWS_SECRET_ACCESS_KEY="secret"
+export SERVICES_DEFINITION_ROOT_URI="https://raw.githubusercontent.com/Financial-Times/up-neo4j-service-files/master/"
+export SPLUNK_HEC_TOKEN="splunk-token"
+export SPLUNK_HEC_URL="https://http-inputs-financialtimes.splunkcloud.com/services/collector/event"
+export KONSTRUCTOR_API_KEY="konstructor-key"
+export NEO_EXTRA_CONF_URL="https://raw.githubusercontent.com/Financial-Times/up-neo4j-service-files/master/neo4j-extra-conf.sh"
+```
+
+Once environment variables are set start provisioning with the following command.
+
+```
+./provision.sh
+
+# Example command output
+Creating stack for environment unique-env-name
+{
+    "StackId": "arn:aws:cloudformation:eu-west-1:027104099916:stack/up-neo4j-unique-env-name/6ea4b860-edf8-11e6-a7fd-503ac9e74c61"
+}
+```
+
+##### Delete stack
+
+`aws cloudformation delete-stack --stack-name up-neo4j-unique-env-name`

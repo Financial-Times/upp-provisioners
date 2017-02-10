@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 OUTPUT="/var/log/jumpbox.log"
-ROOTDIR='/tmp'
+ROOTDIR='/opt/up'
+mkdir -p ${ROOTDIR}
 
 echo  "BEGIN - $(date)" | tee -a ${OUTPUT}
-
 if [[ "${PPID}" -eq "1" ]]; then
   echo "Parent PID 1 indicates we are running inside Docker container, skip tagging and package installation" | tee -a ${OUTPUT}
 else
@@ -23,8 +23,8 @@ else
     echo "Skip tagging" | tee -a ${OUTPUT}
   fi
   # Install packages for deployment unless already installed
-  test -x $(which puppet) || /usr/bin/yum install -y puppet3 | tee -a ${OUTPUT}
-  test -x $(which git) || /usr/bin/yum install -y git | tee -a ${OUTPUT}
+  puppet --version &> /dev/null || yum install -y puppet3 | tee -a ${OUTPUT}
+  git --version &> /dev/null || yum install -y git | tee -a ${OUTPUT}
 fi
 
 cd ${ROOTDIR}
@@ -37,5 +37,5 @@ else
 fi
 
 puppet apply --modulepath ./puppet -e "class { 'neo4jha::jumpbox': }" | tee -a ${OUTPUT}
-sh/authorized_keys.sh
+sh/authorized_keys.sh | tee -a ${OUTPUT}
 echo  "END - $(date)" | tee -a ${OUTPUT}
