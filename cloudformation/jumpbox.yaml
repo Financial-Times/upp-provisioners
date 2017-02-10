@@ -28,6 +28,9 @@ Metadata:
         default: Instance EC2 User Key
 
 Parameters:
+  KonstructorAPIKey:
+    Description: API Key used to access Konstructor DNS
+    Type: String
   DeploymentScriptURL:
     Description: Deployment script URL
     Type: String
@@ -225,6 +228,10 @@ Resources:
       - Key: description
         Value:
           Ref: TagDescription
+        PropagateAtLaunch: true
+      - Key: kon_dns
+        Value:
+          Ref: KonstructorAPIKey
         PropagateAtLaunch: true
   LaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
