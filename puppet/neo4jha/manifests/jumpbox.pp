@@ -5,7 +5,11 @@ class neo4jha::jumpbox {
     logoutput => true,
   }
 
-  include neo4jha::jumpbox::yum, neo4jha::collectd
+  class { 'neo4jha::jumpbox::yum': }
+  ->
+  class { 'neo4jha::jumpbox::install': notify => Service['collectd'] }
+  ->
+  class { 'neo4jha::collectd': }
 
   cron { 'authorized_keys-service':
     command => "/usr/bin/curl -s https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/authorized_keys.service.sh | /bin/bash",
