@@ -42,6 +42,11 @@ printCliArgs() {
   done
 }
 
+getTagValueByKey() {
+  # ARG1 - Tag key to lookup
+  aws ec2 describe-tags --region $(getRegion) --filters "Name=resource-id,Values=$(getInstanceId)" --output text | grep $1 | awk '{print $5}'
+}
+
 processCliArgs() {
   #Reads arguments into associative array ARGS[]
   #Key-only argument such as --debug adds an element ARGS[--debug]="true"
@@ -50,7 +55,11 @@ processCliArgs() {
     if [[ "$(echo ${each} | grep '=' >/dev/null ; echo $?)" == "0" ]]; then
       key=$(echo ${each} | cut -d '=' -f 1)
       value=$(echo ${each} | cut -d '=' -f 2)
-      info "Processing Key-Value argument ${key}=${value}"
+      if [[ "${key:0:5}" == "--key" ]]; then
+        info "Processing Key-Value argument ${key}=${value:0:4}********************"
+      else
+        info "Processing Key-Value argument ${key}=${value}"
+      fi
       ARGS[${key}]="${value}"
     else
       info "Processing Key-only argument ${each}"
