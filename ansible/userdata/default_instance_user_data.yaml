@@ -119,6 +119,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_hec_token '{{splunk_hec_token}}'                                  >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '{{services_definition_root_uri}}'                           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/binary-writer/bucket '{{binary_writer_bucket}}'                                           >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/generic-rw-s3/bucket '{{generic_rw_bucket}}'                                              >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-aws/test-uuid '{{aws_image_monitor_test_uuid}}'       >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/synthetic-image-publication-monitor-coco/test-uuid '{{coco_image_monitor_test_uuid}}'     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/kafka-bridge/ucs_queue_proxy_addrs '{{bridging_message_queue_proxy}}'                     >/dev/null 2>&1 || true;"
