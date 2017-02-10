@@ -13,6 +13,16 @@ set NEO_EXTRA_CONF_URL = "${NEO_EXTRA_CONF_URL:?Neo4J Extra Conf URL not provide
 read -r -d '' CF_PARAMS <<EOM
 [
     { 
+        "ParameterKey": "AWSAccessKeyId",
+        "ParameterValue": "${AWS_ACCESS_KEY_ID}",
+        "UsePreviousValue": false
+    },
+    { 
+        "ParameterKey": "AWSSecretAccessKey",
+        "ParameterValue": "${AWS_SECRET_ACCESS_KEY}",
+        "UsePreviousValue": false
+    },
+    { 
         "ParameterKey": "KonstructorAPIKey",
         "ParameterValue": "${KONSTRUCTOR_API_KEY}",
         "UsePreviousValue": false

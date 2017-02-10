@@ -42,6 +42,14 @@ Metadata:
 
 Parameters:
 
+  AWSAccessKeyId:
+    Description: AWS Access Key Id
+    Type: String
+
+  AWSSecretAccessKey:
+    Description: AWS Secret Access Key
+    Type: String
+
   KonstructorAPIKey:
     Description: API Key used to access Konstructor DNS
     Type: String
@@ -388,6 +396,8 @@ Resources:
               "          Type=oneshot\n",
               "          ExecStartPre=/bin/sh -c \"while true; do etcdctl cluster-health && break || sleep 2; done\"\n",
               "          ExecStart=/bin/sh -c \"etcdctl mk /ft/_credentials/konstructor/api-key ", !Ref KonstructorAPIKey, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/_credentials/aws/aws_access_key_id ", !Ref AWSAccessKeyId, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/_credentials/aws/aws_secret_access_key ", !Ref AWSSecretAccessKey, " >/dev/null 2>&1 || true;\"\n",
               "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/environment_tag ", !Ref CocoEnvironmentTag, " >/dev/null 2>&1 || true;\"\n",
               "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/services-definition-root-uri ", !Ref ServicesDefinitionRootURI, " >/dev/null 2>&1 || true;\"\n",
               "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/splunk-forwarder/splunk_hec_url ", !Ref SplunkHecURL, " >/dev/null 2>&1 || true;\"\n",
@@ -418,7 +428,7 @@ Resources:
               "          ExecStartPost=/usr/bin/touch /var/lib/format-done\n",
               "\n",
               "write_files:\n",           
-              "  - path: \"/etc/sysctl.d/50-disable-ipv6.conf\"\n",
+              "  - path: /etc/sysctl.d/50-disable-ipv6.conf\n",
               "    content: |\n",
               "      net.ipv6.conf.all.disable_ipv6=1\n",
               "      net.ipv6.conf.default.disable_ipv6=1\n",
