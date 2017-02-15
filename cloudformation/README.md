@@ -5,7 +5,7 @@ Documentation for Neo4j HA Cluster CloudFormation templates.
 ### Table of Contents
 **[Templates](#templates)**  
 **[up-neo4j-ha-cluster-subnets.yaml](#up-neo4j-ha-cluster-subnetsyaml)**  
-**[up-neo4j-ha-cluster-subnets-jumpbox.yaml](#up-neo4j-ha-cluster-subnets-jumpboxyaml)**  
+**[jumpbox.yaml](#jumpboxyaml)**  
 **[neo4jhacluster.yaml](#neo4jhaclusteryaml)**  
 
 
@@ -60,13 +60,13 @@ aws cloudformation create-stack --stack-name up-neo4j-ha-cluster-subnets-semanti
 
 ---
 
-### [up-neo4j-ha-cluster-subnets-jumpbox.yaml](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/cloudformation/up-neo4j-ha-cluster-subnets-jumpbox.yaml)
+### [jumpbox.yaml](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/cloudformation/jumpbox.yaml)
 
 Stack that creates an EC2 instance and a security group that allows SSH access from known subnets and IP addresses.
 
 ##### Create stack
 
-`aws cloudformation create-stack --stack-name up-neo4j-ha-cluster-subnets-jumpbox --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets-jumpbox.yaml`
+`aws cloudformation create-stack --stack-name up-neo4j-jumpbox --template-body file://///mnt//neo//cloudformation//jumpbox.yaml`
 
 ##### Delete stack
 
