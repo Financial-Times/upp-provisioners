@@ -307,7 +307,6 @@ Resources:
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
       AssociatePublicIpAddress: false
-      KeyName: AWS::NoValue
       IamInstanceProfile: !Ref IamInstanceProfile
       BlockDeviceMappings:
       - DeviceName: "/dev/sdc"

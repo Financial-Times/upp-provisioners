@@ -28,6 +28,7 @@ docker run \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
     -e "NEO_EXTRA_CONF_URL=$NEO_EXTRA_CONF_URL" \
+    -e "TOKEN_URL=$TOKEN_URL" \
     coco/up-neo4j-cluster:latest
 ```
 - You can monitor the provisioning by going to the Cloudformation section in the AWS console and looking for the stack `up-neo4j-<ENVIRONMENT_TAG>`.
