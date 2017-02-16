@@ -1,92 +1,53 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
 Description: >
-  Template to spin-up Neo4j HA cluster and 2 ALB's
+  Template to spin up a UPP Neo4j cluster.
 
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
-    - Label:
-        default: Network Configuration
+    - Label: Network Configuration
       Parameters:
       - VPC
-      - Subnets
-    - Label:
-        default: Amazon EC2 Auto Scaling Configuration
+      - Subnet1
+      - Subnet2
+      - Subnet3
+    - Label: AWS Machine Config
       Parameters:
       - InstanceType
       - ImageId
       - IamInstanceProfile
-      - InstanceKey
       - EbsSnapshot
-    - Label:
-        default: Cluster Configuration Options
+    - Label: Cluster Configuration Options
       Parameters:
       - EtcdToken
+      - AWSAccessKeyId
+      - AWSSecretAccessKey
       - KonstructorAPIKey
       - ServicesDefinitionRootURI
       - CocoEnvironmentTag
       - SplunkHecURL
       - SplunkHecToken
+      - ExtraNeoConf
+    - Label: FT standard tagging
+      Parameters:
+      - TagEnvironment
+      - TagTeamDL
+      - TagSystemCode
+      - TagIpCode
+      - TagDescription
+      - TagName
+      - TagStopSchedule
 
 
-    ParameterLabels:
-      AutoGroupAvailabilityZones:
-        default: Auto Group Availability Zones
-      InstanceType:
-        default: Instance Type
-      InstanceKey:
-        default: Instance EC2 User Key
-      ListeningPort:
-        default: ELB Listening Port
 
 Parameters:
-
-  AWSAccessKeyId:
-    Description: AWS Access Key Id
-    Type: String
-
-  AWSSecretAccessKey:
-    Description: AWS Secret Access Key
-    Type: String
-
-  KonstructorAPIKey:
-    Description: API Key used to access Konstructor DNS
-    Type: String
-
-  ServicesDefinitionRootURI:
-    Description: Root URI for the deployer to find service files.
-    Type: String
-
-  CocoEnvironmentTag:
-    Description: Which enviroment this cluster is attached to (eg. prod-uk).  Must be no more than 12 characters.
-    Type: String
-
-  SplunkHecURL:
-    Description: HEC Ingestion URL for Splunk
-    Type: String
-
-  SplunkHecToken:
-    Description: HEC Ingestion Token for Splunk
-    Type: String
-
-  ExtraNeoConf:
-    Description: URL for extra Neo4J conf
-    Type: String
-
-  EtcdToken:
-    Description: Etcd token, generate from https://discovery.etcd.io/new?size=3
-    Type: String
-    Default: https://discovery.etcd.io/3cbfe5ac4de02d43eed20429ef765f7b
-
-
-
-
+  
+  # Defines the VPC and Subnets that are to be used in provisioning.  Defaults to the eu-west-1 vpc/subnets.
   VPC:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id
     Default: vpc-9fcb94fb
-
   Subnet1:
     Description: Subnet 172.24.0.0/18, eu-west-1a
     Type: AWS::EC2::Subnet::Id
@@ -100,6 +61,7 @@ Parameters:
     Type: AWS::EC2::Subnet::Id
     Default: subnet-4af6ca2e
 
+  # AWS machine information - size, OS etc.
   InstanceType:
     Description: The type and size of the instance. Check documentation for recommended types.
     Type: String
@@ -117,29 +79,50 @@ Parameters:
     - r4.8xlarge
     - r4.16xlarge
     Default: r4.xlarge
-
-
-
-  InstanceKey:
-    Description: EC2User Key
-    Type: AWS::EC2::KeyPair::KeyName
-    Default: jussi.heinonen.universal.publishing
-
   ImageId:
     Description: The CoreOS AMI to be used.
     Type: AWS::EC2::Image::Id
-    Default: ami-1eddf56d
-
+    Default: ami-ac8fd4ca
+  IamInstanceProfile:
+    Description: What IAM profile to give to this instance - for future use. Currently has to be FT-Linux-Role
+    Type: String
+    Default: FT-Linux-Role
   EbsSnapshot:
     Description: SnapshotId of the EBS Snapshot used to provision the disks.
     Type: String
     Default: snap-08ce671d2f33e9e5d
 
-  IamInstanceProfile:
-    Description: What IAM profile to give to this instance - for future use. Currently has to be FT-Linux-Role
+  # Parameters than are used in the user data.
+  EtcdToken:
+    Description: Etcd token, generate from https://discovery.etcd.io/new?size=3
     Type: String
-    Default: FT-Linux-Role
+    Default: https://discovery.etcd.io/3cbfe5ac4de02d43eed20429ef765f7b
+  AWSAccessKeyId:
+    Description: AWS Access Key Id
+    Type: String
+  AWSSecretAccessKey:
+    Description: AWS Secret Access Key
+    Type: String
+  KonstructorAPIKey:
+    Description: API Key used to access Konstructor DNS
+    Type: String
+  ServicesDefinitionRootURI:
+    Description: Root URI for the deployer to find service files.
+    Type: String
+  CocoEnvironmentTag:
+    Description: Which enviroment this cluster is attached to (eg. prod-uk).  Must be no more than 12 characters.
+    Type: String
+  SplunkHecURL:
+    Description: HEC Ingestion URL for Splunk
+    Type: String
+  SplunkHecToken:
+    Description: HEC Ingestion Token for Splunk
+    Type: String
+  ExtraNeoConf:
+    Description: URL for extra Neo4J conf
+    Type: String
 
+  # FT Standard AWS Tags.
   TagEnvironment:
     Description: Tag detail for the Environment
     Type: String
@@ -158,7 +141,7 @@ Parameters:
   TagSystemCode:
     Description: Tag detail for the SystemCode
     Type: String
-    Default: UPP Neo4j HA
+    Default: upp
   TagIpCode:
     Description: Tag detail for the ipCode
     Type: String
@@ -176,22 +159,19 @@ Parameters:
     Type: String
     Default: nostop
 
-Conditions:
-  HasKeyName:
-    Fn::Not:
-    - Fn::Equals:
-      - ''
-      - Ref: InstanceKey
-
 Resources:
 
   # Neo4J security group
   Neo4JSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Bolt access for Neo4J
+      GroupDescription: Bolt protocol access for Neo4J
       VpcId: !Ref VPC
       Tags:
+      - Key: Description
+        Value: Bolt protocol access for Neo4J
+      - Key: ipCode
+        Value: !Ref TagIpCode
       - Key: environment
         Value: !Ref TagEnvironment
       - Key: teamDL
@@ -210,9 +190,13 @@ Resources:
   CoreOSSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: CoreOS access
+      GroupDescription: CoreOS security access
       VpcId: !Ref VPC
       Tags:
+      - Key: Description
+        Value: CoreOS security access
+      - Key: ipCode
+        Value: !Ref TagIpCode
       - Key: environment
         Value: !Ref TagEnvironment
       - Key: teamDL
@@ -269,7 +253,7 @@ Resources:
         CidrIp: 0.0.0.0/0
 
 
-  #auto-scaling groups
+  #Auto-scaling group
   Neo4jGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn:
@@ -306,7 +290,7 @@ Resources:
         Value: !Ref TagDescription
         PropagateAtLaunch: true
       - Key: Name
-        Value: !Ref TagName
+        Value: !Sub ${TagName} - ${CocoEnvironmentTag}
         PropagateAtLaunch: true
       - Key: stopSchedule
         Value: !Ref TagStopSchedule
@@ -323,11 +307,7 @@ Resources:
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
       AssociatePublicIpAddress: false
-      KeyName:
-        Fn::If:
-        - HasKeyName
-        - Ref: InstanceKey
-        - Ref: AWS::NoValue
+      KeyName: AWS::NoValue
       IamInstanceProfile: !Ref IamInstanceProfile
       BlockDeviceMappings:
       - DeviceName: "/dev/sdc"
@@ -462,6 +442,8 @@ Resources:
         - !Ref Subnet2
         - !Ref Subnet3
       Tags:
+      - Key: Description
+        Value: !Sub Read ALB for ${CocoEnvironmentTag} Neo4J Cluster
       - Key: environment
         Value: !Ref TagEnvironment
       - Key: teamDL
@@ -489,6 +471,8 @@ Resources:
       Matcher:
         HttpCode: '200'
       Tags:
+      - Key: Description
+        Value: !Sub Target Group for Read ALB for ${CocoEnvironmentTag} Neo4J Cluster
       - Key: environment
         Value: !Ref TagEnvironment
       - Key: teamDL
@@ -516,6 +500,8 @@ Resources:
       Matcher:
         HttpCode: '200'
       Tags:
+      - Key: Description
+        Value: !Sub Target Group for Read ALB for ${CocoEnvironmentTag} Neo4J Cluster
       - Key: environment
         Value: !Ref TagEnvironment
       - Key: teamDL
@@ -563,6 +549,8 @@ Resources:
         - !Ref Subnet2
         - !Ref Subnet3
       Tags:
+      - Key: Description
+        Value: !Sub Write ALB for ${CocoEnvironmentTag} Neo4J Cluster
       - Key: environment
         Value: !Ref TagEnvironment
       - Key: teamDL
@@ -590,6 +578,8 @@ Resources:
       Matcher:
         HttpCode: '200'
       Tags:
+      - Key: Description
+        Value: !Sub Target Group for Write ALB for ${CocoEnvironmentTag} Neo4J Cluster
       - Key: environment
         Value: !Ref TagEnvironment
       - Key: teamDL
@@ -617,6 +607,8 @@ Resources:
       Matcher:
         HttpCode: '200'
       Tags:
+      - Key: Description
+        Value: !Sub Target Group for Write ALB for ${CocoEnvironmentTag} Neo4J Cluster
       - Key: environment
         Value: !Ref TagEnvironment
       - Key: teamDL
