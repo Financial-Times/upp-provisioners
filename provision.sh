@@ -15,9 +15,9 @@ set ENVIRONMENT_TYPE = "${ENVIRONMENT_TYPE:?Environment type not set.}"
 case "$AWS_DEFAULT_REGION" in
     eu-west-1) 
         export VPC_ID="vpc-36639c52"
-        export SUBNET1="subnet-b59b54c3"
-        export SUBNET2="subnet-1cba5f44"
-        export SUBNET3="subnet-fcfa5e98"
+        export SUBNET1="subnet-a32021d5"
+        export SUBNET2="subnet-f11956a9"
+        export SUBNET3="subnet-00d8db64"
         export SNAPSHOT="snap-08ce671d2f33e9e5d"
         export AMI="ami-ac8fd4ca"
         ;;
