@@ -4,6 +4,9 @@
 # Create system account for each user and add .ssh/authorized_keys file under user's
 # home directory
 #
+# By default user will be added to a non-admin group.
+# To make user admin (root access) add username to array ADMINS
+#
 # Author: jussi.heinonen@ft.com - 27.1.2017
 #
 source $(dirname $0)/functions.sh || echo "$(date '+%x %X') Failed to source functions.sh"
@@ -15,7 +18,7 @@ CACHED_KEYS="${CWD}/authorized_keys"
 declare -A CACHED_KV=()
 declare -A REMOTE_KV=()
 USERHOMEROOT='/home'
-ADMINS=( 'jussi.heinonen' 'euan.finlay' 'sorin.buliarca' )
+ADMINS=( 'jussi.heinonen' 'euan.finlay' 'sorin.buliarca' 'jason.zoidis' )
 ADMIN_GRP='sudoers'
 NON_ADMIN_GRP='plebs'
 
