@@ -3,53 +3,50 @@
 Basic useful feature list:
 
  * Deploy cluster of 3 Neo4j nodes with 1 Read and 1 Write ALB
+ * Deploy private subnets into an existing UPP VPC.
+
+## Build 
+The cluster provisioner can be built as a Docker image: \
+`docker build -t coco/up-neo4j-cluster:latest .`
+
+There is no build process for the subnets - the cloudformation scripts just need running 
+via the console or the cli, depending on where you've got the right permissions.
+
+## Provisioning a new cluster
+- Grab, customise and run the environment variables from the *Neo4J Cluster - Provisioning Setup* LastPass note.
+- Run the following Docker commands:
+```
+docker pull coco/up-neo4j-cluster:latest
+docker run \
+    -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
+    -e "SPLUNK_HEC_URL=$SPLUNK_HEC_URL" \
+    -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
+    -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
+    -e "NEO_EXTRA_CONF_URL=$NEO_EXTRA_CONF_URL" \
+    coco/up-neo4j-cluster:latest
+```
+- You can monitor the provisioning by going to the Cloudformation section in the AWS console and looking for the stack `up-neo4j-<ENVIRONMENT_TAG>`.
 
 
- ## CloudFormation
+## Decommisioning a cluster
+- Export the required environment variables.
+- Run the following Docker command:
+```
+docker run \
+    -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    coco/up-neo4j-cluster:latest /bin/bash /decom.sh
+```
+- You can monitor the provisioning by going to the Cloudformation section in the AWS console and looking for the stack `up-neo4j-<ENVIRONMENT_TAG>`.
 
- Upload [neo4jhacluster.yaml](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/cloudformation/neo4jhacluster.yaml) to CloudFormation on AWS Console to spin up cluster.
+- If you've got the permissions, you can also delete the cloudformation stack directly from the AWS console.  Note, normal user permissions (ADFS-GeneralUserRole) is not enough - it can't delete the security groups.
 
- You need to specify unique _Stack name_ in CF configuration. Otherwise use defaul values.
 
- Once stack has been deployed you should be able to find your EC2 instances and Load Balancer by searching object with the stack name.
-
- ## SSH access
-
- Search for nodes on AWS Console using your stack name as search key word.
-
- Click one of the nodes and you'll find public IP on Description tab.
-
- To SSH onto the node use the following command syntax.
-
- `ssh -i mykey.pem ec2-user@<public-ip>`
-
- # Local development environment
-
- Local development environment is built on Docker.
-
- Prefix the following commands with _sudo_ if required.
-
- ## Build container
-
- ```
- cd <repo>
- docker build -t neo4jha:local .
- ```
-
- ### Run container
-
- Start container, forward ports 7374, 7474, 7687 and mount current working directory as /mnt/neo
-
- ```
- docker run -p 7473:7473 -p 7474:7474 -p 7687:7687 -v $PWD:/mnt/neo -it neo4jha:local
- ```
-
- #### Deploy stuff
-
- Config lives in directory _puppet/_
-
- To apply config changes in local development environment run the following command.
-
- ```
- puppet apply --modulepath /mnt/neo/puppet/ -e "class { 'neo4jha': profile => 'dev', initial_hosts => 'localhost:5000' }"
- ```
+## Deploying the private subnets
+Deploying the private subnets should only need to be done once for the EU and US respectively.  If it needs to be redone, you can run the up-neo4j-private-subnets.yaml Cloudformation script with appropriate parameters.  Speak to one of your friendly integration engineers about how to get the right parameters.

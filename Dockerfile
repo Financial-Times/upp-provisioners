@@ -1,8 +1,10 @@
-FROM amazonlinux
-MAINTAINER 'Jussi Heinonen<jussi.heinonen@ft.com>'
+FROM alpine:3.5
 
-RUN yum clean all && yum install -y ruby wget which git cronie
-RUN curl https://bootstrap.pypa.io/get-pip.py | python && pip install awscli boto
-RUN gem install puppet --no-rdoc --no-ri
+COPY provision.sh /provision.sh
+COPY decom.sh /decom.sh
+COPY cloudformation/neo4jhacluster.yaml /neo4jhacluster.yaml
 
-CMD /bin/bash
+RUN apk --update add bash curl py-pip \
+    && pip install --upgrade pip awscli
+
+CMD /bin/bash /provision.sh

@@ -120,7 +120,5 @@ read -r -d '' CF_PARAMS <<EOM
 ]
 EOM
 
-CWD=$(pwd) #Make note of current work directory
-cd $(dirname $0) #Change dir to repository root
-aws cloudformation create-stack --stack-name=up-neo4j-${ENVIRONMENT_TAG} --template-body=file://./cloudformation/neo4jhacluster.yaml --parameters="${CF_PARAMS}"
-cd ${CWD} #Go back to original work directory
+aws cloudformation create-stack --stack-name=up-neo4j-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}"
+
