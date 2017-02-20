@@ -242,7 +242,7 @@ Resources:
         Ref: InstanceType
       ImageId:
         Ref: ImageId
-      #AssociatePublicIpAddress: true
+      AssociatePublicIpAddress: true
       KeyName:
         Fn::If:
         - HasKeyName
