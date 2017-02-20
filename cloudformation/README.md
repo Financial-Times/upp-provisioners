@@ -46,13 +46,14 @@ Once you have details you can can pass them as command line parameters in the fo
 
 ```
 aws cloudformation create-stack --stack-name up-neo4j-ha-cluster-subnets-semantic --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets.yaml \
---parameters ParameterKey=VPC,ParameterValue=vpc-9fcb94fb,UsePreviousValue=False \
---parameters ParameterKey=PublicSubnetRouteTableId,ParameterValue=rtb-6d739b0a,UsePreviousValue=false
+--parameters ParameterKey=VPC,ParameterValue=vpc-9fcb94fb \
+ParameterKey=PublicSubnetRouteTableId,ParameterValue=rtb-6d739b0a
 ```
 
 ##### Update stack
 
 `aws cloudformation update-stack --stack-name up-neo4j-ha-cluster-subnets --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets.yaml`
+
 
 ##### Delete stack
 
@@ -66,7 +67,25 @@ Stack that creates an EC2 instance and a security group that allows SSH access f
 
 ##### Create stack
 
-`aws cloudformation create-stack --stack-name up-neo4j-jumpbox --template-body file://///mnt//neo//cloudformation//jumpbox.yaml`
+```
+aws cloudformation create-stack --stack-name up-neo4j-jumpbox --template-body file://///mnt//neo//cloudformation//jumpbox.yaml \
+--parameters ParameterKey=KonstructorAPIKey,ParameterValue=abcdefghijklmnop
+
+```
+
+###### Create stack in non-default VPC
+
+To deploy jumpbox in non-default VPC you need to specify VPC ID and subnets for all 3 AvailabilityZones
+
+```
+aws cloudformation create-stack --stack-name up-neo4j-jussi --template-body file://///mnt//neo//cloudformation//jumpbox.yaml \
+--parameters ParameterKey=VPC,ParameterValue=vpc-4e5dc82b \
+ParameterKey=Subnet1,ParameterValue=subnet-4e94b738 \
+ParameterKey=Subnet2,ParameterValue=subnet-24dfb47c \
+ParameterKey=Subnet3,ParameterValue=subnet-51654c35 \
+ParameterKey=Subnet3,ParameterValue=subnet-51654c35 \
+ParameterKey=KonstructorAPIKey,ParameterValue=abcdefghijklmnop
+```
 
 ##### Delete stack
 
