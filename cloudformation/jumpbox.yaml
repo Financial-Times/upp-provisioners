@@ -38,19 +38,19 @@ Parameters:
   VPC:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id
-    Default: vpc-9fcb94fb
+    Default: vpc-36639c52
   Subnet1:
     Description: Public subnet, Neo4j HA Public Subnet 1, eu-west-1a
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-5487b722
+    Default: subnet-b59b54c3
   Subnet2:
     Description: Public subnet, Neo4j HA Public Subnet 2, eu-west-1b
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-d9d8a181
+    Default: subnet-fcfa5e98
   Subnet3:
     Description: Public subnet, Neo4j HA Public Subnet 3, eu-west-1c
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-4bf6ca2f
+    Default: subnet-1cba5f44
   InstanceKey:
     Description: EC2User Key
     Type: AWS::EC2::KeyPair::KeyName
@@ -58,7 +58,7 @@ Parameters:
   ImageId:
     Description: Amazon Linux AMI 2016.09.1 (HVM), SSD Volume Type
     Type: String
-    Default: ami-c51e3eb6
+    Default: ami-70edb016
   IamInstanceProfile:
     Description: What IAM role to give to this instance
     Type: String

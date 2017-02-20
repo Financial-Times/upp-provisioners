@@ -65,31 +65,34 @@ ParameterKey=PublicSubnetRouteTableId,ParameterValue=rtb-6d739b0a
 
 Stack that creates an EC2 instance and a security group that allows SSH access from known subnets and IP addresses.
 
-##### Create stack
-
+##### Create stack in default VPC
+NB! We assume that our default VPS is in eu-west-1 AWS region where all our clusters reside.
 ```
-aws cloudformation create-stack --stack-name up-neo4j-jumpbox --template-body file://///mnt//neo//cloudformation//jumpbox.yaml \
+aws cloudformation create-stack --stack-name up-neo4j-jumpbox-uk \
+--template-body file://///mnt//neo//cloudformation//jumpbox.yaml \
 --parameters ParameterKey=KonstructorAPIKey,ParameterValue=abcdefghijklmnop
-
 ```
 
 ###### Create stack in non-default VPC
 
-To deploy jumpbox in non-default VPC you need to specify VPC ID and subnets for all 3 AvailabilityZones
-
+To deploy jumpbox in non-default VPC you need to specify VPC ID, subnets for all 3 AvailabilityZones, InstanceKey and the region (if it is not eu-west-1).  
+_InstanceKey is AWS Key Pair that allows creation of EC2 instances._
+###### Example: create a stack in us-east-1 AWS region
 ```
-aws cloudformation create-stack --stack-name up-neo4j-jussi --template-body file://///mnt//neo//cloudformation//jumpbox.yaml \
+aws --region us-east-1 cloudformation create-stack --stack-name up-neo4j-jumpbox-us \
+--template-body file://///mnt//neo//cloudformation//jumpbox.yaml \
 --parameters ParameterKey=VPC,ParameterValue=vpc-4e5dc82b \
+ParameterKey=KonstructorAPIKey,ParameterValue=abcdefghijklmnop \
 ParameterKey=Subnet1,ParameterValue=subnet-4e94b738 \
 ParameterKey=Subnet2,ParameterValue=subnet-24dfb47c \
 ParameterKey=Subnet3,ParameterValue=subnet-51654c35 \
 ParameterKey=Subnet3,ParameterValue=subnet-51654c35 \
-ParameterKey=KonstructorAPIKey,ParameterValue=abcdefghijklmnop
+ParameterKey=InstanceKey,ParameterValue=UP_NVirginia_Key \
 ```
 
 ##### Delete stack
 
-`aws cloudformation delete-stack --stack-name up-neo4j-ha-cluster-subnets-jumpbox`
+`aws cloudformation --region us-east-1 delete-stack --stack-name up-neo4j-jumpbox-us`
 
 ---
 
