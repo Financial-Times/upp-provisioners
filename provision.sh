@@ -19,7 +19,7 @@ case "$AWS_DEFAULT_REGION" in
         export SUBNET2="subnet-f11956a9"
         export SUBNET3="subnet-00d8db64"
         export SNAPSHOT="snap-08ce671d2f33e9e5d"
-        export AMI="ami-ac8fd4ca"
+        export AMI=$(curl  https://coreos.com/dist/aws/aws-stable.json | jq '."eu-west-1".hvm')
         ;;
     us-east-1)
         export VPC_ID="vpc-1d25657a"
@@ -27,7 +27,7 @@ case "$AWS_DEFAULT_REGION" in
         export SUBNET2="subnet-64005a49"
         export SUBNET3="subnet-1f383356"
         export SNAPSHOT="snap-0c0978a76e7255bcd"
-        export AMI="ami-fd6c94eb"
+        export AMI=$(curl  https://coreos.com/dist/aws/aws-stable.json | jq '."us-east-1".hvm')
         ;;
     *)
         echo "Can only be deployed in eu-west-1 or us-east-1"
