@@ -34,6 +34,7 @@ case "$AWS_DEFAULT_REGION" in
         exit 1
 esac
 
+
 read -r -d '' CF_PARAMS <<EOM
 [
     { 
@@ -43,7 +44,7 @@ read -r -d '' CF_PARAMS <<EOM
     },
     { 
         "ParameterKey": "ImageId",
-        "ParameterValue": "${AMI}",
+        "ParameterValue": ${AMI},
         "UsePreviousValue": false
     },
     { 
@@ -119,5 +120,5 @@ read -r -d '' CF_PARAMS <<EOM
 ]
 EOM
 
-aws cloudformation create-stack --stack-name=up-neo4j-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}"
+aws cloudformation create-stack --stack-name=upp-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}"
 
