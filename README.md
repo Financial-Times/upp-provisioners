@@ -42,6 +42,7 @@ docker run \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     coco/up-neo4j-cluster:latest /bin/bash /decom.sh
 ```
 - You can monitor the provisioning by going to the Cloudformation section in the AWS console and looking for the stack `up-neo4j-<ENVIRONMENT_TAG>`.
