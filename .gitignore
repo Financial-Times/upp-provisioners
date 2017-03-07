@@ -22,3 +22,5 @@ tags
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+# Docker-compse
+.env

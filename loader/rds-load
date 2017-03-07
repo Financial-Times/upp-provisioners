@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "Running load..."
+
+aws s3 cp s3://com.ft.coco-factset-data/2017-03-07/ppl_people_v1_full_1220.txt ppl_people.txt
+
+pgloader ppl_people_load
+

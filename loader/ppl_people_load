@@ -1,0 +1,26 @@
+LOAD CSV
+	FROM 'ppl_people.txt' (FACTSET_PERSON_ID,FULL_NAME,FIRST_NAME,MIDDLE_NAME,LAST_NAME,SALUTATION,SUFFIX_GEN,SUFFIX_PROF,BIRTH_YEAR,BIRTH_MONTH)
+	INTO postgresql:///people?ppl (FACTSET_PERSON_ID,FULL_NAME,FIRST_NAME,MIDDLE_NAME,LAST_NAME,SALUTATION,SUFFIX_GEN,SUFFIX_PROF,BIRTH_YEAR,BIRTH_MONTH)
+	WITH 	truncate,
+		skip header = 1,
+		fields escaped by double-quote,
+		fields terminated by '|'
+
+	SET	work_mem to '12MB',
+		standard_conforming_strings to 'on'
+
+	BEFORE LOAD DO
+		$$ drop table if exists ppl; $$,
+		$$ create table ppl (
+			FACTSET_PERSON_ID char(8),
+			FULL_NAME text,
+			FIRST_NAME text,
+			MIDDLE_NAME text,
+			LAST_NAME text,
+			SALUTATION text,
+			SUFFIX_GEN text,
+			SUFFIX_PROF text,
+			BIRTH_YEAR text,
+			BIRTH_MONTH text
+		);
+	$$;
