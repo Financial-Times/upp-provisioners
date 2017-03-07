@@ -1,0 +1,124 @@
+Description: >
+    This template deploys an RDS instance to the provided VPC and subnets 
+    giving access to only those with the given source security group
+
+Parameters:
+
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+
+    VPC:
+        Description: Choose which VPC this ECS cluster should be deployed to
+        Type: AWS::EC2::VPC::Id
+
+    SecurityGroup:
+        Description: Select the Security Group to allow access to RDS instance
+        Type: AWS::EC2::SecurityGroup::Id
+
+    DBName:
+        Description: The database name
+        Type: String
+        MinLength: 1
+        MaxLength: 64
+        AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+        ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+
+    DBClass:
+        Description: Enter the DB Instance Classes
+        Type: String
+        AllowedValues:
+          - db.t2.micro
+          - db.t2.small
+          - db.t2.medium
+          - db.t2.large
+          - db.r3.large
+          - db.r3.xlarge
+          - db.r3.2xlarge
+          - db.r3.4xlarge
+          - db.r3.8xlarge
+          - db.m4.large
+          - db.m4.xlarge
+          - db.m4.2xlarge
+          - db.m4.4xlarge
+          - db.m4.10xlarge
+        Default: db.t2.micro
+        ConstraintDescription: must select a valid database instance type.
+
+    DBAllocatedStorage:
+        Description: The size of the database (Gb)
+        Type: Number
+        MinValue: 100
+        MaxValue: 1024
+        Default: 100
+        ConstraintDescription: must be between 100 and 1024Gb.
+
+    DBUser:
+        Description: The master Username for the database
+        Type: String
+        MinLength: 1
+        MaxLength: 16
+        AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+        ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+
+    DBPassword:
+        Description: The master password for the database
+        NoEcho: true
+        Type: String
+        MinLength: 10
+        MaxLength: 41
+        AllowedPattern: '[a-zA-Z0-9]*'
+        ConstraintDescription: must contain only alphanumeric characters.
+
+Resources:
+
+    DBSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Open database for access
+            VpcId: !Ref VPC
+            SecurityGroupIngress:
+              - IpProtocol: tcp
+                FromPort: 5432
+                ToPort: 5432
+                SourceSecurityGroupId: !Ref SecurityGroup
+
+    DB:
+        Type: AWS::RDS::DBInstance
+        Properties:
+            DBName: !Ref DBName
+            DBInstanceClass: !Ref DBClass
+            Engine: postgres
+            EngineVersion: 9.5
+            MasterUsername: !Ref DBUser
+            MasterUserPassword: !Ref DBPassword
+            MultiAZ: false
+            StorageType: gp2
+            AllocatedStorage: !Ref DBAllocatedStorage
+            DBSubnetGroupName: !Ref DBSubnetGroup
+            VPCSecurityGroups:
+              - !Ref DBSecurityGroup
+            Tags:
+              - 
+                Key: "Name"
+                Value: "My SQL Database"
+        DeletionPolicy: Snapshot
+
+    DBSubnetGroup:
+        Type: AWS::RDS::DBSubnetGroup
+        Properties:
+            DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' subnet group']]
+            SubnetIds:
+                - 'subnet-a32021d5'
+                - 'subnet-00d8db64'
+                - 'subnet-f11956a9'
+
+Outputs:
+
+    DBSecurityGroup: 
+        Description: A reference to the security group for accessing DB
+        Value: !Ref DBSecurityGroup
+
+    DBHostAndPort: 
+        Description: A reference to the DB host name
+        Value: !Join ['', [!GetAtt [DB, Endpoint.Address], ':', !GetAtt [DB, Endpoint.Port], '/', !Ref DBName]]
