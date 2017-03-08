@@ -10,13 +10,13 @@ How To build it
 To build the tool as Docker image run  -
 
 ```
-$ docker build -t coco/rds-loader .
+$ docker build -t coco/up-rds-loader .
 ```
 
 or you can pull the image by running
 
 ```
-$ docker pull coco/rds-loader
+$ docker pull coco/up-rds-loader
 ```
 
 The image needs the following environment variables passed to it -
