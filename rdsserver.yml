@@ -19,6 +19,7 @@
         DBName: SemanticTransformerTest
         DBClass: db.t2.small
         DBUser: SemanticUser
-        DBPassword: <replace with password>
+        DBPassword: 5up3r53cur3p455w0rd
+    register: rds_stack
   - name: show stack outputs
-    debug: msg="My stack outputs are {{stack.stack_outputs}}"
+    debug: msg="My stack outputs are {{rds_stack.stack_outputs}}"
