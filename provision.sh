@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# abort stack creation if ENVIRONMENT_TAG doesn't end with -data
+if [[ $ENVIRONMENT_TAG != *-data ]] ; then
+    echo -e "\nENVIRONMENT_TAG must end with '-data'"
+    echo -e "Please update your ENVIRONMENT_TAG variable and try again\n"
+    exit 1
+fi
+
 echo "Creating stack for environment ${ENVIRONMENT_TAG:?No environment tag provided.}"
 set AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID:?AWS Access Key not set.}"
 set AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY:?AWS Secret Access Key not set.}"
@@ -13,7 +20,7 @@ set AWS_DEFAULT_REGION = "${AWS_DEFAULT_REGION:?AWS Region not set.}"
 set ENVIRONMENT_TYPE = "${ENVIRONMENT_TYPE:?Environment type not set.}"
 
 case "$AWS_DEFAULT_REGION" in
-    eu-west-1) 
+    eu-west-1)
         export VPC_ID="vpc-36639c52"
         export SUBNET1="subnet-a32021d5"
         export SUBNET2="subnet-f11956a9"
@@ -37,52 +44,52 @@ esac
 
 read -r -d '' CF_PARAMS <<EOM
 [
-    { 
+    {
         "ParameterKey": "TagEnvironment",
         "ParameterValue": "${ENVIRONMENT_TYPE}",
         "UsePreviousValue": false
     },
-    { 
+    {
         "ParameterKey": "ImageId",
         "ParameterValue": ${AMI},
         "UsePreviousValue": false
     },
-    { 
+    {
         "ParameterKey": "EbsSnapshot",
         "ParameterValue": "${SNAPSHOT}",
         "UsePreviousValue": false
     },
-    { 
+    {
         "ParameterKey": "VPC",
         "ParameterValue": "${VPC_ID}",
         "UsePreviousValue": false
     },
-    { 
+    {
         "ParameterKey": "Subnet1",
         "ParameterValue": "${SUBNET1}",
         "UsePreviousValue": false
     },
-    { 
+    {
         "ParameterKey": "Subnet2",
         "ParameterValue": "${SUBNET2}",
         "UsePreviousValue": false
     },
-    { 
+    {
         "ParameterKey": "Subnet3",
         "ParameterValue": "${SUBNET3}",
         "UsePreviousValue": false
     },
-    { 
+    {
         "ParameterKey": "AWSAccessKeyId",
         "ParameterValue": "${AWS_ACCESS_KEY_ID}",
         "UsePreviousValue": false
     },
-    { 
+    {
         "ParameterKey": "AWSSecretAccessKey",
         "ParameterValue": "${AWS_SECRET_ACCESS_KEY}",
         "UsePreviousValue": false
     },
-    { 
+    {
         "ParameterKey": "KonstructorAPIKey",
         "ParameterValue": "${KONSTRUCTOR_API_KEY}",
         "UsePreviousValue": false
@@ -121,4 +128,3 @@ read -r -d '' CF_PARAMS <<EOM
 EOM
 
 aws cloudformation create-stack --stack-name=upp-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}"
-

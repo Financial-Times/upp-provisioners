@@ -14,6 +14,7 @@ via the console or the cli, depending on where you've got the right permissions.
 
 ## Provisioning a new cluster
 - Grab, customise and run the environment variables from the *Neo4J Cluster - Provisioning Setup* LastPass note.
+- Note that your `ENVIRONMENT_TAG` **must** end with `-data`, otherwise the provisioner will abort.
 - Run the following Docker commands:
 ```
 docker pull coco/up-neo4j-cluster:latest
