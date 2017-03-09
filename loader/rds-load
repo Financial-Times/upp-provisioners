@@ -1,8 +1,19 @@
 #!/bin/sh
+set -x
+set -e
 
 echo "Running load..."
 
-aws s3 cp s3://com.ft.coco-factset-data/2017-03-07/ppl_people_v1_full_1220.txt ppl_people.txt
+aws s3 ls  s3://com.ft.coco-factset-data/2017-03-08/
+
+aws s3 cp s3://com.ft.coco-factset-data/2017-03-08/ . --recursive
+
+ls -la 
+
+zip -r data.zip .
+
+pgloader ent_entity_load
+
+ls | grep ppl_people_ppl | xargs -I '{}' mv '{}'  ppl_people.txt
 
 pgloader ppl_people_load
-

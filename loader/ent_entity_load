@@ -1,0 +1,69 @@
+LOAD ARCHIVE
+	FROM ./data.zip  
+   INTO postgresql:///
+	BEFORE LOAD
+		DO $$ drop table if exists ent_entity_coverage; $$,
+		$$ create table ent_entity_coverage (
+			FACTSET_ENTITY_ID text,
+			ENTITY_NAME text,
+			ENTITY_PROPER_NAME text,
+			PRIMARY_SIC_CODE text,
+			INDUSTRY_CODE text,
+			SECTOR_CODE text,
+			ISO_COUNTRY text,
+			METRO_AREA text,
+			STATE_PROVINCE text,
+			ZIP_POSTAL_CODE text,
+			WEB_SITE text,
+			ENTITY_TYPE text,
+			ENTITY_SUB_TYPE text,
+			YEAR_FOUNDED text,
+			ISO_COUNTRY_INCORP text,
+			ISO_COUNTRY_COR text,
+			NACE_CODE text
+		); 
+		$$,
+		$$ drop table if exists ent_entity_names; $$,
+		$$ create table ent_entity_names (
+			FACTSET_ENTITY_ID text,
+			ENTITY_NAME_TYPE text,
+			ENTITY_NAME_VALUE text
+		); 
+		$$,
+		$$ drop table if exists ent_entity_structure; $$,
+		$$ create table ent_entity_structure (
+			FACTSET_ENTITY_ID text,
+			FACTSET_PARENT_ENTITY_ID text,
+			FACTSET_ULTIMATE_PARENT_ENTITY_ID text
+		);
+	$$
+
+	LOAD CSV
+		FROM FILENAME MATCHING ~/ent_entity_coverage.txt/ WITH ENCODING windows-1252 HAVING FIELDS (FACTSET_ENTITY_ID,ENTITY_NAME,ENTITY_PROPER_NAME,PRIMARY_SIC_CODE,INDUSTRY_CODE,SECTOR_CODE,ISO_COUNTRY,METRO_AREA,STATE_PROVINCE,ZIP_POSTAL_CODE,WEB_SITE,ENTITY_TYPE,ENTITY_SUB_TYPE,YEAR_FOUNDED,ISO_COUNTRY_INCORP,ISO_COUNTRY_COR,NACE_CODE)
+		INTO postgresql:///?ent_entity_coverage (FACTSET_ENTITY_ID,ENTITY_NAME,ENTITY_PROPER_NAME,PRIMARY_SIC_CODE,INDUSTRY_CODE,SECTOR_CODE,ISO_COUNTRY,METRO_AREA,STATE_PROVINCE,ZIP_POSTAL_CODE,WEB_SITE,ENTITY_TYPE,ENTITY_SUB_TYPE,YEAR_FOUNDED,ISO_COUNTRY_INCORP,ISO_COUNTRY_COR,NACE_CODE)
+		WITH 	truncate,
+			skip header = 1,
+			fields optionally enclosed by '"',
+			fields escaped by backslash-quote,
+			fields terminated by '|'
+
+	AND LOAD CSV
+		FROM FILENAME MATCHING ~/ent_entity_names.txt/ WITH ENCODING windows-1252 HAVING FIELDS (FACTSET_ENTITY_ID,ENTITY_NAME_TYPE,ENTITY_NAME_VALUE)
+		INTO postgresql:///?ent_entity_names (FACTSET_ENTITY_ID,ENTITY_NAME_TYPE,ENTITY_NAME_VALUE)
+		WITH 	truncate,
+			skip header = 1,
+			fields optionally enclosed by '"',
+			fields escaped by backslash-quote,
+			fields terminated by '|'
+
+	AND LOAD CSV
+		FROM FILENAME MATCHING ~/ent_entity_structure.txt/ WITH ENCODING windows-1252 HAVING FIELDS (FACTSET_ENTITY_ID,FACTSET_PARENT_ENTITY_ID,FACTSET_ULTIMATE_PARENT_ENTITY_ID)
+		INTO postgresql:///?ent_entity_structure (FACTSET_ENTITY_ID,FACTSET_PARENT_ENTITY_ID,FACTSET_ULTIMATE_PARENT_ENTITY_ID)
+		WITH 	truncate,
+			skip header = 1,
+			fields optionally enclosed by '"',
+			fields escaped by backslash-quote,
+			fields terminated by '|'
+
+	FINALLY DO
+	$$ select 1;$$;

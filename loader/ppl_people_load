@@ -3,7 +3,8 @@ LOAD CSV
 	INTO postgresql:///?ppl (FACTSET_PERSON_ID,FULL_NAME,FIRST_NAME,MIDDLE_NAME,LAST_NAME,SALUTATION,SUFFIX_GEN,SUFFIX_PROF,BIRTH_YEAR,BIRTH_MONTH)
 	WITH 	truncate,
 		skip header = 1,
-		fields escaped by double-quote,
+		fields optionally enclosed by '"',
+		fields escaped by backslash-quote,
 		fields terminated by '|'
 
 	SET	work_mem to '12MB',
