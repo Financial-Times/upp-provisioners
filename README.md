@@ -5,11 +5,11 @@ Basic useful feature list:
  * Deploy cluster of 3 Neo4j nodes with 1 Read and 1 Write ALB
  * Deploy private subnets into an existing UPP VPC.
 
-## Build 
+## Build
 The cluster provisioner can be built as a Docker image: \
 `docker build -t coco/up-neo4j-cluster:latest .`
 
-There is no build process for the subnets - the cloudformation scripts just need running 
+There is no build process for the subnets - the cloudformation scripts just need running
 via the console or the cli, depending on where you've got the right permissions.
 
 ## Provisioning a new cluster
@@ -32,6 +32,16 @@ docker run \
     coco/up-neo4j-cluster:latest
 ```
 - You can monitor the provisioning by going to the Cloudformation section in the AWS console and looking for the stack `up-neo4j-<ENVIRONMENT_TAG>`.
+
+## Attaching a delivery cluster to Neo4j
+- Once your Neo4j cluster is online and accessible, you will need to set two etcd keys in the delivery cluster.
+  - `/ft/config/neo4j/read_write_url` - set this to the write ALB URL
+  - `/ft/config/neo4j/read_only_url` - set this to the read-only ALB URL
+- Example for Pre-Prod UK:
+```
+etcdctl set /ft/config/neo4j/read_write_url http://upp-pre-prod-uk-data-write-alb-up.ft.com/db/data/
+etcdctl set /ft/config/neo4j/read_only_url http://upp-pre-prod-uk-data-read-alb-up.ft.com/db/data/
+```
 
 
 ## Decommisioning a cluster
