@@ -14,3 +14,16 @@ services:
       interval: 10s
       timeout: 10s
       retries: 6
+  rds-load:
+    build: .
+    environment:
+      PGHOST: rds
+      PGUSER: user
+      PGPASSWORD: changeit
+      PGDATABASE: people
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: eu-west-1
+    depends_on:
+      rds:
+        condition: service_healthy

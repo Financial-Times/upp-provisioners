@@ -22,5 +22,9 @@ tags
 pyvenv.cfg
 .venv
 pip-selfcheck.json
-# Docker-compse
+# Docker-compose
 .env
+# Ansible 
+*.retry
+# Random
+*.zip
