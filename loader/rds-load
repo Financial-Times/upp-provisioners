@@ -1,19 +1,26 @@
 #!/bin/sh
 set -x
 set -e
-
+start=$SECONDS
 echo "Running load..."
 
 aws s3 ls  s3://com.ft.coco-factset-data/2017-03-08/
 
-aws s3 cp s3://com.ft.coco-factset-data/2017-03-08/ . --recursive
+aws s3 cp s3://com.ft.coco-factset-data/2017-03-08/ . --recursive --exclude "*.zip"
+
+ls -la
+
+aws s3 sync s3://com.ft.coco-factset-data/2017-03-08/ . --exclude "*.zip"
 
 ls -la 
 
 zip -r data.zip .
 
-pgloader ent_entity_load
-
-ls | grep ppl_people_ppl | xargs -I '{}' mv '{}'  ppl_people.txt
+rm *.txt
 
 pgloader ppl_people_load
+
+pgloader ent_entity_load
+
+duration=$(( SECONDS - start ))
+echo "Duration was $duration"
