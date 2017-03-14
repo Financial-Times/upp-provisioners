@@ -1,0 +1,36 @@
+- hosts: all
+
+  vars:
+    cluster_name: "upp-concepts-cf-testing"
+    region: "eu-west-1"
+
+  vars_files:
+    - vault.yml
+
+  tasks:
+    - name: Get the ElasticSearch endpoint
+      cloudformation_facts:
+        stack_name: "{{cluster_name}}"
+        all_facts: true
+      register: cf_output
+
+    - debug:
+        msg: "{{cf_output}}"
+
+    - name: Take a backup
+      uri:
+        url: "http://{{es_endpoint}}/_snapshot/index-backups/autobackup-{{ ansible_date_time.iso8601 }}?wait_for_completion=true"
+        method: PUT
+      register: es_backup_output
+
+    - debug:
+        msg: "{{es_backup_output}}"
+
+    - name: Delete ElasticSearch cluster
+      cloudformation:
+        stack_name: "{{cluster_name}}"
+        state: "absent"
+      register: es_stack_output
+
+    - debug:
+        msg: "{{es_stack_output}}"

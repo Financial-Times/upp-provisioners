@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Template to spin-up an Elasticsearch cluster for upp-concepts
+
+Parameters:
+  TagEnvironment:
+    Description: Tag detail for the Environment
+    Type: String
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+    Default: d
+  CocoEnvironmentTag:
+    Description: Which enviroment this cluster is attached to (eg. prod-uk).  Must be no more than 12 characters.
+    Type: String
+
+Resources:
+  ElasticsearchDomain:
+    Type: "AWS::Elasticsearch::Domain"
+    Properties:
+      DomainName: !Ref CocoEnvironmentTag
+      ElasticsearchVersion: "2.3"
+      ElasticsearchClusterConfig:
+        InstanceCount: "3"
+        InstanceType: "t2.micro.elasticsearch"
+      EBSOptions:
+        EBSEnabled: true
+        Iops: 0
+        VolumeSize: 25
+        VolumeType: "gp2"
+      SnapshotOptions:
+        AutomatedSnapshotStartHour: "0"
+#      AccessPolicies:
+#        Version: "2012-10-17"
+#        Statement:
+#          -
+#            Effect: "Allow"
+#            Principal:
+#              AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
+#            Action: "es:*"
+#            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/upp-concepts-", !Ref CocoEnvironmentTag, "/*" ] ]
+      AccessPolicies:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              AWS: "*"
+            Action: "es:*"
+            Resource: "arn:aws:es:eu-west-1:810385116814:domain/upp-concepts-cf-testing/*"
+            Condition:
+              IpAddress:
+                aws:SourceIP: "82.136.1.214/32"
+      AdvancedOptions:
+        rest.action.multi.allow_explicit_index: "true"
+      Tags:
+        - Key: env
+          Value: !Ref TagEnvironment
+        - Key: teamDL
+          Value: "universal.publishing.platform@ft.com"
+        - Key: systemCode
+          Value: "upp-concepts"
+        - Key: ipcode
+          Value: "P490"
+        - Key: description
+          Value: "upp-concepts"
+
+Outputs:
+  ESClusterEndpoint:
+    Description: The ElasticSearch cluster endpoint
+    Value: !GetAtt ElasticsearchDomain.DomainEndpoint

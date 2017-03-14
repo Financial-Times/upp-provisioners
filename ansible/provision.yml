@@ -1,0 +1,115 @@
+- hosts: all
+
+  vars:
+    cluster_name: "upp-concepts-cf-testing"
+    region: "eu-west-1"
+
+  vars_files:
+    - vault.yml
+
+  tasks:
+    - name: Ensure S3 bucket exists
+      s3_bucket:
+        name: "{{cluster_name}}-backup"
+        region: "{{region}}"
+      register: s3_bucket_output
+
+    - debug:
+        msg: "{{s3_bucket_output}}"
+
+    - name: Create ElasticSearch cluster
+      cloudformation:
+        stack_name: "{{cluster_name}}"
+        state: "present"
+        region: "eu-west-1"
+        template: "cloudformation/es-cluster-template.yml"
+        template_parameters:
+          TagEnvironment: "t"
+          CocoEnvironmentTag: "{{cluster_name}}"
+        tags:
+          Stack: "{{cluster_name}}"
+      register: es_stack_output
+
+    - debug:
+        msg: "{{es_stack_output}}"
+
+    - name: Save ElasticSearch cluster endpoint as a variable
+      set_fact:
+        es_endpoint: "{{es_stack_output.stack_outputs.ESClusterEndpoint}}"
+
+    - name: Register snapshot directory for ES snapshots
+      script: register-es-snapshot-dir.py -r {{region}} -e {{es_endpoint}} -a {{access_key}} -s {{secret_key}} -b {{cluster_name}}-backup
+      register: register_snapshot_dir_output
+
+    - debug:
+        msg: "{{register_snapshot_dir_output}}"
+
+    - name: List available backups
+      uri:
+        url: "https://{{es_endpoint}}/_snapshot/index-backups/_all?pretty"
+      register: es_snapshot_list
+
+    - debug:
+        msg: "{{es_snapshot_list}}"
+
+    - name: Save latest backup name as a variable
+      set_fact:
+        latest_es_snapshot: "{{es_snapshot_list.json.snapshots[-1].snapshot}}"
+
+    - debug:
+        msg: "{{latest_es_snapshot}}"
+
+    - name: Restore latest backup
+      ignore_errors: yes
+      uri:
+        url: "http://{{es_endpoint}}/_snapshot/index-backups/{{latest_es_snapshot}}/_restore"
+        method: POST
+      register: es_restore_output
+
+    - debug:
+        msg: "{{es_restore_output}}"
+
+    - name: Perform a lookup on the cluster CNAME
+      set_fact:
+        dns_lookup_output: "{{ lookup('dig', '{{cluster_name}}.in.ft.com/CNAME') }}"
+
+    - debug:
+        msg: "{{dns_lookup_output}}"
+
+    - name: If it already exists, update the existing CNAME record
+      uri:
+        url: "https://dns-api.in.ft.com/v2/"
+        method: PUT
+        HEADER_x-api-key: "{{konstructor_api_key}}"
+        body:
+          zone: "ft.com"
+          name: "{{cluster_name}}.in"
+          # trim the last character of the FQDN - Dyn doesn't like the trailing dot
+          oldRdata: "{{dns_lookup_output[:-1]}}"
+          newRdata: "{{es_endpoint}}"
+          ttl: "300"
+          emailAddress: "universal.publishing.platform@ft.com"
+        body_format: json
+      register: dns_update_output
+      when: dns_lookup_output != "NXDOMAIN"
+
+    - debug:
+        msg: "{{dns_update_output}}"
+
+    - name: If it doesn't exist, create a new CNAME record
+      uri:
+        url: "https://dns-api.in.ft.com/v2/"
+        method: POST
+        HEADER_x-api-key: "{{konstructor_api_key}}"
+        body:
+          zone: "ft.com"
+          name: "{{cluster_name}}.in"
+          rdata: "{{es_endpoint}}"
+          ttl: "300"
+          emailAddress: "universal.publishing.platform@ft.com"
+        body_format: json
+      register: dns_create_output
+      when: dns_lookup_output == "NXDOMAIN"
+
+    - debug:
+        msg: "{{dns_create_output}}"
