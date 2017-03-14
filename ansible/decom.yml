@@ -11,6 +11,7 @@
     - name: Get the ElasticSearch endpoint
       cloudformation_facts:
         stack_name: "{{cluster_name}}"
+        region: "{{region}}"
         all_facts: true
       register: cf_output
 
