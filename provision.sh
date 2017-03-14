@@ -128,3 +128,12 @@ read -r -d '' CF_PARAMS <<EOM
 EOM
 
 aws cloudformation create-stack --stack-name=upp-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}"
+
+echo -e "Tunnel CNAME:"
+echo -e "${ENVIRONMENT_TAG}-neo4j-tunnel-up.ft.com\n"
+
+echo -e "Write ALB:"
+echo -e "upp-${ENVIRONMENT_TAG}-write-alb-up.ft.com\n"
+
+echo -e "Read ALB:"
+echo -e "upp-${ENVIRONMENT_TAG}-read-alb-up.ft.com\n"
