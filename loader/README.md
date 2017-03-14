@@ -35,7 +35,7 @@ To run Docker image it is just:
 
 ```
 $ docker run --rm --name rds-loader \
--e "PGHOST=rds"
+-e "PGHOST=rds.somewhere.in.amazon.com"
 -e "PGUSER=user"
 -e "PGPASSWORD=changeit"
 -e "PGDATABASE=people"
@@ -57,7 +57,12 @@ AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 ```
 * The run:
 ```
-$ docker-compose -f dc-postgres.yml up
+$ docker-compose -f docker-compose.yml up
 ```
 
-This will bring up a local postgress database and will populate it with all the facset data.
+This will bring up a local Postgres  database and will populate it with all the facset data.
+
+If you just want to run Postgres locally with no data, then run the following:
+```
+$ docker-compose -f dc-postgres.yml up
+```
