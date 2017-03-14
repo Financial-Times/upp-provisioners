@@ -14,8 +14,8 @@ FROM alpine:3.5
 #
 # CMD /bin/bash provision.sh
 
-ADD ansible /ansible
-ADD cloudformation /cloudformation
+COPY ansible /ansible
+COPY cloudformation /cloudformation
 
 RUN apk --update add python py-pip ansible bash \
  && pip install --upgrade pip boto3
