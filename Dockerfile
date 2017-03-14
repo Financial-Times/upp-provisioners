@@ -16,7 +16,7 @@ FROM alpine:3.5
 
 COPY ansible /ansible
 COPY cloudformation /cloudformation
-COPY sh/* /
+COPY sh/* /usr/local/bin
 
 ENV ANSIBLE_HOSTS=/ansible/hosts
 
