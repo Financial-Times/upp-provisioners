@@ -30,3 +30,4 @@ Todo
 2. Remove hardcode values
 3. Get password from vault
 4. Add cloudwatch alarms
+5. Implement lower environment teardown over weekends and recreate on mondays
