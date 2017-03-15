@@ -4,6 +4,7 @@
     cluster_name: "upp-concepts-cf-testing"
     region: "eu-west-1"
 
+
   vars_files:
     - vault.yml
 
@@ -12,17 +13,23 @@
       cloudformation_facts:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
-        stack_name: "{{cluster_name}}"
         region: "{{region}}"
-        all_facts: true
-      register: cf_output
+        stack_name: "{{cluster_name}}"
+      register: es_stack_output
 
     - debug:
-        msg: "{{cf_output}}"
+        msg: "{{es_stack_output}}"
+
+    - name: Save ElasticSearch cluster endpoint as a variable
+      set_fact:
+        es_endpoint: "{{es_stack_output['ansible_facts']['cloudformation'][cluster_name]['stack_outputs']['ESClusterEndpoint']}}"
+
+    - debug:
+        msg: "{{es_endpoint}}"
 
     - name: Take a backup
       uri:
-        url: "http://{{es_endpoint}}/_snapshot/index-backups/autobackup-{{ ansible_date_time.iso8601 }}?wait_for_completion=true"
+        url: "http://{{es_endpoint}}/_snapshot/index-backups/autobackup-{{ ansible_date_time.iso8601 | lower }}?wait_for_completion=true"
         method: PUT
       register: es_backup_output
 
@@ -31,6 +38,9 @@
 
     - name: Delete ElasticSearch cluster
       cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        region: "{{region}}"
         stack_name: "{{cluster_name}}"
         state: "absent"
       register: es_stack_output
