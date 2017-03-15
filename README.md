@@ -15,6 +15,7 @@ The decommisioning process will:
 
 ## Build
 The AWS ES provisioner is built as a Docker image:
+
 `docker build -t coco/aws-es-provisioner:latest .`
 
 ## Provisioning a new cluster
