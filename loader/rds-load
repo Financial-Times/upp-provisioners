@@ -6,17 +6,11 @@ echo "Running load..."
 
 aws s3 ls  s3://com.ft.coco-factset-data/2017-03-08/
 
-aws s3 cp s3://com.ft.coco-factset-data/2017-03-08/ . --recursive --exclude "*.zip"
+aws s3 cp s3://com.ft.coco-factset-data/2017-03-08/2017-03-08.zip .
 
 ls -la
 
-aws s3 sync s3://com.ft.coco-factset-data/2017-03-08/ . --exclude "*.zip"
-
-ls -la 
-
-zip -r data.zip .
-
-rm *.txt
+mv *.zip data.zip
 
 pgloader ppl_people_load
 
