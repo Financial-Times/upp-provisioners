@@ -42,7 +42,7 @@ Metadata:
 
 
 Parameters:
-  
+
   # Defines the VPC and Subnets that are to be used in provisioning.  Defaults to the eu-west-1 vpc/subnets.
   VPC:
     Description: This is the VPC the stack will be deployed inside.
@@ -406,7 +406,7 @@ Resources:
               "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service\"\n",
               "          ExecStartPost=/usr/bin/touch /var/lib/format-done\n",
               "\n",
-              "write_files:\n",           
+              "write_files:\n",
               "  - path: /etc/sysctl.d/50-disable-ipv6.conf\n",
               "    content: |\n",
               "      net.ipv6.conf.all.disable_ipv6=1\n",
@@ -540,6 +540,9 @@ Resources:
     Properties:
       Name: !Sub ${AWS::StackName}-write-alb
       Scheme: internal
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: 120
       SecurityGroups:
         - !Ref CoreOSSecurityGroup
         - !Ref Neo4JSecurityGroup
