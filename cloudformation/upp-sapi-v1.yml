@@ -18,10 +18,11 @@ Resources:
   ElasticsearchDomain:
     Type: "AWS::Elasticsearch::Domain"
     Properties:
-      DomainName: !Join [ "", [ "upp-concepts-", !Ref CocoEnvironmentTag ] ]
+      DomainName: !Join [ "", [ "upp-sapi-v1-", !Ref CocoEnvironmentTag ] ]
       ElasticsearchVersion: "2.3"
       ElasticsearchClusterConfig:
-        InstanceCount: "3"
+        InstanceCount: "4"
+        ZoneAwarenessEnabled: "true"
         InstanceType: "r3.large.elasticsearch"
         DedicatedMasterType: "m3.medium.elasticsearch"
         DedicatedMasterCount: "3"
@@ -40,7 +41,7 @@ Resources:
 #            Principal:
 #              AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
 #            Action: "es:*"
-#            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/upp-concepts-", !Ref ClusterName, "/*" ] ]
+#            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/upp-sapi-v1-", !Ref ClusterName, "/*" ] ]
       AccessPolicies:
         Version: "2012-10-17"
         Statement:
@@ -61,11 +62,11 @@ Resources:
         - Key: teamDL
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode
-          Value: !Join [ "", [ "upp-concepts-", !Ref ClusterName ] ]
+          Value: !Join [ "", [ "upp-sapi-v1-", !Ref ClusterName ] ]
         - Key: ipcode
           Value: "P490"
         - Key: description
-          Value: !Join [ "", [ "upp-concepts-", !Ref ClusterName ] ]
+          Value: !Join [ "", [ "upp-sapi-v1-", !Ref ClusterName ] ]
 
 Outputs:
   ESClusterEndpoint:
