@@ -19,7 +19,7 @@ The AWS ES provisioner is built as a Docker image:
 `docker build -t coco/aws-es-provisioner:latest .`
 
 ## Provisioning a new cluster
-- Grab, customise and run the environment variables from the *AWS ElasticSearch - Provisioning Setup* LastPass note.
+- Grab, customise and run the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
 - Run the following Docker commands:
 ```
 docker pull coco/aws-es-provisioner:latest
