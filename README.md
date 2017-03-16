@@ -20,13 +20,14 @@ The AWS ES provisioner is built as a Docker image:
 
 ## Provisioning a new cluster
 - Grab, customise and run the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
+- The cluster name will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`
 - Run the following Docker commands:
 ```
 docker pull coco/aws-es-provisioner:latest
 docker run \
-    -e "CLUSTER_NAME=$CLUSTER_NAME" \
-    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "CF_TEMPLATE=$CF_TEMPLATE" \
+    -e "DELIVERY_CLUSTER=$DELIVERY_CLUSTER" \
+    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
     coco/up-neo4j-cluster:latest /bin/bash provision.sh
@@ -34,10 +35,12 @@ docker run \
 
 ## Decommisioning a cluster
 - Export the required environment variables.
+- The cluster name will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`
 - Run the following Docker command:
 ```
 docker run \
-    -e "CLUSTER_NAME=$CLUSTER_NAME" \
+    -e "CF_TEMPLATE=$CF_TEMPLATE" \
+    -e "DELIVERY_CLUSTER=$DELIVERY_CLUSTER" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "VAULT_PASS=$VAULT_PASS" \
     coco/up-neo4j-cluster:latest /bin/bash decom.sh

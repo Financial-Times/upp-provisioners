@@ -1,9 +1,7 @@
 - hosts: all
 
   vars:
-    cluster_name: "upp-concepts-cf-testing"
-    region: "eu-west-1"
-
+    cluster_name: "{{cf_template}}-{{delivery_cluster}}"
 
   vars_files:
     - vault.yml

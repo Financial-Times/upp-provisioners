@@ -1,5 +1,8 @@
 - hosts: all
 
+  vars:
+    cluster_name: "{{cf_template}}-{{delivery_cluster}}"
+
   vars_files:
     - vault.yml
 
@@ -27,7 +30,7 @@
           EnvironmentType: "{{environment_type}}"
           ClusterName: "{{cluster_name}}"
         tags:
-          Stack: "{{cf_template}}-{{cluster_name}}"
+          Stack: "{{cluster_name}}"
       register: es_stack_output
 
     - debug:
