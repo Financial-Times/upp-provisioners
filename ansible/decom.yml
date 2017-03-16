@@ -1,5 +1,10 @@
 - hosts: all
 
+  vars:
+    cluster_name: "upp-concepts-cf-testing"
+    region: "eu-west-1"
+
+
   vars_files:
     - vault.yml
 
@@ -9,7 +14,7 @@
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
         region: "{{aws_default_region}}"
-        stack_name: "{{cf_template}}-{{cluster_name}}"
+        stack_name: "{{cluster_name}}"
       register: es_stack_output
 
     - debug:
@@ -36,7 +41,7 @@
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
         region: "{{aws_default_region}}"
-        stack_name: "{{cf_template}}-{{cluster_name}}"
+        stack_name: "{{cluster_name}}"
         state: "absent"
       register: es_stack_output
 
