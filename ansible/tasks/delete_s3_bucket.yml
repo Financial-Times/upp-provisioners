@@ -1,0 +1,11 @@
+- name: Delete S3 bucket
+  s3_bucket:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{aws_default_region}}"
+    name: "{{cluster_name}}-backup"
+    state: absent
+  register: delete_s3_bucket_output
+
+- debug:
+    msg: "{{delete_s3_bucket_output}}"

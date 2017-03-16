@@ -25,7 +25,7 @@
     - debug:
         msg: "{{es_endpoint}}"
 
-    - name: Take a backup
+    - name: Create ES snapshot
       uri:
         url: "http://{{es_endpoint}}/_snapshot/index-backups/autobackup-{{ ansible_date_time.iso8601 | lower }}?wait_for_completion=true"
         method: PUT
@@ -45,3 +45,21 @@
 
     - debug:
         msg: "{{es_stack_output}}"
+
+    - name: Delete cluster CNAME (if requested)
+      include: tasks/delete_cname.yml
+      vars:
+        cluster_name: "{{cluster_name}}"
+        konstructor_api_key: "{{konstructor_api_key}}"
+      when:
+        - delete_cname == "true"
+
+    - name: Delete S3 bucket (if requested)
+      include: tasks/delete_s3_bucket.yml
+      vars:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        aws_default_region: "{{aws_default_region}}"
+        cluster_name: "{{cluster_name}}"
+      when:
+        - delete_s3_bucket == "true"

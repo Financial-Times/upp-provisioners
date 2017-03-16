@@ -1,0 +1,24 @@
+- name: List available backups
+  uri:
+    url: "https://{{es_endpoint}}/_snapshot/index-backups/_all?pretty"
+  register: es_snapshot_list
+
+- debug:
+    msg: "{{es_snapshot_list}}"
+
+- name: Save latest backup name as a variable
+  set_fact:
+    latest_es_snapshot: "{{es_snapshot_list.json.snapshots[-1].snapshot}}"
+
+- debug:
+    msg: "{{latest_es_snapshot}}"
+
+- name: Restore latest backup
+  ignore_errors: yes
+  uri:
+    url: "http://{{es_endpoint}}/_snapshot/index-backups/{{latest_es_snapshot}}/_restore"
+    method: POST
+  register: es_restore_output
+
+- debug:
+    msg: "{{es_restore_output}}"

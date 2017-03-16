@@ -47,72 +47,16 @@
     - debug:
         msg: "{{register_snapshot_dir_output}}"
 
-    - name: List available backups
-      uri:
-        url: "https://{{es_endpoint}}/_snapshot/index-backups/_all?pretty"
-      register: es_snapshot_list
+    - name: Restore latest ES snapshot (if requested)
+      include: tasks/restore_es_snapshot.yml
+      vars:
+        es_endpoint: "{{es_endpoint}}"
+      when:
+        - restore_es_snapshot == "true"
 
-    - debug:
-        msg: "{{es_snapshot_list}}"
-
-    - name: Save latest backup name as a variable
-      set_fact:
-        latest_es_snapshot: "{{es_snapshot_list.json.snapshots[-1].snapshot}}"
-
-    - debug:
-        msg: "{{latest_es_snapshot}}"
-
-    - name: Restore latest backup
-      ignore_errors: yes
-      uri:
-        url: "http://{{es_endpoint}}/_snapshot/index-backups/{{latest_es_snapshot}}/_restore"
-        method: POST
-      register: es_restore_output
-
-    - debug:
-        msg: "{{es_restore_output}}"
-
-    - name: Perform a lookup on the cluster CNAME
-      set_fact:
-        dns_lookup_output: "{{ lookup('dig', '{{cluster_name}}.in.ft.com/CNAME') }}"
-
-    - debug:
-        msg: "{{dns_lookup_output}}"
-
-    - name: If it already exists, update the existing CNAME record
-      uri:
-        url: "https://dns-api.in.ft.com/v2/"
-        method: PUT
-        HEADER_x-api-key: "{{konstructor_api_key}}"
-        body:
-          zone: "ft.com"
-          name: "{{cluster_name}}.in"
-          # trim the last character of the FQDN - Dyn doesn't like the trailing dot
-          oldRdata: "{{dns_lookup_output[:-1]}}"
-          newRdata: "{{es_endpoint}}"
-          ttl: "300"
-          emailAddress: "universal.publishing.platform@ft.com"
-        body_format: json
-      register: dns_update_output
-      when: dns_lookup_output != "NXDOMAIN"
-
-    - debug:
-        msg: "{{dns_update_output}}"
-
-    - name: If it doesn't exist, create a new CNAME record
-      uri:
-        url: "https://dns-api.in.ft.com/v2/"
-        method: POST
-        HEADER_x-api-key: "{{konstructor_api_key}}"
-        body:
-          zone: "ft.com"
-          name: "{{cluster_name}}.in"
-          rdata: "{{es_endpoint}}"
-          ttl: "300"
-          emailAddress: "universal.publishing.platform@ft.com"
-        body_format: json
-      register: dns_create_output
-      when: dns_lookup_output == "NXDOMAIN"
-
-    - debug:
-        msg: "{{dns_create_output}}"
+    - name: Create or update cluster CNAME
+      include: tasks/create_update_cname.yml
+      vars:
+        cluster_name: "{{cluster_name}}"
+        es_endpoint: "{{es_endpoint}}"
+        konstructor_api_key: "{{konstructor_api_key}}"
