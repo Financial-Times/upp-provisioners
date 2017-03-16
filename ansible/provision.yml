@@ -22,7 +22,7 @@
         stack_name: "{{cluster_name}}"
         state: "present"
         region: "eu-west-1"
-        template: "cloudformation/es-cluster-template.yml"
+        template: "/cloudformation/upp-concepts.yml"
         template_parameters:
           TagEnvironment: "t"
           CocoEnvironmentTag: "{{cluster_name}}"
