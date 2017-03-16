@@ -1,17 +1,15 @@
 - hosts: all
 
-  vars:
-    cluster_name: "upp-concepts-cf-testing"
-    region: "eu-west-1"
-
   vars_files:
     - vault.yml
 
   tasks:
     - name: Ensure S3 bucket exists
       s3_bucket:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
         name: "{{cluster_name}}-backup"
-        region: "{{region}}"
+        region: "{{aws_default_region}}"
       register: s3_bucket_output
 
     - debug:
@@ -19,15 +17,17 @@
 
     - name: Create ElasticSearch cluster
       cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
         stack_name: "{{cluster_name}}"
         state: "present"
-        region: "eu-west-1"
-        template: "/cloudformation/upp-concepts.yml"
+        region: "{{aws_default_region}}"
+        template: "/cloudformation/{{cf_template}}.yml"
         template_parameters:
-          TagEnvironment: "t"
-          CocoEnvironmentTag: "{{cluster_name}}"
+          EnvironmentType: "{{environment_type}}"
+          ClusterName: "{{cluster_name}}"
         tags:
-          Stack: "{{cluster_name}}"
+          Stack: "{{cf_template}}-{{cluster_name}}"
       register: es_stack_output
 
     - debug:
@@ -38,7 +38,7 @@
         es_endpoint: "{{es_stack_output.stack_outputs.ESClusterEndpoint}}"
 
     - name: Register snapshot directory for ES snapshots
-      script: register-es-snapshot-dir.py -r {{region}} -e {{es_endpoint}} -a {{access_key}} -s {{secret_key}} -b {{cluster_name}}-backup
+      script: register-es-snapshot-dir.py -r {{aws_default_region}} -e {{es_endpoint}} -a {{access_key}} -s {{secret_key}} -b {{cluster_name}}-backup
       register: register_snapshot_dir_output
 
     - debug:

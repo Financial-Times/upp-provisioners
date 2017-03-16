@@ -13,7 +13,7 @@
       cloudformation_facts:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
-        region: "{{region}}"
+        region: "{{aws_default_region}}"
         stack_name: "{{cluster_name}}"
       register: es_stack_output
 
@@ -40,7 +40,7 @@
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
-        region: "{{region}}"
+        region: "{{aws_default_region}}"
         stack_name: "{{cluster_name}}"
         state: "absent"
       register: es_stack_output
