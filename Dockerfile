@@ -4,7 +4,7 @@ WORKDIR /data
 
 COPY requirements.txt /data/requirements.txt
 
-RUN apk add --no-cache --update python && \
+RUN apk add --no-cache --update python bind-tools bash && \
     apk add --no-cache --update --virtual .build-dependencies python-dev build-base libffi-dev openssl-dev py-pip && \
     pip --no-cache-dir install -r /data/requirements.txt && \
     apk del .build-dependencies
@@ -17,4 +17,6 @@ COPY ansible.cfg /data/
 
 COPY rdsserver.yml /data/
 
-CMD ["ansible-playbook", "-vvv", "rdsserver.yml"]
+COPY sh/* /usr/local/bin
+
+CMD ["provision.sh"]

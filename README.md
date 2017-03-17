@@ -21,7 +21,7 @@ Your environment is now setup to run Ansible using Virtualenv. For more details 
 
 To run the Ansible script you need to do the following:
 * Run `source venv/bin/activate` to activate the Ansible environment
-* Run `AWS_SECRET_ACCESS_KEY=je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY AWS_ACCESS_KEY_ID=AKIAI44QH8DHBEXAMPLE  ansible-playbook -vvv rdsserver.yml`
+* Run `AWS_SECRET_ACCESS_KEY=je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY AWS_ACCESS_KEY_ID=AKIAI44QH8DHBEXAMPLE  ansible-playbook -vvv rdsserver.yml --extra-vars "environment_name=Something konstructor_api_key=ABCSASDASEXAMPLE"`
 
 
 Todo
