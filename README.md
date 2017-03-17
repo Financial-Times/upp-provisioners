@@ -4,12 +4,12 @@ The AWS ES provisioning process will:
 
  * Create an ElasticSearch Service using the specified CloudFormation template
  * Ensure an S3 bucket exists, and register it to the ES cluster
- * (Optionally) restore the most recent backup in the S3 bucket
+ * (Optionally) restore the most recent snapshot in the S3 bucket
  * Create or update appropriate CNAME records for the cluster
 
 The decommissioning process will:
 
- * Take a backup of the cluster
+ * Take a snapshot of the cluster
  * Delete the cluster
  * (Optionally) delete the S3 bucket for full decommissioning
  * (Optionally) delete the CNAME records for full decommissioning
