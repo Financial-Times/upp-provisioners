@@ -4,14 +4,15 @@ The AWS ES provisioning process will:
 
  * Create an ElasticSearch Service using the specified CloudFormation template
  * Ensure an S3 bucket exists, and register it to the ES cluster
- * Restore the most recent backup in the S3 bucket, if one exists
+ * (Optionally) restore the most recent backup in the S3 bucket
  * Create or update appropriate CNAME records for the cluster
 
-The decommisioning process will:
+The decommissioning process will:
 
  * Take a backup of the cluster
  * Delete the cluster
- * Optionally delete the S3 bucket and DNS records (for full decommissioning)
+ * (Optionally) delete the S3 bucket for full decommissioning
+ * (Optionally) delete the CNAME records for full decommissioning
 
 ## Build
 The AWS ES provisioner is built as a Docker image:
@@ -38,7 +39,8 @@ docker run \
 ## Decommisioning a cluster
 - Export the required environment variables.
 - The decommissioned cluster will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
-- If fully decommissioning a cluster, and you no longer need the CNAMEs or S3 bucket, set `$DELETE_CNAME` and `$DELETE_S3_BUCKET` to `true`.
+- If fully decommissioning a cluster, and you no longer need the S3 bucket, set `$DELETE_S3_BUCKET` to `true`.
+- If fully decommissioning a cluster, and you no longer need the CNAMEs, set `$DELETE_CNAME` to `true`.
 - Run the following Docker command:
 ```
 docker run \
@@ -46,7 +48,7 @@ docker run \
     -e "DELIVERY_CLUSTER=$DELIVERY_CLUSTER" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "VAULT_PASS=$VAULT_PASS" \
-    -e "DELETE_CNAME=$DELETE_CNAME" \
     -e "DELETE_S3_BUCKET=$DELETE_S3_BUCKET" \
+    -e "DELETE_CNAME=$DELETE_CNAME" \
     coco/up-neo4j-cluster:latest /bin/bash decom.sh
 ```
