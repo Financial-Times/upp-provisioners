@@ -38,9 +38,10 @@ docker run \
     coco/upp-elasticsearch-provisioner:latest /bin/bash provision.sh
 ```
 
-- Note that the provisioner will wait on `Create ElasticSearch cluster` for around 10 minutes, as CloudFormation waits until the ElasticSearch cluster is fully provisioned and online before returning a success code.
+- Note that the `Create ElasticSearch cluster` step may take up to 15 minutes, as CloudFormation waits until the ElasticSearch cluster is fully provisioned and online before returning a success code.
+- You can check the progress of the CF stack creation in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
 
-## Decommisioning a cluster
+## Decommissioning a cluster
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
 - The decommissioned cluster will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
 - If fully decommissioning a cluster, and you no longer need the S3 bucket or the ES snapshots inside, set `$DELETE_S3_BUCKET` to `true`.
@@ -55,3 +56,6 @@ docker run \
     -e "DELETE_S3_BUCKET=$DELETE_S3_BUCKET" \
     coco/upp-elasticsearch-provisioner:latest /bin/bash decom.sh
 ```
+
+- Note that the `Delete ElasticSearch cluster` step may take up to 15 minutes, as CloudFormation waits until the ElasticSearch cluster is fully decommissioned before returning a success code.
+- You can check the progress of the CF stack deletion in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
