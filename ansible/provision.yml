@@ -41,7 +41,7 @@
         es_endpoint: "{{es_stack_output.stack_outputs.ESClusterEndpoint}}"
 
     - name: Register snapshot directory for ES snapshots
-      script: register-es-snapshot-dir.py -r {{aws_default_region}} -e {{es_endpoint}} -a {{aws_access_key}} -s {{secret_key}} -b {{cluster_name}}-backup
+      script: register-es-snapshot-dir.py -r {{aws_default_region}} -e {{es_endpoint}} -a {{aws_access_key}} -s {{aws_secret_key}} -b {{cluster_name}}-backup
       register: register_snapshot_dir_output
 
     - debug:
