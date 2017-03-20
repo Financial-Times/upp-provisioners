@@ -35,7 +35,7 @@ docker run \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "RESTORE_ES_SNAPSHOT=$RESTORE_ES_SNAPSHOT" \
-    coco/up-neo4j-cluster:latest /bin/bash provision.sh
+    coco/upp-elasticsearch-provisioner:latest /bin/bash provision.sh
 ```
 
 ## Decommisioning a cluster
@@ -51,5 +51,5 @@ docker run \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "DELETE_S3_BUCKET=$DELETE_S3_BUCKET" \
-    coco/up-neo4j-cluster:latest /bin/bash decom.sh
+    coco/upp-elasticsearch-provisioner:latest /bin/bash decom.sh
 ```
