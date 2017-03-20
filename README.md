@@ -38,6 +38,8 @@ docker run \
     coco/upp-elasticsearch-provisioner:latest /bin/bash provision.sh
 ```
 
+- Note that the provisioner will wait on `Create ElasticSearch cluster` for around 10 minutes, as CloudFormation waits until the ElasticSearch cluster is fully provisioned and online before returning a success code.
+
 ## Decommisioning a cluster
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
 - The decommissioned cluster will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
