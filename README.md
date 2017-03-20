@@ -5,14 +5,14 @@ The AWS ES provisioning process will:
  * Create an ElasticSearch Service using the specified CloudFormation template
  * Ensure an S3 bucket exists, and register it to the ES cluster
  * (Optionally) restore the most recent snapshot in the S3 bucket
- * Create or update appropriate CNAME records for the cluster
+ * Create or update an appropriate CNAME record for the cluster
 
 The decommissioning process will:
 
  * Take a snapshot of the cluster
  * Delete the cluster
+ * Delete the cluster CNAME record
  * (Optionally) delete the S3 bucket for full decommissioning
- * (Optionally) delete the CNAME records for full decommissioning
 
 ## Build
 The AWS ES provisioner is built as a Docker image:
@@ -39,7 +39,7 @@ docker run \
 ## Decommisioning a cluster
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
 - The decommissioned cluster will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
-- If fully decommissioning a cluster, and you no longer need the S3 bucket, set `$DELETE_S3_BUCKET` to `true`.
+- If fully decommissioning a cluster, and you no longer need the S3 bucket or the ES snapshots inside, set `$DELETE_S3_BUCKET` to `true`.
 - Run the following Docker command:
 ```
 docker run \
