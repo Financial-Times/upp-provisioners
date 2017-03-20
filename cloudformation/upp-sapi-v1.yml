@@ -51,7 +51,7 @@ Resources:
             Principal:
               AWS: "*"
             Action: "es:*"
-            Resource: "arn:aws:es:eu-west-1:810385116814:domain/upp-concepts-cf-testing/*"
+            Resource: "arn:aws:es:eu-west-1:810385116814:domain/upp-*"
             Condition:
               IpAddress:
                 aws:SourceIP: "82.136.1.214/32"
