@@ -56,7 +56,3 @@
 
     - name: Create or update cluster CNAME
       include: tasks/create_update_cname.yml
-      vars:
-        cluster_name: "{{cluster_name}}"
-        es_endpoint: "{{es_endpoint}}"
-        konstructor_api_key: "{{konstructor_api_key}}"

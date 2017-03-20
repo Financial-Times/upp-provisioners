@@ -48,16 +48,8 @@
 
     - name: Delete cluster CNAME
       include: tasks/delete_cname.yml
-      vars:
-        cluster_name: "{{cluster_name}}"
-        konstructor_api_key: "{{konstructor_api_key}}"
 
     - name: Delete S3 bucket (if requested)
       include: tasks/delete_s3_bucket.yml
-      vars:
-        aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
-        aws_default_region: "{{aws_default_region}}"
-        cluster_name: "{{cluster_name}}"
       when:
         - delete_s3_bucket == "true"
