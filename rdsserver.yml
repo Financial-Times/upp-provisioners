@@ -5,24 +5,28 @@
   gather_facts: false
 
   vars:
-    cluster_name: "{{environment_name}}-factset-rds-up"
+    cluster_name: "{{cluster}}-factset-rds-up"
+
+  vars_files:
+  - vault.yml
 
   tasks:
   - name: launch RDS cloudformation 
     cloudformation:
-      stack_name: upp-{{environment_name}}-factset-rds
+      stack_name: upp-{{cluster}}-factset-rds
       state: present
       region: eu-west-1
       disable_rollback: true
       template: cloudformation/rds.yaml
       template_parameters:
-        EnvironmentName: "{{environment_name}}"
+        EnvironmentName: "{{cluster}}"
         VPC: vpc-36639c52
         SecurityGroup: sg-28bc5a51
         DBName: Factset
         DBClass: db.t2.small
         DBUser: AdminUser
-        DBPassword: 5up3r53cur3p455w0rd
+        DBPassword: "{{db_master_password}}"
+        TagEnvironment: "{{environment_type}}"
     register: rds_stack
   - name: show stack outputs
     debug:
@@ -67,3 +71,9 @@
     when: dns_lookup_output == "NXDOMAIN"
   - debug:
       msg: "{{dns_create_output}}"
+  - name: change key permision to avoid any error from ssh
+    file: 
+        path: files/coco_id_rsa
+        mode: 0600
+  - name: Update DB
+    local_action: "command fab -f files/fabfile.py -a -D -H {{ cluster_tunnel }} test -i files/coco_id_rsa --password={{ ssh_key_passphrase }}"
