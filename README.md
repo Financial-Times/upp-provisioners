@@ -20,7 +20,7 @@ The AWS ES provisioner is built as a Docker image:
 `docker build -t coco/aws-es-provisioner:latest .`
 
 ## Provisioning a cluster
-- Grab, customise and run the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
+- Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
 - The cluster name will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
 - If provisioning a cluster that has previously had a snapshot taken, and you wish to restore the latest ES snapshot, set `$RESTORE_ES_SNAPSHOT"` to `true`.
 - Run the following Docker commands:
@@ -37,7 +37,7 @@ docker run \
 ```
 
 ## Decommisioning a cluster
-- Export the required environment variables.
+- Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
 - The decommissioned cluster will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
 - If fully decommissioning a cluster, and you no longer need the S3 bucket, set `$DELETE_S3_BUCKET` to `true`.
 - If fully decommissioning a cluster, and you no longer need the CNAMEs, set `$DELETE_CNAME` to `true`.
