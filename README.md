@@ -14,10 +14,12 @@ The decommissioning process will:
  * Delete the cluster CNAME record
  * (Optionally) delete the S3 bucket for full decommissioning
 
-## Build
-The AWS ES provisioner is built as a Docker image:
+## Building the Docker image
+The AWS ES provisioner can be built locally as a Docker image:
 
 `docker build -t coco/upp-elasticsearch-provisioner:latest .`
+
+Automated DockerHub builds are also triggered on new releases, located [here](https://hub.docker.com/r/coco/upp-elasticsearch-provisioner/).
 
 ## Provisioning a cluster
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
