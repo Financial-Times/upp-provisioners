@@ -42,6 +42,7 @@ Resources:
 #              AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
 #            Action: "es:*"
 #            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/", !Ref ClusterName, "/*" ] ]
+#            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:810385116814:domain/", !Ref ClusterName, "/*" ] ]
       AccessPolicies:
         Version: "2012-10-17"
         Statement:
@@ -50,7 +51,7 @@ Resources:
             Principal:
               AWS: "*"
             Action: "es:*"
-            Resource: "arn:aws:es:eu-west-1:810385116814:domain/upp-*"
+            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:810385116814:domain/", !Ref ClusterName, "/*" ] ]
             Condition:
               IpAddress:
                 aws:SourceIP: "82.136.1.214/32"

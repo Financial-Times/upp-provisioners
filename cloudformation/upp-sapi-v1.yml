@@ -51,7 +51,7 @@ Resources:
             Principal:
               AWS: "*"
             Action: "es:*"
-            Resource: "arn:aws:es:eu-west-1:810385116814:domain/upp-*"
+            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:810385116814:domain/", !Ref ClusterName, "/*" ] ]
             Condition:
               IpAddress:
                 aws:SourceIP: "82.136.1.214/32"
