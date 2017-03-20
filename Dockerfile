@@ -7,4 +7,4 @@ RUN apk --update add python py-pip ansible bash \
 
 COPY ansible /ansible
 COPY cloudformation /cloudformation
-COPY sh/* /usr/local/bin
+COPY sh/* /usr/local/bin/
