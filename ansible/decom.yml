@@ -46,13 +46,11 @@
     - debug:
         msg: "{{es_stack_output}}"
 
-    - name: Delete cluster CNAME (if requested)
+    - name: Delete cluster CNAME
       include: tasks/delete_cname.yml
       vars:
         cluster_name: "{{cluster_name}}"
         konstructor_api_key: "{{konstructor_api_key}}"
-      when:
-        - delete_cname == "true"
 
     - name: Delete S3 bucket (if requested)
       include: tasks/delete_s3_bucket.yml

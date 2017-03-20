@@ -40,7 +40,6 @@ docker run \
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
 - The decommissioned cluster will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
 - If fully decommissioning a cluster, and you no longer need the S3 bucket, set `$DELETE_S3_BUCKET` to `true`.
-- If fully decommissioning a cluster, and you no longer need the CNAMEs, set `$DELETE_CNAME` to `true`.
 - Run the following Docker command:
 ```
 docker run \
@@ -49,6 +48,5 @@ docker run \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "DELETE_S3_BUCKET=$DELETE_S3_BUCKET" \
-    -e "DELETE_CNAME=$DELETE_CNAME" \
     coco/up-neo4j-cluster:latest /bin/bash decom.sh
 ```
