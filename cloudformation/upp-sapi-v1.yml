@@ -24,6 +24,7 @@ Resources:
         InstanceCount: "4"
         ZoneAwarenessEnabled: "true"
         InstanceType: "r3.large.elasticsearch"
+        DedicatedMasterEnabled: "true"
         DedicatedMasterType: "m3.medium.elasticsearch"
         DedicatedMasterCount: "3"
       EBSOptions:
