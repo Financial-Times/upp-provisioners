@@ -9,6 +9,7 @@ parser.add_argument('-e','--endpoint', help='ElasticSearch domain endpoint',requ
 parser.add_argument('-a','--access_key', help='AWS access key',required=True)
 parser.add_argument('-s','--secret_key', help='AWS secret key',required=True)
 parser.add_argument('-b','--bucket', help='S3 bucket name',required=True)
+parser.add_argument('-o','--role', help='IAM role',required=True)
 args = parser.parse_args()
 
 class ESConnection(AWSAuthConnection):
@@ -36,7 +37,7 @@ if __name__ == "__main__":
         "settings": {
             "bucket": args.bucket,
             "region": args.region,
-            "role_arn": "arn:aws:iam::810385116814:role/upp-concepts-cf-testing"
+            "role_arn": args.role
             }
         }
 
