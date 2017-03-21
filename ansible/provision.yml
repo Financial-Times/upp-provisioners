@@ -49,8 +49,6 @@
 
     - name: Restore latest ES snapshot (if requested)
       include: tasks/restore_es_snapshot.yml
-      vars:
-        es_endpoint: "{{es_endpoint}}"
       when:
         - restore_es_snapshot == "true"
 
