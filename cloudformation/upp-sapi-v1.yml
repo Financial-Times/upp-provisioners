@@ -34,15 +34,6 @@ Resources:
         VolumeType: "gp2"
       SnapshotOptions:
         AutomatedSnapshotStartHour: "0"
-#      AccessPolicies:
-#        Version: "2012-10-17"
-#        Statement:
-#          -
-#            Effect: "Allow"
-#            Principal:
-#              AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
-#            Action: "es:*"
-#            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/", !Ref ClusterName, "/*" ] ]
       AccessPolicies:
         Version: "2012-10-17"
         Statement:
@@ -51,10 +42,24 @@ Resources:
             Principal:
               AWS: "*"
             Action: "es:*"
-            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:810385116814:domain/", !Ref ClusterName, "/*" ] ]
+            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/", !Ref ClusterName, "/*" ] ]
             Condition:
               IpAddress:
-                aws:SourceIP: "82.136.1.214/32"
+                aws:SourceIP:
+                  # OSB + LDNWebPerf
+                  - "82.136.1.214/32"
+                  # iQuest - Cluj office
+                  - "194.117.242.0/23"
+                  # EU VPN Client
+                  - "62.25.64.1/32"
+                  # US VPN Client
+                  - "64.210.200.1/32"
+          -
+            Effect: "Allow"
+            Principal:
+              AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
+            Action: "es:*"
+            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/", !Ref ClusterName, "/*" ] ]
       AdvancedOptions:
         rest.action.multi.allow_explicit_index: "true"
       Tags:
