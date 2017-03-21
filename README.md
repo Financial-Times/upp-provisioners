@@ -55,6 +55,7 @@ done
 - Export the required environment variables.
 - Run the following Docker command:
 ```
+docker pull coco/up-neo4j-cluster:latest
 docker run \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
