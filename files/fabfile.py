@@ -29,3 +29,15 @@ def kick_ingestion(pghost,
     	   (pghost, pguser, pgpassword, dbname,
     	   	aws_access_key, aws_secret_key, aws_region,
     	   	loader_version))
+
+@task
+def set_etcd_values(pghost,
+                    pgport,
+                    pguser,
+                    pgpassword,
+                    dbname):
+    run("etcdctl set /ft/config/factset-rds/host %s" % pghost)
+    run("etcdctl set /ft/config/factset-rds/port %s" % pgport)
+    run("etcdctl set /ft/config/factset-rds/user %s" % pguser)
+    run("etcdctl set /ft/config/factset-rds/password %s" % pgpassword)
+    run("etcdctl set /ft/config/factset-rds/dbname %s" % dbname)

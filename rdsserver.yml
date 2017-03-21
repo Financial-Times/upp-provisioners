@@ -2,10 +2,11 @@
 - name: provision stack
   hosts: localhost
   connection: local
-  gather_facts: false
 
   vars:
-    cluster_name: "{{cluster}}-factset-rds-up"
+    cluster_name: "{{ cluster }}-factset-rds-up"
+    cluster_tunnel: "{{ cluster }}-tunnel-up.ft.com"
+    aws_region: eu-west-1
 
   vars_files:
   - vault.yml
@@ -13,41 +14,44 @@
   tasks:
   - name: launch RDS cloudformation 
     cloudformation:
-      stack_name: upp-{{cluster}}-factset-rds
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: upp-{{ cluster }}-factset-rds
       state: present
-      region: eu-west-1
+      region: "{{ aws_region }}"
       disable_rollback: true
       template: cloudformation/rds.yaml
       template_parameters:
-        EnvironmentName: "{{cluster}}"
+        EnvironmentName: "{{ cluster }}"
         VPC: vpc-36639c52
         SecurityGroup: sg-28bc5a51
         DBName: Factset
         DBClass: db.t2.small
         DBUser: AdminUser
-        DBPassword: "{{db_master_password}}"
-        TagEnvironment: "{{environment_type}}"
+        DBPassword: "{{ db_master_password }}"
+        TagEnvironment: "{{ environment_type }}"
     register: rds_stack
   - name: show stack outputs
     debug:
-      msg: "My stack outputs are {{rds_stack.stack_outputs}}"
+      msg: "My stack outputs are {{ rds_stack.stack_outputs }}"
   - name: Save RDS host name
     set_fact:
-      rds_hostname: "{{rds_stack.stack_outputs.DBHostname}}"
+      rds_hostname: "{{ rds_stack.stack_outputs.DBHostname }}"
+      rds_port: "{{ rds_stack.stack_outputs.DBPort }}"
   - name: Perform a lookup on the cluster CNAME
     set_fact:
-      dns_lookup_output: "{{ lookup('dig', '{{cluster_name}}.in.ft.com/CNAME') }}"
+      dns_lookup_output: "{{ lookup('dig', '{{ cluster_name }}.in.ft.com/CNAME') }}"
   - name: If it already exists, update the existing CNAME record
     uri:
       url: https://dns-api.in.ft.com/v2/
       method: PUT
-      HEADER_x-api-key: "{{konstructor_api_key}}"
+      HEADER_x-api-key: "{{ konstructor_api_key }}"
       body:
         zone: ft.com
-        name: "{{cluster_name}}.in"
+        name: "{{ cluster_name }}.in"
         # trim the last character of the FQDN - Dyn doesn't like the trailing dot
-        oldRdata: "{{dns_lookup_output[:-1]}}"
-        newRdata: "{{rds_hostname}}"
+        oldRdata: "{{ dns_lookup_output[:-1] }}"
+        newRdata: "{{ rds_hostname }}"
         ttl: "300"
         emailAddress: "universal.publishing.platform@ft.com"
       body_format: json
@@ -59,21 +63,23 @@
     uri:
       url: https://dns-api.in.ft.com/v2/
       method: POST
-      HEADER_x-api-key: "{{konstructor_api_key}}"
+      HEADER_x-api-key: "{{ konstructor_api_key }}"
       body:
         zone: ft.com
-        name: "{{cluster_name}}.in"
-        rdata: "{{rds_hostname}}"
+        name: "{{ cluster_name }}.in"
+        rdata: "{{ rds_hostname }}"
         ttl: "300"
         emailAddress: "universal.publishing.platform@ft.com"
       body_format: json
     register: dns_create_output
     when: dns_lookup_output == "NXDOMAIN"
   - debug:
-      msg: "{{dns_create_output}}"
+      msg: "{{ dns_create_output }}"
   - name: change key permision to avoid any error from ssh
     file: 
         path: files/coco_id_rsa
         mode: 0600
   - name: Update DB
-    local_action: "command fab -f files/fabfile.py -a -D -H {{ cluster_tunnel }} test -i files/coco_id_rsa --password={{ ssh_key_passphrase }}"
+    local_action: "command fab -f files/fabfile.py -a -D -H {{ cluster_tunnel }} kick_ingestion:pghost={{ rds_hostname }},pguser=AdminUser,pgpassword={{ db_master_password }},dbname=Factset,aws_access_key={{ aws_access_key }},aws_secret_key={{ aws_secret_key }},aws_region={{ aws_region }} -i files/coco_id_rsa --password={{ ssh_key_passphrase }}"
+  - name: Setup etcd values
+    local_action: "command fab -f files/fabfile.py -a -D -H {{ cluster_tunnel }} set_etcd_values:pghost={{cluster_name}}.in.ft.com,pgport={{ rds_port }},pguser=AdminUser,pgpassword={{ db_master_password }},dbname=Factset -i files/coco_id_rsa --password={{ ssh_key_passphrase }}"

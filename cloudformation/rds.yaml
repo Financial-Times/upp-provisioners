@@ -208,3 +208,7 @@ Outputs:
     DBHostname: 
         Description: A reference to the DB hostname
         Value: !GetAtt [DB, Endpoint.Address]
+
+    DBPort: 
+        Description: A reference to the DB port
+        Value: !GetAtt [DB, Endpoint.Port]
