@@ -4,6 +4,7 @@
     aws_secret_key: "{{aws_secret_key}}"
     region: "{{aws_default_region}}"
     name: "{{cluster_name}}-backup"
+    force: "yes"
     state: absent
   register: delete_s3_bucket_output
 
