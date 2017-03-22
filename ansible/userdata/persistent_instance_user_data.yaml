@@ -158,3 +158,12 @@ write_files:
       function fcssh() { fleetctl ssh $@ ;}
       function fcjfl() { fleetctl journal -f --lines=$@ ; }
       function fcres() { fleetctl ssh $@ sudo systemctl restart $@ ; }
+  - path: "/home/core/.ssh/config"
+    permissions: "0600"
+    owner: "core"
+    content: |
+      Host *-tunnel-up.ft.com
+        User core
+        ForwardAgent yes
+        StrictHostKeyChecking no
+        UserKnownHostsFile /dev/null
