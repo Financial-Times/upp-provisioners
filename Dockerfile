@@ -16,12 +16,12 @@ COPY inventory /data/inventory
 
 COPY ansible.cfg /data/
 
-COPY rdsserver.yml /data/
+COPY *.yml /data/
 
 COPY files /data/files
 
-COPY sh/* /usr/local/bin
+COPY tasks /data/tasks
 
-COPY vault.yml /data/
+COPY sh/* /usr/local/bin/
 
 CMD ["provision.sh"]

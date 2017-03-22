@@ -31,6 +31,10 @@ def kick_ingestion(pghost,
     	   	loader_version))
 
 @task
+def remove_etcd_values():
+    run("etcdctl rm --recursive /ft/config/factset-rds")
+
+@task
 def set_etcd_values(pghost,
                     pgport,
                     pguser,
