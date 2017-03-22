@@ -38,6 +38,8 @@ Then you can connect your Postgres client to `localhost:5432`. Example:
 psql -h localhost -p 5432 -U <DB_USERNAME> Factset
 ```
 
+An alternative to using `psql` is to use [pgAdmin](https://www.pgadmin.org/).
+
 Todo
 ------
 1. Move this into repo for all our infrastructure
