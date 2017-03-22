@@ -4,6 +4,10 @@ set -e
 
 echo "Running playbook rdsserver.yml"
 
-ansible-playbook -vvv rdsserver.yml \
---extra-vars \
-"environment_name=$ENV_NAME konstructor_api_key=$KON_API_KEY"
+echo ${VAULT_PASS} > /data/vault.pass
+
+ansible-playbook -v rdsserver.yml \
+--vault-password-file=vault.pass \
+--extra-vars "\
+cluster=${CLUSTER} \
+environment_type=${ENVIRONMENT_TYPE}"
