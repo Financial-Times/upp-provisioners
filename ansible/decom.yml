@@ -30,6 +30,8 @@
         url: "http://{{es_endpoint}}/_snapshot/index-backups/autobackup-{{ ansible_date_time.iso8601 | lower }}?wait_for_completion=true"
         method: PUT
       register: es_backup_output
+      when:
+        - delete_s3_bucket != "true"
 
     - debug:
         msg: "{{es_backup_output}}"
