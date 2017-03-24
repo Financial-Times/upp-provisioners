@@ -40,7 +40,7 @@ addRemoveAdmins() {
         warn "User ${each} specified as admin user. Please remove it from the list."
       elif [[ "$(isExistingUser $each)" -eq "0" && "${each}" != "root" ]]; then
         info "Removing user ${each} from group ${ADMIN_GRP}"
-        usermod -G ${NON_ADMIN_GRP} ${each} || warn "Failed to remove user ${each} from group ${ADMIN_GRP}"
+        /usr/sbin/usermod -G ${NON_ADMIN_GRP} ${each} || warn "Failed to remove user ${each} from group ${ADMIN_GRP}"
       else
         warn "User account ${each} not found. Skip removing accout from group ${ADMIN_GRP}"
       fi
@@ -59,7 +59,7 @@ addRemoveAdmins() {
         warn "User ${each} specified as admin user. Please remove it from the list."
       elif [[ "$(isExistingUser ${each})" -eq "0" ]]; then
         info "Adding user ${each} to group ${ADMIN_GRP}"
-        usermod -G ${ADMIN_GRP} ${each} || warn "Failed to add user ${each} to group ${ADMIN_GRP} (error code $?)"
+        /usr/sbin/usermod -G ${ADMIN_GRP} ${each} || warn "Failed to add user ${each} to group ${ADMIN_GRP} (error code $?)"
       else
         warn "User account ${each} not found. Skip adding accout to group ${ADMIN_GRP}"
       fi
