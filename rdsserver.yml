@@ -4,7 +4,7 @@
   connection: local
 
   vars:
-    cluster_name: "{{ cluster }}-factset-rds-up"
+    cluster_name: "upp-factset-rds-{{ cluster }}"
     cluster_tunnel: "{{ cluster }}-tunnel-up.ft.com"
     aws_region: eu-west-1
 
@@ -12,39 +12,48 @@
   - vault.yml
 
   tasks:
+  - name: Log vars
+    debug:
+      msg: "cluster_tunnel:'{{ cluster_tunnel }}', cluster_name: '{{ cluster_name }}'"
+
   - name: launch RDS cloudformation 
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: upp-{{ cluster }}-factset-rds
+      stack_name: "{{ cluster_name }}"
       state: present
       region: "{{ aws_region }}"
       disable_rollback: true
       template: cloudformation/rds.yaml
       template_parameters:
-        EnvironmentName: "{{ cluster }}"
+        EnvironmentName: "upp-factset-{{ cluster }}"
         VPC: vpc-36639c52
-        SecurityGroup: sg-28bc5a51
+        SecurityGroup: "{{ cluster_sg }}"
         DBName: Factset
         DBClass: db.t2.small
         DBUser: AdminUser
         DBPassword: "{{ db_master_password }}"
         TagEnvironment: "{{ environment_type }}"
     register: rds_stack
-  - name: show stack outputs
+
+  - name: CF outputs
     debug:
       msg: "My stack outputs are {{ rds_stack.stack_outputs }}"
+
   - name: Save RDS host name
     set_fact:
       rds_hostname: "{{ rds_stack.stack_outputs.DBHostname }}"
       rds_port: "{{ rds_stack.stack_outputs.DBPort }}"
-  - name: Create or update cluster CNAME
-    include: tasks/create_update_cname.yml
+
+  - include: tasks/create_update_cname.yml
+
   - name: change key permision to avoid any error from ssh
-    file: 
-        path: files/coco_id_rsa
-        mode: 0600
+    file:
+      path: files/coco_id_rsa
+      mode: 0600
+
   - name: Update DB
     local_action: "command fab -f files/fabfile.py -a -D -H {{ cluster_tunnel }} kick_ingestion:pghost={{ rds_hostname }},pguser=AdminUser,pgpassword={{ db_master_password }},dbname=Factset,aws_access_key={{ aws_access_key }},aws_secret_key={{ aws_secret_key }},aws_region={{ aws_region }} -i files/coco_id_rsa --password={{ ssh_key_passphrase }}"
+
   - name: Setup etcd values
     local_action: "command fab -f files/fabfile.py -a -D -H {{ cluster_tunnel }} set_etcd_values:pghost={{cluster_name}}.in.ft.com,pgport={{ rds_port }},pguser=AdminUser,pgpassword={{ db_master_password }},dbname=Factset -i files/coco_id_rsa --password={{ ssh_key_passphrase }}"

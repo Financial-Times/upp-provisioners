@@ -4,7 +4,7 @@
   connection: local
 
   vars:
-    cluster_name: "{{ cluster }}-factset-rds-up"
+    cluster_name: "upp-factset-rds-{{ cluster }}"
     cluster_tunnel: "{{ cluster }}-tunnel-up.ft.com"
     aws_region: eu-west-1
 
@@ -16,18 +16,22 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: upp-{{ cluster }}-factset-rds
+      stack_name: "{{ cluster_name }}"
       region: "{{ aws_region }}"
       state: "absent"
     register: rds_stack
+
   - name: show stack outputs
     debug:
-      msg: "My stack outputs are {{ rds_stack.stack_outputs }}"
+      msg: "My stack outputs are {{ rds_stack }}"
+
   - name: Delete cluster CNAME
     include: tasks/delete_cname.yml
+
   - name: change key permision to avoid any error from ssh
     file: 
         path: files/coco_id_rsa
         mode: 0600
+
   - name: Remove etcd values
     local_action: "command fab -f files/fabfile.py -a -D -H {{ cluster_tunnel }} remove_etcd_values -i files/coco_id_rsa --password={{ ssh_key_passphrase }}"

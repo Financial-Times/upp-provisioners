@@ -139,7 +139,7 @@ Resources:
     DB:
         Type: AWS::RDS::DBInstance
         Properties:
-          DBInstanceIdentifier: !Sub ${EnvironmentName}-factset
+          DBInstanceIdentifier: !Sub ${EnvironmentName}
           DBName: !Ref DBName
           DBInstanceClass: !Ref DBClass
           Engine: postgres
@@ -174,7 +174,7 @@ Resources:
     DBSubnetGroup:
         Type: AWS::RDS::DBSubnetGroup
         Properties:
-            DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' Factset subnet group']]
+            DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' subnet group']]
             SubnetIds:
                 - 'subnet-a32021d5'
                 - 'subnet-00d8db64'
@@ -193,7 +193,7 @@ Resources:
               - Key: name
                 Value: !Sub ${TagName} - ${EnvironmentName}
               - Key: coco-environment-tag
-                Value: !Sub ${EnvironmentName}-factset
+                Value: !Sub ${EnvironmentName}
 
 Outputs:
 

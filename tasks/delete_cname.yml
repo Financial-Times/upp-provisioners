@@ -1,4 +1,9 @@
-- name: Delete cluster CNAME
+---
+# This task will delete a CNAME record
+
+- include: cname_details.yml
+
+- name: Delete CNAME record
   uri:
     url: https://dns-api.in.ft.com/v2/
     method: DELETE
@@ -9,5 +14,6 @@
       emailAddress: "universal.publishing.platform@ft.com"
     body_format: json
   register: dns_delete_output
+
 - debug:
     msg: "{{ dns_delete_output }}"

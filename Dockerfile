@@ -24,4 +24,6 @@ COPY tasks /data/tasks
 
 COPY sh/* /usr/local/bin/
 
+RUN chmod +x /usr/local/bin/*.sh
+
 CMD ["provision.sh"]

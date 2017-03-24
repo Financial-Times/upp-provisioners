@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 set -e
 
 # Create Ansible vault credentials
@@ -8,7 +7,7 @@ echo $VAULT_PASS > /data/vault.pass
 
 : "${CLUSTER:?Need to set CLUSTER non-empty}"
 
-ansible-playbook -v decom.yml \
+ansible-playbook -vv decom.yml \
 --vault-password-file=vault.pass \
 --extra-vars "\
 cluster=${CLUSTER}"
