@@ -18,7 +18,7 @@ CACHED_KEYS="${CWD}/authorized_keys"
 declare -A CACHED_KV=()
 declare -A REMOTE_KV=()
 USERHOMEROOT='/home'
-ADMINS=( 'jussi.heinonen' 'euan.finlay' 'sorin.buliarca' 'jason.zoidis' )
+ADMINS=( 'jussi.heinonen' 'euan.finlay' 'sorin.buliarca' 'Jason.Zoidis' 'jermila.dhas' )
 ADMIN_GRP='sudoers'
 NON_ADMIN_GRP='plebs'
 
