@@ -391,7 +391,7 @@ Resources:
               "           Type=ext4\n",
               "    - name: update-engine.service\n",
               "      command: stop\n",
-              "      mask: true\n"
+              "      mask: true\n",
               "    - name: bootstrap.service\n",
               "      command: start\n",
               "      content: |\n",
