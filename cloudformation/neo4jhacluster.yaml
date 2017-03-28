@@ -433,7 +433,7 @@ Resources:
               "    owner: root\n",
               "    content: |\n",
               "      #!/bin/bash\n",
-              "      export HISTTIMEFORMAT=%d/%m/%y %T\n",
+              "      export HISTTIMEFORMAT=\"%d/%m/%y %T\"\n",
               "      export HISTFILESIZE=10000000\n",
               "      export HISTSIZE=10000000\n",
               "  - path: /etc/profile.d/services_autocomplete.sh\n",
