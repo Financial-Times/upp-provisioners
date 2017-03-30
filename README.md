@@ -19,9 +19,19 @@ $ deactivate
 ```
 Your environment is now setup to run Ansible using Virtualenv. For more details see http://docs.python-guide.org/en/latest/dev/virtualenvs/.
 
+The variables it takes are:
+* cluster - e.g. `pub-semantic`
+* environment_type - e.g `t` or `p`
+* cluster_sg - The security group the machines that will connect to the RDS instance are in
+
 To run the Ansible script you need to do the following:
 * Run `source venv/bin/activate` to activate the Ansible environment
 * Run `AWS_SECRET_ACCESS_KEY=je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY AWS_ACCESS_KEY_ID=AKIAI44QH8DHBEXAMPLE  ansible-playbook -vvv rdsserver.yml --extra-vars "cluster=pub-semantic environment_type=t cluster_sg=sg-10101"`
+
+The other option is to run the Docker container:
+```
+$ docker run --rm -e "CLUSTER=<cluster>" -e "ENVIRONMENT_TYPE=<t or p>" -e "CLUSTER_SG=<the security group for the EC2 instances>" -e "VAULT_PASS=<password to unlock the valut>" coco/up-rds:latest
+```
 
 Connecting to the RDS instance
 ------
