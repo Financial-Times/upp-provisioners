@@ -24,7 +24,7 @@ Automated DockerHub builds are also triggered on new releases, located [here](ht
 ## Provisioning a cluster
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
 - The cluster name will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
-- the cluster name length must be less than or equal to 28
+- The cluster name length must be less than or equal to 28
 - If provisioning a cluster that has previously had a snapshot taken, and you wish to restore the latest ES snapshot, set `$RESTORE_ES_SNAPSHOT"` to `true`.
 - Run the following Docker commands:
 ```
