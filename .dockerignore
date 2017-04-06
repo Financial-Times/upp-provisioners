@@ -1,0 +1,9 @@
+.git
+.gitignore
+**/*.pyc
+venv
+**/*.retry
+LICENSE
+VERSION
+README.md
+Changelog.md

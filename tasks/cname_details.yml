@@ -1,0 +1,6 @@
+---
+# Output CNAME details
+
+- name: CNAME details
+  debug:
+    msg: "CNAME to work on: '{{ cluster_name }}.in.ft.com'"
