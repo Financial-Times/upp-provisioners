@@ -1,0 +1,702 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Template to spin up a UPP Neo4j cluster.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label: Network Configuration
+      Parameters:
+      - VPC
+      - Subnet1
+      - Subnet2
+      - Subnet3
+    - Label: AWS Machine Config
+      Parameters:
+      - InstanceType
+      - ImageId
+      - IamInstanceProfile
+      - EbsSnapshot
+    - Label: Cluster Configuration Options
+      Parameters:
+      - EtcdToken
+      - AWSAccessKeyId
+      - AWSSecretAccessKey
+      - KonstructorAPIKey
+      - ServicesDefinitionRootURI
+      - CocoEnvironmentTag
+      - SplunkHecURL
+      - SplunkHecToken
+      - ExtraNeoConf
+    - Label: FT standard tagging
+      Parameters:
+      - TagEnvironment
+      - TagTeamDL
+      - TagSystemCode
+      - TagIpCode
+      - TagDescription
+      - TagName
+      - TagStopSchedule
+
+
+
+Parameters:
+
+  # Defines the VPC and Subnets that are to be used in provisioning.  Defaults to the eu-west-1 vpc/subnets.
+  VPC:
+    Description: This is the VPC the stack will be deployed inside.
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-9fcb94fb
+  Subnet1:
+    Description: Subnet 172.24.0.0/18, eu-west-1a
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-5587b723
+  Subnet2:
+    Description: Subnet 172.24.64.0/18, eu-west-1b
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-d8d8a180
+  Subnet3:
+    Description: Subnet 172.24.128.0/18, eu-west-1c
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-4af6ca2e
+
+  # AWS machine information - size, OS etc.
+  InstanceType:
+    Description: The type and size of the instance. Check documentation for recommended types.
+    Type: String
+    AllowedValues:
+    - m4.large
+    - m4.xlarge
+    - m4.2xlarge
+    - m4.4xlarge
+    - m4.10xlarge
+    - m4.16xlarge
+    - r4.large
+    - r4.xlarge
+    - r4.2xlarge
+    - r4.4xlarge
+    - r4.8xlarge
+    - r4.16xlarge
+    Default: r4.xlarge
+  ImageId:
+    Description: The CoreOS AMI to be used.
+    Type: AWS::EC2::Image::Id
+    Default: ami-ac8fd4ca
+  IamInstanceProfile:
+    Description: What IAM profile to give to this instance - for future use. Currently has to be FT-Linux-Role
+    Type: String
+    Default: FT-Linux-Role
+  EbsSnapshot:
+    Description: SnapshotId of the EBS Snapshot used to provision the disks.
+    Type: String
+    Default: snap-08ce671d2f33e9e5d
+
+  # Parameters than are used in the user data.
+  EtcdToken:
+    Description: Etcd token, generate from https://discovery.etcd.io/new?size=3
+    Type: String
+    Default: https://discovery.etcd.io/3cbfe5ac4de02d43eed20429ef765f7b
+  AWSAccessKeyId:
+    Description: AWS Access Key Id
+    Type: String
+  AWSSecretAccessKey:
+    Description: AWS Secret Access Key
+    Type: String
+  KonstructorAPIKey:
+    Description: API Key used to access Konstructor DNS
+    Type: String
+  ServicesDefinitionRootURI:
+    Description: Root URI for the deployer to find service files.
+    Type: String
+  CocoEnvironmentTag:
+    Description: Which enviroment this cluster is attached to (eg. prod-uk).  Must be no more than 12 characters.
+    Type: String
+  SplunkHecURL:
+    Description: HEC Ingestion URL for Splunk
+    Type: String
+  SplunkHecToken:
+    Description: HEC Ingestion Token for Splunk
+    Type: String
+  ExtraNeoConf:
+    Description: URL for extra Neo4J conf
+    Type: String
+
+  # FT Standard AWS Tags.
+  TagEnvironment:
+    Description: Tag detail for the Environment
+    Type: String
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+      - 'int'
+    Default: d
+  TagTeamDL:
+    Description: Tag of the TeamDL.
+    Type: String
+    ConstraintDescription: There must be a valid email address for the TeamDL
+    AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    Default: universal.publishing.platform@ft.com
+  TagSystemCode:
+    Description: Tag detail for the SystemCode
+    Type: String
+    Default: upp
+  TagIpCode:
+    Description: Tag detail for the ipCode
+    Type: String
+    Default: P196
+  TagDescription:
+    Description: Tag detail for the describing the instance.
+    Type: String
+    Default: Neo4j Cluster
+  TagName:
+    Description: Tag detail for the Name used in the console of the instance. NOT THE HOSTNAME OF THE INSTANCE.
+    Type: String
+    Default: Neo4j Cluster
+  TagStopSchedule:
+    Description: Tag detail for the when the instance is to be powered off.
+    Type: String
+    Default: nostop
+
+Resources:
+
+  # Neo4J security group
+  Neo4JSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Bolt protocol access for Neo4J
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Description
+        Value: Bolt protocol access for Neo4J
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 7687
+        ToPort: 7687
+        CidrIp: 0.0.0.0/0
+
+  # CoreOS security group
+  CoreOSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: CoreOS security access
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Description
+        Value: CoreOS security access
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+      SecurityGroupIngress:
+      # OSB + LDNWebPerf
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 82.136.1.214/32
+      # XP - Cluj Office
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 194.117.242.0/23
+      # EU VPN Client
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 62.25.64.1/32
+      # US VPN Client
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 64.210.200.1/32
+      # Allow 80 from everywhere
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      # Allow 443 from everywhere
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+      # Allow internal requests
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 172.24.0.0/16
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 0.0.0.0/0
+      # Allow timesync/ntp out
+      - IpProtocol: udp
+        FromPort: 123
+        ToPort: 123
+        CidrIp: 0.0.0.0/0
+
+
+  #Auto-scaling group
+  Neo4jGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn:
+    - ReadAlb
+    - WriteAlb
+    Properties:
+      LaunchConfigurationName:
+        Ref: LaunchConfig
+      MinSize: '3'
+      MaxSize: '3'
+      TargetGroupARNs:
+      - Ref: ReadAlbTargetGroup7474
+      - Ref: ReadAlbTargetGroup7687
+      - Ref: WriteAlbTargetGroup7474
+      - Ref: WriteAlbTargetGroup7687
+      VPCZoneIdentifier:
+        - !Ref Subnet1
+        - !Ref Subnet2
+        - !Ref Subnet3
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+        PropagateAtLaunch: true
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+        PropagateAtLaunch: true
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+        PropagateAtLaunch: true
+      - Key: ipCode
+        Value: !Ref TagIpCode
+        PropagateAtLaunch: true
+      - Key: description
+        Value: !Ref TagDescription
+        PropagateAtLaunch: true
+      - Key: Name
+        Value: !Sub ${TagName} - ${CocoEnvironmentTag}
+        PropagateAtLaunch: true
+      - Key: stopSchedule
+        Value: !Ref TagStopSchedule
+        PropagateAtLaunch: true
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+        PropagateAtLaunch: true
+
+  LaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      SecurityGroups:
+        - !Ref CoreOSSecurityGroup
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref ImageId
+      AssociatePublicIpAddress: false
+      IamInstanceProfile: !Ref IamInstanceProfile
+      BlockDeviceMappings:
+      - DeviceName: "/dev/sdc"
+        Ebs:
+          VolumeType: gp2
+          SnapshotId: !Ref EbsSnapshot
+      UserData:
+        Fn::Base64:
+          Fn::Join: ["", [
+              "#cloud-config\n",
+              "\n",
+              "coreos:\n",
+              "    update:\n",
+              "        reboot-strategy: off\n",
+              "    etcd2:\n",
+              "        discovery: ", !Ref EtcdToken, "\n",
+              "        advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001\n",
+              "        initial-advertise-peer-urls: http://$private_ipv4:2380\n",
+              "        listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001\n",
+              "        listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001\n",
+              "    units:\n",
+              "    - name: authorized_keys.service\n",
+              "      command: start\n",
+              "      content: |\n",
+              "          [Unit]\n",
+              "          Description=Update authorized_keys\n",
+              "\n",
+              "          [Service]\n",
+              "          Type=oneshot\n",
+              "          ExecStartPre=/bin/sh -c \"mkdir -p /home/core/.ssh && touch /home/core/.ssh/authorized_keys\"\n",
+              "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512\"\n",
+              "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys\"\n",
+              "          ExecStart=/bin/sh -c \"cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 700 /home/core/.ssh && chmod 600 /home/core/.ssh/authorized_keys && chown -R core:core /home/core/.ssh\"\n",
+              "    - name: authorized_keys.timer\n",
+              "      command: start\n",
+              "      content: |\n",
+              "          [Unit]\n",
+              "          Description=Authorized keys timer\n",
+              "\n",
+              "          [Timer]\n",
+              "          OnBootSec=1min\n",
+              "          OnUnitActiveSec=1min\n",
+              "\n",
+              "          [Install]\n",
+              "          WantedBy=timers.target\n",
+              "    - name: docker.service\n",
+              "      drop-ins:\n",
+              "        - name: 10-turn-off-logging.conf\n",
+              "          content: |\n",
+              "            [Service]\n",
+              "            Environment=\"DOCKER_OPTS=--log-driver=none\"\n",
+              "      command: start\n",
+              "    - name: etcd2.service\n",
+              "      command: start\n",
+              "    - name: fleet.service\n",
+              "      command: start\n",
+              "    - name: key-register.service\n",
+              "      command: start\n",
+              "      content: |\n",
+              "          [Unit]\n",
+              "          Description=Add secret keys to etcd2",
+              "          # Only run on first boot (creates the file at the end of the execution)",
+              "          ConditionPathExists=!/var/lib/format-done",
+              "\n",
+              "          [Service]\n",
+              "          Type=oneshot\n",
+              "          ExecStartPre=/bin/sh -c \"while true; do etcdctl cluster-health && break || sleep 2; done\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/_credentials/konstructor/api-key ", !Ref KonstructorAPIKey, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/_credentials/aws/aws_access_key_id ", !Ref AWSAccessKeyId, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/_credentials/aws/aws_secret_access_key ", !Ref AWSSecretAccessKey, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/environment_tag ", !Ref CocoEnvironmentTag, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/services-definition-root-uri ", !Ref ServicesDefinitionRootURI, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/splunk-forwarder/splunk_hec_url ", !Ref SplunkHecURL, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/splunk-forwarder/splunk_hec_token ", !Ref SplunkHecToken, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/neo4j/extra-conf-url ", !Ref ExtraNeoConf, " >/dev/null 2>&1 || true;\"\n",
+              "    - name: vol-neo4j.mount\n",
+              "      command: start\n",
+              "      content: |\n",
+              "          [Mount]\n",
+              "           What=/dev/xvdc\n",
+              "           Where=/vol/neo4j\n",
+              "           Type=ext4\n",
+              "    - name: update-engine.service\n",
+              "      command: stop\n",
+              "      mask: true\n",
+              "    - name: bootstrap.service\n",
+              "      command: start\n",
+              "      content: |\n",
+              "          [Unit]\n",
+              "          Description=Bootstrap fleet services\n",
+              "          After=fleet.service\n",
+              "          Requires=fleet.service\n",
+              "          # Only run on first boot\n",
+              "          ConditionPathExists=!/var/lib/format-done\n",
+              "\n",
+              "          [Service]\n",
+              "          Type=oneshot\n",
+              "          ExecStartPre=/bin/sh -c \"systemctl restart systemd-sysctl.service\"\n",
+              "          ExecStartPre=/bin/sh -c \"while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done\"\n",
+              "          ExecStart=/bin/sh -c \"curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service\"\n",
+              "          ExecStartPost=/usr/bin/touch /var/lib/format-done\n",
+              "\n",
+              "write_files:\n",
+              "  - path: /etc/sysctl.d/50-disable-ipv6.conf\n",
+              "    content: |\n",
+              "      net.ipv6.conf.all.disable_ipv6=1\n",
+              "      net.ipv6.conf.default.disable_ipv6=1\n",
+              "  - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf\n",
+              "    content: |\n",
+              "      [Socket]\n",
+              "      ListenStream=0.0.0.0:49153\n",
+              "  - path: /etc/systemd/journald.conf.d/10-override-config.conf\n",
+              "    content: |\n",
+              "      [Journal]\n",
+              "      MaxLevelConsole=crit\n",
+              "      Compress=false\n",
+              "      RateLimitInterval=0\n",
+              "      RateLimitBurst=0\n",
+              "  - path: /etc/motd.d/env.conf\n",
+              "    content: |\n",
+              "            This persistent enviroment is tagged as ", !Ref CocoEnvironmentTag, " and is cluster ", !Ref EtcdToken, "\n",
+              "  - path: /etc/profile.d/history_timestamps.sh\n",
+              "    permissions: 0755\n",
+              "    owner: root\n",
+              "    content: |\n",
+              "      #!/bin/bash\n",
+              "      export HISTTIMEFORMAT=\"%d/%m/%y %T\"\n",
+              "      export HISTFILESIZE=10000000\n",
+              "      export HISTSIZE=10000000\n",
+              "  - path: /etc/profile.d/services_autocomplete.sh\n",
+              "    permissions: 0755\n",
+              "    owner: root\n",
+              "    content: |\n",
+              "      #!/bin/bash\n",
+              "      fleetctl list-units | tail -n +2 | cut -f 1 | tr \"\\n\" \" \" > /home/core/services.list\n",
+              "      _services(){\n",
+              "           local cur=${COMP_WORDS[COMP_CWORD]}\n",
+              "           COMPREPLY=( $(compgen -W \"$(<~/services.list)\" -- ${cur}) )\n",
+              "      }\n",
+              "      complete -F _services fcres\n",
+              "      complete -F _services fcjf\n",
+              "      complete -F _services fcssh\n",
+              "  - path: /etc/profile.d/ft_aliases.sh\n",
+              "    permissions: 0755\n",
+              "    owner: root\n",
+              "    content: |\n",
+              "      #!/bin/bash\n",
+              "      alias ll='ls -l'\n",
+              "      alias fc='fleetctl'\n",
+              "      alias fclm='fleetctl list-machines'\n",
+              "      alias fclu='fleetctl list-units'\n",
+              "      alias fcjf='fleetctl journal -f '\n",
+              "      alias fcbad='fleetctl list-units | grep -v \"exited|running|backup|upgrade\"'\n",
+              "      function fclmg() { fleetctl list-machines | grep  $@ ;}\n",
+              "      function fclug() { fleetctl list-units | grep  $@ ;}\n",
+              "      function fcssh() { fleetctl ssh $@ ;}\n",
+              "      function fcjfl() { fleetctl journal -f --lines=$@ ; }\n",
+              "      function fcres() { fleetctl ssh $@ sudo systemctl restart $@ ; }\n",
+              "  - path: /home/core/.ssh/config\n",
+              "    permissions: 0600\n",
+              "    owner: core\n",
+              "    content: |\n",
+              "      Host *-tunnel-up.ft.com\n",
+              "      User core\n",
+              "      ForwardAgent yes\n",
+              "      StrictHostKeyChecking no\n",
+              "      UserKnownHostsFile /dev/null\n",
+              ]]
+
+  #Application Read Load Balancer
+  ReadAlb:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Name: !Sub ${AWS::StackName}-read-alb
+      Scheme: internal
+      SecurityGroups:
+        - !Ref CoreOSSecurityGroup
+        - !Ref Neo4JSecurityGroup
+      Subnets:
+        - !Ref Subnet1
+        - !Ref Subnet2
+        - !Ref Subnet3
+      Tags:
+      - Key: Description
+        Value: !Sub Read ALB for ${CocoEnvironmentTag} Neo4J Cluster
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+  ReadAlbTargetGroup7474:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub ${AWS::StackName}-read-7474
+      Port: 7474
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      HealthCheckIntervalSeconds: 5
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /
+      HealthCheckPort: 7474
+      HealthCheckTimeoutSeconds: 3
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Tags:
+      - Key: Description
+        Value: !Sub Target Group for Read ALB for ${CocoEnvironmentTag} Neo4J Cluster
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+  ReadAlbTargetGroup7687:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub ${AWS::StackName}-read-7687
+      Port: 7687
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      HealthCheckIntervalSeconds: 5
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /
+      HealthCheckPort: 7474
+      HealthCheckTimeoutSeconds: 3
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Tags:
+      - Key: Description
+        Value: !Sub Target Group for Read ALB for ${CocoEnvironmentTag} Neo4J Cluster
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+  ReadAlbListener7474:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: ReadAlbTargetGroup7474
+      LoadBalancerArn:
+        Ref: ReadAlb
+      Port: 80
+      Protocol: HTTP
+  ReadAlbListener7687:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: ReadAlbTargetGroup7687
+      LoadBalancerArn:
+        Ref: ReadAlb
+      Port: 7687
+      Protocol: HTTP
+
+  #Application Write Load Balancer
+  WriteAlb:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Name: !Sub ${AWS::StackName}-write-alb
+      Scheme: internal
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: 120
+      SecurityGroups:
+        - !Ref CoreOSSecurityGroup
+        - !Ref Neo4JSecurityGroup
+      Subnets:
+        - !Ref Subnet1
+        - !Ref Subnet2
+        - !Ref Subnet3
+      Tags:
+      - Key: Description
+        Value: !Sub Write ALB for ${CocoEnvironmentTag} Neo4J Cluster
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+  WriteAlbTargetGroup7474:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub ${AWS::StackName}-write-7474
+      Port: 7474
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      HealthCheckIntervalSeconds: 5
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /db/manage/server/core/writable
+      HealthCheckPort: 7474
+      HealthCheckTimeoutSeconds: 3
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Tags:
+      - Key: Description
+        Value: !Sub Target Group for Write ALB for ${CocoEnvironmentTag} Neo4J Cluster
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+  WriteAlbTargetGroup7687:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub ${AWS::StackName}-write-7687
+      Port: 7687
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      HealthCheckIntervalSeconds: 5
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /db/manage/server/core/writable
+      HealthCheckPort: 7474
+      HealthCheckTimeoutSeconds: 3
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Tags:
+      - Key: Description
+        Value: !Sub Target Group for Write ALB for ${CocoEnvironmentTag} Neo4J Cluster
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: coco-environment-tag
+        Value: !Ref CocoEnvironmentTag
+  WriteAlbListener7474:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: WriteAlbTargetGroup7474
+      LoadBalancerArn:
+        Ref: WriteAlb
+      Port: 80
+      Protocol: HTTP
+  WriteAlbListener7687:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: WriteAlbTargetGroup7687
+      LoadBalancerArn:
+        Ref: WriteAlb
+      Port: 7687
+      Protocol: HTTP
+
+Outputs:
+  ReadAlbDNS:
+    Description: DNS name of newly created Application Read Load Balancer
+    Value: !GetAtt ReadAlb.DNSName
+  WriteAlbDNS:
+    Description: DNS name of newly created Application Write Load Balancer
+    Value: !GetAtt WriteAlb.DNSName
