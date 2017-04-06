@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Template to spin-up an Elasticsearch cluster for upp-concepts
+
+Parameters:
+  EnvironmentType:
+    Description: Environment type (Test or Production).
+    Type: String
+    AllowedValues:
+      - 't'
+      - 'p'
+    Default: t
+  ClusterName:
+    Description: The name of the ES cluster
+    Type: String
+
+Resources:
+  ElasticsearchDomain:
+    Type: "AWS::Elasticsearch::Domain"
+    Properties:
+      DomainName: !Ref ClusterName
+      ElasticsearchVersion: "2.3"
+      ElasticsearchClusterConfig:
+        InstanceCount: "3"
+        InstanceType: "r3.large.elasticsearch"
+        DedicatedMasterEnabled: "true"
+        DedicatedMasterType: "m3.medium.elasticsearch"
+        DedicatedMasterCount: "3"
+      EBSOptions:
+        EBSEnabled: true
+        Iops: 0
+        VolumeSize: 25
+        VolumeType: "gp2"
+      SnapshotOptions:
+        AutomatedSnapshotStartHour: "0"
+      AccessPolicies:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              AWS: "*"
+            Action: "es:*"
+            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/", !Ref ClusterName, "/*" ] ]
+            Condition:
+              IpAddress:
+                aws:SourceIP:
+                  # OSB + LDNWebPerf
+                  - "82.136.1.214/32"
+                  # iQuest - Cluj office
+                  - "194.117.242.0/23"
+                  # EU VPN Client
+                  - "62.25.64.1/32"
+                  # US VPN Client
+                  - "64.210.200.1/32"
+          -
+            Effect: "Allow"
+            Principal:
+              AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
+            Action: "es:*"
+            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/", !Ref ClusterName, "/*" ] ]
+      AdvancedOptions:
+        rest.action.multi.allow_explicit_index: "true"
+      Tags:
+        - Key: env
+          Value: !Ref EnvironmentType
+        - Key: teamDL
+          Value: "universal.publishing.platform@ft.com"
+        - Key: systemCode
+          Value: !Ref ClusterName
+        - Key: ipcode
+          Value: "P490"
+        - Key: description
+          Value: !Ref ClusterName
+
+Outputs:
+  ESClusterEndpoint:
+    Description: The ElasticSearch cluster endpoint
+    Value: !GetAtt ElasticsearchDomain.DomainEndpoint
