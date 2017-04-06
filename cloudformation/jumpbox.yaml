@@ -21,7 +21,7 @@ Metadata:
 
     ParameterLabels:
       AutoGroupAvailabilityZones:
-        deafault: Auto Group Availability Zones
+        default: Auto Group Availability Zones
       InstanceType:
         default: Instance Type
       InstanceKey:
