@@ -1,0 +1,248 @@
+- hosts: 127.0.0.1
+  connection: local
+
+  vars:
+    ami: ami-c26bcab1 #eu-west-1 HMV 835.9.0 (stable)
+    #ami: ami-c3cae3b4 #eu-west-1 HMV CoreOS 815.0.0 (alpha)
+    env: "{{ environment_type }}"
+    ipcode: P196
+    systemCode: "CoreOS-Universal-Publishing"
+    description: "CoreOS-Universal-Publishing"
+    teamDL: "universal.publishing.platform@ft.com"
+    environment_tag: default
+    instanceType: m4.xlarge
+    vpc_id: "{% if region == 'us-east-1' %}vpc-1d25657a{% else %}vpc-36639c52{% endif %}"
+    subnets_id_1: "{% if region == 'us-east-1' %}subnet-5a978b02{% else %}subnet-b59b54c3{% endif %}"
+    subnets_id_2: "{% if region == 'us-east-1' %}subnet-b9c608f0{% else %}subnet-1cba5f44{% endif %}"
+    subnets_id_3: "{% if region == 'us-east-1' %}subnet-b5b5aa9f{% else %}subnet-fcfa5e98{% endif %}"
+  vars_files:
+    - keys.yaml
+
+  tasks:
+    - debug: msg="VPC {{ vpc_id }}"
+
+    - name: Set up fleet security group
+      ec2_group:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        name: "coreos-up-{{clusterid}}"
+        description: Fleet security group
+        vpc_id: "{{ vpc_id }}"
+        rules:
+          # OSB + LDNWebPerf
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 82.136.1.214/32
+          # XP - Cluj office
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 194.117.242.0/23
+          # EU VPN Client
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 62.25.64.1/32
+          # US VPN Client
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 64.210.200.1/32
+          # Allow 80 from everywhere
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+          # Allow 443 from everywhere
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: 0.0.0.0/0
+          # Allow internal requests
+          - proto: tcp
+            from_port: 0
+            to_port: 65535
+            cidr_ip: 172.24.0.0/16
+        rules_egress:
+          - proto: tcp
+            from_port: 0
+            to_port: 65535
+            cidr_ip: 0.0.0.0/0
+          # Allow timesync/ntp out
+          - proto: udp
+            from_port: 123
+            to_port: 123
+            cidr_ip: 0.0.0.0/0
+      register: fleet_group
+
+    - name: Tag UP CoreOS security group
+      ec2_tag:
+        resource: "{{fleet_group.group_id}}"
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        state: present
+        tags:
+          Name: "coreos-up-{{clusterid}}"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
+          coco-environment-tag: "{{environment_tag}}"
+
+    - name: cluster-elb
+      ec2_elb_lb:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        name: "coreos-up-{{clusterid}}"
+        state: present
+        security_group_ids: '{{fleet_group.group_id}}'
+        subnets:
+          - "{{ subnets_id_1 }}"
+          - "{{ subnets_id_2 }}"
+          - "{{ subnets_id_3 }}"
+        listeners:
+          - protocol: https
+            load_balancer_port: 443
+            instance_protocol: http
+            instance_port: 80
+            ssl_certificate_id: "arn:aws:iam::027104099916:server-certificate/wildcard.ft.com"
+        purge_listeners: True
+        health_check:
+          ping_protocol: tcp # options are http, https, ssl, tcp
+          ping_port: 80
+          response_timeout: 5 # seconds
+          interval: 30 # seconds
+          unhealthy_threshold: 2
+          healthy_threshold: 10
+      register: cluster_elb
+
+    - name: tag ELB
+      shell: ". /.venv/bin/activate && aws --region {{region}} elb add-tags --load-balancer-names coreos-up-{{clusterid}} --tags Key=Name,Value=coreos-up-{{clusterid}} Key=env,Value={{env}} Key=ipcode,Value={{ipcode}} Key=systemCode,Value={{systemCode}} Key=description,Value={{description}} Key=teamDL,Value={{teamDL}} Key=coco-environment-tag,Value={{environment_tag}}"
+
+    - debug: msg="cluster_elb dns {{ cluster_elb.elb.dns_name }}"
+
+    - name: Set termination protection for production clusters
+      set_fact:
+        termination_protection: "{% if env == 'p' %}yes{% else %}no{% endif %}"
+
+    - set_fact:
+        persistent_tag: 1
+
+    - name: Provision persistent instance
+      ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        group: "coreos-up-{{clusterid}}"
+        image: "{{ami}}"
+        instance_type: "{{instanceType}}"
+        wait: true
+        exact_count: 1
+        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
+        vpc_subnet_id: "{{ subnets_id_1 }}"
+        assign_public_ip: yes
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 30
+            volume_type: gp2
+            delete_on_termination: true
+          - device_name: /dev/xvdf
+            volume_size: 400
+            volume_type: gp2
+            delete_on_termination: true
+        count_tag:
+          Name: "ftpr1{{clusterid}}-caw1a-eu-p"
+        instance_tags:
+          Name: "ftpr1{{clusterid}}-caw1a-eu-p"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
+          coco-environment-tag: "{{environment_tag}}"
+        termination_protection: "{{ termination_protection }}"
+
+    - set_fact:
+        persistent_tag: 2
+
+    - name: Provision persistent instance
+      ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        group: "coreos-up-{{clusterid}}"
+        image: "{{ami}}"
+        instance_type: "{{instanceType}}"
+        wait: true
+        exact_count: 1
+        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
+        vpc_subnet_id: "{{ subnets_id_2 }}"
+        assign_public_ip: yes
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 30
+            volume_type: gp2
+            delete_on_termination: true
+          - device_name: /dev/xvdf
+            volume_size: 400
+            volume_type: gp2
+            delete_on_termination: true
+        count_tag:
+          Name: "ftpr2{{clusterid}}-caw1b-eu-p"
+        instance_tags:
+          Name: "ftpr2{{clusterid}}-caw1b-eu-p"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
+          coco-environment-tag: "{{environment_tag}}"
+        termination_protection: "{{ termination_protection }}"
+
+    - set_fact:
+        persistent_tag: 3
+
+    - name: Provision persistent instance
+      ec2:
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{region}}"
+        group: "coreos-up-{{clusterid}}"
+        image: "{{ami}}"
+        instance_type: "{{instanceType}}"
+        wait: true
+        exact_count: 1
+        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
+        vpc_subnet_id: "{{ subnets_id_3 }}"
+        assign_public_ip: yes
+        volumes:
+          - device_name: /dev/xvda
+            volume_size: 30
+            volume_type: gp2
+            delete_on_termination: true
+          - device_name: /dev/xvdf
+            volume_size: 400
+            volume_type: gp2
+            delete_on_termination: true
+        count_tag:
+          Name: "ftpr3{{clusterid}}-caw1c-eu-p"
+        instance_tags:
+          Name: "ftpr3{{clusterid}}-caw1c-eu-p"
+          environment: "{{env}}"
+          ipCode: "{{ipcode}}"
+          systemCode: "{{systemCode}}"
+          description: "{{description}}"
+          teamDL: "{{teamDL}}"
+          stopSchedule: "nostop"
+          coco-environment-tag: "{{environment_tag}}"
+        termination_protection: "{{ termination_protection }}"
+
+    - name: Cluster tunnel DNS address
+      debug: msg="Cluster tunnel DNS address - {{ environment_tag }}-tunnel-up.ft.com"
