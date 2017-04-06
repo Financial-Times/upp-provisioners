@@ -30,7 +30,7 @@ To run the Ansible script you need to do the following:
 
 The other option is to run the Docker container:
 ```
-$ docker run --rm -e "CLUSTER=<cluster>" -e "ENVIRONMENT_TYPE=<t or p>" -e "CLUSTER_SG=<the security group for the EC2 instances>" -e "VAULT_PASS=<password to unlock the valut>" coco/upp-rds-provisioner:latest
+$ docker run --rm -e "CLUSTER=<cluster>" -e "ENVIRONMENT_TYPE=<t or p>" -e "CLUSTER_SG=<the security group for the EC2 instances>" -e "VAULT_PASS=<password to unlock the vault>" coco/upp-rds-provisioner:latest
 ```
 
 Connecting to the RDS instance
