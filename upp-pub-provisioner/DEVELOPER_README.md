@@ -6,7 +6,7 @@ Building
 
 ```bash
 # Build the image
-docker build -t coco/coco-pub-provisioner .
+docker build -t coco/upp-pub-provisioner .
 ```
 
 
@@ -150,5 +150,5 @@ docker run \
     -e "ROLES_BERTHA_URL=$ROLES_BERTHA_URL" \
     -e "BRANDS_BERTHA_URL=$BRANDS_BERTHA_URL" \
     -e "MAPPINGS_BERTHA_URL=$MAPPINGS_BERTHA_URL" \
-    coco/coco-pub-provisioner
+    coco/upp-pub-provisioner
 ```

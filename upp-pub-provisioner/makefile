@@ -1,4 +1,4 @@
-IMAGE_NAME=ft/coco-pub-provisioner
+IMAGE_NAME=coco/upp-pub-provisioner
 LATEST_TAG=$(IMAGE_NAME):latest
 
 build:
@@ -22,7 +22,7 @@ provision:
     	-e "ROLES_BERTHA_URL=$(ROLES_BERTHA_URL)" \
     	-e "BRANDS_BERTHA_URL=$(BRANDS_BERTHA_URL)" \
     	-e "MAPPINGS_BERTHA_URL=$(MAPPINGS_BERTHA_URL)" \
-	ft/coco-pub-provisioner:latest
+	coco/upp-pub-provisioner:latest
 
 decom:
 	docker run \
@@ -31,4 +31,4 @@ decom:
 	-e "AWS_DEFAULT_REGION=$(AWS_DEFAULT_REGION)" \
 	-e "AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)" \
 	-e "AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID)" \
-	ft/coco-pub-provisioner:latest /bin/bash /decom.sh
+	coco/upp-pub-provisioner:latest /bin/bash /decom.sh

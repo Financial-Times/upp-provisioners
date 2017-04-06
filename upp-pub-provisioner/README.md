@@ -1,4 +1,4 @@
- [![GitHub release](https://img.shields.io/badge/version-v1.0.15-green.svg?style=flat)](https://github.com/Financial-Times/coco-pub-provisioner/releases)
+ [![GitHub release](https://img.shields.io/badge/version-v1.0.15-green.svg?style=flat)](https://github.com/Financial-Times/upp-provisioners/releases)
 
 Docker image to provision a cluster
 ===================================
@@ -44,7 +44,7 @@ Everything else works fine - `t` or `p` clusters in `eu-west-1`, and `p` cluster
 ## SET PAM_MAT_VALIDATION_URL  to be a request to correspoding delivery cluster MAT content-transform end point
 
 ## Pull latest stable image and run docker command
-docker pull coco/coco-pub-provisioner:latest
+docker pull coco/upp-pub-provisioner:latest
 docker run \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "TOKEN_URL=$TOKEN_URL" \
@@ -75,13 +75,13 @@ docker run \
     -e "MAPPINGS_BERTHA_URL=$MAPPINGS_BERTHA_URL" \
     -e "CONCEPTS_RW_S3_BUCKET=$CONCEPTS_RW_S3_BUCKET" \
     -e "CONCEPTS_RW_S3_BUCKET_REGION=$CONCEPTS_RW_S3_BUCKET_REGION" \
-     coco/coco-pub-provisioner:latest
+     coco/upp-pub-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'
 
 ```
 
-If you need a Docker runtime environment to provision a cluster you can set up [Coco Management Server](https://github.com/Financial-Times/coco-pub-provisioner/blob/master/cloudformation/README.md) in AWS.
+If you need a Docker runtime environment to provision a cluster you can set up [Coco Management Server](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-pub-provisioner/cloudformation/README.md) in AWS.
 
 Decommission an environment
 ---------------------------
@@ -106,14 +106,14 @@ export ENVIRONMENT_TAG=
 
 
 ```sh
-docker pull coco/coco-pub-provisioner:latest
+docker pull coco/upp-pub-provisioner:latest
 docker run \
   -e "VAULT_PASS=$VAULT_PASS" \
   -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
   -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-  coco/coco-pub-provisioner:latest /bin/bash /decom.sh
+  coco/upp-pub-provisioner:latest /bin/bash /decom.sh
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'
 
@@ -123,4 +123,4 @@ docker run \
 Coco Management Server
 ---------------------------
 
-See details in [cloudformation/README.md](https://github.com/Financial-Times/coco-pub-provisioner/blob/master/cloudformation/README.md)
+See details in [cloudformation/README.md](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-pub-provisioner/cloudformation/README.md)
