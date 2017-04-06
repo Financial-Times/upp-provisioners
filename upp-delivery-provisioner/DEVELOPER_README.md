@@ -6,7 +6,7 @@ Building locally the image
 
 ```bash
 # Build the image
-docker build -t coco/coco-provisioner .
+docker build -t coco/upp-delivery-provisioner .
 ```
 
 
@@ -25,7 +25,7 @@ Set all the required variables
 export TOKEN_URL=`curl https://discovery.etcd.io/new?size=5`
 
 ## Secret used during provision to decrypt keys - stored in LastPass.
-## Lastpass: coco-provisioner-ansible-vault-pass
+## Lastpass: upp-delivery-provisioner-ansible-vault-pass
 export VAULT_PASS=
 
 ## AWS API keys for provisioning (not for use by services) - stored in LastPass.
@@ -53,7 +53,7 @@ export ENVIRONMENT_TAG=
 ## For TEST: t
 export ENVIRONMENT_TYPE=
 
-## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco). 
+## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco).
 ## This should always point at Prod - use separate service files to bridge from Test into lower environments.
 export BRIDGING_MESSAGE_QUEUE_PROXY=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com
 
@@ -61,7 +61,7 @@ export BRIDGING_MESSAGE_QUEUE_PROXY=https://kafka-proxy-iw-uk-p-1.glb.ft.com,htt
 ## See Lastpass: 'CoCo Basic Auth' for current cluster values.
 export CLUSTER_BASIC_HTTP_CREDENTIALS=
 
-## Gateway content api hostname (not URL) to access UPP content that the cluster read endpoints (e.g. CPR & CPR-preview) are mapped to. 
+## Gateway content api hostname (not URL) to access UPP content that the cluster read endpoints (e.g. CPR & CPR-preview) are mapped to.
 ## Defaults to Prod if left blank.
 ## Prod: api.ft.com
 ## Pre-Prod: test.api.ft.com
@@ -119,7 +119,5 @@ docker run \
     -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "METHODE_API=$METHODE_API" \
-    coco/coco-provisioner
+    coco/upp-delivery-provisioner
 ```
-
-

@@ -11,11 +11,11 @@ Coco cluster authenticates users based on RSA key. To access Coco cluster first 
 
 The following command creates a key pair coco_cluster/coco_cluster.pub in current working directory.
 
-``` 
-$ ssh-keygen -t rsa -f ~/.ssh/coco_cluster 
+```
+$ ssh-keygen -t rsa -f ~/.ssh/coco_cluster
 Generating public/private rsa key pair.
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
 Your identification has been saved in coco_cluster.
 Your public key has been saved in coco_cluster.pub.
 The key fingerprint is:
@@ -39,7 +39,7 @@ The key's randomart image is:
  1. Update [authorized_keys file](https://github.com/Financial-Times/up-ssh-keys/blob/master/authorized_keys)
  2. Check the hash of the authorized_keys file ``` sha512sum authorized_keys ```
  3. Add hash value into file [authorized_keys.sha512](https://github.com/Financial-Times/up-ssh-keys/blob/master/authorized_keys.sha512)
- 4. Authorized_keys file will be automatically deployed by [authorized_keys.service](https://github.com/Financial-Times/coco-provisioner/blob/master/ansible/userdata/default_instance_user_data.yaml#L21) that runs on cluster nodes
+ 4. Authorized_keys file will be automatically deployed by [authorized_keys.service](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/default_instance_user_data.yaml#L26) that runs on cluster nodes
 
 
 
@@ -54,9 +54,9 @@ ssh-add -l # verify your key has been added to the key-ring
 
 # Accessing Coco cluster over VPN
 
-SSH access to Coco cluster nodes is controlled by Fleet Security Group. Security group only allows access from [whitelisted IP addresses](https://github.com/Financial-Times/coco-provisioner/blob/master/ansible/aws_coreos_site.yml#L57), such as 82.136.1.214/32 which is OSB outbound IP address.
+SSH access to Coco cluster nodes is controlled by Fleet Security Group. Security group only allows access from [whitelisted IP addresses](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/aws_coreos_site.yml#L32-L52), such as 82.136.1.214/32 which is OSB outbound IP address.
 
-When connected to VPN your computer's default route to the internet is the local gateway. For this reason the IP address used to connect to Coco cluster does not match whitelisted IP addresses and therefore connection is blocked by Fleet Security Group. 
+When connected to VPN your computer's default route to the internet is the local gateway. For this reason the IP address used to connect to Coco cluster does not match whitelisted IP addresses and therefore connection is blocked by Fleet Security Group.
 
 To workaround this issue we can route all traffic via VPN tunnel interface. By changing the default route your computer will access Coco cluster using one of the whitelisted IP addresses.
 
@@ -66,15 +66,15 @@ Before changing the default route you need to open VPN connection. Fiddling with
 
 ### Linux
 
-Linux users can either manually change default route or alternatively use helper script [coco-provisiner/ssh-tun0](https://github.com/Financial-Times/coco-provisioner/blob/master/ssh-tun0) that alters the routing table and establishes SSH session to given host.
+Linux users can either manually change default route or alternatively use helper script [upp-delivery-provisioner/ssh-tun0](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ssh-tun0) that alters the routing table and establishes SSH session to given host.
 
 ##### ssh-tun0 script
 
-Here is example how to use [ssh-tun script](https://github.com/Financial-Times/coco-provisioner/blob/master/ssh-tun0)  to connect to / disconnect from CoreOS cluster.
+Here is example how to use [ssh-tun script](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ssh-tun0) to connect to / disconnect from CoreOS cluster.
 
 ```
 # CONNECTING
-$ coco-provisioner/ssh-tun0 core@xp-tunnel-up.ft.com
+$ upp-delivery-provisioner/ssh-tun0 core@xp-tunnel-up.ft.com
 
 Setting sudo prefix /usr/bin/sudo for user jussi
 Resolving IP for hostname xp-tunnel-up.ft.com
@@ -85,7 +85,7 @@ Route 52.50.72.70/32 dev tun0 successfully added
 Last login: Mon Apr 18 08:15:37 2016 from 172.24.121.215
 CoreOS alpha (1010.1.0)
 This enviroment is tagged as xp and is cluster https://discovery.etcd.io/b9b5d08c15f6365084a21dc3e0791865
-core@ip-172-24-121-215 ~ $ 
+core@ip-172-24-121-215 ~ $
 
 # DISCONNECTING
 core@ip-172-24-121-215 ~ $ exit
@@ -121,7 +121,7 @@ wlan0      1500 0      9620      0      0 0           268      0      0      0 B
 
 ### Windows
 
-##### Discovering VPN interface IP address 
+##### Discovering VPN interface IP address
 
  1. Go to _Network and Sharing_ settings
  2. Click _Connections: Junos Pulse_
@@ -139,7 +139,7 @@ Replace 10.115.190.152 with correct VPN interface IP address.
 
 ### Mac
 
-##### Discovering VPN interface IP address 
+##### Discovering VPN interface IP address
 Mac users please update instructions
 
 ##### Changing default route
