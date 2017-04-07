@@ -85,6 +85,8 @@ docker run \
     -e "ROLES_BERTHA_URL=$ROLES_BERTHA_URL" \
     -e "BRANDS_BERTHA_URL=$BRANDS_BERTHA_URL" \
     -e "MAPPINGS_BERTHA_URL=$MAPPINGS_BERTHA_URL" \
+    -e "CONCEPTS_RW_S3_BUCKET=$CONCEPTS_RW_S3_BUCKET" \
+    -e "CONCEPTS_RW_S3_BUCKET_REGION=$CONCEPTS_RW_S3_BUCKET_REGION" \
      coco/upp-pub-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'
