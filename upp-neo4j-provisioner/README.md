@@ -7,7 +7,7 @@ Basic useful feature list:
 
 ## Build
 The cluster provisioner can be built as a Docker image: \
-`docker build -t coco/up-neo4j-cluster:latest .`
+`docker build -t coco/upp-neo4j-provisioner:latest .`
 
 There is no build process for the subnets - the cloudformation scripts just need running
 via the console or the cli, depending on where you've got the right permissions.
@@ -17,7 +17,7 @@ via the console or the cli, depending on where you've got the right permissions.
 - Note that your `ENVIRONMENT_TAG` **must** end with `-data`, otherwise the provisioner will abort.
 - Run the following Docker commands:
 ```
-docker pull coco/up-neo4j-cluster:latest
+docker pull coco/upp-neo4j-provisioner:latest
 docker run \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
@@ -30,7 +30,7 @@ docker run \
     -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
     -e "NEO_EXTRA_CONF_URL=$NEO_EXTRA_CONF_URL" \
     -e "TOKEN_URL=$TOKEN_URL" \
-    coco/up-neo4j-cluster:latest
+    coco/upp-neo4j-provisioner:latest
 ```
 - You can monitor the provisioning by going to the Cloudformation section in the AWS console and looking for the stack `up-neo4j-<ENVIRONMENT_TAG>`.
 
@@ -55,14 +55,14 @@ done
 - Export the required environment variables.
 - Run the following Docker command:
 ```
-docker pull coco/up-neo4j-cluster:latest
+docker pull coco/upp-neo4j-provisioner:latest
 docker run \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
-    coco/up-neo4j-cluster:latest /bin/bash /decom.sh
+    coco/upp-neo4j-provisioner:latest /bin/bash /decom.sh
 ```
 - You can monitor the provisioning by going to the Cloudformation section in the AWS console and looking for the stack `up-neo4j-<ENVIRONMENT_TAG>`.
 
