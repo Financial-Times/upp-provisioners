@@ -41,7 +41,14 @@ Everything else works fine - `t` or `p` clusters in `eu-west-1`, and `p` cluster
 ## LastPass: PROD Publishing cluster provisioning setup
 ## For TEST cluster
 ## LastPass: TEST Publishing cluster provisioning setup
-## SET PAM_MAT_VALIDATION_URL  to be a request to correspoding delivery cluster MAT content-transform end point
+## SET PAM_MAM_VALIDATION_URL  to be a request to correspoding delivery cluster methode-article-mapper (MAM) /map endpoint
+## SET PAM_MCPM_VALIDATION_URL  to be a request to correspoding delivery cluster methode-content-placeholder-mapper (MCPM) /map endpoint
+## SET PAM_MIMM_VALIDATION_URL  to be a request to correspoding delivery cluster methode-image-model-mapper (MIMM) /map endpoint
+## SET PAM_ML_VALIDATION_URL  to be a request to correspoding delivery cluster methode-list-mapper (MLM) /map endpoint
+## SET PAM_MAICM_VALIDATION_URL  to be a request to correspoding delivery cluster methode-article-internal-components-mapper (MAICM) /map endpoint
+## SET PAM_VIDEO_VALIDATION_URL  to be a request to correspoding delivery cluster video mapper /map endpoint
+## SET PAM_WAM_VALIDATION_URL  to be a request to correspoding delivery cluster wordpress-article-mapper (WAM) /map endpoint
+## PAM_MAT_VALIDATION_CREDENTIALS basic auth for the delivery cluster?
 
 ## Pull latest stable image and run docker command
 docker pull coco/upp-pub-provisioner:latest
@@ -60,10 +67,15 @@ docker run \
     -e "S3_IMAGE_BUCKET_URLS=$S3_IMAGE_BUCKET_URLS" \
     -e "DELIVERY_CLUSTERS_HTTP_CREDENTIALS=$DELIVERY_CLUSTERS_HTTP_CREDENTIALS" \
     -e "BINARY_S3_BUCKET=$BINARY_S3_BUCKET" \
-    -e "PAM_MAT_VALIDATION_URL=$PAM_MAT_VALIDATION_URL" \
+    -e "PAM_MAM_VALIDATION_URL=$PAM_MAM_VALIDATION_URL" \
     -e "PAM_MAT_VALIDATION_CREDENTIALS=$PAM_MAT_VALIDATION_CREDENTIALS" \
     -e "PAM_CREDENTIAL_VALIDATION_UUID=$PAM_CREDENTIAL_VALIDATION_UUID" \
     -e "PAM_MCPM_VALIDATION_URL=$PAM_MCPM_VALIDATION_URL" \
+    -e "PAM_MIMM_VALIDATION_URL=$PAM_MIMM_VALIDATION_URL" \
+    -e "PAM_ML_VALIDATION_URL=$PAM_ML_VALIDATION_URL" \
+    -e "PAM_MAICM_VALIDATION_URL=$PAM_MAICM_VALIDATION_URL" \
+    -e "PAM_VIDEO_VALIDATION_URL=$PAM_VIDEO_VALIDATION_URL" \
+    -e "PAM_WAM_VALIDATION_URL=$PAM_WAM_VALIDATION_URL" \
     -e "SYNTHETIC_ARTICLE_UUID=$SYNTHETIC_ARTICLE_UUID" \
     -e "SYNTHETIC_ARTICLE_PAYLOAD=$SYNTHETIC_ARTICLE_PAYLOAD" \
     -e "SYNTHETIC_LIST_UUID=$SYNTHETIC_LIST_UUID" \
@@ -73,8 +85,6 @@ docker run \
     -e "ROLES_BERTHA_URL=$ROLES_BERTHA_URL" \
     -e "BRANDS_BERTHA_URL=$BRANDS_BERTHA_URL" \
     -e "MAPPINGS_BERTHA_URL=$MAPPINGS_BERTHA_URL" \
-    -e "CONCEPTS_RW_S3_BUCKET=$CONCEPTS_RW_S3_BUCKET" \
-    -e "CONCEPTS_RW_S3_BUCKET_REGION=$CONCEPTS_RW_S3_BUCKET_REGION" \
      coco/upp-pub-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'

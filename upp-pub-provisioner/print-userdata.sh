@@ -18,8 +18,6 @@ CLUSTERID=`echo $TOKEN_URL | sed "s/http.*\///g" | cut -c1-8`
   binary_writer_bucket=$BINARY_WRITER_BUCKET \
   aws_image_monitor_test_uuid=$AWS_MONITOR_TEST_UUID \
   coco_image_monitor_test_uuid=$COCO_MONITOR_TEST_UUID \
-  concepts_rw_s3_bucket=${CONCEPTS_RW_S3_BUCKET:=com.ft.upp.normalised-source-concepts.pub-prod-uk} \
-  concepts_rw_s3_bucket_region=${CONCEPTS_RW_S3_BUCKET_REGION:=eu-west-1} \
   bridging_message_queue_proxy=${BRIDGING_MESSAGE_QUEUE_PROXY:=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com} \
   brightcove_account_id=${BRIGHTCOVE_ACCOUNT_ID} \
   brightcove_auth='${BRIGHTCOVE_AUTH}' \
