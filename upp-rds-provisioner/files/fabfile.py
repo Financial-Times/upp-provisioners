@@ -25,7 +25,7 @@ def kick_ingestion(pghost,
     	"-e 'AWS_ACCESS_KEY_ID=%s' " \
     	"-e 'AWS_SECRET_ACCESS_KEY=%s' " \
     	"-e 'AWS_DEFAULT_REGION=%s' " \
-    	"coco/up-rds-loader:%s" %
+    	"coco/upp-rds-loader:%s" %
     	   (pghost, pguser, pgpassword, dbname,
     	   	aws_access_key, aws_secret_key, aws_region,
     	   	loader_version))

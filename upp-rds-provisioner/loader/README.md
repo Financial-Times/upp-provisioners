@@ -10,13 +10,13 @@ How To build it
 To build the tool as Docker image run  -
 
 ```
-$ docker build -t coco/up-rds-loader .
+$ docker build -t coco/upp-rds-loader .
 ```
 
 or you can pull the image by running
 
 ```
-$ docker pull coco/up-rds-loader
+$ docker pull coco/upp-rds-loader
 ```
 
 The image needs the following environment variables passed to it -
@@ -42,7 +42,7 @@ $ docker run --rm --name rds-loader \
 -e "AWS_ACCESS_KEY_ID=AKIAI44QH8DHBEXAMPLE"
 -e "AWS_SECRET_ACCESS_KEY=je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY"
 -e "AWS_DEFAULT_REGION=eu-west-1"
-coco/rds-loader
+coco/upp-rds-loader
 ```
 
 How To run the database locally
