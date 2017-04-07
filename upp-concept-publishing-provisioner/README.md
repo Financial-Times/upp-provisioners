@@ -1,4 +1,4 @@
-# up-concept-publishing-provisioner
+# upp-concept-publishing-provisioner
 
 Cloudoformation to spin up an S3 bucket, SNS Topic and 1/2 SQS Queues to be used as part of the event-driven concept publishing pipeline.  
 
