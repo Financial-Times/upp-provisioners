@@ -39,7 +39,7 @@ You can provision `t` or `p` clusters in `eu-west-1` and `us-east-1`.
 ## LastPass: TEST Delivery cluster provisioning setup
 
 ## Pull latest stable image and run docker command
-docker pull coco/coco-provisioner:latest
+docker pull coco/upp-delivery-provisioner:latest
 docker run \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "TOKEN_URL=$TOKEN_URL" \
@@ -62,20 +62,20 @@ docker run \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
     -e "METHODE_API=$METHODE_API" \
-    coco/coco-provisioner:latest
+    coco/upp-delivery-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'
 
 ```
 
-If you need a Docker runtime environment to provision a cluster you can set up [Coco Management Server](https://github.com/Financial-Times/coco-provisioner/blob/master/cloudformation/README.md) in AWS.
+If you need a Docker runtime environment to provision a cluster you can set up [Coco Management Server](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/cloudformation/README.md) in AWS.
 
 Decommission an environment
 ---------------------------
 Note: make sure to disable termination protection for each machine before, otherwise the decom will not work: find your instances in AWS console, and for each of them right click -> Instance Settings -> Change Termination Protection -> Yes, Disable.
 ```
 ## Secret used during decommissioning to decrypt keys - stored in LastPass.
-## Lastpass: coco-provisioner-ansible-vault-pass
+## Lastpass: upp-delivery-provisioner-ansible-vault-pass
 export VAULT_PASS=
 
 ## AWS API keys for decommissioning - stored in LastPass.
@@ -93,14 +93,14 @@ export ENVIRONMENT_TAG=
 
 
 ```sh
-docker pull coco/coco-provisioner:latest
+docker pull coco/upp-delivery-provisioner:latest
 docker run \
   -e "VAULT_PASS=$VAULT_PASS" \
   -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
   -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
   -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
   -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-  coco/coco-provisioner:latest /bin/bash /decom.sh
+  coco/upp-delivery-provisioner:latest /bin/bash /decom.sh
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'
 ```
@@ -108,4 +108,4 @@ docker run \
 Coco Management Server
 ---------------------------
 
-See details in [cloudformation/README.md](https://github.com/Financial-Times/coco-provisioner/blob/master/cloudformation/README.md)
+See details in [cloudformation/README.md](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/cloudformation/README.md)

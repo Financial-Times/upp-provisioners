@@ -138,7 +138,7 @@ The CoCo Provisioner is a docker image, so ensure you have docker installed and 
   | `ENVIRONMENT_TAG`              | An identifier for YOUR cluster            | [your-github-username]-coco-cluster                   |
   | `SERVICES_DEFINITION_ROOT_URI` | Service definitions                       | See below.                                            |
   | `TOKEN_URL`                    | The etcd token identifying this cluster   | `curl -s https://discovery.etcd.io/new?size=5`        |
-  | `VAULT_PASS`                   | The password to unlock the ansible vault  | In LastPass: coco-provisioner-ansible-vault-pass      |
+  | `VAULT_PASS`                   | The password to unlock the ansible vault  | In LastPass: upp-delivery-provisioner-ansible-vault-pass |
   | `AWS_SECRET_ACCESS_KEY`        | As its name implies                       | In LastPass: infraprod-coco-aws-provisioning-keys     |
   | `AWS_ACCESS_KEY_ID`            | As its name implies                       | In LastPass: infraprod-coco-aws-provisioning-keys     |
   | `AWS_DEFAULT_REGION`           | As its name implies                       | `eu-west-1`                                           |
@@ -146,7 +146,7 @@ The CoCo Provisioner is a docker image, so ensure you have docker installed and 
    The value for `SERVICES_DEFINITION_ROOT_URI` should point at the repository [created earlier](#Create-a-service-repository).
    It takes the form of `https://raw.githubusercontent.com/Owner/Repo/branch/`, for example the UPP stack is located at
    https://raw.githubusercontent.com/Financial-Times/up-service-files/master/. To construct this URL:
-   
+
    1. Browse to the root of your `coco-cluster` repository in the GitHub web UI
    1. Click on the `services.yaml` file.
    1. Copy the *Raw* URL and delete `services.yaml` from the end.
@@ -163,13 +163,13 @@ The CoCo Provisioner is a docker image, so ensure you have docker installed and 
             --env "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
             --env "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
             --env "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-            --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" coco/coco-provisioner:v1.0.0
+            --env "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" coco/upp-delivery-provisioner:v1.0.0
 
     *NB. There are some additional parameters which can be passed, however we won't need them for the moment since they configure CoCo's
     settings so it can access Kafka etc.*
-    
+
     *NB. You can dump the above command into an executable file called `provision.bash` if you like.*
-    
+
     *NB. If you get a message saying something like "docker: Cannot connect to the Docker daemon", you will need to run
     the Docker Quickstart Terminal then try again.*
 
@@ -265,7 +265,7 @@ Note: make sure to disable termination protection for each machine before, other
           -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
           -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
           -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-          coco/coco-provisioner:v1.0.0 /bin/bash /decom.sh
+          coco/upp-delivery-provisioner:v1.0.0 /bin/bash /decom.sh
 
 
 Summary
