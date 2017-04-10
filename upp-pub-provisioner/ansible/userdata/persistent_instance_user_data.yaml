@@ -4,7 +4,7 @@ coreos:
   update:
     reboot-strategy: off
   etcd2:
-    discovery: $token
+    discovery: ${token}
     heartbeat-interval: 300
     election-timeout: 3000
     advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
