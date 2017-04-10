@@ -1,6 +1,49 @@
 #cloud-config
 
 coreos:
+  write_files:
+    - path: /etc/ft-env-variables
+      permissions: "0755"
+      owner: "root"
+      content: |
+        apps_aws_access_key={{apps_aws_access_key}}
+        apps_aws_secret_access_key={{apps_aws_secret_access_key}}
+        authors_bertha_url={{authors_bertha_url}}
+        binary_s3_bucket={{binary_s3_bucket}}
+        brands_bertha_url={{brands_bertha_url}}
+        brightcove_account_id={{brightcove_account_id}}
+        brightcove_auth={{brightcove_auth}}
+        clusterid={{clusterid}}
+        concepts_rw_s3_bucket={{concepts_rw_s3_bucket}}
+        concepts_rw_s3_bucket_region={{concepts_rw_s3_bucket_region}}
+        delivery_clusters_http_credentials={{delivery_clusters_http_credentials}}
+        delivery_clusters_urls={{delivery_clusters_urls}}
+        environment_tag={{environment_tag}}
+        factset_key_first_part={{factset_key_first_part}}
+        factset_key_second_part={{factset_key_second_part}}
+        factset_username={{factset_username}}
+        konstructor_api_key={{konstructor_api_key}}
+        mappings_bertha_url={{mappings_bertha_url}}
+        pam_credential_validation_uuid={{pam_credential_validation_uuid}}
+        pam_mat_validation_credentials={{pam_mat_validation_credentials}}
+        pam_mat_validation_url={{pam_mat_validation_url}}
+        pam_mcpm_validation_url={{pam_mcpm_validation_url}}
+        persistent_tag={{persistent_tag}}
+        region={{region}}
+        roles_bertha_url={{roles_bertha_url}}
+        s3_image_bucket_urls={{s3_image_bucket_urls}}
+        services_definition_root_uri={{services_definition_root_uri}}
+        synthetic_article_payload={{synthetic_article_payload}}
+        synthetic_article_uuid={{synthetic_article_uuid}}
+        synthetic_list_uuid={{synthetic_list_uuid}}
+        tme_host={{tme_host}}
+        tme_password={{tme_password}}
+        tme_token={{tme_token}}
+        tme_username={{tme_username}}
+        token={{token}}
+        varnish_access_credentials={{varnish_access_credentials}}
+        wordpress_api_key={{wordpress_api_key}}
+        wp_contentApi_key={{wp_contentApi_key}}
   units:
     - name: bypass-user-data-limit.service
       command: start
@@ -10,6 +53,7 @@ coreos:
 
         [Service]
         EnvironmentFile=/etc/environment
-        ExecStart=/usr/bin/coreos-cloudinit --from-url https://raw.githubusercontent.com/Financial-Times/upp-provisioners/master/upp-pub-provisioner/ansible/userdata/persistent_instance_user_data.yaml
+        EnvironmentFile=/etc/ft-env-variables
+        ExecStart=/usr/bin/coreos-cloudinit --from-url https://raw.githubusercontent.com/Financial-Times/upp-provisioners/upp-pub-provisioner/userdata-size-reduction/upp-pub-provisioner/ansible/userdata/persistent_instance_user_data.yaml
         RemainAfterExit=yes
         Type=oneshot

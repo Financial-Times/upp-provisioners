@@ -4,7 +4,7 @@ coreos:
   update:
     reboot-strategy: off
   etcd2:
-    discovery: {{token}}
+    discovery: $token
     heartbeat-interval: 300
     election-timeout: 3000
     advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
@@ -13,7 +13,7 @@ coreos:
     listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
   fleet:
     etcd_request_timeout: 3.0
-    metadata: host_type=persistent,persistent_tag={{persistent_tag}}
+    metadata: host_type=persistent,persistent_tag=$persistent_tag
   units:
     - name: update-engine.service
       command: stop
@@ -65,44 +65,44 @@ coreos:
           [Service]
           Type=oneshot
           ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && break || sleep 2; done"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_access_key_id '{{ apps_aws_access_key }}'                                   >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_secret_access_key '{{ apps_aws_secret_access_key }}'                        >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/brightcove_auth '{{brightcove_auth}}'                                               >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/cms-notifier/post-credentials '{{ cms_notifier_credentials }}'                      >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/elb_name 'coreos-up-{{clusterid}}'                                                  >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/varnish/htpasswd '{{ varnish_access_credentials }}'                                 >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/konstructor/api-key '{{ konstructor_api_key }}'                                     >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '{{ wordpress_api_key }}'                                 >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wp '{{ wp_contentApi_key }}'                                                        >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/username '{{ tme_username }}'                                                   >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/password '{{ tme_password }}'                                                   >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/token '{{ tme_token }}'                                                         >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag '{{environment_tag}}'                                                     >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/aws_region '{{region}}'                                                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_access_key_id '$apps_aws_access_key'                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_secret_access_key '$apps_aws_secret_access_key'                        >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/brightcove_auth '$brightcove_auth'                                               >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/cms-notifier/post-credentials '$cms_notifier_credentials'                      >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/elb_name 'coreos-up-$clusterid'                                                  >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/varnish/htpasswd '$varnish_access_credentials'                                 >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/konstructor/api-key '$konstructor_api_key'                                     >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wordpress/content_api_key '$wordpress_api_key'                                 >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/wp '$wp_contentApi_key'                                                        >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/username '$tme_username'                                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/password '$tme_password'                                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/token '$tme_token'                                                         >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag '$environment_tag'                                                     >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/aws_region '$region'                                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_url 'https://ingest.splunk.glb.ft.com/coco-up/fleet'              >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/concepts-rw-s3/bucket '{{concepts_rw_s3_bucket}}'                                         >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/concepts-rw-s3/bucket_region '{{concepts_rw_s3_bucket_region}}'                           >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '{{services_definition_root_uri}}'                           >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/authors '{{authors_bertha_url}}'                                              >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/roles '{{roles_bertha_url}}'                                                  >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/brands '{{brands_bertha_url}}'                                                >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/video-metadata-mappings '{{mappings_bertha_url}}'                             >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/tme_host '{{tme_host}}'                                                                   >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/brightcove/account-id '{{brightcove_account_id}}'                                         >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/read-urls '{{delivery_clusters_urls}}'                                         >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/s3-image-bucket-urls '{{s3_image_bucket_urls}}'                                >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/binary-s3-bucket '{{binary_s3_bucket}}'                                        >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-mat-validation-url '{{pam_mat_validation_url}}'                            >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-mcpm-validation-url '{{pam_mcpm_validation_url}}'                          >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-credential-validation-uuid '{{pam_credential_validation_uuid}}'            >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/synthetic-article-uuid '{{synthetic_article_uuid}}'                            >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/synthetic-article-payload '{{synthetic_article_payload}}'                      >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/synthetic-list-uuid '{{synthetic_list_uuid}}'                                  >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/publish-read/read-credentials '{{delivery_clusters_http_credentials}}'              >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/publish-read/validator-credentials '{{pam_mat_validation_credentials}}'             >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/username '{{ factset_username }}'                                           >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/key/first_part '{{ factset_key_first_part }}'                               >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/key/second_part '{{ factset_key_second_part }}'                             >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/concepts-rw-s3/bucket '$concepts_rw_s3_bucket'                                         >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/concepts-rw-s3/bucket_region '$concepts_rw_s3_bucket_region'                           >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '$services_definition_root_uri'                           >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/authors '$authors_bertha_url'                                              >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/roles '$roles_bertha_url'                                                  >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/brands '$brands_bertha_url'                                                >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/video-metadata-mappings '$mappings_bertha_url'                             >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/tme_host '$tme_host'                                                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/brightcove/account-id '$brightcove_account_id'                                         >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/read-urls '$delivery_clusters_urls'                                         >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/s3-image-bucket-urls '$s3_image_bucket_urls'                                >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/binary-s3-bucket '$binary_s3_bucket'                                        >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-mat-validation-url '$pam_mat_validation_url'                            >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-mcpm-validation-url '$pam_mcpm_validation_url'                          >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-credential-validation-uuid '$pam_credential_validation_uuid'            >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/synthetic-article-uuid '$synthetic_article_uuid'                            >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/synthetic-article-payload '$synthetic_article_payload'                      >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/synthetic-list-uuid '$synthetic_list_uuid'                                  >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/publish-read/read-credentials '$delivery_clusters_http_credentials'              >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/publish-read/validator-credentials '$pam_mat_validation_credentials'             >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/username '$factset_username'                                           >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/key/first_part '$factset_key_first_part'                               >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/key/second_part '$factset_key_second_part'                             >/dev/null 2>&1 || true;"
 
     - name: bootstrap.service
       command: start
@@ -141,7 +141,7 @@ write_files:
       ListenStream=0.0.0.0:49153
   - path: /etc/motd.d/env.conf
     content: |
-            This enviroment is tagged as {{environment_tag}} and is cluster {{token}}
+            This enviroment is tagged as $environment_tag and is cluster $token
   - path: /home/core/.toolboxrc
     owner: core
     content: |
@@ -205,3 +205,9 @@ write_files:
         ForwardAgent yes
         StrictHostKeyChecking no
         UserKnownHostsFile /dev/null
+  # empty the ft-env-variables file once we're done with our cloud-config run
+  - path: "/etc/ft-env-variables"
+    - path: /etc/ft-env-variables
+      permissions: "0755"
+      owner: "root"
+      content: |
