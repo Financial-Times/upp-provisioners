@@ -207,7 +207,6 @@ write_files:
         UserKnownHostsFile /dev/null
   # empty the ft-env-variables file once we're done with our cloud-config run
   - path: "/etc/ft-env-variables"
-    - path: /etc/ft-env-variables
-      permissions: "0755"
-      owner: "root"
-      content: |
+    permissions: "0755"
+    owner: "root"
+    content: |
