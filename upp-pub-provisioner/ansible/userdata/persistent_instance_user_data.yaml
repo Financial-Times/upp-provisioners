@@ -205,8 +205,8 @@ write_files:
         ForwardAgent yes
         StrictHostKeyChecking no
         UserKnownHostsFile /dev/null
-  # empty the ft-env-variables file once we're done with our cloud-config run
-  - path: "/etc/ft-env-variables"
-    permissions: "0755"
-    owner: "root"
-    content: |
+  # # empty the ft-env-variables file once we're done with our cloud-config run
+  # - path: "/etc/ft-env-variables"
+  #   permissions: "0755"
+  #   owner: "root"
+  #   content: |
