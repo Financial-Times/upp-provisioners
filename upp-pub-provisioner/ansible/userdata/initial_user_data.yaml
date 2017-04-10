@@ -1,0 +1,15 @@
+#cloud-config
+
+coreos:
+  units:
+    - name: bypass-user-data-limit.service
+      command: start
+      content: |
+        [Unit]
+        Description=Update the machine using our own cloud config, due to 16kb size limit on AWS user data
+
+        [Service]
+        EnvironmentFile=/etc/environment
+        ExecStart=/usr/bin/coreos-cloudinit --from-url https://raw.githubusercontent.com/Financial-Times/upp-provisioners/master/upp-pub-provisioner/ansible/userdata/persistent_instance_user_data.yaml
+        RemainAfterExit=yes
+        Type=oneshot
