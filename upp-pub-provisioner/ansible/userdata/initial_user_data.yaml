@@ -53,7 +53,7 @@ coreos:
 
         [Service]
         EnvironmentFile=/etc/environment
-        ExecStartPre=/usr/bin/wget -qO /tmp/substitute-ft-env-variables.sh https://https://raw.githubusercontent.com/Financial-Times/upp-provisioners/upp-pub-provisioner/userdata-size-reduction/upp-pub-provisioner/sh/substitute-ft-env-variables.sh
+        ExecStartPre=/usr/bin/wget -qO /tmp/substitute-ft-env-variables.sh https://raw.githubusercontent.com/Financial-Times/upp-provisioners/upp-pub-provisioner/userdata-size-reduction/upp-pub-provisioner/sh/substitute-ft-env-variables.sh
         ExecStartPre=/usr/bin/wget -qO /tmp/persistent_instance_user_data.yaml https://raw.githubusercontent.com/Financial-Times/upp-provisioners/upp-pub-provisioner/userdata-size-reduction/upp-pub-provisioner/ansible/userdata/persistent_instance_user_data.yaml
         ExecStartPre=/usr/bin/chmod +x /tmp/substitute-ft-env-variables.sh
         ExecStartPre=/tmp/substitute-ft-env-variables.sh
