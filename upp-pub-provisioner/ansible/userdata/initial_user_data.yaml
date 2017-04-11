@@ -2,7 +2,7 @@
 write_files:
   - path: /tmp/ft-env-variables
     permissions: "0644"
-    owner: "core"
+    owner: "root"
     content: |
       apps_aws_access_key={{apps_aws_access_key}}
       apps_aws_secret_access_key={{apps_aws_secret_access_key}}
