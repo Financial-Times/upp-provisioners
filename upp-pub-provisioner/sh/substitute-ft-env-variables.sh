@@ -7,5 +7,5 @@ for variable in `cat /tmp/ft-env-variables` ; do
     key=${variable%=*}
     value=${variable##*=}
 
-    sed -i "s/\$${key}/${value}/g" /tmp/ft-env-variables
+    sed -i "s|\$${key}|${value}|g" /tmp/ft-env-variables
 done
