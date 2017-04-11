@@ -128,5 +128,4 @@ read -r -d '' CF_PARAMS <<EOM
 EOM
 
 # Update the cloudformation stack
-# Creates a new launch config with the new ami, deletes the old launch config, attaches the new config with the auto scaling group
 aws cloudformation update-stack --stack-name=upp-${ENVIRONMENT_TAG} --use-previous-template --parameters="${CF_PARAMS}"
