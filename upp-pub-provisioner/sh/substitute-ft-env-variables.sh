@@ -1,4 +1,4 @@
-#/!bin/bash
+#!/bin/bash
 
 for variable in `cat /tmp/ft-env-variables` ; do
     # this splits the key value pairs into two separate variables
