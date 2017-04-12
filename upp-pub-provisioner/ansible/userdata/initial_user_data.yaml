@@ -70,6 +70,6 @@ coreos:
         ExecStartPre=/usr/bin/chmod +x /tmp/substitute-ft-env-variables.sh
         ExecStartPre=/tmp/substitute-ft-env-variables.sh
         ExecStart=/usr/bin/coreos-cloudinit --from-file /tmp/persistent_instance_user_data.yaml
-        #ExecStartPost=/usr/bin/rm /tmp/ft-env-variables /tmp/substitute-ft-env-variables.sh /tmp/persistent_instance_user_data.yaml
+        ExecStartPost=/usr/bin/rm /tmp/ft-env-variables /tmp/substitute-ft-env-variables.sh /tmp/persistent_instance_user_data.yaml
         RemainAfterExit=yes
         Type=oneshot
