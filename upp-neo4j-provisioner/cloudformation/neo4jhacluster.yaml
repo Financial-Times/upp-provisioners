@@ -90,7 +90,7 @@ Parameters:
   EbsSnapshot:
     Description: SnapshotId of the EBS Snapshot used to provision the disks.
     Type: String
-    Default: snap-08ce671d2f33e9e5d
+    Default: snap-0bb87da873a5238f3
 
   # Parameters than are used in the user data.
   EtcdToken:
