@@ -11,6 +11,7 @@ RUN echo "[localhost]" > ~/.ansible_hosts \
 ADD *.sh /
 ADD cluster-id-extractor /
 ADD ansible/ /ansible
+ADD ../.git/HEAD /git_branch
 
 RUN ln -s /cluster-id-extractor /usr/local/bin/cluster-id-extractor
 
