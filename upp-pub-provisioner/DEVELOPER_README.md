@@ -20,6 +20,9 @@ If you need to add or update etcd keys (or any other environment variables used 
 * [initial_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-pub-provisioner/ansible/userdata/initial_user_data.yaml)
 * [persistent_instance_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-pub-provisioner/ansible/userdata/persistent_instance_user_data.yaml)
 
+Note that because the provisioned instances download `persistent_instance_user_data.yaml` from GitHub, any local or unpushed changes will NOT be picked up when provisioning.  
+Any changes that you want to test **must** be pushed to a branch before provisioning.
+
 Building
 --------
 
