@@ -12,7 +12,6 @@ if [ -z "$COCO_MONITOR_TEST_UUID" ]; then COCO_MONITOR_TEST_UUID=$(uuidgen); fi
 CLUSTERID=`echo $TOKEN_URL | sed "s/http.*\///g" | cut -c1-8`
 AMI=`curl -s https://coreos.com/dist/aws/aws-stable.json | jq --arg region $AWS_DEFAULT_REGION -r '.[$region].hvm'`
 ZONES=(`aws ec2 describe-availability-zones --region $AWS_DEFAULT_REGION | jq -r '.AvailabilityZones[].ZoneName'`)
-GIT_BRANCH=`sed 's|ref: refs/heads/||' /git_branch`
 
 echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/aws_coreos_site.yml --extra-vars " \
   clusterid=$CLUSTERID \
@@ -21,7 +20,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   region=$AWS_DEFAULT_REGION \
   token=$TOKEN_URL \
   services_definition_root_uri=${SERVICES_DEFINITION_ROOT_URI:=https://raw.githubusercontent.com/Financial-Times/pub-service-files/master/} \
-  aws_access_key_id=$AWS_ACCESS_KEY_ID \
+  aws_access_key_id=$AWS_ACCESS_KEY_ID \ 
   aws_secret_access_key=$AWS_SECRET_ACCESS_KEY \
   binary_writer_bucket=$BINARY_WRITER_BUCKET \
   concepts_rw_s3_bucket=$CONCEPTS_RW_S3_BUCKET \
@@ -31,8 +30,8 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   bridging_message_queue_proxy=${BRIDGING_MESSAGE_QUEUE_PROXY:=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com} \
   varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \
   authors_bertha_url=${AUTHORS_BERTHA_URL} \
-  roles_bertha_url=${ROLES_BERTHA_URL} \
-  brands_bertha_url=${BRANDS_BERTHA_URL} \
+  roles_bertha_url=${ROLES_BERTHA_URL} \	  	  
+  brands_bertha_url=${BRANDS_BERTHA_URL} \	  	  
   mappings_bertha_url=${MAPPINGS_BERTHA_URL} \
   environment_tag=${ENVIRONMENT_TAG:=default} \
   environment_type=${ENVIRONMENT_TYPE:=p} \
@@ -49,6 +48,5 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   pam_credential_validation_uuid=${PAM_CREDENTIAL_VALIDATION_UUID} \
   synthetic_article_uuid=${SYNTHETIC_ARTICLE_UUID} \
   synthetic_article_payload=${SYNTHETIC_ARTICLE_PAYLOAD:=/com/ft/syntheticpublicationmonitor/templates/article-payload.json} \
-  synthetic_list_uuid=${SYNTHETIC_LIST_UUID} \
-  git_branch=${GIT_BRANCH}" \
+  synthetic_list_uuid=${SYNTHETIC_LIST_UUID}" \
   --vault-password-file=/vault.pass
