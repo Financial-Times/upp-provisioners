@@ -1,40 +1,44 @@
-UPP RDS resource
-===
+# UPP RDS
 
-RDS provisioning scripts
+The RDS provisioner will:
+
+* Create a RDS instance using the specified Cloudformation template
+* Create or update an appropriate CNAME record for the instance
+* Load the database with factset data using [upp-rds-loader](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-rds-provisioner/loader) tool
+
+The decommissioning process will:
+
+* Delete the cloudformation stack based on the CLUSTER tag; which deletes the resources created by the stack
+* Delete the instance CNAME record
 
 
-How To run it
-------
+## Building the Docker image
+The RDS provisioner can be built locally as a Docker image:
 
-Setting up your environment is done by:
-* Make sure you have Python and [Virtualenv](https://virtualenv.pypa.io/en/stable/) installed
-* check out project
-* run
+`docker build -t coco/upp-rds-provisioner:latest .`
+
+Automated DockerHub builds are also triggered on new releases, located [here](https://hub.docker.com/r/coco/upp-rds-provisioner/).
+
+
+## Provisioning a cluster
+- Grab, customise and run the environment variables from the *AWS RDS Factset - Provisioning Setup* LastPass note.
+- Run the following Docker commands:
 ```
-$ virtualenv  --no-site-packages -p python2 venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
-$ deactivate
-```
-Your environment is now setup to run Ansible using Virtualenv. For more details see http://docs.python-guide.org/en/latest/dev/virtualenvs/.
-
-The variables it takes are:
-* cluster - e.g. `pub-semantic`
-* environment_type - e.g `t` or `p`
-* cluster_sg - The security group the machines that will connect to the RDS instance are in
-
-To run the Ansible script you need to do the following:
-* Run `source venv/bin/activate` to activate the Ansible environment
-* Run `AWS_SECRET_ACCESS_KEY=je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY AWS_ACCESS_KEY_ID=AKIAI44QH8DHBEXAMPLE  ansible-playbook -vvv rdsserver.yml --extra-vars "cluster=pub-semantic environment_type=t cluster_sg=sg-10101"`
-
-The other option is to run the Docker container:
-```
-$ docker run --rm -e "CLUSTER=<cluster>" -e "ENVIRONMENT_TYPE=<t or p>" -e "CLUSTER_SG=<the security group for the EC2 instances>" -e "VAULT_PASS=<password to unlock the vault>" coco/upp-rds-provisioner:latest
+docker pull coco/upp-rds-provisioner:latest
+docker run \
+    -e "CLUSTER=$CLUSTER" \
+    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "CLUSTER_SG=$CLUSTER_SG" \
+    -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
+    coco/upp-rds-provisioner:latest
 ```
 
-Connecting to the RDS instance
-------
+
+## Connecting to the RDS instance
 
 If you need to connect up the RDS instance, you need to create an `ssh` tunnel forwarding your connection. So you need to run:
 
@@ -51,19 +55,27 @@ psql -h localhost -p 5432 -U <DB_USERNAME> Factset
 An alternative to using `psql` is to use [pgAdmin](https://www.pgadmin.org/).
 
 
-How To decomm the stack
-------
-To run the Ansible script for decommissioning
-* Run `AWS_SECRET_ACCESS_KEY=je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY AWS_ACCESS_KEY_ID=AKIAI44QH8DHBEXAMPLE  ansible-playbook -vvv decom.yml --extra-vars "cluster=pub-semantic environment_type=t cluster_sg=sg-10101"` 
-
-The other option is to run the Docker container:
+## Decommisioning a cluster
+- Export the required environment variables.
+- Run the following Docker command:
 ```
-$ docker run --rm -e "CLUSTER=<cluster>" -e "ENVIRONMENT_TYPE=<t or p>" -e "CLUSTER_SG=<the security group for the EC2 instances>" -e "VAULT_PASS=<password to unlock the vault>" coco/upp-rds-provisioner:latest decom.sh
+docker pull coco/upp-rds-provisioner:latest
+docker run \
+    -e "CLUSTER=$CLUSTER" \
+    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
+    coco/upp-rds-provisioner:latest decom.sh
 ```
+- `Delete RDS cluster` step may take up to 5 minutes, as CloudFormation waits until the RDS instance is fully decommissioned before returning a success code.
+- You can monitor the provisioning by going to the Cloudformation section in the AWS console and looking for the stack `upp-<CLUSTER>-factset-rds`.
+- If you've got the permissions, you can also delete the cloudformation stack directly from the AWS console. 
 
 
-Todo
-------
-1. Move this into repo for all our infrastructure
-2. Add cloudwatch alarms
-3. Implement lower environment teardown over weekends and recreate on mondays
+## Todo
+* Move this into repo for all our infrastructure
+* Add cloudwatch alarms
+* Implement lower environment teardown over weekends and recreate on mondays
