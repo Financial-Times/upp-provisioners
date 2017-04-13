@@ -15,7 +15,7 @@ The decommissioning process will:
 ## Building the Docker image
 The RDS provisioner can be built locally as a Docker image:
 
-`docker build -t coco/upp-rds-provisioner:latest .`
+`docker build -t coco/upp-rds-provisioner:local .`
 
 Automated DockerHub builds are also triggered on new releases, located [here](https://hub.docker.com/r/coco/upp-rds-provisioner/).
 
@@ -72,7 +72,6 @@ docker run \
 ```
 - `Delete RDS cluster` step may take up to 5 minutes, as CloudFormation waits until the RDS instance is fully decommissioned before returning a success code.
 - You can monitor the provisioning by going to the Cloudformation section in the AWS console and looking for the stack `upp-<CLUSTER>-factset-rds`.
-- If you've got the permissions, you can also delete the cloudformation stack directly from the AWS console. 
 
 
 ## Todo
