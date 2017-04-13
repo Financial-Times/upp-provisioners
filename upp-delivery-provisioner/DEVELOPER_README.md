@@ -6,7 +6,7 @@ Building locally the image
 
 ```bash
 # Build the image
-docker build -t coco/upp-delivery-provisioner .
+docker build -t coco/upp-delivery-provisioner:local .
 ```
 
 
@@ -119,5 +119,5 @@ docker run \
     -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "METHODE_API=$METHODE_API" \
-    coco/upp-delivery-provisioner
+    coco/upp-delivery-provisioner:local
 ```
