@@ -50,6 +50,18 @@ psql -h localhost -p 5432 -U <DB_USERNAME> Factset
 
 An alternative to using `psql` is to use [pgAdmin](https://www.pgadmin.org/).
 
+
+How To decomm the stack
+------
+To run the Ansible script for decommissioning
+* Run `AWS_SECRET_ACCESS_KEY=je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY AWS_ACCESS_KEY_ID=AKIAI44QH8DHBEXAMPLE  ansible-playbook -vvv decom.yml --extra-vars "cluster=pub-semantic environment_type=t cluster_sg=sg-10101"` 
+
+The other option is to run the Docker container:
+```
+$ docker run --rm -e "CLUSTER=<cluster>" -e "ENVIRONMENT_TYPE=<t or p>" -e "CLUSTER_SG=<the security group for the EC2 instances>" -e "VAULT_PASS=<password to unlock the vault>" coco/upp-rds-provisioner:latest decom.sh
+```
+
+
 Todo
 ------
 1. Move this into repo for all our infrastructure
