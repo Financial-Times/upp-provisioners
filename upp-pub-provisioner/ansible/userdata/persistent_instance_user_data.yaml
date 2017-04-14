@@ -83,7 +83,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-mam-validation-url '$pam_mam_validation_url'                            >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-mcpm-validation-url '$pam_mcpm_validation_url'                          >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-mimm-validation-url '$pam_mimm_validation_url'                          >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-ml-validation-url 'pam_mlm_validation_url'                               >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-ml-validation-url '$pam_mlm_validation_url'                               >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-maicm-validation-url '$pam_maicm_validation_url'                          >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-video-validation-url '$pam_video_validation_url'                          >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-wam-validation-url '$pam_wam_validation_url'                          >/dev/null 2>&1 || true;"
