@@ -44,11 +44,11 @@ Everything else works fine - `t` or `p` clusters in `eu-west-1`, and `p` cluster
 ## SET PAM_MAM_VALIDATION_URL  to be a request to correspoding delivery cluster methode-article-mapper (MAM) /map endpoint
 ## SET PAM_MCPM_VALIDATION_URL  to be a request to correspoding delivery cluster methode-content-placeholder-mapper (MCPM) /map endpoint
 ## SET PAM_MIMM_VALIDATION_URL  to be a request to correspoding delivery cluster methode-image-model-mapper (MIMM) /map endpoint
-## SET PAM_ML_VALIDATION_URL  to be a request to correspoding delivery cluster methode-list-mapper (MLM) /map endpoint
+## SET PAM_MLM_VALIDATION_URL  to be a request to correspoding delivery cluster methode-list-mapper (MLM) /map endpoint
 ## SET PAM_MAICM_VALIDATION_URL  to be a request to correspoding delivery cluster methode-article-internal-components-mapper (MAICM) /map endpoint
 ## SET PAM_VIDEO_VALIDATION_URL  to be a request to correspoding delivery cluster video mapper /map endpoint
 ## SET PAM_WAM_VALIDATION_URL  to be a request to correspoding delivery cluster wordpress-article-mapper (WAM) /map endpoint
-## PAM_MAT_VALIDATION_CREDENTIALS basic auth for the delivery cluster?
+## PAM_VALIDATOR_CREDENTIALS basic auth for the delivery cluster?
 
 ## Pull latest stable image and run docker command
 docker pull coco/upp-pub-provisioner:latest
@@ -68,11 +68,11 @@ docker run \
     -e "DELIVERY_CLUSTERS_HTTP_CREDENTIALS=$DELIVERY_CLUSTERS_HTTP_CREDENTIALS" \
     -e "BINARY_S3_BUCKET=$BINARY_S3_BUCKET" \
     -e "PAM_MAM_VALIDATION_URL=$PAM_MAM_VALIDATION_URL" \
-    -e "PAM_MAT_VALIDATION_CREDENTIALS=$PAM_MAT_VALIDATION_CREDENTIALS" \
+    -e "PAM_VALIDATOR_CREDENTIALS=$PAM_VALIDATOR_CREDENTIALS" \
     -e "PAM_CREDENTIAL_VALIDATION_UUID=$PAM_CREDENTIAL_VALIDATION_UUID" \
     -e "PAM_MCPM_VALIDATION_URL=$PAM_MCPM_VALIDATION_URL" \
     -e "PAM_MIMM_VALIDATION_URL=$PAM_MIMM_VALIDATION_URL" \
-    -e "PAM_ML_VALIDATION_URL=$PAM_ML_VALIDATION_URL" \
+    -e "PAM_MLM_VALIDATION_URL=$PAM_MLM_VALIDATION_URL" \
     -e "PAM_MAICM_VALIDATION_URL=$PAM_MAICM_VALIDATION_URL" \
     -e "PAM_VIDEO_VALIDATION_URL=$PAM_VIDEO_VALIDATION_URL" \
     -e "PAM_WAM_VALIDATION_URL=$PAM_WAM_VALIDATION_URL" \

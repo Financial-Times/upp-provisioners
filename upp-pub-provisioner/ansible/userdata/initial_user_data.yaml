@@ -23,9 +23,14 @@ write_files:
       konstructor_api_key={{konstructor_api_key}}
       mappings_bertha_url={{mappings_bertha_url}}
       pam_credential_validation_uuid={{pam_credential_validation_uuid}}
-      pam_mat_validation_credentials={{pam_mat_validation_credentials}}
-      pam_mat_validation_url={{pam_mat_validation_url}}
+      pam_validator_credentials={{pam_validator_credentials}}
+      pam_mam_validation_url={{pam_mam_validation_url}}
       pam_mcpm_validation_url={{pam_mcpm_validation_url}}
+      pam_mimm_validation_url={{pam_mimm_validation_url}}
+      pam_mlm_validation_url={{pam_mlm_validation_url}}
+      pam_maicm_validation_url={{pam_maicm_validation_url}}
+      pam_video_validation_url={{pam_video_validation_url}}
+      pam_wam_validation_url={{pam_wam_validation_url}}
       persistent_tag={{persistent_tag}}
       region={{region}}
       roles_bertha_url={{roles_bertha_url}}
