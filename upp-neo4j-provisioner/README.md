@@ -69,5 +69,27 @@ docker run \
 - If you've got the permissions, you can also delete the cloudformation stack directly from the AWS console.  Note, normal user permissions (ADFS-GeneralUserRole) is not enough - it can't delete the security groups.
 
 
+## Updating a cloudformation stack
+- Export the required environment variables.
+- Run the following Docker command:
+```
+docker pull coco/upp-neo4j-provisioner:latest
+docker run \
+    -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "SERVICES_DEFINITION_ROOT_URI=$SERVICES_DEFINITION_ROOT_URI" \
+    -e "SPLUNK_HEC_URL=$SPLUNK_HEC_URL" \
+    -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
+    -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
+    -e "NEO_EXTRA_CONF_URL=$NEO_EXTRA_CONF_URL" \
+    -e "TOKEN_URL=$TOKEN_URL" \
+    coco/upp-neo4j-provisioner:latest /bin/bash update.sh
+```
+- You can monitor the updation of the stack by going to the Cloudformation section in the AWS console and looking for the stack `up-neo4j-<ENVIRONMENT_TAG>`.
+- The updation of the stack gets the latest ami, creates a new launch config with the new ami, deletes the old launch config and attaches the new launch config to the autoscaling group for the stack `up-neo4j-<ENVIRONMENT_TAG>`.
+
 ## Deploying the private subnets
 Deploying the private subnets should only need to be done once for the EU and US respectively.  If it needs to be redone, you can run the up-neo4j-private-subnets.yaml Cloudformation script with appropriate parameters.  Speak to one of your friendly integration engineers about how to get the right parameters.
