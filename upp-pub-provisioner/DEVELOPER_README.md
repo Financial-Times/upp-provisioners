@@ -199,3 +199,16 @@ docker run \
     -e "BRANCH_NAME=$BRANCH_NAME" \
     coco/upp-pub-provisioner:local
 ```
+
+Decommissioning
+---------------
+
+```bash
+docker run \
+  -e "VAULT_PASS=$VAULT_PASS" \
+  -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+  -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+  -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+  -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+  coco/upp-pub-provisioner:local /bin/bash /decom.sh
+```
