@@ -7,5 +7,5 @@ for variable in `cat /tmp/ft-env-variables` ; do
     key=${variable%=*}
     value=${variable##*=}
 
-    sed -i "s|\$${key}|${value}|g" /tmp/persistent_instance_user_data.yaml
+    sed -i "s|\$${key}|${value}|g" /tmp/instance_user_data.yaml
 done
