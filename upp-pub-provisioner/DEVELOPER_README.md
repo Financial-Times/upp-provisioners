@@ -10,7 +10,7 @@ To work around this, we now have a smaller [initial_user_data.yaml](https://gith
 
 * Stores the provisioning secrets and environment variables on the instance
 * Downloads the [persistent_instance_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-pub-provisioner/ansible/userdata/persistent_instance_user_data.yaml) templates
-* Downloads and runs [substitute-ft-env-variables.sh](https://github.com/Financial-Times/upp-provisioners/blob/upp-pub-provisioner/userdata-size-reduction/upp-pub-provisioner/sh/substitute-ft-env-variables.sh) to substitute the secrets and environment variables into the template
+* Downloads and runs [substitute-ft-env-variables.sh](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-pub-provisioner/sh/substitute-ft-env-variables.sh) to substitute the secrets and environment variables into the template
 * Triggers a second cloud-config run to properly configure the cluster, using the fully expanded template
 
 If you need to add or update etcd keys (or any other environment variables used as part of cloud-config), you must add the variable in 4 locations:
