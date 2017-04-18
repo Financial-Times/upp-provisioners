@@ -101,22 +101,36 @@ export DELIVERY_CLUSTERS_HTTP_CREDENTIALS='prod-uk:user1:passwd1,prod-us:user2:p
 #the value for all non prod clusters is the pre-prod bucket
 export BINARY_S3_BUCKET=
 
-#to validate article are valid for publication
-#the corresponding delivery cluster mat url for a given publish cluster.
-export PAM_MAT_VALIDATION_URL=
+#to validate articles are valid for publication
+#the corresponding delivery cluster article mapper url for a given publish cluster.
+export PAM_MAM_VALIDATION_URL=
+
+#methode content-placeholders
+export PAM_MCPM_VALIDATION_URL=
+
+#methode images
+export PAM_MIMM_VALIDATION_URL=
+
+#methode list
+export PAM_MLM_VALIDATION_URL=
+
+#methode articles with internal components
+export PAM_MAICM_VALIDATION_URL=
+
+#video
+export PAM_VIDEO_VALIDATION_URL=
+
+#wordpress articles
+export PAM_WAM_VALIDATION_URL=
+
 
 #The HTTP credentials for calling the validation URL.
 #Format: <username>:<password>
-export PAM_MAT_VALIDATION_CREDENTIALS=
+export PAM_VALIDATOR_CREDENTIALS=
 
 #The UUID used by PAM to check the read environment credentials.
 #NOTE:currently this is the same uuid as used by the synthetic article monitor resource uuid and so guaranteed to exist.
 export PAM_CREDENTIAL_VALIDATION_UUID
-
-#to validate content placeholders (link-files) are valid for publication
-#the corresponding delivery cluster mcpm url for a given publish cluster.
-export PAM_MCPM_VALIDATION_URL=
-
 
 # For publishing videos, the brightcove-notifier and brightcove-metadata-preprocessor must connect to the Brightcove API with an id like this: 47628783001
 export BRIGHTCOVE_ACCOUNT_ID=
@@ -164,10 +178,15 @@ docker run \
     -e "S3_IMAGE_BUCKET_URLS=$S3_IMAGE_BUCKET_URLS" \
     -e "DELIVERY_CLUSTERS_HTTP_CREDENTIALS=$DELIVERY_CLUSTERS_HTTP_CREDENTIALS" \
     -e "BINARY_S3_BUCKET=$BINARY_S3_BUCKET" \
-    -e "PAM_MAT_VALIDATION_URL=$PAM_MAT_VALIDATION_URL" \
-    -e "PAM_MAT_VALIDATION_CREDENTIALS=$PAM_MAT_VALIDATION_CREDENTIALS" \
+    -e "PAM_MAM_VALIDATION_URL=$PAM_MAM_VALIDATION_URL" \
+    -e "PAM_VALIDATOR_CREDENTIALS=$PAM_VALIDATOR_CREDENTIALS" \
     -e "PAM_CREDENTIAL_VALIDATION_UUID=$PAM_CREDENTIAL_VALIDATION_UUID" \
     -e "PAM_MCPM_VALIDATION_URL=$PAM_MCPM_VALIDATION_URL" \
+    -e "PAM_MIMM_VALIDATION_URL=$PAM_MIMM_VALIDATION_URL" \
+    -e "PAM_MLM_VALIDATION_URL=$PAM_MLM_VALIDATION_URL" \
+    -e "PAM_MAICM_VALIDATION_URL=$PAM_MAICM_VALIDATION_URL" \
+    -e "PAM_VIDEO_VALIDATION_URL=$PAM_VIDEO_VALIDATION_URL" \
+    -e "PAM_WAM_VALIDATION_URL=$PAM_WAM_VALIDATION_URL" \
     -e "SYNTHETIC_ARTICLE_UUID=$SYNTHETIC_ARTICLE_UUID" \
     -e "SYNTHETIC_ARTICLE_PAYLOAD=$SYNTHETIC_ARTICLE_PAYLOAD" \
     -e "SYNTHETIC_LIST_UUID=$SYNTHETIC_LIST_UUID" \

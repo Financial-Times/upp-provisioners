@@ -13,7 +13,7 @@ CLUSTERID=`echo $TOKEN_URL | sed "s/http.*\///g" | cut -c1-8`
   clusterid=$CLUSTERID \
   token=$TOKEN_URL \
   services_definition_root_uri=${SERVICES_DEFINITION_ROOT_URI:=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/} \
-  aws_access_key_id=$AWS_ACCESS_KEY_ID \ 
+  aws_access_key_id=$AWS_ACCESS_KEY_ID \
   aws_secret_access_key=$AWS_SECRET_ACCESS_KEY \
   binary_writer_bucket=$BINARY_WRITER_BUCKET \
   aws_image_monitor_test_uuid=$AWS_MONITOR_TEST_UUID \
