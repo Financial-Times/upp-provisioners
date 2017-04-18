@@ -20,7 +20,12 @@ If you need to add or update etcd keys (or any other environment variables used 
 * [initial_stateless_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/initial_stateless_user_data.yaml)
 * [stateless_instance_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/stateless_instance_user_data.yaml)
 
-Note that because the provisioned instances download `stateless_instance_user_data.yaml` from GitHub, any local or unpushed changes will NOT be picked up when provisioning.  
+Persistent instances also have their own separate user data files - these do not set up etcd keys, so they should not need to be updated frequently.  
+In case you need to update these files with cloud-config variables, they are:
+* [initial_persistent_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/initial_persistent_user_data.yaml)
+* [persistent_instance_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/persistent_instance_user_data.yaml)
+
+Note that because the provisioned instances download `stateless_instance_user_data.yaml` and `persistent_instance_user_data.yaml` from GitHub, any local or unpushed changes will NOT be picked up when provisioning.  
 Any changes that you want to test **must** be pushed to a branch before provisioning.
 
 Building the image locally
