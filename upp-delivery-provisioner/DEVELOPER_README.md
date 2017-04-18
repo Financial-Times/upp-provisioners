@@ -1,7 +1,29 @@
 Docker image to provision a cluster
 ===================================
 
-Building locally the image
+Adding or updating etcd keys
+----------------------------
+
+Due to the 16kb limit on AWS user data, we can no longer pass our full cloud-config to the instances via user data.
+
+To work around this, we now have a smaller [initial_stateless_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/initial_stateless_user_data.yaml), which:
+
+* Stores the provisioning secrets and environment variables on the instance
+* Downloads the [stateless_instance_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/stateless_instance_user_data.yaml) templates
+* Downloads and runs [substitute-ft-env-variables.sh](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-pub-provisioner/sh/substitute-ft-env-variables.sh) to substitute the secrets and environment variables into the template
+* Triggers a second cloud-config run to properly configure the cluster, using the fully expanded template
+
+If you need to add or update etcd keys (or any other environment variables used as part of cloud-config), you must add the variable in 4 locations:
+
+* LastPass, under `TEST Delivery cluster provisioning setup` & `PROD Delivery cluster provisioning setup`
+* [provision.sh](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/provision.sh)
+* [initial_stateless_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/initial_stateless_user_data.yaml)
+* [stateless_instance_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/stateless_instance_user_data.yaml)
+
+Note that because the provisioned instances download `stateless_instance_user_data.yaml` from GitHub, any local or unpushed changes will NOT be picked up when provisioning.  
+Any changes that you want to test **must** be pushed to a branch before provisioning.
+
+Building the image locally
 --------------------------
 
 ```bash
@@ -19,6 +41,11 @@ Set all the required variables
 ## LastPass: PROD Delivery cluster provisioning setup
 ## For TEST cluster
 ## LastPass: TEST Delivery cluster provisioning setup
+
+## Get the name of the current branch, so that the instances pull the correct user data templates
+## This is only relevant when testing branch changes to the provisioner itself - not required for normal provisioning
+## If not supplied or run while not in a git repo, provision.sh will default to master
+export BRANCH_NAME=`git symbolic-ref HEAD | sed 's|refs/heads/||'`
 
 ## Get a new etcd token for a new cluster, 5 refers to the number of initial boxes in the cluster:
 ## `curl https://discovery.etcd.io/new?size=5`
@@ -119,5 +146,6 @@ docker run \
     -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "METHODE_API=$METHODE_API" \
+    -e "BRANCH_NAME=$BRANCH_NAME" \
     coco/upp-delivery-provisioner:local
 ```
