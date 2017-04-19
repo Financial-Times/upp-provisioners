@@ -5,7 +5,7 @@ coreos:
     reboot-strategy: off
   etcd2:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
-    discovery: {{token}}
+    discovery: $token
     heartbeat-interval: 300
     election-timeout: 3000
     # multi-region and multi-cloud deployments need to use $public_ipv4
@@ -18,25 +18,13 @@ coreos:
   fleet:
     # allow etcd to slow down at times
     etcd_request_timeout: 3.0
-    metadata: host_type=persistent,persistent_tag={{persistent_tag}}
+    metadata: host_type=persistent,persistent_tag=$persistent_tag
   units:
     - name: update-engine.service
       command: stop
       mask: true
     - name: locksmithd.service
       command: stop
-    - name: authorized_keys.service
-      command: start
-      content: |
-          [Unit]
-          Description=Update authorized_keys
-
-          [Service]
-          Type=oneshot
-          ExecStartPre=/bin/sh -c "mkdir -p /home/core/.ssh && touch /home/core/.ssh/authorized_keys"
-          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
-          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
-          ExecStart=/bin/sh -c "cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 700 /home/core/.ssh && chmod 600 /home/core/.ssh/authorized_keys && chown -R core:core /home/core/.ssh"
     - name: authorized_keys.timer
       command: start
       content: |
@@ -103,7 +91,7 @@ write_files:
       ListenStream=0.0.0.0:49153
   - path: /etc/motd.d/env.conf
     content: |
-            This enviroment is tagged as {{environment_tag}} and is cluster {{token}}
+            This enviroment is tagged as $environment_tag and is cluster $token
   - path: /home/core/.toolboxrc
     owner: core
     content: |

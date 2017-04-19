@@ -1,0 +1,73 @@
+#cloud-config
+write_files:
+  - path: /tmp/ft-env-variables
+    permissions: "0644"
+    owner: "root"
+    content: |
+      api_host={{api_host}}
+      apps_aws_access_key={{apps_aws_access_key}}
+      apps_aws_secret_access_key={{apps_aws_secret_access_key}}
+      aws_es_endpoint={{aws_es_endpoint}}
+      aws_image_monitor_test_uuid={{aws_image_monitor_test_uuid}}
+      binary_writer_bucket={{binary_writer_bucket}}
+      bridging_message_queue_proxy={{bridging_message_queue_proxy}}
+      bridging_message_queue_proxy_authorization_key={{bridging_message_queue_proxy_authorization_key}}
+      ces_credentials={{ces_credentials}}
+      ces_host={{ces_host}}
+      clusterid={{clusterid}}
+      cms_notifier_credentials={{cms_notifier_credentials}}
+      coco_image_monitor_test_uuid={{coco_image_monitor_test_uuid}}
+      environment_tag={{environment_tag}}
+      generic_rw_bucket={{generic_rw_bucket}}
+      konstructor_api_key={{konstructor_api_key}}
+      metadata_services_password={{metadata_services_password}}
+      metadata_services_username={{metadata_services_username}}
+      methode_api={{methode_api}}
+      methode_api_proxy_authorization_key={{methode_api_proxy_authorization_key}}
+      pub_pre_prod_credentials={{pub_pre_prod_credentials}}
+      pub_prod_credentials={{pub_prod_credentials}}
+      region={{region}}
+      services_definition_root_uri={{services_definition_root_uri}}
+      splunk_hec_token={{splunk_hec_token}}
+      splunk_hec_url={{splunk_hec_url}}
+      tme_password={{tme_password}}
+      tme_token={{tme_token}}
+      tme_username={{tme_username}}
+      token={{token}}
+      upp_gateway_credentials={{upp_gateway_credentials}}
+      upp_gateway_host={{upp_gateway_host}}
+      upp_gateway_port={{upp_gateway_port}}
+      varnish_access_credentials={{varnish_access_credentials}}
+      wordpress_api_key={{wordpress_api_key}}
+      wp_contentApi_key={{wp_contentApi_key}}
+
+coreos:
+  units:
+    - name: authorized_keys.service
+      command: start
+      content: |
+        [Unit]
+        Description=Update authorized_keys
+
+        [Service]
+        Type=oneshot
+        ExecStartPre=/bin/sh -c "mkdir -p /home/core/.ssh && touch /home/core/.ssh/authorized_keys"
+        ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
+        ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
+        ExecStart=/bin/sh -c "cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 700 /home/core/.ssh && chmod 600 /home/core/.ssh/authorized_keys && chown -R core:core /home/core/.ssh"
+    - name: bypass-user-data-limit.service
+      command: start
+      content: |
+        [Unit]
+        Description=Update the machine using our own cloud config, due to 16kb size limit on AWS user data
+
+        [Service]
+        EnvironmentFile=/etc/environment
+        ExecStartPre=/usr/bin/wget -qO /tmp/substitute-ft-env-variables.sh https://raw.githubusercontent.com/Financial-Times/upp-provisioners/{{branch_name}}/upp-delivery-provisioner/sh/substitute-ft-env-variables.sh
+        ExecStartPre=/usr/bin/wget -qO /tmp/instance_user_data.yaml https://raw.githubusercontent.com/Financial-Times/upp-provisioners/{{branch_name}}/upp-delivery-provisioner/ansible/userdata/stateless_instance_user_data.yaml
+        ExecStartPre=/usr/bin/chmod +x /tmp/substitute-ft-env-variables.sh
+        ExecStartPre=/tmp/substitute-ft-env-variables.sh
+        ExecStart=/usr/bin/coreos-cloudinit --from-file /tmp/instance_user_data.yaml
+        ExecStartPost=/usr/bin/rm /tmp/ft-env-variables /tmp/substitute-ft-env-variables.sh /tmp/instance_user_data.yaml
+        RemainAfterExit=yes
+        Type=oneshot

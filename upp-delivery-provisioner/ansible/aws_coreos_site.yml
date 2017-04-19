@@ -141,7 +141,7 @@
         instance_type: "{{instanceType}}"
         wait: true
         exact_count: 1
-        user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
+        user_data: "{{ lookup('template', 'userdata/initial_stateless_user_data.yaml') }}"
         vpc_subnet_id: "{{ subnets_id_1 }}"
         assign_public_ip: yes
         volumes:
@@ -172,7 +172,7 @@
         instance_type: "{{instanceType}}"
         wait: true
         exact_count: 1
-        user_data: "{{ lookup('template', 'userdata/default_instance_user_data.yaml') }}"
+        user_data: "{{ lookup('template', 'userdata/initial_stateless_user_data.yaml') }}"
         vpc_subnet_id: "{{ subnets_id_3 }}"
         assign_public_ip: yes
         volumes:
@@ -207,7 +207,7 @@
         wait: true
         exact_count: 1
         ebs_optimized: true
-        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
+        user_data: "{{ lookup('template', 'userdata/initial_persistent_user_data.yaml') }}"
         vpc_subnet_id: "{{ subnets_id_1 }}"
         assign_public_ip: yes
         volumes:
@@ -246,7 +246,7 @@
         wait: true
         exact_count: 1
         ebs_optimized: true
-        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
+        user_data: "{{ lookup('template', 'userdata/initial_persistent_user_data.yaml') }}"
         vpc_subnet_id: "{{ subnets_id_2 }}"
         assign_public_ip: yes
         volumes:
@@ -285,7 +285,7 @@
         wait: true
         exact_count: 1
         ebs_optimized: true
-        user_data: "{{ lookup('template', 'userdata/persistent_instance_user_data.yaml') }}"
+        user_data: "{{ lookup('template', 'userdata/initial_persistent_user_data.yaml') }}"
         vpc_subnet_id: "{{ subnets_id_3 }}"
         assign_public_ip: yes
         volumes:

@@ -13,7 +13,7 @@ CLUSTERID=`echo $TOKEN_URL | sed "s/http.*\///g" | cut -c1-8`
 AMI=`curl -s https://coreos.com/dist/aws/aws-stable.json | jq --arg region $AWS_DEFAULT_REGION -r '.[$region].hvm'`
 ZONES=(`aws ec2 describe-availability-zones --region $AWS_DEFAULT_REGION | jq -r '.AvailabilityZones[].ZoneName'`)
 
-echo $VAULT_PASS > /vault.pass && ansible-playbook -vvv -i ~/.ansible_hosts /ansible/aws_coreos_site.yml --extra-vars " \
+echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/aws_coreos_site.yml --extra-vars " \
   clusterid=$CLUSTERID \
   ami=$AMI \
   zones=$ZONES \
@@ -37,5 +37,6 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -vvv -i ~/.ansible_hosts /ans
   splunk_hec_url=${SPLUNK_HEC_URL:=https://http-inputs-financialtimes.splunkcloud.com/services/collector/event} \
   splunk_hec_token=${SPLUNK_HEC_TOKEN} \
   aws_es_endpoint=${AWS_ES_ENDPOINT} \
-  methode_api=${METHODE_API}" \
+  methode_api=${METHODE_API} \
+  branch_name=${BRANCH_NAME:=master}" \
   --vault-password-file=/vault.pass
