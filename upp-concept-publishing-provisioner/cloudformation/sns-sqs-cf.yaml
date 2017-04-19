@@ -1,0 +1,140 @@
+
+Description: "Creates S3 Bucket, SNS Topic and SQS Queues for publishing concepts in UPP."
+
+Parameters:
+  IsMultiRegion:
+    Type: String
+    Default: "True"
+    AllowedValues:
+      - "True"
+      - "False"
+  EnvironmentTag:
+    Type: String
+    Default: "pre-prod"
+
+Conditions:
+  CreateSecondRegion: !Equals [ !Ref IsMultiRegion, "True"]
+
+Resources:
+
+  # Create the topic and the policy.
+  SNSTopic:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      DisplayName: !Join ["", ["Concept Publish Update Notifications - ", !Ref EnvironmentTag]]
+
+  SNSTopicPolicy:
+    Type: "AWS::SNS::TopicPolicy"
+    Properties:
+      PolicyDocument:
+        Id: ConceptNotificationTopicPolicy
+        Version: '2012-10-17'
+        Statement:
+          - Sid: allow-s3-publish
+            Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: sns:Publish
+            Resource: !Ref SNSTopic
+            Condition:
+              ArnLike: 
+                "aws:SourceArn": !Join ["" , ["arn:aws:s3:::", "com.ft.upp.concept-normalised-store.", !Ref EnvironmentTag]]
+      Topics: 
+        - !Ref SNSTopic
+
+  # Create the first SQS queue - this always happens.
+  SNSDeadLetterQueue1:
+    Type: "AWS::SQS::Queue"
+    Properties: 
+      QueueName: !Join ["", ["upp-concept-publish-dead-letter-eu-", !Ref EnvironmentTag]]
+
+  SQSQueue1:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: !Join ["", ["upp-concept-publish-notifications-eu-", !Ref EnvironmentTag]]
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt SNSDeadLetterQueue1.Arn
+        maxReceiveCount: 5
+
+  SQSQueuePolicy1:
+    Type: "AWS::SQS::QueuePolicy"
+    Properties:
+      Queues:
+        - !Ref SQSQueue1
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: ConceptNotificationQueuePolicy1
+        Statement:
+          Sid: "receive-from-sns"
+          Effect: "Allow"
+          Principal:
+            AWS: "*"
+          Action: "SQS:SendMessage"
+          Resource: !GetAtt SQSQueue1.Arn
+          Condition:
+            ArnEquals:
+              "aws:SourceArn": !Ref SNSTopic
+    
+  SQSSubscription1:
+    Type: "AWS::SNS::Subscription"
+    Properties: 
+      Endpoint: !GetAtt SQSQueue1.Arn
+      Protocol: sqs
+      TopicArn: !Ref SNSTopic
+
+  # Create the second SQS queue conditionally.
+  SNSDeadLetterQueue2:
+    Type: "AWS::SQS::Queue"
+    Condition: CreateSecondRegion
+    Properties: 
+      QueueName: !Join ["", ["upp-concept-publish-dead-letter-us-", !Ref EnvironmentTag]]
+
+  SQSQueue2:
+    Type: "AWS::SQS::Queue"
+    Condition: CreateSecondRegion
+    Properties:
+      QueueName: !Join ["", ["upp-concept-publish-notifications-us-", !Ref EnvironmentTag]]
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt SNSDeadLetterQueue2.Arn
+        maxReceiveCount: 5
+  
+  SQSQueuePolicy2:
+    Type: "AWS::SQS::QueuePolicy"
+    Condition: CreateSecondRegion
+    Properties:
+      Queues:
+        - !Ref SQSQueue2
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: ConceptNotificationQueuePolicy2
+        Statement:
+          Sid: "receive-from-sns"
+          Effect: "Allow"
+          Principal:
+            AWS: "*"
+          Action: "SQS:SendMessage"
+          Resource: !GetAtt SQSQueue2.Arn
+          Condition:
+            ArnEquals:
+              "aws:SourceArn": !Ref SNSTopic
+
+  SQSSubscription2:
+    Type: "AWS::SNS::Subscription"
+    Condition: CreateSecondRegion
+    Properties: 
+      Endpoint: !GetAtt SQSQueue2.Arn
+      Protocol: sqs
+      TopicArn: !Ref SNSTopic
+
+  # Create the S3 bucket with the notifications.
+  S3ConceptPublish:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Join [ ".", ["com.ft.upp.concept-normalised-store", !Ref EnvironmentTag]]
+      AccessControl: AuthenticatedRead
+      NotificationConfiguration:
+        TopicConfigurations:
+          - Event: "s3:ObjectCreated:*"
+            Topic: !Ref SNSTopic
