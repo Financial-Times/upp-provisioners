@@ -1,0 +1,31 @@
+- hosts: all
+
+  vars_files:
+    - vault.yml
+
+  tasks:
+    - name: Delete bucket and its contents
+      s3:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        region: "{{aws_default_region}}"
+        bucket: "com.ft.upp.concept-normalised-store.{{cluster_name}}"
+        validate_certs: no
+        mode: delete
+      register: delete_s3_bucket_output
+
+    - debug:
+        msg: "{{delete_s3_bucket_output}}"
+
+
+    - name: Delete Concept Publishing cluster
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        region: "{{aws_default_region}}"
+        stack_name: "{{cluster_name}}"
+        state: "absent"
+      register: concept_pub_stack_output
+
+    - debug: 
+        msg: "{{concept_pub_stack_output}}"
