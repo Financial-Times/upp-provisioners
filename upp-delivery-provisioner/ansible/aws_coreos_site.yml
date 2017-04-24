@@ -35,6 +35,11 @@
             from_port: 22
             to_port: 22
             cidr_ip: 82.136.1.214/32
+          # Park Royal
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 213.216.148.1/32
           # XP - Cluj office
           - proto: tcp
             from_port: 22

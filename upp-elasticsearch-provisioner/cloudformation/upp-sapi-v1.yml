@@ -48,6 +48,8 @@ Resources:
                 aws:SourceIP:
                   # OSB + LDNWebPerf
                   - "82.136.1.214/32"
+                  # Park Royal
+                  - "213.216.148.1/32"
                   # iQuest - Cluj office
                   - "194.117.242.0/23"
                   # EU VPN Client
