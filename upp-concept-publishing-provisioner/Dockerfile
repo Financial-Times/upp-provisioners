@@ -1,7 +1,11 @@
 FROM alpine:3.5
 
-RUN apk --update add bash curl py-pip \
-    && pip install --upgrade pip awscli
+ENV ANSIBLE_HOSTS=/ansible/hosts
 
-COPY cloudformation/cloudformation
+RUN apk --update add python py-pip ansible bash ca-certificates \
+ && pip install --upgrade pip boto boto3 \
+ && update-ca-certificates 2&>1 > /dev/null
+
+COPY ansible /ansible
+COPY cloudformation /cloudformation
 COPY sh/* /usr/local/bin/
