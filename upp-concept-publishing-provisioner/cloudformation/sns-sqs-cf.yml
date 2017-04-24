@@ -1,4 +1,3 @@
-
 Description: "Creates S3 Bucket, SNS Topic and SQS Queues for publishing concepts in UPP."
 
 Parameters:
@@ -10,7 +9,7 @@ Parameters:
       - "False"
   EnvironmentTag:
     Type: String
-    Default: "pre-prod"
+    Default: "t"
 
 Conditions:
   CreateSecondRegion: !Equals [ !Ref IsMultiRegion, "True"]
@@ -134,9 +133,6 @@ Resources:
     Properties:
       BucketName: !Join [ "", ["upp-concept-normalised-store-", !Ref "AWS::StackName"]]
       AccessControl: AuthenticatedRead
-      Tags:
-        - Key: Environment 
-          Value: !Ref EnvironmentTag
       NotificationConfiguration:
         TopicConfigurations:
           - Event: "s3:ObjectCreated:*"
