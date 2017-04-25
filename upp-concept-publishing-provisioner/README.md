@@ -6,8 +6,7 @@ The AWS Concept Publishing provisioning process will:
 
 The decommissioning process will:
 
-* Delete the S3 Bucket if empty
-* Delete the objects and the S3 bucket if not empty
+* Delete the S3 Bucket and its contents
 * Delete the SNS Topic and the SQS queues
 
 
@@ -21,7 +20,7 @@ The Concept Publishing provisioner can be built locally as a Docker image:
 - The cluster name will be `upp-${CLUSTER_NAME}` - eg, `upp-concept-publishing`
 - The cluster name length must be less than or equal to 28
 - The cloudformation script requires two parameters: 
-  * Environment Tag - Which environment this belongs to
+  * Environment Tag - Which environment this belongs to. E.g t/p
   * IsMultiRegion - Whether the stack needs to be read in multiple regions (will spin up 2 SQS queues rather than 1)
 - Run the following Docker commands:
 ```
