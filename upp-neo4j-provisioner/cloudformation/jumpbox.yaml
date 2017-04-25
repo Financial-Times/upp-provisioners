@@ -34,7 +34,7 @@ Parameters:
   DeploymentScriptURL:
     Description: Deployment script URL
     Type: String
-    Default: https://raw.githubusercontent.com/Financial-Times/up-neo4j-ha-cluster/master/sh/jumpbox.sh
+    Default: https://raw.githubusercontent.com/Financial-Times/upp-provisioners/master/upp-neo4j-provisioner/sh/jumpbox.sh
   VPC:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id

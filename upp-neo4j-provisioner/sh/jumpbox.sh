@@ -28,12 +28,12 @@ else
 fi
 
 cd ${ROOTDIR}
-if [[ -d "./up-neo4j-ha-cluster" ]]; then
-    cd up-neo4j-ha-cluster/
+if [[ -d "./upp-provisioners/upp-neo4j-provisioner" ]]; then
+    cd upp-provisioners/upp-neo4j-provisioner/
     git pull
 else
-  git clone https://github.com/Financial-Times/up-neo4j-ha-cluster.git | tee -a ${OUTPUT}
-  cd up-neo4j-ha-cluster/
+  git clone https://github.com/Financial-Times/upp-provisioners.git | tee -a ${OUTPUT}
+  cd upp-provisioners/upp-neo4j-provisioner/
 fi
 
 puppet apply --modulepath ./puppet -e "class { 'neo4jha::jumpbox': }" | tee -a ${OUTPUT}
