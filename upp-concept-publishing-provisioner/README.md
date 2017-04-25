@@ -1,13 +1,51 @@
-# upp-concept-publishing-provisioner
+# AWS Concept Publishing provisioner
 
-Cloudoformation to spin up an S3 bucket, SNS Topic and 1/2 SQS Queues to be used as part of the event-driven concept publishing pipeline.  
+The AWS Concept Publishing provisioning process will:
 
-## Provisioning
-The script can be used directly in the AWS Console.  You need to provide two parameters:
-- Environment tag - Which environment this belongs to.
-- IsMultiRegion - Whether the stack needs to be read in multiple regions (will spin up 2 SQS queues rather than 1).
+* Create an S3 Bucket, SNS Topic and 1/2 SQS Queues using the specified Cloudformation Template which is used as a part of the event-driven concept publishing pipeline.
 
-## Decomissioning
-You can decom the stack by deleting it from the AWS Console.  If the bucket has content in, the stack will fail to delete.  In this case, you should do one of the following:
-- If you don't need the bucket, manually delete it and then re-delete the stack.  It should successfully work.
-- If you want to keep the bucket, re-delete the stack and it should prompt you whether you want to ignore the bucket.  Say yes and the stack should delete leaving the bucket alone.
+The decommissioning process will:
+
+* Delete the S3 Bucket and its contents
+* Delete the SNS Topic and the SQS queues
+
+
+## Building the Docker image
+The Concept Publishing provisioner can be built locally as a Docker image:
+
+`docker build -t coco/upp-concept-publishing-provisioner:local .`
+
+## Provisioning a cluster
+- Grab, customize and export the environment variables from the **AWS Concept Publishing SQS/SNS provisioning** LastPass note.
+- The cluster name will be `upp-${CLUSTER_NAME}` - eg, `upp-concept-publishing`
+- The cluster name length must be less than or equal to 28
+- The cloudformation script requires two parameters: 
+  * Environment Tag - Which environment this belongs to. E.g t/p
+  * IsMultiRegion - Whether the stack needs to be read in multiple regions (will spin up 2 SQS queues rather than 1)
+- Run the following Docker commands:
+```
+docker pull coco/upp-concept-publishing-provisioner:latest
+docker run \
+    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+    -e "CLUSTER_NAME=$CLUSTER_NAME" \
+    -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "IS_MULTI_REGION=$IS_MULTI_REGION"
+    coco/upp-concept-publishing-provisioner:latest /bin/bash provision.sh
+```
+
+- You can check the progress of the CF stack creation in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
+
+## Decommissioning a cluster
+- Grab, customize and export the environment variables from the **AWS Concept Publishing SQS/SNS provisioning** LastPass note.
+- - Run the following Docker commands:
+```
+docker pull coco/upp-concept-publishing-provisioner:latest
+docker run \
+    -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+    -e "CLUSTER_NAME=$CLUSTER_NAME" \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    coco/upp-concept-publishing-provisioner:latest /bin/bash decom.sh
+```
+
+- You can check the progress of the CF stack creation in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
