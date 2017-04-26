@@ -15,12 +15,12 @@ puppet --version >> ${OUTPUT}
 git --version >> ${OUTPUT}
 
 cd /tmp
-if [[ -d "./up-neo4j-ha-cluster" ]]; then
-    cd up-neo4j-ha-cluster/
+if [[ -d "./upp-provisioners/upp-neo4j-provisioner" ]]; then
+    cd upp-provisioners/upp-neo4j-provisioner/
     git pull
 else
-  git clone https://github.com/Financial-Times/up-neo4j-ha-cluster.git >> ${OUTPUT}
-  cd up-neo4j-ha-cluster/
+  git clone https://github.com/Financial-Times/up-neo4j-cluster.git >> ${OUTPUT}
+  cd upp-provisioners/upp-neo4j-provisioner/
 fi
 
 #Lookup PrivateIP for each instance

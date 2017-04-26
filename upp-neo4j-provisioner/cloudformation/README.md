@@ -13,7 +13,7 @@ Documentation for Neo4j HA Cluster CloudFormation templates.
 
 
 
-### [up-neo4j-ha-cluster-subnets.yaml](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/cloudformation/up-neo4j-ha-cluster-subnets.yaml)
+### [up-neo4j-ha-cluster-subnets.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-neo4j-provisioner/cloudformation/up-neo4j-ha-cluster-subnets.yaml)
 
 This template creates the following resources:
 
@@ -61,7 +61,7 @@ ParameterKey=PublicSubnetRouteTableId,ParameterValue=rtb-6d739b0a
 
 ---
 
-### [jumpbox.yaml](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/cloudformation/jumpbox.yaml)
+### [jumpbox.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-neo4j-provisioner/cloudformation/jumpbox.yaml)
 
 Stack that creates an EC2 instance and a security group that allows SSH access from known subnets and IP addresses.
 
@@ -96,11 +96,11 @@ ParameterKey=InstanceKey,ParameterValue=UP_NVirginia_Key \
 
 ---
 
-### [neo4jhacluster.yaml](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/cloudformation/neo4jhacluster.yaml)
+### [neo4jhacluster.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-neo4j-provisioner/cloudformation/neo4jhacluster.yaml)
 
 ##### Create stack
 
-Neo4j HA Cluster is span up with script [provision.sh](https://github.com/Financial-Times/up-neo4j-ha-cluster/blob/master/provision.sh).
+Neo4j HA Cluster is span up with script [provision.sh](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-neo4j-provisioner/provision.sh).
 Before running the script you must set the following environment variables.
 
 ```
