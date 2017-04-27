@@ -9,7 +9,7 @@
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
         region: "{{aws_default_region}}"
-        bucket: "upp-concept-normalised-store-{{cluster_name}}"
+        bucket: "upp-concept-normalised-store-{{environment_tag}}"
         validate_certs: no
         mode: delete
       register: delete_s3_bucket_output
@@ -23,7 +23,7 @@
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
         region: "{{aws_default_region}}"
-        stack_name: "{{cluster_name}}"
+        stack_name: "upp-concept-publishing-{{environment_tag}}"
         state: "absent"
       register: concept_pub_stack_output
 

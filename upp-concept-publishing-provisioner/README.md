@@ -17,20 +17,20 @@ The Concept Publishing provisioner can be built locally as a Docker image:
 
 ## Provisioning a cluster
 - Grab, customize and export the environment variables from the **AWS Concept Publishing SQS/SNS provisioning** LastPass note.
-- The cluster name will be `upp-${CLUSTER_NAME}` - eg, `upp-concept-publishing`
-- The cluster name length must be less than or equal to 28
+- The stack name will be `upp-concept-publishing-${ENVIRONMENT_TAG}` - eg, `upp-concept-publishing-pre-prod`
+- The environment tag length must be less than or equal to 28
 - The cloudformation script requires two parameters: 
-  * Environment Tag - Which environment this belongs to. E.g t/p
+  * Environment Tag - Which environment this belongs to. e.g pre-prod
   * IsMultiRegion - Whether the stack needs to be read in multiple regions (will spin up 2 SQS queues rather than 1)
 - Run the following Docker commands:
 ```
 docker pull coco/upp-concept-publishing-provisioner:latest
 docker run \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
-    -e "CLUSTER_NAME=$CLUSTER_NAME" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
-    -e "IS_MULTI_REGION=$IS_MULTI_REGION"
+    -e "IS_MULTI_REGION=$IS_MULTI_REGION" \
     coco/upp-concept-publishing-provisioner:latest /bin/bash provision.sh
 ```
 
@@ -43,7 +43,7 @@ docker run \
 docker pull coco/upp-concept-publishing-provisioner:latest
 docker run \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
-    -e "CLUSTER_NAME=$CLUSTER_NAME" \
+    -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "VAULT_PASS=$VAULT_PASS" \
     coco/upp-concept-publishing-provisioner:latest /bin/bash decom.sh
 ```
