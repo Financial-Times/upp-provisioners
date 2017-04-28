@@ -9,7 +9,7 @@ Parameters:
       - "False"
   EnvironmentTag:
     Type: String
-    Default: "t"
+    Default: "pre-prod"
 
 Conditions:
   CreateSecondRegion: !Equals [ !Ref IsMultiRegion, "True"]
@@ -20,7 +20,7 @@ Resources:
   SNSTopic:
     Type: "AWS::SNS::Topic"
     Properties:
-      DisplayName: !Join ["", ["Concept Publish Update Notifications - ", !Ref "AWS::StackName"]]
+      DisplayName: !Join ["", ["Concept Publish Update Notifications - ", !Ref EnvironmentTag]]
 
   SNSTopicPolicy:
     Type: "AWS::SNS::TopicPolicy"
@@ -37,7 +37,7 @@ Resources:
             Resource: !Ref SNSTopic
             Condition:
               ArnLike: 
-                "aws:SourceArn": !Join ["" , ["arn:aws:s3:::", "upp-concept-normalised-store-", !Ref "AWS::StackName"]]
+                "aws:SourceArn": !Join ["" , ["arn:aws:s3:::", "upp-concept-normalised-store-", !Ref EnvironmentTag]]
       Topics: 
         - !Ref SNSTopic
 
@@ -45,12 +45,12 @@ Resources:
   SNSDeadLetterQueue1:
     Type: "AWS::SQS::Queue"
     Properties: 
-      QueueName: !Join ["", ["upp-concept-publish-dead-letter-eu-", !Ref "AWS::StackName"]]
+      QueueName: !Join ["", ["upp-concept-publish-dead-letter-eu-", !Ref EnvironmentTag]]
 
   SQSQueue1:
     Type: "AWS::SQS::Queue"
     Properties:
-      QueueName: !Join ["", ["upp-concept-publish-notifications-eu-", !Ref "AWS::StackName"]]
+      QueueName: !Join ["", ["upp-concept-publish-notifications-eu-", !Ref EnvironmentTag]]
       ReceiveMessageWaitTimeSeconds: 20
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt SNSDeadLetterQueue1.Arn
@@ -87,13 +87,13 @@ Resources:
     Type: "AWS::SQS::Queue"
     Condition: CreateSecondRegion
     Properties: 
-      QueueName: !Join ["", ["upp-concept-publish-dead-letter-us-", !Ref "AWS::StackName"]]
+      QueueName: !Join ["", ["upp-concept-publish-dead-letter-us-", !Ref EnvironmentTag]]
 
   SQSQueue2:
     Type: "AWS::SQS::Queue"
     Condition: CreateSecondRegion
     Properties:
-      QueueName: !Join ["", ["upp-concept-publish-notifications-us-", !Ref "AWS::StackName"]]
+      QueueName: !Join ["", ["upp-concept-publish-notifications-us-", !Ref EnvironmentTag]]
       ReceiveMessageWaitTimeSeconds: 20
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt SNSDeadLetterQueue2.Arn
@@ -131,7 +131,7 @@ Resources:
   S3ConceptPublish:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: !Join [ "", ["upp-concept-normalised-store-", !Ref "AWS::StackName"]]
+      BucketName: !Join [ "", ["upp-concept-normalised-store-", !Ref EnvironmentTag]]
       AccessControl: AuthenticatedRead
       NotificationConfiguration:
         TopicConfigurations:

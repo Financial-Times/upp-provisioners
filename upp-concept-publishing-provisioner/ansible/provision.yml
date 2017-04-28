@@ -4,11 +4,11 @@
     - vault.yml
 
   tasks:
-    - name: Create Concept Publishing cluster
+    - name: Create Concept Publishing stack
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
-        stack_name: "{{cluster_name}}"
+        stack_name: "upp-concept-publishing-{{environment_tag}}"
         state: "present"
         region: "{{aws_default_region}}"
         template: "/cloudformation/sns-sqs-cf.yml"
@@ -16,10 +16,10 @@
           EnvironmentTag: "{{environment_tag}}"
           IsMultiRegion: "{{ismultiregion}}"
         tags:
-          environment: "{{environment_tag}}"
+          environment: "{{environment_type}}"
           systemCode: "upp"
-          teamDL: "semantic.metadata.development@ft.com"
-          description: "Semantic - Concept Publishing Cloudformation Stack"
+          teamDL: "universal.publishing.platform@ft.com"
+          description: "Concept Publishing Cloudformation Stack - {{environment_tag}}"
       register: concept_pub_stack_output
 
     - debug:
