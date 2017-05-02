@@ -39,6 +39,8 @@ write_files:
       synthetic_article_payload={{synthetic_article_payload}}
       synthetic_article_uuid={{synthetic_article_uuid}}
       synthetic_list_uuid={{synthetic_list_uuid}}
+      carousel_bucket={{carousel_bucket}}
+      carousel_enabled={{carousel_enabled}}
       tme_host={{tme_host}}
       tme_password={{tme_password}}
       tme_token={{tme_token}}
