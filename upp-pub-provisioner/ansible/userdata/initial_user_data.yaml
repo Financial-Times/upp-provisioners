@@ -11,6 +11,8 @@ write_files:
       brands_bertha_url={{brands_bertha_url}}
       brightcove_account_id={{brightcove_account_id}}
       brightcove_auth={{brightcove_auth}}
+      carousel_bucket={{carousel_bucket}}
+      carousel_enabled={{carousel_enabled}}
       clusterid={{clusterid}}
       concepts_rw_s3_bucket={{concepts_rw_s3_bucket}}
       concepts_rw_s3_bucket_region={{concepts_rw_s3_bucket_region}}
@@ -39,8 +41,6 @@ write_files:
       synthetic_article_payload={{synthetic_article_payload}}
       synthetic_article_uuid={{synthetic_article_uuid}}
       synthetic_list_uuid={{synthetic_list_uuid}}
-      carousel_bucket={{carousel_bucket}}
-      carousel_enabled={{carousel_enabled}}
       tme_host={{tme_host}}
       tme_password={{tme_password}}
       tme_token={{tme_token}}
