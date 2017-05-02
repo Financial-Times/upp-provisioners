@@ -11,6 +11,8 @@ write_files:
       brands_bertha_url={{brands_bertha_url}}
       brightcove_account_id={{brightcove_account_id}}
       brightcove_auth={{brightcove_auth}}
+      carousel_bucket={{carousel_bucket}}
+      carousel_enabled={{carousel_enabled}}
       clusterid={{clusterid}}
       concepts_rw_s3_bucket={{concepts_rw_s3_bucket}}
       concepts_rw_s3_bucket_region={{concepts_rw_s3_bucket_region}}
