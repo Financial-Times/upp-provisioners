@@ -45,7 +45,7 @@
       rds_hostname: "{{ rds_stack.stack_outputs.DBHostname }}"
       rds_port: "{{ rds_stack.stack_outputs.DBPort }}"
 
-  - include: tasks/create_update_cname.yml
+  - include: tasks/create_cname.yml
 
   - name: change key permision to avoid any error from ssh
     file:
