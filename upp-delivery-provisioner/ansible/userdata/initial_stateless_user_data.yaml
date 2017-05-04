@@ -12,6 +12,7 @@ write_files:
       binary_writer_bucket={{binary_writer_bucket}}
       bridging_message_queue_proxy={{bridging_message_queue_proxy}}
       bridging_message_queue_proxy_authorization_key={{bridging_message_queue_proxy_authorization_key}}
+      bucket_region={{bucket_region}}
       ces_credentials={{ces_credentials}}
       ces_host={{ces_host}}
       clusterid={{clusterid}}
@@ -24,6 +25,8 @@ write_files:
       metadata_services_username={{metadata_services_username}}
       methode_api={{methode_api}}
       methode_api_proxy_authorization_key={{methode_api_proxy_authorization_key}}
+      neo4j_read_url={{neo4j_read_url}}
+      neo4j_write_url={{neo4j_write_url}}
       pub_pre_prod_credentials={{pub_pre_prod_credentials}}
       pub_prod_credentials={{pub_prod_credentials}}
       region={{region}}

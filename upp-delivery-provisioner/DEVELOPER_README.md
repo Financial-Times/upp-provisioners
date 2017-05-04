@@ -121,6 +121,8 @@ export SPLUNK_HEC_TOKEN=
 ## prod: https://methodeapi.glb.ft.com
 ## pre-prod and lower: https://methodeapi-test.ft.com
 export METHODE_API=
+
+export BUCKET_REGION=eu-west-1
 ```
 
 

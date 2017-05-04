@@ -80,6 +80,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/cluster_id '$clusterid'                                                                >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/api_host '$api_host'                                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/aws_region '$region'                                                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/bucket_region '$bucket_region'                                                         >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/cache-max-age 10                                                                       >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_url 'https://ingest.splunk.glb.ft.com/coco-up/fleet'           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_hec_url '$splunk_hec_url'                                      >/dev/null 2>&1 || true;"
@@ -95,6 +96,8 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/ces/host '$ces_host'                                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/aws_es_endpoint '$aws_es_endpoint'                                                     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/methode-api '$methode_api'                                                             >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/read_only_url '$neo4j_read_url'                                                  >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/read_write_url '$neo4j_write_url'                                                >/dev/null 2>&1 || true;"
     - name: bootstrap.service
       command: start
       content: |
