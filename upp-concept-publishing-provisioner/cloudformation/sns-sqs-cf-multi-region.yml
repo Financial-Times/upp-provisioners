@@ -1,0 +1,42 @@
+Description: "Creates SNS Topic and SQS Queues in secondary region for publishing of concepts in UPP."
+
+Parameters:
+  EnvironmentTag:
+    Type: String
+    Default: "pre-prod"
+  Region:
+    Type: String
+    Default: "Secondary region"
+
+Resources:
+
+  # Create another SQS queue if multi-region is set to true.
+  SNSDeadLetterQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: !Join ["", ["upp-concept-publish-dead-letter-", !Ref EnvironmentTag, "-2"]]
+
+  SQSQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: !Join ["", ["upp-concept-publish-notifications-", !Ref EnvironmentTag, "-2"]]
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt SNSDeadLetterQueue.Arn
+        maxReceiveCount: 5
+
+  SQSQueuePolicy:
+    Type: "AWS::SQS::QueuePolicy"
+    Properties:
+      Queues:
+        - !Ref SQSQueue
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: ConceptNotificationQueuePolicy
+        Statement:
+          Sid: "receive-from-sns"
+          Effect: "Allow"
+          Principal:
+            AWS: "*"
+          Action: "SQS:SendMessage"
+          Resource: !GetAtt SQSQueue.Arn

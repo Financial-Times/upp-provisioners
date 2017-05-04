@@ -29,3 +29,16 @@
 
     - debug: 
         msg: "{{concept_pub_stack_output}}"
+
+    - name: Delete Secondary Concept Publishing stack
+      when: "{{is_multi_region}} == True"
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        region: "{{aws_secondary_region}}"
+        stack_name: "upp-concept-publishing-{{environment_tag}}"
+        state: "absent"
+      register: concept_pub_secondary_stack_output
+
+    - debug:
+        msg: "{{concept_pub_secondary_stack_output}}"

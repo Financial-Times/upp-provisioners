@@ -4,23 +4,44 @@
     - vault.yml
 
   tasks:
-    - name: Create Concept Publishing stack
+    - name: Create Primary Concept Publishing stack
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
         stack_name: "upp-concept-publishing-{{environment_tag}}"
         state: "present"
         region: "{{aws_default_region}}"
-        template: "/cloudformation/sns-sqs-cf.yml"
+        template: "/cloudformation/sns-sqs-cf-single-region.yml"
         template_parameters:
           EnvironmentTag: "{{environment_tag}}"
-          IsMultiRegion: "{{ismultiregion}}"
         tags:
           environment: "{{environment_type}}"
           systemCode: "upp"
           teamDL: "universal.publishing.platform@ft.com"
           description: "Concept Publishing Cloudformation Stack - {{environment_tag}}"
-      register: concept_pub_stack_output
+      register: concept_pub_stack_output_1
 
     - debug:
-        msg: "{{concept_pub_stack_output}}"
+        msg: "{{concept_pub_stack_output_1}}"
+
+    - name: Create Secondary Concept Publishing stack
+      when: "{{is_multi_region}} == True"
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        stack_name: "upp-concept-publishing-{{environment_tag}}"
+        state: "present"
+        region: "{{aws_secondary_region}}"
+        template: "/cloudformation/sns-sqs-cf-multi-region.yml"
+        template_parameters:
+          EnvironmentTag: "{{environment_tag}}"
+          Region: "{{aws_secondary_region}}"
+        tags:
+          environment: "{{environment_type}}"
+          systemCode: "upp"
+          teamDL: "universal.publishing.platform@ft.com"
+          description: "Concept Publishing Cloudformation Stack - {{environment_tag}}"
+      register: concept_pub_stack_output_2
+
+    - debug:
+        msg: "{{concept_pub_stack_output_2}}"
