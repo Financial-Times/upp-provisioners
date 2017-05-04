@@ -40,8 +40,14 @@ docker run \
 
 ## Manual Step
 
-- Unfortunately there are a couple manual steps that cannot be automated if you provision a multi-region stack.
-- First you must go into the aws console for the secondary region. 
+- Unfortunately there are a few manual steps that cannot be automated via cloud formation.
+- For any stack created using this script you must grant access to the SQS queue to upp apps
+- In the AWS console navigate to IAM -> Users and locate the content-container-apps user
+- Copy the value for the User ARN to your clipboard
+- In any region where an SQS queue was provisioned you must navigate to Simple Queue Service and locate your newly create queue
+- Select Permissions -> Add a Permission. Paste the User ARN into the Principal field and tick the box for All SQS Actions, then Save.
+- If you have provisioned a multiple stacks follow the next set of instructions; if not you can stop here
+- Next you must go into the aws console for the secondary region. 
 - Navigate to Simple Nofication Service dashboard and select topics
 - Find the newly created topic associated with your environment and copy the ARN to your clipboard
 - Navigate to the Simple Queue Service dashboard and locate your newly create 'notifications' queue
