@@ -464,7 +464,7 @@ Resources:
               "      alias fclm='fleetctl list-machines'\n",
               "      alias fclu='fleetctl list-units'\n",
               "      alias fcjf='fleetctl journal -f '\n",
-              "      alias fcbad='fleetctl list-units | grep -v \"exited|running|backup|upgrade\"'\n",
+              "      alias fcbad='fleetctl list-units | grep -v \"exited\|running\|backup\|upgrade\"'\n",
               "      function fclmg() { fleetctl list-machines | grep  $@ ;}\n",
               "      function fclug() { fleetctl list-units | grep  $@ ;}\n",
               "      function fcssh() { fleetctl ssh $@ ;}\n",
