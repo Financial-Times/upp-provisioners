@@ -31,6 +31,8 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   api_host=${API_HOST:=api.ft.com} \
   upp_gateway_host=$UPP_GATEWAY_HOST \
   upp_gateway_port=${UPP_GATEWAY_PORT:=443} \
+  neo4j_read_url=$NEO4J_READ_URL \
+  neo4j_write_url=$NEO4J_WRITE_URL \
   ces_host=$CES_HOST \
   environment_tag=${ENVIRONMENT_TAG:=default} \
   environment_type=${ENVIRONMENT_TYPE:=p} \
