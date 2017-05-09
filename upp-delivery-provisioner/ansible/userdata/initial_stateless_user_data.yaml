@@ -12,7 +12,6 @@ write_files:
       binary_writer_bucket={{binary_writer_bucket}}
       bridging_message_queue_proxy={{bridging_message_queue_proxy}}
       bridging_message_queue_proxy_authorization_key={{bridging_message_queue_proxy_authorization_key}}
-      bucket_region={{bucket_region}}
       ces_credentials={{ces_credentials}}
       ces_host={{ces_host}}
       clusterid={{clusterid}}

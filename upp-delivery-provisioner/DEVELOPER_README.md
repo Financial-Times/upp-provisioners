@@ -121,8 +121,6 @@ export SPLUNK_HEC_TOKEN=
 ## prod: https://methodeapi.glb.ft.com
 ## pre-prod and lower: https://methodeapi-test.ft.com
 export METHODE_API=
-
-export BUCKET_REGION=eu-west-1
 ```
 
 
@@ -154,7 +152,6 @@ docker run \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "METHODE_API=$METHODE_API" \
     -e "BRANCH_NAME=$BRANCH_NAME" \
-    -e "BUCKET_REGION=$BUCKET_REGION" \
     -e "NEO4J_READ_URL=$NEO4J_READ_URL" \
     -e "NEO4J_WRITE_URL=$NEO4J_WRITE_URL" \
     coco/upp-delivery-provisioner:local
