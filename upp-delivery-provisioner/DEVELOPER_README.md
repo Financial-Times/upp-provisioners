@@ -121,6 +121,10 @@ export SPLUNK_HEC_TOKEN=
 ## prod: https://methodeapi.glb.ft.com
 ## pre-prod and lower: https://methodeapi-test.ft.com
 export METHODE_API=
+
+## The read and write URLs to connect to your cluster's Neo4j database.
+export NEO4J_READ_URL=
+export NEO4J_WRITE_URL=
 ```
 
 
