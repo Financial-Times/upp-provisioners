@@ -234,10 +234,6 @@ Resources:
         Value:
           Ref: TagDescription
         PropagateAtLaunch: true
-      - Key: kon_dns
-        Value:
-          Ref: KonstructorAPIKey
-        PropagateAtLaunch: true
   LaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
@@ -257,6 +253,7 @@ Resources:
         Ref: IamInstanceProfile
       UserData:
         Fn::Base64: !Sub |
-          #!/bin/bash
+          #!/bin/bash -x
           # Pull and execute deployment script
           /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash
+          echo ${KonstructorAPIKey} > /root/.kon_dns_key
