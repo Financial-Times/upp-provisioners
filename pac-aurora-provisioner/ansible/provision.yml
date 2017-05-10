@@ -1,0 +1,46 @@
+---
+- name: provision stack
+  hosts: localhost
+  connection: local
+
+  vars:
+    cluster_name: "pac-aurora-{{ cluster }}"
+    aws_region: eu-west-1
+  
+  vars_files:
+  - vault.yml
+
+  tasks:
+  - name: Log vars
+    debug:
+      msg: "cluster_name: '{{ cluster_name }}'"
+
+  - name: Launch Aurora cloudformation
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}"
+      state: present
+      region: "{{ aws_region }}"
+      disable_rollback: true
+      template: /cloudformation/aurora-pac.yml
+      template_parameters:
+        EnvironmentName: "pac-aurora-{{ cluster }}"
+        DBVPC: vpc-f75fb790
+        DBSecurityGroup: sg-dc82faa5
+        DBInstanceType: db.t2.small
+        DBUsername: AdminUser
+        DBPassword: "{{ db_master_password }}"
+        DBIdentifierNameMaster: pac
+        DBBackupRetentionPeriod: 7
+        TagEnvironment: "{{ environment_type }}"
+    register: aurora_stack
+
+  - name: CF output
+    debug:
+      msg: "My stack outputs are {{ aurora_stack.stack_outputs }}"
+
+  - name: Save RDS host name
+    set_fact:
+      aurora_hostname: "{{ aurora_stack.stack_outputs.DBHostname }}"
+      aurora_port: "{{ aurora_stack.stack_outputs.DBPort }}"
