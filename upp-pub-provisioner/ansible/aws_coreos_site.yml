@@ -157,7 +157,7 @@
             volume_type: gp2
             delete_on_termination: true
           - device_name: /dev/xvdf
-            volume_size: 400
+            volume_size: 450
             volume_type: gp2
             delete_on_termination: true
         count_tag:
