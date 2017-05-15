@@ -17,7 +17,7 @@ The decommissioning process will:
 ## Building the Docker image
 The AWS ES provisioner can be built locally as a Docker image:
 
-`docker build -t coco/upp-elasticsearch-provisioner:latest .`
+`docker build -t coco/upp-elasticsearch-provisioner:local .`
 
 Automated DockerHub builds are also triggered on new releases, located [here](https://hub.docker.com/r/coco/upp-elasticsearch-provisioner/).
 
