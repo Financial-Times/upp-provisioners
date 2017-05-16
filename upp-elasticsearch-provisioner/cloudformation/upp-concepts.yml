@@ -19,7 +19,7 @@ Resources:
     Type: "AWS::Elasticsearch::Domain"
     Properties:
       DomainName: !Ref ClusterName
-      ElasticsearchVersion: "2.3"
+      ElasticsearchVersion: "5.1"
       ElasticsearchClusterConfig:
         InstanceCount: "3"
         InstanceType: "r3.large.elasticsearch"
@@ -36,25 +36,6 @@ Resources:
       AccessPolicies:
         Version: "2012-10-17"
         Statement:
-          -
-            Effect: "Allow"
-            Principal:
-              AWS: "*"
-            Action: "es:*"
-            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/", !Ref ClusterName, "/*" ] ]
-            Condition:
-              IpAddress:
-                aws:SourceIP:
-                  # OSB + LDNWebPerf
-                  - "82.136.1.214/32"
-                  # Park Royal
-                  - "213.216.148.1/32"
-                  # iQuest - Cluj office
-                  - "194.117.242.0/23"
-                  # EU VPN Client
-                  - "62.25.64.1/32"
-                  # US VPN Client
-                  - "64.210.200.1/32"
           -
             Effect: "Allow"
             Principal:
