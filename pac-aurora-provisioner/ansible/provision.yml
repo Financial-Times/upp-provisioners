@@ -2,11 +2,10 @@
 - name: provision stack
   hosts: localhost
   connection: local
-
+  
   vars:
     cluster_name: "pac-aurora-{{ cluster }}"
-    aws_region: eu-west-1
-  
+
   vars_files:
   - vault.yml
 
@@ -15,32 +14,62 @@
     debug:
       msg: "cluster_name: '{{ cluster_name }}'"
 
-  - name: Launch Aurora cloudformation
+  - name: Launch Aurora cloudformation stack in eu-west
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
       stack_name: "{{ cluster_name }}"
       state: present
-      region: "{{ aws_region }}"
+      region: "eu-west-1"
       disable_rollback: true
-      template: /cloudformation/aurora-pac.yml
+      template: /cloudformation/aurora-pac-eu.yml
       template_parameters:
-        EnvironmentName: "pac-aurora-{{ cluster }}"
+        EnvironmentName: "pac-aurora-eu-{{ cluster }}"
         DBVPC: vpc-f75fb790
         DBSecurityGroup: sg-dc82faa5
         DBInstanceType: db.t2.small
-        DBUsername: AdminUser
-        DBPassword: "{{ db_master_password }}"
-        DBIdentifierNameMaster: pac
-        DBBackupRetentionPeriod: 7
+        DBInstanceMasterUsername: AdminUser
+        DBInstanceMasterPassword: "{{ db_master_password }}"
+        DBInstanceDBName: pac
         TagEnvironment: "{{ environment_type }}"
-    register: aurora_stack
+    register: aurora_eu_stack
 
   - name: CF output
     debug:
-      msg: "My stack outputs are {{ aurora_stack.stack_outputs }}"
+      msg: "My stack outputs are {{ aurora_eu_stack.stack_outputs }}"
 
-  - name: Save RDS host name
+  - name: Save Aurora Cluster host name in eu
     set_fact:
-      aurora_hostname: "{{ aurora_stack.stack_outputs.DBHostname }}"
-      aurora_port: "{{ aurora_stack.stack_outputs.DBPort }}"
+      aurora_eu_hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
+      aurora_eu_port: "{{ aurora_eu_stack.stack_outputs.DBPort }}"
+      aurora_eu_instancename: "{{ aurora_eu_stack.stack_outputs.DBInstanceName }}"
+
+  - name: Launch Aurora cloudformation stack in us-east
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}"
+      state: present
+      region: "us-east-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-pac-us.yml
+      template_parameters:
+        EnvironmentName: "pac-aurora-us-{{ cluster }}"
+        DBVPC: vpc-d2bca9b4
+        DBSecurityGroup: sg-6b79a215
+        DBInstanceType: db.t2.small
+        DBInstanceMasterUsername: AdminUser
+        DBInstanceMasterPassword: "{{ db_master_password }}"
+        DBInstanceDBName: pac
+        SourceDB: "arn:aws:rds:eu-west-1:070529446553:db:{{ aurora_eu_instancename }}"
+        TagEnvironment: "{{ environment_type }}"
+    register: aurora_us_stack
+
+  - name: CF output
+    debug:
+      msg: "My stack outputs are {{ aurora_us_stack.stack_outputs }}"
+
+  - name: Save Aurora Cluster host name in us
+    set_fact:
+      aurora_us_hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
+      aurora_us_port: "{{ aurora_eu_stack.stack_outputs.DBPort }}"

@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This template deploys a RDS Aurora cluster.
+Description: This template deploys a Aurora cluster for PAC.
 
 Metadata:
     AWS::CloudFormation::Interface:
@@ -35,7 +35,7 @@ Parameters:
             - db.r3.8xlarge
         Default: db.t2.small
 
-    DBUsername: 
+    DBInstanceMasterUsername: 
         Description: The master Username for the database
         Type: String
         MinLength: 1
@@ -43,7 +43,7 @@ Parameters:
         AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
         ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
     
-    DBPassword:
+    DBInstanceMasterPassword:
         Description: The master password for the database
         NoEcho: true
         Type: String
@@ -52,14 +52,7 @@ Parameters:
         AllowedPattern: '[a-zA-Z0-9]*'
         ConstraintDescription: must contain only alphanumeric characters.
 
-    DBBackupRetentionPeriod:
-        Type: String
-        Default: 7
-        AllowedValues:
-            - 1
-            - 7
-    
-    DBIdentifierNameMaster:
+    DBInstanceDBName:
         Description: The string that will be prefixed to each instance name
         Type: String
         MinLength: 1
@@ -134,10 +127,10 @@ Resources:
         Type: AWS::RDS::DBCluster
         Properties:
             Engine: aurora
-            DatabaseName: !Ref DBIdentifierNameMaster
+            DatabaseName: !Ref DBInstanceDBName
             DBSubnetGroupName: !Ref DBSubnetGroup
-            MasterUsername: !Ref DBUsername
-            MasterUserPassword: !Ref DBPassword
+            MasterUsername: !Ref DBInstanceMasterUsername
+            MasterUserPassword: !Ref DBInstanceMasterPassword
             VpcSecurityGroupIds:
                 - Ref: DBSecurityGroup
             DBClusterParameterGroupName: !Ref DBClusterParameterGroup
@@ -155,20 +148,40 @@ Resources:
                 - Key: name
                   Value: !Sub ${TagName} - ${EnvironmentName}
 
-    DBInstance:
+    DBPrimaryInstance:
         Type: AWS::RDS::DBInstance
         Properties:
             DBClusterIdentifier: !Ref DBCluster
-            DBInstanceIdentifier: !Sub ${EnvironmentName}
-            DBName: !Ref DBIdentifierNameMaster
             DBInstanceClass: !Ref DBInstanceType
             Engine: aurora
             DBParameterGroupName: !Ref DBParameterGroup
             DBSubnetGroupName: !Ref DBSubnetGroup
+            DBInstanceIdentifier: !Sub '${EnvironmentName}-primary-${AWS::Region}'
             PubliclyAccessible: false
-            MultiAZ: true
-            CopyTagsToSnapshot: true
-            BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
+            Tags:
+                - Key: environment
+                  Value: !Ref TagEnvironment
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
+                - Key: name
+                  Value: !Sub ${TagName} - ${EnvironmentName}
+
+    DBReplicaInstance:
+        Type: AWS::RDS::DBInstance
+        Properties:
+            DBClusterIdentifier: !Ref DBCluster
+            DBInstanceClass: !Ref DBInstanceType
+            Engine: aurora
+            DBParameterGroupName: !Ref DBParameterGroup
+            DBSubnetGroupName: !Ref DBSubnetGroup
+            DBInstanceIdentifier: !Sub '${EnvironmentName}-replica-${AWS::Region}'
+            PubliclyAccessible: false
             Tags:
                 - Key: environment
                   Value: !Ref TagEnvironment
@@ -198,14 +211,14 @@ Resources:
             Family: aurora5.6
 
 Outputs:
-    DBHostAndPort: 
-        Description: A reference to the DBInstance connection string
-        Value: !Join ['', [!GetAtt [DBInstance, Endpoint.Address], ':', !GetAtt [DBInstance, Endpoint.Port], '/', !Ref DBIdentifierNameMaster]]
-
     DBHostname: 
-        Description: A reference to the DBInstance hostname
-        Value: !GetAtt [DBInstance, Endpoint.Address]
+        Description: A reference to the DBCluster hostname
+        Value: !GetAtt [DBCluster, Endpoint.Address]
 
     DBPort: 
-        Description: A reference to the DBInstance port
-        Value: !GetAtt [DBInstance, Endpoint.Port]
+        Description: A reference to the DBCluster port
+        Value: !GetAtt [DBCluster, Endpoint.Port]
+
+    DBInstanceName: 
+        Description: A reference to the DBPrimaryInstance Name
+        Value: !Sub '${EnvironmentName}-primary-${AWS::Region}'
