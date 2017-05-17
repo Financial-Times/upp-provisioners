@@ -31,11 +31,11 @@ Once you have [set up AWS credentials](http://docs.aws.amazon.com/cli/latest/use
 
 ##### Validate template
 
- `aws cloudformation validate-template --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets.yaml`
+ `aws cloudformation validate-template --template-body file://///repo//upp-neo4j-provisioner//cloudformation//up-neo4j-ha-cluster-subnets.`
 
 ##### Create stack
 
-`aws cloudformation create-stack --stack-name up-neo4j-ha-cluster-subnets --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets.yaml`
+`aws cloudformation create-stack --stack-name up-neo4j-ha-cluster-subnets --template-body file://///repo//upp-neo4j-provisioner//cloudformation//up-neo4j-ha-cluster-subnets.yaml`
 
 ##### Create stack in non-default VPC
 
@@ -45,14 +45,14 @@ You can find this information via AWS console.
 Once you have details you can can pass them as command line parameters in the following way.
 
 ```
-aws cloudformation create-stack --stack-name up-neo4j-ha-cluster-subnets-semantic --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets.yaml \
+aws cloudformation create-stack --stack-name up-neo4j-ha-cluster-subnets-semantic --template-body file://///repo//upp-neo4j-provisioner//cloudformation//up-neo4j-ha-cluster-subnets.yaml \
 --parameters ParameterKey=VPC,ParameterValue=vpc-9fcb94fb \
 ParameterKey=PublicSubnetRouteTableId,ParameterValue=rtb-6d739b0a
 ```
 
 ##### Update stack
 
-`aws cloudformation update-stack --stack-name up-neo4j-ha-cluster-subnets --template-body file://///mnt//neo//cloudformation//up-neo4j-ha-cluster-subnets.yaml`
+`aws cloudformation update-stack --stack-name up-neo4j-ha-cluster-subnets --template-body file://///repo//upp-neo4j-provisioner//cloudformation//up-neo4j-ha-cluster-subnets.yaml`
 
 
 ##### Delete stack
@@ -69,7 +69,7 @@ Stack that creates an EC2 instance and a security group that allows SSH access f
 NB! We assume that our default VPS is in eu-west-1 AWS region where all our clusters reside.
 ```
 aws cloudformation create-stack --stack-name up-neo4j-jumpbox-uk \
---template-body file://///mnt//neo//cloudformation//jumpbox.yaml \
+--template-body file://///repo//upp-neo4j-provisioner//cloudformation//jumpbox.yaml \
 --parameters ParameterKey=KonstructorAPIKey,ParameterValue=abcdefghijklmnop
 ```
 
@@ -80,7 +80,7 @@ _InstanceKey is AWS Key Pair that allows creation of EC2 instances._
 ###### Example: create a stack in us-east-1 AWS region
 ```
 aws --region us-east-1 cloudformation create-stack --stack-name up-neo4j-jumpbox-us \
---template-body file://///mnt//neo//cloudformation//jumpbox.yaml \
+--template-body file://///repo//upp-neo4j-provisioner//cloudformation//jumpbox.yaml \
 --parameters ParameterKey=VPC,ParameterValue=vpc-4e5dc82b \
 ParameterKey=KonstructorAPIKey,ParameterValue=abcdefghijklmnop \
 ParameterKey=Subnet1,ParameterValue=subnet-4e94b738 \
@@ -93,6 +93,10 @@ ParameterKey=InstanceKey,ParameterValue=UP_NVirginia_Key \
 ##### Delete stack
 
 `aws cloudformation --region us-east-1 delete-stack --stack-name up-neo4j-jumpbox-us`
+
+##### Validate template
+
+`aws cloudformation validate-template --template-body file://///repo//upp-neo4j-provisioner//cloudformation//jumpbox.yaml`
 
 ---
 
