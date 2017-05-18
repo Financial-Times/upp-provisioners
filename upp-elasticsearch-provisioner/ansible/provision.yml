@@ -4,7 +4,7 @@
     cluster_name: "{{cf_template}}-{{delivery_cluster}}"
 
   vars_files:
-    - vault.yml
+    - vault_{{environment_type}}.yml
 
   tasks:
     - name: Ensure S3 bucket exists
