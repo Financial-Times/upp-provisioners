@@ -23,7 +23,8 @@ This readme will be updated / removed once that's complete.
 ## Create a CoreOS EC2 instance
 
 Provision an EC2 instance running the latest CoreOS AMI.  
-We're currently running a `t2.small` instance for UPP. Because we're not downloading the CoreOS images directly to the CoreUpdate box, we've not needed to provision any additional storage.
+We're currently running a `t2.small` instance for UPP.  
+Because we're not downloading the CoreOS images directly to the CoreUpdate box, we've not needed to provision any additional storage.
 
 For instance userdata, copy `cloud-config.yml` to enable SSH access for UPP users.
 
@@ -36,7 +37,7 @@ Add the instance into the Web and Resources security groups.
 Log in to https://account.coreos.com.  
 On the Overview page, you will need to copy the Pull Secret and save it on the CoreOS instance.
 
-On the CoreOS instance as the `core` user, run the following command to create the .docker directory:
+On the CoreOS instance as the `core` user, run the following command to create the `.docker` directory:
 ```
 mkdir -p /home/core/.docker
 sudo mkdir -p /root/.docker
@@ -108,7 +109,7 @@ Copy the `config.yaml` file to the following location:
 /etc/coreupdate/config.yaml
 ```
 
-Update the following parameters as appropriate:
+You will need to update the following parameters with appropriate values:
 ```
 BASE_URL
 SESSION_SECRET
