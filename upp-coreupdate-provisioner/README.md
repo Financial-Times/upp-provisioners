@@ -85,7 +85,7 @@ Log into https://console.developers.google.com.
 Switch your user to `upp-google-oauth@ft.com` - the credentials are in LastPass.
 
 Under 'Credentials', select 'Create OAuth Client ID':  
-[IMAGE]
+![google-oauth](/upp-coreupdate-provisioner/images/google-oauth.png?raw=true "Google OAuth"))
 
 You will need the `Client ID` and `Client Secret` when configuring CoreUpdate.
 
