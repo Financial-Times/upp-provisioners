@@ -8,3 +8,4 @@ cd /ansible
 ansible-playbook --vault-password-file=vault.pass provision.yml --extra-vars "\
 cluster=${CLUSTER} \
 environment_type=${ENVIRONMENT_TYPE} "
+

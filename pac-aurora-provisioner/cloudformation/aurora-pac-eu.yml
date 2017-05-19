@@ -156,7 +156,7 @@ Resources:
             Engine: aurora
             DBParameterGroupName: !Ref DBParameterGroup
             DBSubnetGroupName: !Ref DBSubnetGroup
-            DBInstanceIdentifier: !Sub '${EnvironmentName}-primary-${AWS::Region}'
+            DBInstanceIdentifier: !Sub '${EnvironmentName}-1-${AWS::Region}'
             PubliclyAccessible: false
             Tags:
                 - Key: environment
@@ -180,7 +180,7 @@ Resources:
             Engine: aurora
             DBParameterGroupName: !Ref DBParameterGroup
             DBSubnetGroupName: !Ref DBSubnetGroup
-            DBInstanceIdentifier: !Sub '${EnvironmentName}-replica-${AWS::Region}'
+            DBInstanceIdentifier: !Sub '${EnvironmentName}-2-${AWS::Region}'
             PubliclyAccessible: false
             Tags:
                 - Key: environment
