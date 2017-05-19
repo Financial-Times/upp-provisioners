@@ -85,3 +85,22 @@ Resources:
         TopicConfigurations:
           - Event: "s3:ObjectCreated:*"
             Topic: !Ref SNSTopic
+
+  # Create the concordance store table.
+  ConcordanceStoreDynamoDB:
+    Type: "AWS::DynamoDB::Table"
+    Properties: 
+      AttributeDefinitions:
+      - AttributeName: "uuid"
+        AttributeType: "S"
+      - AttributeName: "concordedIds"
+        AttributeType: "S"
+      KeySchema: 
+      - AttributeName: "uuid"
+        KeyType: "HASH"
+      - AttributeName: "concordedIds"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+      TableName: !Join [ "", ["upp-concordance-store-", !Ref EnvironmentTag]]
