@@ -17,8 +17,8 @@ https://coreos.com/products/coreupdate/docs/latest/on-premises-deployment.html
 However, note that a number of the steps in the CoreOS documentation are either inaccurate or missing.  
 This readme covers all the steps required.
 
-Please note that we plan to create proper provisioning playbooks with Ansible & CloudFormation.  
-This readme will be updated / removed once that's complete.
+We plan to create proper provisioning playbooks with Ansible & CloudFormation.  
+This readme will be updated / removed once complete.
 
 ## Create a CoreOS EC2 instance
 
@@ -162,12 +162,13 @@ Note that the `app-id` must be set exactly as listed here for CoreOS updates to 
 
 ## Create an Application Load Balancer
 
-In AWS, create an ALB.
+In AWS, create an ALB.  
 The ALB should:
 - be in the same VPC / subnets / AZ / security groups as your CoreUpdate instance
 - listen on HTTPS, using the appropriate FT wildcard certificate
 - route traffic to port 8000 on your instance
-- healthcheck path should be `/cp/login` , and the healthy/unhealthy thresholds should be set to 2.
+- have a healthcheck path of `/cp/login`
+- have healthy/unhealthy thresholds set to 2
 
 ## Create a DNS CNAME record
 
