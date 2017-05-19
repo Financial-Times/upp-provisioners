@@ -8,7 +8,7 @@ CloudFormation to spin up an S3 bucket, SNS Topic and 1/2 SQS Queues to be used 
 
 ### [upp-coreupdate-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-coreupdate-provisioner)
 
-CloudFormation to spin up an S3 bucket, SNS Topic and 1/2 SQS Queues to be used as part of the event-driven concept publishing pipeline.  
+Provisioning instructions for manually creating a CoreUpdate instance.
 
 ### [upp-delivery-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-delivery-provisioner)
 
