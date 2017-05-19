@@ -27,4 +27,8 @@ class neo4jha::jumpbox {
     content => '%sudoers ALL=(ALL) NOPASSWD:ALL
     '
   }
+  file { "/etc/init.d/update-jump-dns":
+    mode    => '755',
+    content => template("${module_name}/update-jump-dns.sh");
+  }
 }
