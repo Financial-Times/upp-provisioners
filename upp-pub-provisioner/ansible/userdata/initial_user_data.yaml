@@ -9,8 +9,6 @@ write_files:
       authors_bertha_url={{authors_bertha_url}}
       binary_s3_bucket={{binary_s3_bucket}}
       brands_bertha_url={{brands_bertha_url}}
-      brightcove_account_id={{brightcove_account_id}}
-      brightcove_auth={{brightcove_auth}}
       carousel_bucket={{carousel_bucket}}
       carousel_enabled={{carousel_enabled}}
       clusterid={{clusterid}}
@@ -23,7 +21,6 @@ write_files:
       factset_key_second_part={{factset_key_second_part}}
       factset_username={{factset_username}}
       konstructor_api_key={{konstructor_api_key}}
-      mappings_bertha_url={{mappings_bertha_url}}
       pam_credential_validation_uuid={{pam_credential_validation_uuid}}
       pam_validator_credentials={{pam_validator_credentials}}
       pam_mam_validation_url={{pam_mam_validation_url}}

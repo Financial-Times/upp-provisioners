@@ -32,12 +32,9 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   authors_bertha_url=${AUTHORS_BERTHA_URL} \
   roles_bertha_url=${ROLES_BERTHA_URL} \
   brands_bertha_url=${BRANDS_BERTHA_URL} \
-  mappings_bertha_url=${MAPPINGS_BERTHA_URL} \
   environment_tag=${ENVIRONMENT_TAG:=default} \
   environment_type=${ENVIRONMENT_TYPE:=p} \
   tme_host=${TME_HOST:=tme.ft.com} \
-  brightcove_account_id=${BRIGHTCOVE_ACCOUNT_ID} \
-  brightcove_auth='${BRIGHTCOVE_AUTH}' \
   delivery_clusters_urls=${DELIVERY_CLUSTERS_URLS} \
   s3_image_bucket_urls=${S3_IMAGE_BUCKET_URLS} \
   delivery_clusters_http_credentials=${DELIVERY_CLUSTERS_HTTP_CREDENTIALS}\

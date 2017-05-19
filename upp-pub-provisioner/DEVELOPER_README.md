@@ -132,13 +132,6 @@ export PAM_VALIDATOR_CREDENTIALS=
 #NOTE:currently this is the same uuid as used by the synthetic article monitor resource uuid and so guaranteed to exist.
 export PAM_CREDENTIAL_VALIDATION_UUID
 
-# For publishing videos, the brightcove-notifier and brightcove-metadata-preprocessor must connect to the Brightcove API with an id like this: 47628783001
-export BRIGHTCOVE_ACCOUNT_ID=
-
-# You could find the keys in LastPass under the name: Brightcove
-# Make sure to surround value in quotes " "
-export BRIGHTCOVE_AUTH=
-
 # The following variables are used by synthetic-article-publication-monitor and synthetic-list-publication-monitor in order to check the publication pipeline for articles and lists.
 # The variables specify UUIDs and payloads that should be used to create synthetic publications by the two services.
 export SYNTHETIC_ARTICLE_UUID=
@@ -149,11 +142,9 @@ export SYNTHETIC_LIST_UUID=
 ##AUTHORS_BERTHA_URL refers to the spreadsheet of curated authors data.
 ##ROLES_BERTHA_URL refers to the spreadsheet of roles for curated authors.
 ##BRANDS_BERTHA_URL refers to the spreadsheet of roles for curated brands.
-##MAPPINGS_BERTHA_URL refers to the spreadsheet of mappings between Brightcove video tags and TME IDs
 export AUTHORS_BERTHA_URL=http://bertha.site.example/123456XYZ/Authors
 export ROLES_BERTHA_URL=http://bertha.site.example/123456XYZ/Roles
 export BRANDS_BERTHA_URL=http://bertha.site.example/123456XYZ/Brands
-export MAPPINGS_BERTHA_URL=http://bertha.site.example/123456XYZ/Mapping
 ```
 
 Run the image
@@ -192,12 +183,9 @@ docker run \
     -e "SYNTHETIC_ARTICLE_UUID=$SYNTHETIC_ARTICLE_UUID" \
     -e "SYNTHETIC_ARTICLE_PAYLOAD=$SYNTHETIC_ARTICLE_PAYLOAD" \
     -e "SYNTHETIC_LIST_UUID=$SYNTHETIC_LIST_UUID" \
-    -e "BRIGHTCOVE_ACCOUNT_ID=$BRIGHTCOVE_ACCOUNT_ID" \
-    -e "BRIGHTCOVE_AUTH=$BRIGHTCOVE_AUTH" \
     -e "AUTHORS_BERTHA_URL=$AUTHORS_BERTHA_URL" \
     -e "ROLES_BERTHA_URL=$ROLES_BERTHA_URL" \
     -e "BRANDS_BERTHA_URL=$BRANDS_BERTHA_URL" \
-    -e "MAPPINGS_BERTHA_URL=$MAPPINGS_BERTHA_URL" \
     -e "BRANCH_NAME=$BRANCH_NAME" \
     coco/upp-pub-provisioner:local
 ```
