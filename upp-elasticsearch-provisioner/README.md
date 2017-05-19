@@ -53,6 +53,7 @@ docker run \
     -e "CF_TEMPLATE=$CF_TEMPLATE" \
     -e "DELIVERY_CLUSTER=$DELIVERY_CLUSTER" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "DELETE_S3_BUCKET=$DELETE_S3_BUCKET" \
     coco/upp-elasticsearch-provisioner:latest /bin/bash decom.sh
