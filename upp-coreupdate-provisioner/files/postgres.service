@@ -1,0 +1,12 @@
+[Service]
+User=core
+ExecStartPre=-/usr/bin/docker kill postgres
+ExecStartPre=-/usr/bin/docker rm postgres
+ExecStart=/usr/bin/docker run --rm --name postgres \
+    -v /var/lib/postgresql/data:/var/lib/postgresql/data \
+    --net="host" \
+    postgres:9.4
+ExecStop=/usr/bin/docker kill postgres
+
+[Install]
+WantedBy=multi-user.target
