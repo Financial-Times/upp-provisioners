@@ -1,0 +1,37 @@
+---
+- name: Decommission stack
+  hosts: localhost
+  connection: local
+
+  vars:
+    cluster_name: "pac-aurora-{{ cluster }}"
+
+  vars_files:
+  - vault.yml
+
+  tasks:
+  - name: Remove Aurora cloudformation in EU
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}"
+      region: "eu-west-1"
+      state: "absent"
+    register: aurora_eu_stack
+
+  - name: show stack outputs
+    debug:
+      msg: "My stack outputs are {{ aurora_eu_stack }}"
+
+  - name: Remove Aurora cloudformation in US
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}"
+      region: "us-east-1"
+      state: "absent"
+    register: aurora_us_stack
+
+  - name: show stack outputs
+    debug:
+      msg: "My stack outputs are {{ aurora_us_stack }}"
