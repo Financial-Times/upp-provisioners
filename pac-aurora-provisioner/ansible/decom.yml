@@ -7,7 +7,7 @@
     cluster_name: "pac-aurora-{{ cluster }}"
 
   vars_files:
-  - vault.yml
+  - vault_{{ environment_type }}.yml
 
   tasks:
   - name: Remove Aurora cloudformation in EU
@@ -22,16 +22,3 @@
   - name: show stack outputs
     debug:
       msg: "My stack outputs are {{ aurora_eu_stack }}"
-
-  - name: Remove Aurora cloudformation in US
-    cloudformation:
-      aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}"
-      region: "us-east-1"
-      state: "absent"
-    register: aurora_us_stack
-
-  - name: show stack outputs
-    debug:
-      msg: "My stack outputs are {{ aurora_us_stack }}"

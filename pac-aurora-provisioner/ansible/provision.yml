@@ -7,7 +7,7 @@
     cluster_name: "pac-aurora-{{ cluster }}"
 
   vars_files:
-  - vault.yml
+  - vault_{{ environment_type }}.yml
 
   tasks:
   - name: Log vars
