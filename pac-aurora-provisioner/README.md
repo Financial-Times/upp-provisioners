@@ -51,4 +51,6 @@ docker run \
 
 ## Things to do
 
-The creation of the read replica in US is done using AWS CLI, because cloudformation can't be used as the DBCluster type it uses to create a read replica is missing a parameter `ReplicationSourceIdentifier`. Feature request raised with AWS. Once that gets addressed, the provisioning of the read replica will be done using a cloudformation stack.
+* The creation of the read replica in US is done using AWS CLI, because cloudformation can't be used as the DBCluster type it uses to create a read replica is missing a parameter `ReplicationSourceIdentifier`. Feature request raised with AWS. Once that gets addressed, the provisioning of the read replica will be done using a cloudformation stack.
+
+* Create DNS name for the cluster using konstructor using ansible
