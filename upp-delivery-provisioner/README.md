@@ -63,6 +63,7 @@ docker run \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
+    -e "AWS_ES_CONTENT_ENDPOINT=$AWS_ES_CONTENT_ENDPOINT" \
     -e "METHODE_API=$METHODE_API" \
     coco/upp-delivery-provisioner:latest
 

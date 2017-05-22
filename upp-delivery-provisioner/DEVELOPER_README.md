@@ -116,6 +116,8 @@ export CES_HOST=
 
 ## The ElasticSearch domain used for concept-search
 export AWS_ES_ENDPOINT=
+## The ElasticSearch domain used for content-search
+export AWS_ES_CONTENT_ENDPOINT=
 export SPLUNK_HEC_TOKEN=
 
 ## prod: https://methodeapi.glb.ft.com
@@ -153,6 +155,7 @@ docker run \
     -e "UPP_GATEWAY_HOST=$UPP_GATEWAY_HOST" \
     -e "UPP_GATEWAY_PORT=$UPP_GATEWAY_PORT" \
     -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
+    -e "AWS_ES_CONTENT_ENDPOINT=$AWS_ES_CONTENT_ENDPOINT" \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "METHODE_API=$METHODE_API" \
     -e "BRANCH_NAME=$BRANCH_NAME" \
