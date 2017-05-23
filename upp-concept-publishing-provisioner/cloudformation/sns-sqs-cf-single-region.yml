@@ -91,15 +91,13 @@ Resources:
     Type: "AWS::DynamoDB::Table"
     Properties: 
       AttributeDefinitions:
-      - AttributeName: "uuid"
+      - AttributeName: "conceptId"
         AttributeType: "S"
       - AttributeName: "concordedIds"
-        AttributeType: "S"
+        AttributeType: "L"
       KeySchema: 
-      - AttributeName: "uuid"
+      - AttributeName: "conceptId"
         KeyType: "HASH"
-      - AttributeName: "concordedIds"
-        KeyType: "RANGE"
       ProvisionedThroughput:
         ReadCapacityUnits: "5"
         WriteCapacityUnits: "5"
