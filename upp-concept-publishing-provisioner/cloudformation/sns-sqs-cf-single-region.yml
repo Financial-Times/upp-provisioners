@@ -93,12 +93,11 @@ Resources:
       AttributeDefinitions:
       - AttributeName: "conceptId"
         AttributeType: "S"
-      - AttributeName: "concordedIds"
-        AttributeType: "L"
-      KeySchema: 
+      KeySchema:
       - AttributeName: "conceptId"
         KeyType: "HASH"
       ProvisionedThroughput:
         ReadCapacityUnits: "5"
         WriteCapacityUnits: "5"
       TableName: !Join [ "", ["upp-concordance-store-", !Ref EnvironmentTag]]
+
