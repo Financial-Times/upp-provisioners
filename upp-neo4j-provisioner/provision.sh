@@ -18,6 +18,7 @@ set TOKEN_URL = "${TOKEN_URL:?Failed to get etcd2 token URL}"
 set NEO_EXTRA_CONF_URL = "${NEO_EXTRA_CONF_URL:?Neo4J Extra Conf URL not provided.}"
 set AWS_DEFAULT_REGION = "${AWS_DEFAULT_REGION:?AWS Region not set.}"
 set ENVIRONMENT_TYPE = "${ENVIRONMENT_TYPE:?Environment type not set.}"
+set NEO_HEAP_SIZE = "${NEO_HEAP_SIZE:?Neo4J Heap Size not provided.}"
 
 case "$AWS_DEFAULT_REGION" in
     eu-west-1)
@@ -122,6 +123,11 @@ read -r -d '' CF_PARAMS <<EOM
     {
         "ParameterKey": "ExtraNeoConf",
         "ParameterValue": "${NEO_EXTRA_CONF_URL}",
+        "UsePreviousValue": false
+    },
+    {
+        "ParameterKey": "HeapMaxSize",
+        "ParameterValue": "${NEO_HEAP_SIZE}",
         "UsePreviousValue": false
     }
 ]

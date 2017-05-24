@@ -1,0 +1,23 @@
+[Unit]
+Description=Core Update
+After=postgres.service
+
+[Service]
+User=core
+ExecStartPre=-/usr/bin/docker kill coreupdate-%i
+ExecStartPre=-/usr/bin/docker rm coreupdate-%i
+ExecStart=/usr/bin/docker run --rm --name coreupdate-%i \
+    -v /etc/coreupdate:/etc/coreupdate \
+    --net="host" \
+    -w /opt/coreupdate \
+    quay.io/coreos/coreupdate:latest \
+    /opt/coreupdate/bin/coreupdate \
+    --yaml=/etc/coreupdate/config.yaml
+ExecStop=/usr/bin/docker kill coreupdate-%i
+
+[Install]
+WantedBy=multi-user.target
+
+[X-Fleet]
+X-Conflicts=coreupdate@*
+

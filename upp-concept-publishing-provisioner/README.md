@@ -42,9 +42,9 @@ docker run \
 
 - Unfortunately there are a few manual steps that cannot be automated via cloud formation.
 - For any stack created using this script you must grant access to the SQS queue to upp apps
-- In the AWS console navigate to IAM -> Users and locate the content-container-apps user
+- In the AWS console navigate to IAM -> Users and locate the content-containers-apps user
 - Copy the value for the User ARN to your clipboard
-- In any region where an SQS queue was provisioned you must navigate to Simple Queue Service and locate your newly create queue
+- In any region where an SQS queue was provisioned you must navigate to Simple Queue Service and locate your newly create queue (please note to saerch start with 'upp-' as wildcards are a bit problematic)
 - Select Permissions -> Add a Permission. Paste the User ARN into the Principal field and tick the box for All SQS Actions, then Save.
 - If you have provisioned a multiple stacks follow the next set of instructions; if not you can stop here
 - Next you must go into the aws console for the secondary region. 
