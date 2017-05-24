@@ -34,9 +34,20 @@ Resources:
         Version: "2012-10-17"
         Id: ConceptNotificationQueuePolicy
         Statement:
-          Sid: "receive-from-sns"
-          Effect: "Allow"
-          Principal:
-            AWS: "*"
-          Action: "SQS:SendMessage"
-          Resource: !GetAtt SQSQueue.Arn
+          -
+            Sid: "receive-from-sns"
+            Effect: "Allow"
+            Principal:
+              AWS: "*"
+            Action: "SQS:SendMessage"
+            Resource: !GetAtt SQSQueue.Arn
+            Condition:
+              ArnEquals:
+                "aws:SourceArn": !Ref SNSTopic
+          -
+            Sid: "communicate-with-sqs"
+            Effect: "Allow"
+            Principal:
+              AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
+            Action: "SQS:*"
+            Resource: !GetAtt SQSQueue.Arn
