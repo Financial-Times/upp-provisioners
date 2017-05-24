@@ -102,9 +102,7 @@ ParameterKey=InstanceKey,ParameterValue=UP_NVirginia_Key \
 
 Get key from last pass and update eu-west-1 stack
 
-```
-aws cloudformation update-stack --stack-name up-neo4j-jumpbox-uk --template-body file://jumpbox.yaml --parameters ParameterKey=KonstructorAPIKey,ParameterValue=<new_kon_dns_key>`
-```
+`aws cloudformation update-stack --stack-name up-neo4j-jumpbox-uk --template-body file://jumpbox.yaml --parameters ParameterKey=KonstructorAPIKey,ParameterValue=<new_kon_dns_key>`
 
 us-east-1 needs a few non default parameters eg.
 ```
