@@ -32,7 +32,7 @@ class neo4jha::jumpbox {
     mode    => '755',
     content => template("${module_name}/update-jump-dns.sh");
   }
-
+  -> 
   service { 'update-jump-dns':
     enable => true,
     ensure => running
