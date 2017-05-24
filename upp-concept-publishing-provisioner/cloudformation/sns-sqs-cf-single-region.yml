@@ -38,12 +38,12 @@ Resources:
   SNSDeadLetterQueue:
     Type: "AWS::SQS::Queue"
     Properties:
-      QueueName: !Join ["", ["upp-concept-publish-dead-letter-", !Ref EnvironmentTag]]
+      QueueName: !Join ["", ["upp-concept-publish-dead-letter-", !Ref EnvironmentTag, "-1"]]
 
   SQSQueue:
     Type: "AWS::SQS::Queue"
     Properties:
-      QueueName: !Join ["", ["upp-concept-publish-notifications-", !Ref EnvironmentTag]]
+      QueueName: !Join ["", ["upp-concept-publish-notifications-", !Ref EnvironmentTag, "-1"]]
       ReceiveMessageWaitTimeSeconds: 20
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt SNSDeadLetterQueue.Arn
