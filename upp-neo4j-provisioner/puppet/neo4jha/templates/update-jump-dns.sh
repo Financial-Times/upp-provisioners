@@ -49,10 +49,10 @@ cat <<EOF
 EOF
 }
 
-echo curl -H "Content-Type: application/json" \
+curl -H "Content-Type: application/json" \
 -H "Accept: application/json" \
 -H "x-api-key: ${KONKEY}" \
--X PUT -d "$(generate_post_data)" "https://dns-api.in.ft.com/v2" >> /root/updatedns.out
+-X PUT -d "$(generate_post_data)" "https://dns-api.in.ft.com/v2"
 
 }
 
