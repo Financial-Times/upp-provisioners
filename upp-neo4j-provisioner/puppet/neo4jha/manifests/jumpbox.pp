@@ -30,7 +30,8 @@ class neo4jha::jumpbox {
 
   file { '/etc/init.d/update-jump-dns':
     mode    => '755',
-    content => template("${module_name}/update-jump-dns.sh");
+    content => template("${module_name}/update-jump-dns.sh"),
+    notify  => Service['update-jump-dns'];
   }
   -> 
   service { 'update-jump-dns':
