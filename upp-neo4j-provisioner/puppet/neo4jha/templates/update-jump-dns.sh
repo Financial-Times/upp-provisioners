@@ -56,11 +56,35 @@ echo curl -H "Content-Type: application/json" \
 
 }
 
+stop() {
+
+  echo "This service is only here to update the DNS record on boot."
+  echo "There's no need to stop or restart it."
+
+}
+
+status() {
+
+  echo "This service is only here to update the DNS record on boot."
+  echo "There's no need to stop or restart it."
+
+}
+
 
 # See how we were called.
 case "$1" in
   start)
         start
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        stop
+        start
+        ;;
+  status)
+        status
         ;;
   *)
         echo $"Usage: $0 start"
