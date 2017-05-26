@@ -88,24 +88,24 @@ python register-es-snapshot-dir.py \
 --role arn:aws:iam::070529446553:role/upp-elasticsearch-backup-role
 ```
 
-- For the following steps, using Postman is easier than `curl`, as you need to pass the AWS credentials, and Postman allows you to do this with a nice GUI. :)
+- For the following steps, using Postman is much easier than `curl`, as you need to pass the AWS credentials, and Postman allows you to do this with a nice GUI. :)
 
-- On your source cluster, send a PUT request to the following URL to create a snapshot, replacing your cluster hostname and snapshot name with appropriate values:
+- On your source cluster, send a `PUT` request to the following URL to create a snapshot, replacing your cluster hostname and snapshot name with appropriate values:
 ```
 https://search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/snapshot-20170526
 ```
 
-- Depending on the size of the source cluster, this may take up to 15 minutes to complete. You can check the progress of the snapshot by sending a GET request to the following URL:
+- Depending on the size of the source cluster, this may take up to 15 minutes to complete. You can check the progress of the snapshot by sending a `GET` request to the following URL:
 ```
 https://search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/_all
 ```
 
-- Once the backup is complete, check the snapshot is visible in your target cluster:
+- Once the backup is complete, send a `GET` request to check the snapshot is visible in your target cluster:
 ```
 https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/_all
 ```
 
-- Trigger a restore of the snapshot in the target cluster. Send a POST request to the following URL:
+- Trigger a restore of the snapshot in the target cluster. Send a `POST` request to the following URL:
 ```
 https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/snapshot-20170526/_restore
 ```
