@@ -29,6 +29,7 @@
         template_parameters:
           EnvironmentType: "{{environment_type}}"
           ClusterName: "{{cluster_name}}"
+          AccountID: "{{aws_account_id}}"
         tags:
           Stack: "{{cluster_name}}"
       register: es_stack_output
