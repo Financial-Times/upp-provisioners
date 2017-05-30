@@ -56,7 +56,7 @@ docker run \
 
 ## Manual Step
 Manual step is only needed for multi-region deployment (pre-prod & prod environments).  
-You need to manually subscribe SQS queue un us-east-1 region to SNS topic in eu-west-1 region.  
+You need to manually subscribe SQS queue in us-east-1 region to SNS topic in eu-west-1 region.  
 To do this..
 - In EU (Ireland) find SNS Topic ARN. Go to SNS section > filter "topics upp-concept-publishing-{pre-prod|prod}" > Copy topic's ARN to clipboard
 - In N.Virginia find SQS queue. Go to SQS > Filter "upp-concept-publish-notificationsg-{pre-prod|prod}" > select queue
