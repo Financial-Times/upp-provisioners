@@ -13,6 +13,21 @@ Parameters:
   ClusterName:
     Description: The name of the ES cluster
     Type: String
+  AccountID:
+    Description: AWS Account ID for Test or Prod
+    Type: String
+    AllowedValues:
+      # ft-tech-content-platform-test
+      - '070529446553'
+      # ft-tech-content-platform-prod
+      - '469211898354'
+  Region:
+    Description: AWS region - only used to generate the domain access policy 
+    Type: String
+    AllowedValues:
+      - 'eu-west-1'
+      - 'us-east-1'
+    Default: eu-west-1
 
 Resources:
   ElasticsearchDomain:
@@ -41,7 +56,7 @@ Resources:
             Principal:
               AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
             Action: "es:*"
-            Resource: !Join [ "", [ "arn:aws:es:eu-west-1:027104099916:domain/", !Ref ClusterName, "/*" ] ]
+            Resource: !Join [ "", [ "arn:aws:es:", !Ref Region, ":", !Ref AccountID, ":domain/", !Ref ClusterName, "/*" ] ]
       AdvancedOptions:
         rest.action.multi.allow_explicit_index: "true"
       Tags:
