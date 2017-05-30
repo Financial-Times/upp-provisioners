@@ -109,3 +109,9 @@ Resources:
         WriteCapacityUnits: "5"
       TableName: !Join [ "", ["upp-concordance-store-", !Ref EnvironmentTag]]
 
+Outputs:
+  SNSTopicARN:
+    Description: The ID of the VPC
+    Value: !Ref SNSTopic
+    Export:
+      Name: !Join ["", ["upp-concept-publishing-", !Ref EnvironmentTag, "-SNSTopic"]]

@@ -43,7 +43,9 @@ Resources:
             Resource: !GetAtt SQSQueue.Arn
             Condition:
               ArnEquals:
-                "aws:SourceArn": !Ref SNSTopic
+                "aws:SourceArn":
+                  Fn::ImportValue:
+                    !Join ["", ["upp-concept-publishing-", !Ref EnvironmentTag, "-SNSTopic"]]
           -
             Sid: "communicate-with-sqs"
             Effect: "Allow"
@@ -51,3 +53,11 @@ Resources:
               AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
             Action: "SQS:*"
             Resource: !GetAtt SQSQueue.Arn
+  SQSSubscription:
+      Type: "AWS::SNS::Subscription"
+      Properties:
+        Endpoint: !GetAtt SQSQueue.Arn
+        Protocol: sqs
+        TopicArn:
+          Fn::ImportValue:
+            !Join ["", ["upp-concept-publishing-", !Ref EnvironmentTag, "-SNSTopic"]]
