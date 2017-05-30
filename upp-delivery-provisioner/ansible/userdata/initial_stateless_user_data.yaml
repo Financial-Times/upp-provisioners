@@ -8,6 +8,7 @@ write_files:
       apps_aws_access_key={{apps_aws_access_key}}
       apps_aws_secret_access_key={{apps_aws_secret_access_key}}
       aws_es_endpoint={{aws_es_endpoint}}
+      aws_es_content_endpoint={{aws_es_content_endpoint}}
       aws_image_monitor_test_uuid={{aws_image_monitor_test_uuid}}
       binary_writer_bucket={{binary_writer_bucket}}
       bridging_message_queue_proxy={{bridging_message_queue_proxy}}

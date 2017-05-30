@@ -26,7 +26,7 @@ Provision an EC2 instance running the latest CoreOS AMI.
 We're currently running a `t2.small` instance for UPP.  
 Because we're not downloading the CoreOS images directly to the CoreUpdate box, we've not needed to provision any additional storage.
 
-For instance userdata, copy `cloud-config.yml` to enable SSH access for UPP users.
+For instance userdata, copy `cloud-config.yaml` to enable SSH access for UPP users.
 
 The instance will need to be in a public subnet in order for CoCo clusters to connect.  
 [NOTE - is this true? The ALB we create should be public, but there's no reason the instance itself has to be public. Let's double check.]  

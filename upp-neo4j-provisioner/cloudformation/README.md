@@ -98,6 +98,26 @@ ParameterKey=InstanceKey,ParameterValue=UP_NVirginia_Key \
 
 `aws cloudformation validate-template --template-body file://///repo//upp-neo4j-provisioner//cloudformation//jumpbox.yaml`
 
+##### Update stack with kon_dns key
+
+Get key from last pass and update eu-west-1 stack
+
+`aws cloudformation update-stack --stack-name up-neo4j-jumpbox-uk --template-body file://jumpbox.yaml --parameters ParameterKey=KonstructorAPIKey,ParameterValue=<new_kon_dns_key>`
+
+us-east-1 needs a few non default parameters eg.
+```
+aws cloudformation update-stack --stack-name up-neo4j-jumpbox-us --template-body file://jumpbox.yaml \
+--region us-east-1 \
+--parameters ParameterKey=KonstructorAPIKey,ParameterValue=<new_kon_dns_key> \
+ParameterKey=VPC,ParameterValue=vpc-1d25657a \
+ParameterKey=Subnet1,ParameterValue=subnet-5a978b02 \
+ParameterKey=Subnet2,ParameterValue=subnet-b5b5aa9f \
+ParameterKey=Subnet3,ParameterValue=subnet-b9c608f0 \
+ParameterKey=ImageId,ParameterValue=ami-0b33d91d
+```
+
+After each update terminate the instance and autoscaling will create a new instance with the updated launch config.
+
 ---
 
 ### [neo4jhacluster.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-neo4j-provisioner/cloudformation/neo4jhacluster.yaml)

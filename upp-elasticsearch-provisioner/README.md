@@ -23,8 +23,8 @@ Automated DockerHub builds are also triggered on new releases, located [here](ht
 
 ## Provisioning a cluster
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
-- The cluster name will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
-- The cluster name length must be less than or equal to 28
+- The full cluster name will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
+- The full cluster name has a maxmimum length of 28 characters.
 - If provisioning a cluster that has previously had a snapshot taken, and you wish to restore the latest ES snapshot, set `$RESTORE_ES_SNAPSHOT"` to `true`.
 - Run the following Docker commands:
 ```
@@ -53,6 +53,7 @@ docker run \
     -e "CF_TEMPLATE=$CF_TEMPLATE" \
     -e "DELIVERY_CLUSTER=$DELIVERY_CLUSTER" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "DELETE_S3_BUCKET=$DELETE_S3_BUCKET" \
     coco/upp-elasticsearch-provisioner:latest /bin/bash decom.sh
