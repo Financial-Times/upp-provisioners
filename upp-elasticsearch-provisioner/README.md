@@ -67,10 +67,12 @@ docker run \
 
 - Run `register-es-snapshot-dir.py`, authorizing your source cluster to create a backup in the target cluster's S3 bucket. Note that you will need to replace some parameters, as detailed below.
 
-    - Replace the `access_key` and `secret_key` values with the `upp-elasticsearch-provisioner` user keys for the appropriate AWS account. These are listed in LastPass.
+    - Replace the `access_key` and `secret_key` values with the `upp-elasticsearch-provisioner` user keys for the appropriate **source** AWS account. These are listed in LastPass. Note that there are separate keys for Infra Prod, Content Test, and Content Prod - make sure you use the correct key.
 
     - Replace the `role` value with the the appropriate role ARN:
 ```
+ft-tech-infra-prod:
+arn:aws:iam::027104099916:role/upp-elasticsearch-backup-role
 ft-tech-content-platform-test:
 arn:aws:iam::070529446553:role/upp-elasticsearch-backup-role
 ft-tech-content-platform-prod:
