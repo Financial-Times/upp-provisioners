@@ -31,6 +31,7 @@ docker run \
     -e "NEO_EXTRA_CONF_URL=$NEO_EXTRA_CONF_URL" \
     -e "TOKEN_URL=$TOKEN_URL" \
     -e "NEO_HEAP_SIZE=$NEO_HEAP_SIZE" \
+    -e "NEO_CACHE_SIZE=$NEO_CACHE_SIZE" \
     coco/upp-neo4j-provisioner:latest
 ```
 - You can monitor the provisioning by going to the Cloudformation section in the AWS console and looking for the stack `up-neo4j-<ENVIRONMENT_TAG>`.
