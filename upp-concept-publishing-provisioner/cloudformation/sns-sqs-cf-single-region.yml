@@ -66,8 +66,8 @@ Resources:
             Action: "SQS:SendMessage"
             Resource: !GetAtt SQSQueue.Arn
             Condition:
-              ArnEquals:
-                "aws:SourceArn": !Ref SNSTopic
+              ArnLike:
+                "aws:SourceArn": !Join ["", ["arn:aws:sns:eu-west-1:027104099916:upp-concept-publishing-", !Ref EnvironmentTag, "-SNSTopic*"]]
           -
             Sid: "communicate-with-sqs"
             Effect: "Allow"
