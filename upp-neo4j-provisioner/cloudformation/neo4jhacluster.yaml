@@ -391,6 +391,7 @@ Resources:
               "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/splunk-forwarder/splunk_hec_token ", !Ref SplunkHecToken, " >/dev/null 2>&1 || true;\"\n",
               "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/neo4j/extra-conf-url ", !Ref ExtraNeoConf, " >/dev/null 2>&1 || true;\"\n",
               "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/neo4j/dbms-memory-heap-maxSize ", !Ref HeapMaxSize, " >/dev/null 2>&1 || true;\"\n",
+              "          ExecStart=/bin/sh -c \"etcdctl mk /ft/config/neo4j/dbms-memory-pagecache-size ", !Ref PageCacheSize, " >/dev/null 2>&1 || true;\"\n",
               "    - name: vol-neo4j.mount\n",
               "      command: start\n",
               "      content: |\n",

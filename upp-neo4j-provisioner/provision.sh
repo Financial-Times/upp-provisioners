@@ -19,6 +19,7 @@ set NEO_EXTRA_CONF_URL = "${NEO_EXTRA_CONF_URL:?Neo4J Extra Conf URL not provide
 set AWS_DEFAULT_REGION = "${AWS_DEFAULT_REGION:?AWS Region not set.}"
 set ENVIRONMENT_TYPE = "${ENVIRONMENT_TYPE:?Environment type not set.}"
 set NEO_HEAP_SIZE = "${NEO_HEAP_SIZE:?Neo4J Heap Size not provided.}"
+set NEO_CACHE_SIZE = "${NEO_CACHE_SIZE:?Neo4J Page Cache Size not provided.}"
 
 case "$AWS_DEFAULT_REGION" in
     eu-west-1)
@@ -128,6 +129,11 @@ read -r -d '' CF_PARAMS <<EOM
     {
         "ParameterKey": "HeapMaxSize",
         "ParameterValue": "${NEO_HEAP_SIZE}",
+        "UsePreviousValue": false
+    },
+    {
+        "ParameterKey": "PageCacheSize",
+        "ParameterValue": "${NEO_CACHE_SIZE}",
         "UsePreviousValue": false
     }
 ]
