@@ -29,6 +29,8 @@ Metadata:
       - SplunkHecURL
       - SplunkHecToken
       - ExtraNeoConf
+      - HeapMaxSize
+      - PageCacheSize
     - Label: FT standard tagging
       Parameters:
       - TagEnvironment
@@ -123,6 +125,9 @@ Parameters:
     Type: String
   HeapMaxSize:
     Description: Heap Size for the Neo4j
+    Type: String
+  PageCacheSize:
+    Description: Page Cache Size for the Neo4j
     Type: String
 
   # FT Standard AWS Tags.
