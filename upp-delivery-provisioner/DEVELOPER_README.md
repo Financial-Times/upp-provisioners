@@ -113,6 +113,7 @@ export AWS_DEFAULT_REGION=eu-west-1
 ## Prod: ces.in.ft.com
 ## Pre-Prod or lower: ces-test.in.ft.com
 export CES_HOST=
+export CES_CREDENTIALS=
 
 ## The ElasticSearch domain used for concept-search
 export AWS_ES_ENDPOINT=
