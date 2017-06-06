@@ -70,10 +70,10 @@ coreos:
         [Service]
         EnvironmentFile=/etc/environment
         ExecStartPre=/usr/bin/wget -qO /tmp/substitute-ft-env-variables.sh https://raw.githubusercontent.com/Financial-Times/upp-provisioners/{{branch_name}}/upp-pub-provisioner/sh/substitute-ft-env-variables.sh
-        ExecStartPre=/usr/bin/wget -qO /tmp/persistent_instance_user_data.yaml https://raw.githubusercontent.com/Financial-Times/upp-provisioners/{{branch_name}}/upp-pub-provisioner/ansible/userdata/persistent_instance_user_data.yaml
+        ExecStartPre=/usr/bin/wget -qO /tmp/instance_user_data.yaml https://raw.githubusercontent.com/Financial-Times/upp-provisioners/{{branch_name}}/upp-pub-provisioner/ansible/userdata/persistent_instance_user_data.yaml
         ExecStartPre=/usr/bin/chmod +x /tmp/substitute-ft-env-variables.sh
         ExecStartPre=/tmp/substitute-ft-env-variables.sh
-        ExecStart=/usr/bin/coreos-cloudinit --from-file /tmp/persistent_instance_user_data.yaml
-        ExecStartPost=/usr/bin/rm /tmp/ft-env-variables /tmp/substitute-ft-env-variables.sh /tmp/persistent_instance_user_data.yaml
+        ExecStart=/usr/bin/coreos-cloudinit --from-file /tmp/instance_user_data.yaml
+        ExecStartPost=/usr/bin/rm /tmp/ft-env-variables /tmp/substitute-ft-env-variables.sh /tmp/sinstance_user_data.yaml
         RemainAfterExit=yes
         Type=oneshot
