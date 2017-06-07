@@ -69,7 +69,7 @@ docker run \
 
     - Replace the `access_key` and `secret_key` values with the `upp-elasticsearch-provisioner` user keys for the appropriate **source** AWS account. These are listed in LastPass. Note that there are separate keys for Infra Prod, Content Test, and Content Prod - make sure you use the correct key.
 
-    - Replace the `role` value with the the appropriate role ARN:
+    - Replace the `role` value with the the appropriate role ARN for the **source** AWS account:
 ```
 ft-tech-infra-prod:
 arn:aws:iam::027104099916:role/upp-elasticsearch-backup-role
@@ -87,14 +87,14 @@ python register-es-snapshot-dir.py \
 --access_key example-access-key \
 --secret_key example-secret-key \
 --bucket upp-concepts-target-cluster-backup
---role arn:aws:iam::070529446553:role/upp-elasticsearch-backup-role
+--role arn:aws:iam::027104099916:role/upp-elasticsearch-backup-role
 ```
 
 - For the following steps, using Postman is much easier than `curl`, as you need to pass the AWS credentials, and Postman allows you to do this with a nice GUI. :)
 
 - On your source cluster, send a `PUT` request to the following URL to create a snapshot, replacing your cluster hostname and snapshot name with appropriate values:
 ```
-https://search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/snapshot-20170526
+https://search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/20170526-efinlay
 ```
 
 - Depending on the size of the source cluster, this may take up to 15 minutes to complete. You can check the progress of the snapshot by sending a `GET` request to the following URL:
@@ -109,7 +109,7 @@ https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/
 
 - Trigger a restore of the snapshot in the target cluster. Send a `POST` request to the following URL:
 ```
-https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/snapshot-20170526/_restore
+https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/20170526-efinlay/_restore
 ```
 
 - All done! Delete the snapshot files from the target cluster's S3 bucket, unless you need to keep the backup.
