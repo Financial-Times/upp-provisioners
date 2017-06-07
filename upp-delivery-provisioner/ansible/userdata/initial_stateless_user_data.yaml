@@ -4,6 +4,7 @@ write_files:
     permissions: "0644"
     owner: "root"
     content: |
+      aggregate-concept-bucket={{aggregate-concept-bucket}}
       api_host={{api_host}}
       apps_aws_access_key={{apps_aws_access_key}}
       apps_aws_secret_access_key={{apps_aws_secret_access_key}}
