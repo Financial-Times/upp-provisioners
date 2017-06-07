@@ -92,6 +92,8 @@ python register-es-snapshot-dir.py \
 
 - For the following steps, using Postman is much easier than `curl`, as you need to pass the AWS credentials, and Postman allows you to do this with a nice GUI. :)
 
+- Make sure that you pass the `content-containers-apps` credentials available in LastPass - not the `upp-elasticsearch-provisioner` credentials.
+
 - On your source cluster, send a `PUT` request to the following URL to create a snapshot, replacing your cluster hostname and snapshot name with appropriate values:
 ```
 https://search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/20170526-efinlay
