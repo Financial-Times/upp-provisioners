@@ -7,12 +7,14 @@
     - vault_{{environment_type}}.yml
 
   tasks:
+
     - name: Ensure S3 bucket exists
       s3_bucket:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
         name: "{{cluster_name}}-backup"
         region: "{{aws_default_region}}"
+        policy: "{{ lookup('template','files/s3-bucket-policy.json') }}"
       register: s3_bucket_output
 
     - debug:

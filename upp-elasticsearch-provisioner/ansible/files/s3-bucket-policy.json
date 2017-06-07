@@ -1,0 +1,22 @@
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1496837837635",
+    "Statement": [
+        {
+            "Sid": "Stmt1496837836001",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::469211898354:role/upp-elasticsearch-backup-role",
+                    "arn:aws:iam::027104099916:role/upp-elasticsearch-backup-role",
+                    "arn:aws:iam::070529446553:role/upp-elasticsearch-backup-role"
+                ]
+            },
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::{{cluster_name}}-backup",
+                "arn:aws:s3:::{{cluster_name}}-backup/*"
+            ]
+        }
+    ]
+}
