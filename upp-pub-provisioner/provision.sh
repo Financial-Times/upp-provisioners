@@ -53,7 +53,5 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   synthetic_list_uuid=${SYNTHETIC_LIST_UUID} \
   carousel_bucket=${CAROUSEL_BUCKET} \
   carousel_enabled=${CAROUSEL_ENABLED} \
-  branch_name=${BRANCH_NAME:=master} \
-  splunk_hec_url=${SPLUNK_HEC_URL:=https://http-inputs-financialtimes.splunkcloud.com/services/collector/event} \
-  splunk_hec_token=${SPLUNK_HEC_TOKEN}" \
+  branch_name=${BRANCH_NAME:=master}" \
   --vault-password-file=/vault.pass
