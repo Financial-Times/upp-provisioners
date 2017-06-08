@@ -66,6 +66,7 @@ docker run \
     -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
     -e "AWS_ES_CONTENT_ENDPOINT=$AWS_ES_CONTENT_ENDPOINT" \
     -e "METHODE_API=$METHODE_API" \
+    -e "NEO4J_FLEET_ENDPOINT=$NEO4J_FLEET_ENDPOINT" \
     coco/upp-delivery-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'
