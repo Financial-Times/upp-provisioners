@@ -35,8 +35,6 @@ write_files:
       roles_bertha_url={{roles_bertha_url}}
       s3_image_bucket_urls={{s3_image_bucket_urls}}
       services_definition_root_uri={{services_definition_root_uri}}
-      splunk_hec_token={{splunk_hec_token}}
-      splunk_hec_url={{splunk_hec_url}}
       synthetic_article_payload={{synthetic_article_payload}}
       synthetic_article_uuid={{synthetic_article_uuid}}
       synthetic_list_uuid={{synthetic_list_uuid}}
