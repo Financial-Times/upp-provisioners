@@ -130,7 +130,7 @@ export NEO4J_READ_URL=
 export NEO4J_WRITE_URL=
 
 ## S3 bucket name for the Aggregate Concept Transformer
-export AGGREGATE-CONCEPT-BUCKET=
+export AGGREGATE_CONCEPT_BUCKET=
 ```
 
 
@@ -165,6 +165,7 @@ docker run \
     -e "BRANCH_NAME=$BRANCH_NAME" \
     -e "NEO4J_READ_URL=$NEO4J_READ_URL" \
     -e "NEO4J_WRITE_URL=$NEO4J_WRITE_URL" \
+    -e "AGGREGATE_CONCEPT_BUCKET=$AGGREGATE_CONCEPT_BUCKET" \
     coco/upp-delivery-provisioner:local
 ```
 
