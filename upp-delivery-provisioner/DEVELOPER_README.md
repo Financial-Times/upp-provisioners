@@ -131,6 +131,9 @@ export NEO4J_WRITE_URL=
 
 ## S3 bucket name for the Aggregate Concept Transformer
 export AGGREGATE_CONCEPT_BUCKET=
+
+## Neo4j Fleet Endpoint URL
+export NEO4J_FLEET_ENDPOINT=
 ```
 
 
@@ -160,7 +163,6 @@ docker run \
     -e "UPP_GATEWAY_PORT=$UPP_GATEWAY_PORT" \
     -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
     -e "AWS_ES_CONTENT_ENDPOINT=$AWS_ES_CONTENT_ENDPOINT" \
-    -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "METHODE_API=$METHODE_API" \
     -e "BRANCH_NAME=$BRANCH_NAME" \
     -e "NEO4J_READ_URL=$NEO4J_READ_URL" \

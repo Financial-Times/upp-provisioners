@@ -1,0 +1,45 @@
+---
+- name: provision stack
+  hosts: localhost
+  connection: local
+  
+  vars:
+    cluster_name: "pac-aurora-{{ cluster }}"
+
+  vars_files:
+  - vault_{{ environment_type }}.yml
+
+  tasks:
+  - name: Log vars
+    debug:
+      msg: "cluster_name: '{{ cluster_name }}'"
+
+  - name: Launch Aurora cloudformation stack in eu-west
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}"
+      state: present
+      region: "eu-west-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-pac-eu.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        DBVPC: vpc-f75fb790
+        DBSecurityGroup: sg-dc82faa5
+        DBInstanceType: db.t2.small
+        DBInstanceMasterUsername: AdminUser
+        DBInstanceMasterPassword: "{{ db_master_password }}"
+        DBInstanceDBName: pac
+        TagEnvironment: "{{ environment_type }}"
+    register: aurora_eu_stack
+
+  - name: CF output
+    debug:
+      msg: "My stack outputs are {{ aurora_eu_stack.stack_outputs }}"
+
+  - name: Save Aurora Cluster host name in eu
+    set_fact:
+      aurora_eu_hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
+      aurora_eu_port: "{{ aurora_eu_stack.stack_outputs.DBPort }}"
+      aurora_eu_instancename: "{{ aurora_eu_stack.stack_outputs.DBInstanceName }}"

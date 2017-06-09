@@ -62,11 +62,11 @@ docker run \
     -e "CES_CREDENTIALS=$CES_CREDENTIALS" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
-    -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "AWS_ES_ENDPOINT=$AWS_ES_ENDPOINT" \
     -e "AWS_ES_CONTENT_ENDPOINT=$AWS_ES_CONTENT_ENDPOINT" \
     -e "METHODE_API=$METHODE_API" \
     -e "AGGREGATE_CONCEPT_BUCKET=$AGGREGATE_CONCEPT_BUCKET" \
+    -e "NEO4J_FLEET_ENDPOINT=$NEO4J_FLEET_ENDPOINT" \
     coco/upp-delivery-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'
