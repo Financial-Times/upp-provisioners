@@ -42,7 +42,6 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   aws_es_endpoint=${AWS_ES_ENDPOINT} \
   aws_es_content_endpoint=${AWS_ES_CONTENT_ENDPOINT} \
   methode_api=${METHODE_API} \
-  aggregate_concept_bucket=${AGGREGATE_CONCEPT_BUCKET} \
   neo4j_fleet_endpoint=${NEO4J_FLEET_ENDPOINT} \
   branch_name=${BRANCH_NAME:=master}" \
   --vault-password-file=/vault.pass
