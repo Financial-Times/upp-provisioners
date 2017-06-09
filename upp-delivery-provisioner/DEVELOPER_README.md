@@ -128,6 +128,9 @@ export METHODE_API=
 ## The read and write URLs to connect to your cluster's Neo4j database.
 export NEO4J_READ_URL=
 export NEO4J_WRITE_URL=
+
+## Neo4j Fleet Endpoint URL
+export NEO4J_FLEET_ENDPOINT=
 ```
 
 
