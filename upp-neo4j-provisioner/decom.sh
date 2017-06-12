@@ -14,6 +14,13 @@ set KONSTRUCTOR_API_KEY = "${KONSTRUCTOR_API_KEY:?Konstructor API Key not set.}"
 
 aws cloudformation delete-stack --stack-name=upp-${ENVIRONMENT_TAG}
 
+# Delete cloudwatch alarms for the cluster
+echo "Deleting cloudwatch alarms for stack ${ENVIRONMENT_TAG}"
+for alarm in $(aws cloudwatch describe-alarms --alarm-name-prefix "com.ft.up.${ENVIRONMENT_TAG}" | grep AlarmName | cut -d '"' -f 4) ; do 
+    echo "Deleting $alarm"
+    aws cloudwatch delete-alarms --alarm-name $alarm
+done
+
 for CNAME in upp-${ENVIRONMENT_TAG}-write-alb-up upp-${ENVIRONMENT_TAG}-read-alb-up ${ENVIRONMENT_TAG}-neo4j-tunnel-up ; do
 
     echo "Deleting CNAME ${CNAME}.ft.com"
