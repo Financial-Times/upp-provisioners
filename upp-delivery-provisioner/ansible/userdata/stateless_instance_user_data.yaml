@@ -125,7 +125,7 @@ write_files:
       ListenStream=0.0.0.0:49153
   - path: /etc/motd.d/env.conf
     content: |
-            This enviroment is tagged as $environment_tag and is cluster $token
+            This enviroment is tagged as ${environment_tag} and is cluster ${token}
   - path: /home/core/.toolboxrc
     owner: core
     content: |
