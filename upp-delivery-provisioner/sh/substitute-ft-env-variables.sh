@@ -8,5 +8,5 @@ while read variable ; do
     key=$(cut -d '=' -f 1 <<< "$variable")
     value=$(cut -d '=' -f 2- <<< "$variable")
 
-    sed -i "s|'\$${key}'|'${value}'|g" /tmp/instance_user_data.yaml
+    sed -i "s|\${${key}}|${value}|g" /tmp/instance_user_data.yaml
 done < /tmp/ft-env-variables

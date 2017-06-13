@@ -5,7 +5,7 @@ coreos:
     reboot-strategy: off
   etcd2:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
-    discovery: $token
+    discovery: ${token}
     heartbeat-interval: 300
     election-timeout: 3000
     # multi-region and multi-cloud deployments need to use $public_ipv4
@@ -18,7 +18,7 @@ coreos:
   fleet:
     # allow etcd to slow down at times
     etcd_request_timeout: 3.0
-    metadata: host_type=persistent,persistent_tag=$persistent_tag
+    metadata: host_type=persistent,persistent_tag=${persistent_tag}
   units:
     - name: update-engine.service
       command: stop
@@ -70,7 +70,7 @@ write_files:
       ListenStream=0.0.0.0:49153
   - path: /etc/motd.d/env.conf
     content: |
-            This enviroment is tagged as $environment_tag and is cluster $token
+            This enviroment is tagged as ${environment_tag} and is cluster ${token}
   - path: /home/core/.toolboxrc
     owner: core
     content: |
