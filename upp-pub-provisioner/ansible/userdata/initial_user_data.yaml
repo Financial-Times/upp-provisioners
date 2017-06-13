@@ -12,6 +12,7 @@ write_files:
       carousel_bucket={{carousel_bucket}}
       carousel_enabled={{carousel_enabled}}
       clusterid={{clusterid}}
+      cms_notifier_credentials={{cms_notifier_credentials}}
       concepts_rw_s3_bucket={{concepts_rw_s3_bucket}}
       concepts_rw_s3_bucket_region={{concepts_rw_s3_bucket_region}}
       delivery_clusters_http_credentials={{delivery_clusters_http_credentials}}
