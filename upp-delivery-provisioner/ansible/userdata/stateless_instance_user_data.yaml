@@ -101,6 +101,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/read_only_url '${neo4j_read_url}'                                                  >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/read_write_url '${neo4j_write_url}'                                                >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/aggregate-concept-transformer/bucket '${aggregate_concept_bucket}'                       >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/aggregate-concept-transformer/queue_url '${aggregate_concept_queue}'                     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/fleet_endpoint '${neo4j_fleet_endpoint}'                                           >/dev/null 2>&1 || true;"
     - name: bootstrap.service
       command: start
