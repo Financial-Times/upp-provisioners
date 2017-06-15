@@ -27,7 +27,7 @@ case "$AWS_DEFAULT_REGION" in
         export SUBNET1="subnet-a32021d5"
         export SUBNET2="subnet-f11956a9"
         export SUBNET3="subnet-00d8db64"
-        export SNAPSHOT="snap-0fbc49cf6de9c245b"
+        export SNAPSHOT="snap-0e997dbc63b6da2d0"
         export AMI=$(curl -s https://coreos.com/dist/aws/aws-stable.json | jq '."eu-west-1".hvm')
         ;;
     us-east-1)
@@ -35,7 +35,7 @@ case "$AWS_DEFAULT_REGION" in
         export SUBNET1="subnet-4158091a"
         export SUBNET2="subnet-64005a49"
         export SUBNET3="subnet-1f383356"
-        export SNAPSHOT="snap-0d6e52d17562fc531"
+        export SNAPSHOT="snap-08d4e9ad9f68e3267"
         export AMI=$(curl -s https://coreos.com/dist/aws/aws-stable.json | jq '."us-east-1".hvm')
         ;;
     *)
