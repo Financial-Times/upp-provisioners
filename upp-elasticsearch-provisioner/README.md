@@ -88,7 +88,7 @@ https://search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com/_snapshot/
 
 ### Copy snapshot data to target ElasticSearch cluster
 
-We recommend running the following commands on an AWS EC2 instance, as it will be a lot faster to copy the data.
+Run the following commands on an AWS EC2 instance. You can run the commands locally, but it will be slower to sync the data to and from the buckets.
 
 You will need to have `awscli` installed, and have configured credentials with appropriate IAM permissions to perform S3 actions. 
 
@@ -114,7 +114,7 @@ aws s3 sync . s3://upp-concepts-source-cluster-backup/ --profile content-prod
 aws s3 sync . s3://upp-concepts-target-cluster-backup/ --profile content-test
 ```
 
-- Optional - remove the copy of the data on your EC2 instance.
+- Optional - remove the copy of the data on your EC2 instance and the source S3 bucket.
 
 ### Restore snapshot to target ElasticSearch cluster
 
