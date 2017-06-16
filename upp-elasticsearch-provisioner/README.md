@@ -72,7 +72,7 @@ For the following steps, using [Postman](https://www.getpostman.com/) (or a simi
 
 You will need to pass the `content-containers-apps` credentials to Postman, which are available in LastPass.
 
-![](https://i.imgur.com/yqa2Ir1.png)
+![](https://i.imgur.com/EYXPYCB.png)
 
 ### Take a snapshot of the source ElasticSearch cluster
 
@@ -116,7 +116,7 @@ aws s3 sync . s3://upp-concepts-target-cluster-backup/ --profile content-test
 
 - Optional - remove the copy of the data on your EC2 instance.
 
-# Restore snapshot to target ElasticSearch cluster
+### Restore snapshot to target ElasticSearch cluster
 
 - Send a `GET` request to check the snapshot is visible in your target cluster:
 ```
