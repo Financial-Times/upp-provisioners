@@ -148,7 +148,7 @@
       set_fact:
         termination_protection: "{% if env == 'p' %}yes{% else %}no{% endif %}"
 
-    - name: Provision m3.large instances
+    - name: Provision m4.xlarge instances
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
@@ -179,7 +179,7 @@
           coco-environment-tag: "{{environment_tag}}"
         termination_protection: "{{ termination_protection }}"
 
-    - name: Provision m3.large instances
+    - name: Provision m4.xlarge instances
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
@@ -213,7 +213,7 @@
     - set_fact:
         persistent_tag: 1
 
-    - name: Provision m3.large persistent instance
+    - name: Provision m4.xlarge persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
@@ -252,7 +252,7 @@
     - set_fact:
         persistent_tag: 2
 
-    - name: Provision m3.large persistent instance
+    - name: Provision m4.xlarge persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
@@ -291,7 +291,7 @@
     - set_fact:
         persistent_tag: 3
 
-    - name: Provision m3.large persistent instance
+    - name: Provision m4.xlarge persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
