@@ -5,6 +5,7 @@ write_files:
     owner: "root"
     content: |
       aggregate_concept_bucket={{aggregate_concept_bucket}}
+      aggregate_concept_queue={{aggregate_concept_queue}}
       api_host={{api_host}}
       apps_aws_access_key={{apps_aws_access_key}}
       apps_aws_secret_access_key={{apps_aws_secret_access_key}}
@@ -20,7 +21,6 @@ write_files:
       cms_notifier_credentials={{cms_notifier_credentials}}
       coco_image_monitor_test_uuid={{coco_image_monitor_test_uuid}}
       environment_tag={{environment_tag}}
-      generic_rw_bucket={{generic_rw_bucket}}
       konstructor_api_key={{konstructor_api_key}}
       metadata_services_password={{metadata_services_password}}
       metadata_services_username={{metadata_services_username}}

@@ -23,7 +23,6 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   aws_access_key_id=$AWS_ACCESS_KEY_ID \
   aws_secret_access_key=$AWS_SECRET_ACCESS_KEY \
   binary_writer_bucket=$BINARY_WRITER_BUCKET \
-  generic_rw_bucket=$GENERIC_RW_BUCKET \
   aws_image_monitor_test_uuid=$AWS_MONITOR_TEST_UUID \
   coco_image_monitor_test_uuid=$COCO_MONITOR_TEST_UUID \
   bridging_message_queue_proxy=${BRIDGING_MESSAGE_QUEUE_PROXY:=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com} \
@@ -41,6 +40,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   aws_es_content_endpoint=${AWS_ES_CONTENT_ENDPOINT} \
   methode_api=${METHODE_API} \
   aggregate_concept_bucket=${AGGREGATE_CONCEPT_BUCKET} \
+  aggregate_concept_queue=${AGGREGATE_CONCEPT_QUEUE} \
   neo4j_fleet_endpoint=${NEO4J_FLEET_ENDPOINT} \
   branch_name=${BRANCH_NAME:=master}" \
   --vault-password-file=/vault.pass
