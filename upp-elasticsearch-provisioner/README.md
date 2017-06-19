@@ -63,48 +63,62 @@ docker run \
 - You can check the progress of the CF stack deletion in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
 
 ## Migrating data between ElasticSearch clusters
-- Create your target cluster using the standard provisioning process.
 
-- Run `register-es-snapshot-dir.py`, authorizing your source cluster to create a backup in the target cluster's S3 bucket. Note that you will need to replace some parameters, as detailed below.
+Note that the following instructions assume that the source and target clusters have been created using `upp-elasticsearch-provisioner`, which will automatically create and register an S3 bucket for manual snapshots.
 
-    - Replace the `access_key` and `secret_key` values with the `upp-elasticsearch-provisioner` user keys for the appropriate **source** AWS account. These are listed in LastPass. Note that there are separate keys for Infra Prod, Content Test, and Content Prod - make sure you use the correct key.
+If your ES cluster has not been created by the provisioner, you will need to create and register an S3 bucket yourself - speak to your friendly neighbourhood Integration Engineer for help.
 
-    - Replace the `role` value with the the appropriate role ARN for the **source** AWS account:
-```
-ft-tech-infra-prod:
-arn:aws:iam::027104099916:role/upp-elasticsearch-backup-role
-ft-tech-content-platform-test:
-arn:aws:iam::070529446553:role/upp-elasticsearch-backup-role
-ft-tech-content-platform-prod:
-arn:aws:iam::469211898354:role/upp-elasticsearch-backup-role
-```
+For the following steps, using [Postman](https://www.getpostman.com/) (or a similar tool) is strongly recommended, as it means you don't have to mess about with AWS credentials and certificates.
 
-- An example command is shown below:
-```
-python register-es-snapshot-dir.py \
---region eu-west-1 \
---endpoint search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com \
---access_key example-access-key \
---secret_key example-secret-key \
---bucket upp-concepts-target-cluster-backup
---role arn:aws:iam::027104099916:role/upp-elasticsearch-backup-role
-```
+You will need to pass the `content-containers-apps` credentials to Postman, which are available in LastPass.
 
-- For the following steps, using Postman is much easier than `curl`, as you need to pass the AWS credentials, and Postman allows you to do this with a nice GUI. :)
+![](https://i.imgur.com/EYXPYCB.png)
 
-- Make sure that you pass the `content-containers-apps` credentials available in LastPass - not the `upp-elasticsearch-provisioner` credentials.
+### Take a snapshot of the source ElasticSearch cluster
 
 - On your source cluster, send a `PUT` request to the following URL to create a snapshot, replacing your cluster hostname and snapshot name with appropriate values:
 ```
 https://search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/20170526-efinlay
 ```
 
-- Depending on the size of the source cluster, this may take up to 15 minutes to complete. You can check the progress of the snapshot by sending a `GET` request to the following URL:
+- Depending on the size of the source cluster, this may take some time to complete. You can check the progress of the snapshot by sending a `GET` request to the following URL:
 ```
 https://search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/_all
 ```
 
-- Once the backup is complete, send a `GET` request to check the snapshot is visible in your target cluster:
+### Copy snapshot data to target ElasticSearch cluster
+
+Run the following commands on an AWS EC2 instance in the same region as your S3 bucket. You can run the commands locally, but it will be slower to sync the data to and from the buckets.
+
+You will need to have `awscli` installed, and have configured credentials with appropriate IAM permissions to perform S3 actions. 
+
+If you are copying data between different AWS accounts, you will need credentials for each account.
+
+Note that you will also need sufficient disk space to temporarily store your snapshot data.
+
+- Run the following command to list the snapshot size:
+
+```
+aws s3 ls --summarize --human-readable --recursive s3://upp-concepts-source-cluster-backup/ --profile content-prod
+```
+
+- Sync the S3 bucket to your EC2 instance - make sure you do this in an empty directory:
+
+```
+aws s3 sync . s3://upp-concepts-source-cluster-backup/ --profile content-prod
+```
+
+- Sync the data on your EC2 instance to the target S3 bucket:
+
+```
+aws s3 sync . s3://upp-concepts-target-cluster-backup/ --profile content-test
+```
+
+- Optional - remove the copy of the data on your EC2 instance and the source S3 bucket.
+
+### Restore snapshot to target ElasticSearch cluster
+
+- Send a `GET` request to check the snapshot is visible in your target cluster:
 ```
 https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/_all
 ```
@@ -114,4 +128,15 @@ https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/
 https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/20170526-efinlay/_restore
 ```
 
-- All done! Delete the snapshot files from the target cluster's S3 bucket, unless you need to keep the backup.
+- To check the progress of the restore, send a `GET` request to the following URL:
+```
+https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/efinlay-20170615/_status
+```
+
+- Once complete, the cluster health will change from 'yellow' to 'green' - you can check by sending a `GET` request to:
+
+```
+https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_cluster/health
+```
+
+- All done! You can delete the snapshot files from the target cluster's S3 bucket, unless you want to keep the snapshot for future use.
