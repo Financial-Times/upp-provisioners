@@ -13,9 +13,10 @@ To work around this, we now have a smaller [initial_stateless_user_data.yaml](ht
 * Downloads and runs [substitute-ft-env-variables.sh](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-pub-provisioner/sh/substitute-ft-env-variables.sh) to substitute the secrets and environment variables into the template
 * Triggers a second cloud-config run to properly configure the cluster, using the fully expanded template
 
-If you need to add or update etcd keys (or any other environment variables used as part of cloud-config), you must add the variable in 4 locations:
+If you need to add or update etcd keys (or any other environment variables used as part of cloud-config), you must add the variable in 5 locations:
 
 * LastPass, under `TEST Delivery cluster provisioning setup` & `PROD Delivery cluster provisioning setup`
+* The [README](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/README.md) and [DEVELOPER_README](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/DEVELOPER_README.md).
 * [provision.sh](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/provision.sh)
 * [initial_stateless_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/initial_stateless_user_data.yaml)
 * [stateless_instance_user_data.yaml](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-delivery-provisioner/ansible/userdata/stateless_instance_user_data.yaml)
