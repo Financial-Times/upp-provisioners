@@ -29,6 +29,8 @@ write_files:
       neo4j_fleet_endpoint={{neo4j_fleet_endpoint}}
       neo4j_read_url={{neo4j_read_url}}
       neo4j_write_url={{neo4j_write_url}}
+      publishing_read_url={{publishing_read_url}}
+      publishing_authorization_key={{publishing_authorization_key}}
       pub_pre_prod_credentials={{pub_pre_prod_credentials}}
       pub_prod_credentials={{pub_prod_credentials}}
       region={{region}}
