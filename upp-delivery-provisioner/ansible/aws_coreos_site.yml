@@ -10,7 +10,7 @@
     description: "CoreOS-Universal-Publishing"
     teamDL: "universal.publishing.platform@ft.com"
     environment_tag: default
-    instanceType: m4.xlarge
+    instanceType: "{% if environment_type == 'p' %}m4.2xlarge{% else %}m4.xlarge{% endif %}"
     vpc_id: "{% if region == 'us-east-1' %}vpc-1d25657a{% else %}vpc-36639c52{% endif %}"
     subnets_id_1: "{% if region == 'us-east-1' %}subnet-5a978b02{% else %}subnet-b59b54c3{% endif %}"
     subnets_id_2: "{% if region == 'us-east-1' %}subnet-b9c608f0{% else %}subnet-1cba5f44{% endif %}"
@@ -148,7 +148,7 @@
       set_fact:
         termination_protection: "{% if env == 'p' %}yes{% else %}no{% endif %}"
 
-    - name: Provision m4.xlarge instances
+    - name: Provision {{instanceType}} instances
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
@@ -179,7 +179,7 @@
           coco-environment-tag: "{{environment_tag}}"
         termination_protection: "{{ termination_protection }}"
 
-    - name: Provision m4.xlarge instances
+    - name: Provision {{instanceType}} instances
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
@@ -213,7 +213,7 @@
     - set_fact:
         persistent_tag: 1
 
-    - name: Provision m4.xlarge persistent instance
+    - name: Provision {{instanceType}} persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
@@ -252,7 +252,7 @@
     - set_fact:
         persistent_tag: 2
 
-    - name: Provision m4.xlarge persistent instance
+    - name: Provision {{instanceType}} persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
@@ -291,7 +291,7 @@
     - set_fact:
         persistent_tag: 3
 
-    - name: Provision m4.xlarge persistent instance
+    - name: Provision {{instanceType}} persistent instance
       ec2:
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
