@@ -63,6 +63,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/elb_name 'coreos-up-${clusterid}'                                                  >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/varnish/htpasswd '${varnish_access_credentials}'                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/kafka-bridge/authorization_key '${bridging_message_queue_proxy_authorization_key}' >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/publishing/authorization_key '${publishing_authorization_key}'                     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/konstructor/api-key '${konstructor_api_key}'                                       >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/metadata-services/username '${metadata_services_username}'                         >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/metadata-services/password '${metadata_services_password}'                         >/dev/null 2>&1 || true;"
@@ -103,6 +104,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/aggregate-concept-transformer/bucket '${aggregate_concept_bucket}'                       >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/aggregate-concept-transformer/queue_url '${aggregate_concept_queue}'                     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/fleet_endpoint '${neo4j_fleet_endpoint}'                                           >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/publishing/read_url '${publishing_read_url}'                                             >/dev/null 2>&1 || true;"
 
     - name: bootstrap.service
       command: start

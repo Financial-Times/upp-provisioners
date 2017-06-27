@@ -68,6 +68,8 @@ docker run \
     -e "AGGREGATE_CONCEPT_BUCKET=$AGGREGATE_CONCEPT_BUCKET" \
     -e "AGGREGATE_CONCEPT_QUEUE=$AGGREGATE_CONCEPT_QUEUE" \
     -e "NEO4J_FLEET_ENDPOINT=$NEO4J_FLEET_ENDPOINT" \
+    -e "PUBLISHING_READ_URL=$PUBLISHING_READ_URL" \
+    -e "PUBLISHING_AUTHORIZATION_KEY=$PUBLISHING_AUTHORIZATION_KEY" \
     coco/upp-delivery-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'

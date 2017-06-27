@@ -138,6 +138,10 @@ export AGGREGATE_CONCEPT_QUEUE=
 
 ## Neo4j Fleet Endpoint URL
 export NEO4J_FLEET_ENDPOINT=
+
+## The read url (the non-regional load-balanced url) for the corresponding Publishing cluster and its authorization key. i.e. for pre-prod, this should be set to https://pub-pre-prod-up.ft.com
+export PUBLISHING_READ_URL=
+export PUBLISHING_AUTHORIZATION_KEY=
 ```
 
 
@@ -172,6 +176,9 @@ docker run \
     -e "NEO4J_WRITE_URL=$NEO4J_WRITE_URL" \
     -e "AGGREGATE_CONCEPT_BUCKET=$AGGREGATE_CONCEPT_BUCKET" \
     -e "AGGREGATE_CONCEPT_QUEUE=$AGGREGATE_CONCEPT_QUEUE" \
+    -e "NEO4J_FLEET_ENDPOINT=$NEO4J_FLEET_ENDPOINT" \
+    -e "PUBLISHING_READ_URL=$PUBLISHING_READ_URL" \
+    -e "PUBLISHING_AUTHORIZATION_KEY=$PUBLISHING_AUTHORIZATION_KEY" \
     coco/upp-delivery-provisioner:local
 ```
 

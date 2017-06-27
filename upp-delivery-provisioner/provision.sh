@@ -42,5 +42,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   aggregate_concept_bucket=${AGGREGATE_CONCEPT_BUCKET} \
   aggregate_concept_queue=${AGGREGATE_CONCEPT_QUEUE} \
   neo4j_fleet_endpoint=${NEO4J_FLEET_ENDPOINT} \
-  branch_name=${BRANCH_NAME:=master}" \
+  branch_name=${BRANCH_NAME:=master} \
+  publishing_authorization_key=${PUBLISHING_AUTHORIZATION_KEY} \
+  publishing_read_url=${PUBLISHING_READ_URL}" \
   --vault-password-file=/vault.pass
