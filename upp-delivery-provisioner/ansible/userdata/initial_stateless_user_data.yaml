@@ -13,7 +13,6 @@ write_files:
       aws_es_content_endpoint={{aws_es_content_endpoint}}
       aws_image_monitor_test_uuid={{aws_image_monitor_test_uuid}}
       binary_writer_bucket={{binary_writer_bucket}}
-      bridging_message_queue_proxy={{bridging_message_queue_proxy}}
       bridging_message_queue_proxy_authorization_key={{bridging_message_queue_proxy_authorization_key}}
       ces_credentials={{ces_credentials}}
       ces_host={{ces_host}}
