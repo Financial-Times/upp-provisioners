@@ -29,11 +29,8 @@ docker run \
     -e "CLUSTER=$CLUSTER" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
-    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "CLUSTER_SG=$CLUSTER_SG" \
-    -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
     coco/upp-rds-provisioner:latest
 ```
 
@@ -64,10 +61,7 @@ docker run \
     -e "CLUSTER=$CLUSTER" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
-    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "VAULT_PASS=$VAULT_PASS" \
-    -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
     coco/upp-rds-provisioner:latest decom.sh
 ```
 - `Delete RDS cluster` step may take up to 5 minutes, as CloudFormation waits until the RDS instance is fully decommissioned before returning a success code.
