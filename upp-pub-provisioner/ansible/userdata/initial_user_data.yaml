@@ -15,6 +15,8 @@ write_files:
       cms_notifier_credentials={{cms_notifier_credentials}}
       concepts_rw_s3_bucket={{concepts_rw_s3_bucket}}
       concepts_rw_s3_bucket_region={{concepts_rw_s3_bucket_region}}
+      concordances_dynamodb_table={{concordances_dynamodb_table}}
+      concordances_topic_arn={{concordances_topic_arn}}
       delivery_clusters_http_credentials={{delivery_clusters_http_credentials}}
       delivery_clusters_urls={{delivery_clusters_urls}}
       environment_tag={{environment_tag}}
@@ -36,6 +38,9 @@ write_files:
       roles_bertha_url={{roles_bertha_url}}
       s3_image_bucket_urls={{s3_image_bucket_urls}}
       services_definition_root_uri={{services_definition_root_uri}}
+      smartlogic_base_url={{smartlogic_base_url}}
+      smartlogic_model={{smartlogic_model}}
+      smartlogic_api_key={{smartlogic_api_key}}
       splunk_hec_token={{splunk_hec_token}}
       splunk_hec_url={{splunk_hec_url}}
       synthetic_article_payload={{synthetic_article_payload}}

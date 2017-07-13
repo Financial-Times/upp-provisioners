@@ -146,6 +146,18 @@ export SYNTHETIC_LIST_UUID=
 export AUTHORS_BERTHA_URL=http://bertha.site.example/123456XYZ/Authors
 export ROLES_BERTHA_URL=http://bertha.site.example/123456XYZ/Roles
 export BRANDS_BERTHA_URL=http://bertha.site.example/123456XYZ/Brands
+
+# The following variables are used by the concordance-rw-dynamodb. If you leave them blank the service will be unhealhty
+# CONCORDANCES_DYNAMODB_TABLE expects the name of the table that concordances will be written too.
+# CONCORDANCES_TOPIC_ARN is the SNS topic to post a notification to after successful write to db.
+export CONCORDANCES_DYNAMODB_TABLE=[When provisioned using the provisioner follows the naming convention upp-concordance-store-{env}]
+export CONCORDANCES_TOPIC_ARN=[The topic name(which is included in the ARN) follows the naming convention upp-concept-publishing-{env}-SNSTopic]
+
+# The following variables are used by the smartlogic-notifier
+# The base_url should be the smartlogic api url, the model determines which workflow is your source of truth and the api key is used in place of basic auth
+export SMARTLOGIC_BASE_URL=
+export SMARTLOGIC_MODEL=
+export SMARTLOGIC_API_KEY=
 ```
 
 Run the image

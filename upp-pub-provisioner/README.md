@@ -86,6 +86,11 @@ docker run \
     -e "BRANDS_BERTHA_URL=$BRANDS_BERTHA_URL" \
     -e "CONCEPTS_RW_S3_BUCKET=$CONCEPTS_RW_S3_BUCKET" \
     -e "CONCEPTS_RW_S3_BUCKET_REGION=$CONCEPTS_RW_S3_BUCKET_REGION" \
+    -e "CONCORDANCES_DYNAMODB_TABLE"=$CONCORDANCES_DYNAMODB_TABLE \
+    -e "CONCORDANCES_TOPIC_ARN"=$CONCORDANCES_TOPIC_ARN \
+    -e "SMARTLOGIC_BASE_URL"=$SMARTLOGIC_BASE_URL \
+    -e "SMARTLOGIC_MODEL"=$SMARTLOGIC_MODEL \
+    -e "SMARTLOGIC_API_KEY"=$SMARTLOGIC_API_KEY \
      coco/upp-pub-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'

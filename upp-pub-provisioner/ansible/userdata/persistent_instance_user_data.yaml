@@ -98,6 +98,11 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/key/first_part '${factset_key_first_part}'                               >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/key/second_part '${factset_key_second_part}'                             >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/healthcheck-categories/publish/enabled 'false'                                                >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/concordances-rw-dynamodb/dynamodb_table '${concordances_dynamodb_table}'               >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/concordances-rw-dynamodb/sns_topic_arn '${concordances_topic_arn}'                     >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/smartlogic/base_url '${smartlogic_base_url}'                                     >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/smartlogic/model '${smartlogic_model}'                                           >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/smartlogic/api_key '${smartlogic_api_key}'                                       >/dev/null 2>&1 || true;"
 
     - name: bootstrap.service
       command: start
