@@ -147,7 +147,7 @@ export AUTHORS_BERTHA_URL=http://bertha.site.example/123456XYZ/Authors
 export ROLES_BERTHA_URL=http://bertha.site.example/123456XYZ/Roles
 export BRANDS_BERTHA_URL=http://bertha.site.example/123456XYZ/Brands
 
-# The following variables are used by the concordance-rw-dynamodb. If you leave them blank the service will be unhealhty
+# The following variables are used by the concordance-rw-dynamodb. If you leave them blank the service will be unhealthy
 # CONCORDANCES_DYNAMODB_TABLE expects the name of the table that concordances will be written too.
 # CONCORDANCES_TOPIC_ARN is the SNS topic to post a notification to after successful write to db.
 export CONCORDANCES_DYNAMODB_TABLE=[When provisioned using the provisioner follows the naming convention upp-concordance-store-{env}]
