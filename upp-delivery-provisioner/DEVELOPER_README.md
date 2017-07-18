@@ -86,10 +86,6 @@ export ENVIRONMENT_TAG=
 ## For TEST: t
 export ENVIRONMENT_TYPE=
 
-## Comma separated list of urls pointing to the message queue http proxy instances used to bridge platforms(UCS and coco).
-## This should always point at Prod - use separate service files to bridge from Test into lower environments.
-export BRIDGING_MESSAGE_QUEUE_PROXY=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com
-
 ## Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
 ## See Lastpass: 'CoCo Basic Auth' for current cluster values.
 export CLUSTER_BASIC_HTTP_CREDENTIALS=
@@ -166,7 +162,6 @@ docker run \
     -e "BRANCH_NAME=$BRANCH_NAME" \
     -e "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
     -e "COCO_MONITOR_TEST_UUID=$COCO_MONITOR_TEST_UUID" \
-    -e "BRIDGING_MESSAGE_QUEUE_PROXY=$BRIDGING_MESSAGE_QUEUE_PROXY" \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
