@@ -136,6 +136,9 @@ export AGGREGATE_CONCEPT_BUCKET=
 ## SNS queue for the Aggregate Concept Transformer
 export AGGREGATE_CONCEPT_QUEUE=
 
+## DynamoDb table name for the  Aggregate Concept Transformer
+export DYNAMODB_TABLE=
+
 ## Neo4j Fleet Endpoint URL
 export NEO4J_FLEET_ENDPOINT=
 

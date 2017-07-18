@@ -25,7 +25,6 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   binary_writer_bucket=$BINARY_WRITER_BUCKET \
   aws_image_monitor_test_uuid=$AWS_MONITOR_TEST_UUID \
   coco_image_monitor_test_uuid=$COCO_MONITOR_TEST_UUID \
-  bridging_message_queue_proxy=${BRIDGING_MESSAGE_QUEUE_PROXY:=https://kafka-proxy-iw-uk-p-1.glb.ft.com,https://kafka-proxy-iw-uk-p-2.glb.ft.com} \
   varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \
   api_host=${API_HOST:=api.ft.com} \
   upp_gateway_host=$UPP_GATEWAY_HOST \
@@ -41,6 +40,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   methode_api=${METHODE_API} \
   aggregate_concept_bucket=${AGGREGATE_CONCEPT_BUCKET} \
   aggregate_concept_queue=${AGGREGATE_CONCEPT_QUEUE} \
+  dynamodb_table=${DYNAMODB_TABLE} \
   neo4j_fleet_endpoint=${NEO4J_FLEET_ENDPOINT} \
   branch_name=${BRANCH_NAME:=master} \
   publishing_authorization_key=${PUBLISHING_AUTHORIZATION_KEY} \

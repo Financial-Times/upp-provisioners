@@ -53,5 +53,10 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   synthetic_list_uuid=${SYNTHETIC_LIST_UUID} \
   carousel_bucket=${CAROUSEL_BUCKET} \
   carousel_enabled=${CAROUSEL_ENABLED} \
+  concordances_dynamodb_table=${CONCORDANCES_DYNAMODB_TABLE} \
+  concordances_topic_arn=${CONCORDANCES_TOPIC_ARN} \
+  smartlogic_base_url=${SMARTLOGIC_BASE_URL} \
+  smartlogic_model=${SMARTLOGIC_MODEL} \
+  smartlogic_api_key=${SMARTLOGIC_API_KEY} \
   branch_name=${BRANCH_NAME:=master}" \
   --vault-password-file=/vault.pass
