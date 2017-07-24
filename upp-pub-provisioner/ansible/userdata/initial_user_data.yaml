@@ -26,6 +26,7 @@ write_files:
       konstructor_api_key={{konstructor_api_key}}
       pam_credential_validation_uuid={{pam_credential_validation_uuid}}
       pam_validator_credentials={{pam_validator_credentials}}
+      pam_api_key={{pam_api_key}}
       pam_mam_validation_url={{pam_mam_validation_url}}
       pam_mcpm_validation_url={{pam_mcpm_validation_url}}
       pam_mimm_validation_url={{pam_mimm_validation_url}}

@@ -124,6 +124,8 @@ export PAM_VIDEO_VALIDATION_URL=
 #wordpress articles
 export PAM_WAM_VALIDATION_URL=
 
+#PAM needs an API key for Notifications-Push requests
+export PAM_API_KEY=
 
 #The HTTP credentials for calling the validation URL.
 #Format: <username>:<password>
@@ -186,6 +188,7 @@ docker run \
     -e "BINARY_S3_BUCKET=$BINARY_S3_BUCKET" \
     -e "PAM_MAM_VALIDATION_URL=$PAM_MAM_VALIDATION_URL" \
     -e "PAM_VALIDATOR_CREDENTIALS=$PAM_VALIDATOR_CREDENTIALS" \
+    -e "PAM_API_KEY=$PAM_API_KEY" \
     -e "PAM_CREDENTIAL_VALIDATION_UUID=$PAM_CREDENTIAL_VALIDATION_UUID" \
     -e "PAM_MCPM_VALIDATION_URL=$PAM_MCPM_VALIDATION_URL" \
     -e "PAM_MIMM_VALIDATION_URL=$PAM_MIMM_VALIDATION_URL" \
