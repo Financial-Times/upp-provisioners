@@ -489,6 +489,13 @@ Resources:
               "      ForwardAgent yes\n",
               "      StrictHostKeyChecking no\n",
               "      UserKnownHostsFile /dev/null\n",
+              "  - path: /etc/profile.d/prompt.sh\n",
+              "    permissions: 0755\n",
+              "    owner: root\n",
+              "    content: |\n",
+              "      #!/bin/bash\n",
+              "      export ENVIRONMENT_TAG=`etcdctl get /ft/config/environment_tag`\n",
+              "      export PS1='\[\033]0;\u@\h:\w\007\]\[\033[01;32m\]\u@\h [$ENVIRONMENT_TAG]\[\033[01;34m\] \w \$\[\033[00m\] '\n",         
               ]]
 
   #Application Read Load Balancer
