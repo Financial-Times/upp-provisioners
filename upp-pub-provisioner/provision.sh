@@ -46,6 +46,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   pam_video_validation_url=${PAM_VIDEO_VALIDATION_URL} \
   pam_wam_validation_url=${PAM_WAM_VALIDATION_URL} \
   pam_validator_credentials=${PAM_VALIDATOR_CREDENTIALS} \
+  pam_api_key=${PAM_API_KEY}\
   pam_credential_validation_uuid=${PAM_CREDENTIAL_VALIDATION_UUID} \
   synthetic_article_uuid=${SYNTHETIC_ARTICLE_UUID} \
   synthetic_article_payload=${SYNTHETIC_ARTICLE_PAYLOAD:=/com/ft/syntheticpublicationmonitor/templates/article-payload.json} \
