@@ -193,3 +193,10 @@ write_files:
         ForwardAgent yes
         StrictHostKeyChecking no
         UserKnownHostsFile /dev/null
+  - path: "/etc/profile.d/prompt.sh"
+    permissions: "0755"
+    owner: "root"
+    content: |
+      #!/bin/bash
+      export ENVIRONMENT_TAG=`etcdctl get /ft/config/environment_tag`
+      export PS1='\[\033]0;\u@\h:\w\007\]\[\033[01;32m\]\u@\h [$ENVIRONMENT_TAG]\[\033[01;34m\] \w \$\[\033[00m\] '
