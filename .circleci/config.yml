@@ -27,9 +27,14 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: |
+          if [ ${CIRCLE_BRANCH} == 'master' ] ; then
+            export DOCKER_TAG='latest'
+          else
+            export DOCKER_TAG=${CIRCLE_BRANCH}
+          fi
           docker build -t coco/upp-elasticsearch-provisioner:latest upp-elasticsearch-provisioner/
           docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker push coco/upp-elasticsearch-provisioner:latest
+          docker push coco/upp-elasticsearch-provisioner:$DOCKER_TAG
   upp-neo4j-provisioner:
     docker:
       - image: docker:stable-git
