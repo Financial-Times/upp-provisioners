@@ -14,25 +14,26 @@ jobs:
           paths:
             - /caches/upp-elasticsearch-provisioner.tar
       - run:
-        name: Load Docker image layer cache
-        command: |
-          set +o pipefail
-          docker load -i /caches/$PROVISIONER_NAME.tar | true
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/$PROVISIONER_NAME.tar | true
       - run:
-        name: Build Docker image
-        command: |
-          docker build --cache-from=$PROVISIONER_NAME -t coco/$PROVISIONER_NAME:$DOCKER_TAG $PROVISIONER_NAME/
+          name: Build Docker image
+          command: |
+            docker build --cache-from=$PROVISIONER_NAME -t coco/$PROVISIONER_NAME:$DOCKER_TAG $PROVISIONER_NAME/
       - run:
-        name: Save Docker image layer cache
-        command: |
-          mkdir -p /caches
-          docker save -o /caches/$PROVISIONER_NAME.tar $PROVISIONER_NAME
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/$PROVISIONER_NAME.tar $PROVISIONER_NAME
       - save_cache:
           key: upp-elasticsearch-provisioner-{{ .Branch }}-{{ epoch }}
           paths:
             - /caches/upp-elasticsearch-provisioner.tar
       - deploy:
         name: Push Docker image
+        command: |
           if [ "${CIRCLE_BRANCH}" == "master" ] ; then
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker push coco/$PROVISIONER_NAME:$DOCKER_TAG
