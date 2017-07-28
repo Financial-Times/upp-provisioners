@@ -1,0 +1,28 @@
+version: 2
+jobs:
+  upp-elasticsearch-provisioner:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          docker build -t coco/upp-elasticsearch-provisioner:latest upp-elasticsearch-provisioner/
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push coco/upp-elasticsearch-provisioner:latest
+  upp-neo4j-provisioner:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          docker build -t coco/upp-elasticsearch-provisioner:latest upp-elasticsearch-provisioner/
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push coco/upp-elasticsearch-provisioner:latest
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - upp-elasticsearch-provisioner
+      - test1
