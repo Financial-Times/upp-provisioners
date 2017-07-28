@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+
+      - setup_remote_docker   # (2)
+
+      # build and push Docker image
+      - run: |
+          docker build -t coco/upp-elasticsearch-provisioner:latest upp-elasticsearch-provisioner/
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push coco/upp-elasticsearch-provisioner:latest
