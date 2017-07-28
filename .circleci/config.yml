@@ -1,77 +1,44 @@
 version: 2
 jobs:
-  upp-concept-publishing-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: |
-          docker build -t coco/upp-concept-publishing-provisioner:latest upp-concept-publishing-provisioner/
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker push coco/upp-concept-publishing-provisioner:latest
-  upp-delivery-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: |
-          docker build -t coco/upp-delivery-provisioner:latest upp-delivery-provisioner/
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker push coco/upp-delivery-provisioner:latest
   upp-elasticsearch-provisioner:
     docker:
       - image: docker:stable-git
+    environment:
+      - PROVISIONER_NAME: "upp-elasticsearch-provisioner"
     steps:
       - checkout
       - setup_remote_docker
-      - run: |
-          if [ ${CIRCLE_BRANCH} == 'master' ] ; then
-            export DOCKER_TAG='latest'
-          else
-            export DOCKER_TAG=${CIRCLE_BRANCH}
+      - restore_cache:
+        keys:
+          - $PROVISIONER_NAME-{{ .Branch }}
+        paths:
+          - /caches/$PROVISIONER_NAME.tar
+      - run:
+        name: Load Docker image layer cache
+        command: |
+          set +o pipefail
+          docker load -i /caches/$PROVISIONER_NAME.tar | true
+      - run:
+        name: Build Docker image
+        command: |
+          docker build --cache-from=$PROVISIONER_NAME -t coco/$PROVISIONER_NAME:$DOCKER_TAG $PROVISIONER_NAME/
+      - run:
+        name: Save Docker image layer cache
+        command: |
+          mkdir -p /caches
+          docker save -o /caches/$PROVISIONER_NAME.tar $PROVISIONER_NAME
+      - save_cache:
+        key: $PROVISIONER_NAME-{{ .Branch }}-{{ epoch }}
+        paths:
+          - /caches/$PROVISIONER_NAME.tar
+      - deploy:
+        name: Push Docker image
+          if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push coco/$PROVISIONER_NAME:$DOCKER_TAG
           fi
-          docker build -t coco/upp-elasticsearch-provisioner:$DOCKER_TAG upp-elasticsearch-provisioner/
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker push coco/upp-elasticsearch-provisioner:$DOCKER_TAG
-  upp-neo4j-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: |
-          docker build -t coco/upp-neo4j-provisioner:latest upp-neo4j-provisioner/
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker push coco/upp-neo4j-provisioner:latest
-  upp-pub-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: |
-          docker build -t coco/upp-pub-provisioner:latest upp-pub-provisioner/
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker push coco/upp-pub-provisioner:latest
-  upp-rds-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: |
-          docker build -t coco/upp-rds-provisioner:latest upp-rds-provisioner/
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker push coco/upp-rds-provisioner:latest
 workflows:
   version: 2
   build:
     jobs:
-      - upp-delivery-provisioner
-      - upp-concept-publishing-provisioner
       - upp-elasticsearch-provisioner
-      - upp-neo4j-provisioner
-      - upp-pub-provisioner
-      - upp-rds-provisioner
