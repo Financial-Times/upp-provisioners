@@ -9,10 +9,10 @@ jobs:
       - checkout
       - setup_remote_docker
       - restore_cache:
-        keys:
-          - upp-elasticsearch-provisioner-{{ .Branch }}
-        paths:
-          - /caches/upp-elasticsearch-provisioner.tar
+          keys:
+            - upp-elasticsearch-provisioner-{{ .Branch }}
+          paths:
+            - /caches/upp-elasticsearch-provisioner.tar
       - run:
         name: Load Docker image layer cache
         command: |
@@ -28,9 +28,9 @@ jobs:
           mkdir -p /caches
           docker save -o /caches/$PROVISIONER_NAME.tar $PROVISIONER_NAME
       - save_cache:
-        key: upp-elasticsearch-provisioner-{{ .Branch }}-{{ epoch }}
-        paths:
-          - /caches/upp-elasticsearch-provisioner.tar
+          key: upp-elasticsearch-provisioner-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/upp-elasticsearch-provisioner.tar
       - deploy:
         name: Push Docker image
           if [ "${CIRCLE_BRANCH}" == "master" ] ; then
