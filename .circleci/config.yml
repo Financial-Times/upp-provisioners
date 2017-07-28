@@ -32,12 +32,12 @@ jobs:
           paths:
             - /caches/upp-elasticsearch-provisioner.tar
       - deploy:
-        name: Push Docker image
-        command: |
-          if [ "${CIRCLE_BRANCH}" == "master" ] ; then
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push coco/$PROVISIONER_NAME:$DOCKER_TAG
-          fi
+          name: Push Docker image
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              docker push coco/$PROVISIONER_NAME:$DOCKER_TAG
+            fi
 workflows:
   version: 2
   build:
