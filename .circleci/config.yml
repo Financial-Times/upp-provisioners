@@ -25,4 +25,4 @@ workflows:
   build_and_test:
     jobs:
       - upp-elasticsearch-provisioner
-      - test1
+      - upp-neo4j-provisioner
