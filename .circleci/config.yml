@@ -32,7 +32,7 @@ jobs:
           else
             export DOCKER_TAG=${CIRCLE_BRANCH}
           fi
-          docker build -t coco/upp-elasticsearch-provisioner:latest upp-elasticsearch-provisioner/
+          docker build -t coco/upp-elasticsearch-provisioner:$DOCKER_TAG upp-elasticsearch-provisioner/
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker push coco/upp-elasticsearch-provisioner:$DOCKER_TAG
   upp-neo4j-provisioner:
