@@ -13,7 +13,7 @@ jobs:
       - run:
           name: Trigger builds of changed provisioners
           command: |
-            apk --update add curl
+            apk -q --update add curl
             .circleci/build_provisioners.sh
   upp-elasticsearch-provisioner:
     docker:
