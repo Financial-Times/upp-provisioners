@@ -8,7 +8,7 @@ for provisioner in *-provisioner ; do
     if [[ "${LATEST_COMMIT}" ==  "${PROVISIONER_COMMIT}" ]] \
     && grep -q ${provisioner} .circleci/config.yml ; then
 
-        Triggering build of ${provisioner}g
+        Triggering build of ${provisioner}
         curl -s \
         --user ${CIRCLE_API_TOKEN}: \
         --data build_parameters[CIRCLE_JOB]=${provisioner} \
