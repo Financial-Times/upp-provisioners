@@ -21,6 +21,11 @@ jobs:
       - run:
           name: Build Docker image
           command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+              export DOCKER_TAG="latest"
+            else
+              export DOCKER_TAG="${CIRCLE_BRANCH}"
+            fi
             docker build --cache-from=$PROVISIONER_NAME -t coco/$PROVISIONER_NAME:$DOCKER_TAG $PROVISIONER_NAME/
       - run:
           name: Save Docker image layer cache
