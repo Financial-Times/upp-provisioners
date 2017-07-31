@@ -1,4 +1,9 @@
 version: 2
+workflows:
+  version: 2
+  build:
+    jobs:
+      - trigger-provisioner-builds
 jobs:
   trigger-provisioner-builds:
     docker:
@@ -100,8 +105,3 @@ jobs:
             source ${BASH_ENV}
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
-workflows:
-  version: 2
-  build:
-    jobs:
-      - trigger-provisioner-builds
