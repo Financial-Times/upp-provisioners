@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Trigger builds of changed provisioners
+          name: Trigger builds of updated provisioners
           command: |
             apk -q --no-progress --update add curl
             .circleci/build_provisioners.sh
