@@ -10,7 +10,7 @@ jobs:
           keys:
             - v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
           paths:
-            - /caches/{{ .Environment.CIRCLE_JOB }}.tar
+            - /caches/${CIRCLE_JOB}.tar
       - run:
           name: Load Docker image layer cache
           command: |
@@ -40,7 +40,7 @@ jobs:
       - save_cache:
           key: v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
           paths:
-            - /caches/{{ .Environment.CIRCLE_JOB }}.tar
+            - /caches/${CIRCLE_JOB}.tar
       - deploy:
           name: Push Docker image
           command: |
