@@ -28,6 +28,7 @@ jobs:
           name: Build Docker image
           command: |
             source ${BASH_ENV}
+            ls -lh /caches
             docker build --cache-from=coco/${CIRCLE_JOB}:${DOCKER_TAG} -t coco/${CIRCLE_JOB}:${DOCKER_TAG} ${CIRCLE_JOB}/
       - run:
           name: Save Docker image layer cache
@@ -35,6 +36,7 @@ jobs:
             source ${BASH_ENV}
             mkdir -p /caches
             docker save -o /caches/${CIRCLE_JOB}.tar coco/${CIRCLE_JOB}:${DOCKER_TAG}
+            ls -lh /caches
       - save_cache:
           key: v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
           paths:
