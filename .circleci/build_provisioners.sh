@@ -21,7 +21,7 @@ for provisioner in *-provisioner ; do
 
     fi
 
-    if [[ "${build_count}" != 0 ]] ; then
+    if [[ "${build_count}" == 0 ]] ; then
         echo No builds triggered.
     fi
 
