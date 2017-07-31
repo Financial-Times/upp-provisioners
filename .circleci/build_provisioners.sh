@@ -8,13 +8,6 @@ for provisioner in *-provisioner ; do
     if [[ "${LATEST_COMMIT}" ==  "${PROVISIONER_COMMIT}" ]] \
     && grep -q ${provisioner} .circleci/config.yml ; then
 
-        echo Triggering build of ${provisioner}
-        echo ${CIRCLE_API_TOKEN}
-        echo ${CIRCLE_SHA1}
-        echo ${CIRCLE_PROJECT_USERNAME}
-        echo ${CIRCLE_PROJECT_REPONAME}
-        echo ${CIRCLE_BRANCH}
-
         curl --user ${CIRCLE_API_TOKEN}: \
         --data build_parameters[CIRCLE_JOB]=${provisioner} \
         --data revision=${CIRCLE_SHA1} \
