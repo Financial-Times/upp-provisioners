@@ -8,7 +8,7 @@ jobs:
       - setup_remote_docker
       - restore_cache:
           keys:
-            - {{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
+            - v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
           paths:
             - /caches/{{ .Environment.CIRCLE_JOB }}.tar
       - run:
@@ -36,7 +36,7 @@ jobs:
             mkdir -p /caches
             docker save -o /caches/${CIRCLE_JOB}.tar coco/${CIRCLE_JOB}:${DOCKER_TAG}
       - save_cache:
-          key: {{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
+          key: v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
           paths:
             - /caches/{{ .Environment.CIRCLE_JOB }}.tar
       - deploy:
