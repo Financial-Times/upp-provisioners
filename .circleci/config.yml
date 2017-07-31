@@ -8,7 +8,8 @@ jobs:
       - run:
           name: Trigger builds of changed provisioners
           command: |
-            .circleci/build_provisioners.sh
+            ls -l ~/project/.circleci
+            ~/project/.circleci/build_provisioners.sh
   upp-elasticsearch-provisioner:
     docker:
       - image: docker:stable-git
