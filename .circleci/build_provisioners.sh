@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 for provisioner in *-provisioner ; do
     LATEST_COMMIT=$(git rev-parse HEAD)
     PROVISIONER_COMMIT=$(git log -1 --format=format:%H --full-diff ${provisioner})
