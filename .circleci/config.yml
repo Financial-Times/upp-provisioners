@@ -1,5 +1,14 @@
 version: 2
 jobs:
+  trigger-provisioner-builds:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - run:
+          name: Trigger builds of changed provisioners
+          command: |
+            .circleci/build_provisioners.sh
   upp-elasticsearch-provisioner:
     docker:
       - image: docker:stable-git
@@ -94,5 +103,4 @@ workflows:
   version: 2
   build:
     jobs:
-      - upp-elasticsearch-provisioner
-      - upp-delivery-provisioner
+      - trigger-provisioner-builds
