@@ -8,9 +8,9 @@ jobs:
       - setup_remote_docker
       - restore_cache:
           keys:
-            - upp-elasticsearch-provisioner-{{ .Branch }}
+            - {{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
           paths:
-            - /caches/upp-elasticsearch-provisioner.tar
+            - /caches/{{ .Environment.CIRCLE_JOB }}.tar
       - run:
           name: Load Docker image layer cache
           command: |
@@ -36,9 +36,9 @@ jobs:
             mkdir -p /caches
             docker save -o /caches/${CIRCLE_JOB}.tar coco/${CIRCLE_JOB}:${DOCKER_TAG}
       - save_cache:
-          key: upp-elasticsearch-provisioner-{{ .Branch }}-{{ epoch }}
+          key: {{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
           paths:
-            - /caches/upp-elasticsearch-provisioner.tar
+            - /caches/{{ .Environment.CIRCLE_JOB }}.tar
       - deploy:
           name: Push Docker image
           command: |
