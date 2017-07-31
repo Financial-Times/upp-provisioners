@@ -17,7 +17,7 @@ jobs:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/$PROVISIONER_NAME.tar | true
+            docker load -i /caches/${PROVISIONER_NAME}.tar | true
       - run:
           name: Set Docker image tag based on branch
           command: |
@@ -29,14 +29,14 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            source $BASH_ENV
-            docker build --cache-from=coco/$PROVISIONER_NAME:$DOCKER_TAG -t coco/$PROVISIONER_NAME:$DOCKER_TAG $PROVISIONER_NAME/
+            source ${BASH_ENV}
+            docker build --cache-from=coco/${PROVISIONER_NAME}:${DOCKER_TAG} -t coco/${PROVISIONER_NAME}:${DOCKER_TAG} ${PROVISIONER_NAME}/
       - run:
           name: Save Docker image layer cache
           command: |
-            source $BASH_ENV
+            source ${BASH_ENV}
             mkdir -p /caches
-            docker save -o /caches/$PROVISIONER_NAME.tar coco/$PROVISIONER_NAME:$DOCKER_TAG
+            docker save -o /caches/${PROVISIONER_NAME}.tar coco/${PROVISIONER_NAME}:${DOCKER_TAG}
       - save_cache:
           key: upp-elasticsearch-provisioner-{{ .Branch }}-{{ epoch }}
           paths:
@@ -44,9 +44,9 @@ jobs:
       - deploy:
           name: Push Docker image
           command: |
-            source $BASH_ENV
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push coco/$PROVISIONER_NAME:$DOCKER_TAG
+            source ${BASH_ENV}
+            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+            docker push coco/${PROVISIONER_NAME}:${DOCKER_TAG}
 workflows:
   version: 2
   build:
