@@ -29,6 +29,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
+            source $BASH_ENV
             docker build --cache-from=$PROVISIONER_NAME -t coco/$PROVISIONER_NAME:$DOCKER_TAG $PROVISIONER_NAME/
       - run:
           name: Save Docker image layer cache
@@ -42,8 +43,9 @@ jobs:
       - deploy:
           name: Push Docker image
           command: |
-              docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker push coco/$PROVISIONER_NAME:$DOCKER_TAG
+            source $BASH_ENV
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push coco/$PROVISIONER_NAME:$DOCKER_TAG
 workflows:
   version: 2
   build:
