@@ -34,8 +34,9 @@ jobs:
       - run:
           name: Save Docker image layer cache
           command: |
+            source $BASH_ENV
             mkdir -p /caches
-            docker save -o /caches/$PROVISIONER_NAME.tar $PROVISIONER_NAME
+            docker save -o /caches/$PROVISIONER_NAME.tar coco/$PROVISIONER_NAME
       - save_cache:
           key: upp-elasticsearch-provisioner-{{ .Branch }}-{{ epoch }}
           paths:
