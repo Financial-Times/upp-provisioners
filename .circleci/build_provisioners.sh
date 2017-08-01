@@ -11,7 +11,7 @@ for provisioner in *-provisioner ; do
     && grep -q ${provisioner} .circleci/config.yml ; then
 
         echo Triggering build of ${provisioner}.
-        build_count += 1
+        export build_count += 1
 
         curl -s \
         --user ${CIRCLE_API_TOKEN}: \
