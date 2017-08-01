@@ -15,7 +15,7 @@ jobs:
           command: |
             apk -q --no-progress --update add curl
             .circleci/build_provisioners.sh
-  upp-concept-provisioner:
+  upp-concept-publishing-provisioner:
     docker:
       - image: docker:stable-git
     steps:
