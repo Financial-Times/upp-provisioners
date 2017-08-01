@@ -1,5 +1,7 @@
 # AWS Concept Publishing provisioner
 
+[![CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/upp-provisioners)
+
 The AWS Concept Publishing provisioning process will:
 
 * Create an S3 Bucket, SNS Topic and 1/2 SQS Queues using the specified Cloudformation Template which is used as a part of the event-driven concept publishing pipeline.

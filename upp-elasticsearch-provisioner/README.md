@@ -1,5 +1,7 @@
 # AWS ElasticSearch Service provisioner
 
+[![CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/upp-provisioners)
+
 The AWS ES provisioning process will:
 
  * Create an ElasticSearch Service using the specified CloudFormation template
