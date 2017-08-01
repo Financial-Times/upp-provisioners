@@ -32,6 +32,8 @@ The CircleCI configuration is located [here](https://github.com/Financial-Times/
 
 Builds are triggered on commits and pull requests, and must pass to be able to merge into master.
 
+Only provisioners that have been updated and have CircleCI configuration defined will be built.g
+
 To enable automated builds for new provisioner projects that contain a Dockerfile:
 
 - Copy the configuration from an existing job, eg: [upp-elasticsearch-provisioner](https://github.com/Financial-Times/upp-provisioners/blob/master/.circleci/config.yml#L108-L152)
