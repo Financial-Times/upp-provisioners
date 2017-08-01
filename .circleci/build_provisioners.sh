@@ -1,5 +1,4 @@
 #!/bin/sh
-build_count=0
 
 for provisioner in *-provisioner ; do
     LATEST_COMMIT=$(git rev-parse HEAD)
@@ -10,8 +9,8 @@ for provisioner in *-provisioner ; do
     if [[ "${LATEST_COMMIT}" ==  "${PROVISIONER_COMMIT}" ]] \
     && grep -q ${provisioner} .circleci/config.yml ; then
 
+        touch /tmp/build_triggered
         echo Triggering build of ${provisioner}.
-        export build_count += 1
 
         curl -s \
         --user ${CIRCLE_API_TOKEN}: \
@@ -22,6 +21,6 @@ for provisioner in *-provisioner ; do
     fi
 done
 
-if [[ "${build_count}" == 0 ]] ; then
+if [ ! -f /tmp/build_triggered ] ; then
     echo No builds triggered.
 fi
