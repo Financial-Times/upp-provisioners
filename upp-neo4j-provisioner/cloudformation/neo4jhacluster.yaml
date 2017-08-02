@@ -80,7 +80,7 @@ Parameters:
     - r4.4xlarge
     - r4.8xlarge
     - r4.16xlarge
-    Default: r4.xlarge
+    Default: r4.2xlarge
   ImageId:
     Description: The CoreOS AMI to be used.
     Type: AWS::EC2::Image::Id
