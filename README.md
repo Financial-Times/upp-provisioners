@@ -2,6 +2,22 @@
 Contains the various provisioning projects used by the Universal Publishing Platform.
 See the relevant readme file of each project for more detail about each provisioner.
 
+### CircleCI Automated Builds
+
+Automated builds for the provisioner projects are triggered in [CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners/).  
+The CircleCI configuration is located [here](https://github.com/Financial-Times/upp-provisioners/blob/master/.circleci/config.yml).
+
+Builds are triggered on commits and pull requests, and must pass to be able to merge into master.
+
+Only provisioners that have been updated and have CircleCI configuration defined will be built.
+
+To enable automated builds for new provisioner projects that contain a Dockerfile:
+
+- Copy the configuration from an existing job, eg: [upp-elasticsearch-provisioner](https://github.com/Financial-Times/upp-provisioners/blob/master/.circleci/config.yml#L108-L152)
+- Update the job name to match the name of the new provisioner
+
+No further changes should be required, as the job config is fully parameterised.
+
 ### Provisioners
 
 - [upp-concept-publishing-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-concept-publishing-provisioner)
@@ -25,18 +41,3 @@ See the relevant readme file of each project for more detail about each provisio
 - [upp-rds-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-rds-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission UPP AWS RDS stacks.
 
-### CircleCI Automated Builds
-
-Automated builds for the provisioner projects are triggered in [CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners/).  
-The CircleCI configuration is located [here](https://github.com/Financial-Times/upp-provisioners/blob/master/.circleci/config.yml).
-
-Builds are triggered on commits and pull requests, and must pass to be able to merge into master.
-
-Only provisioners that have been updated and have CircleCI configuration defined will be built.
-
-To enable automated builds for new provisioner projects that contain a Dockerfile:
-
-- Copy the configuration from an existing job, eg: [upp-elasticsearch-provisioner](https://github.com/Financial-Times/upp-provisioners/blob/master/.circleci/config.yml#L108-L152)
-- Update the job name to match the name of the new provisioner
-
-No further changes should be required, as the job config is fully parameterised.
