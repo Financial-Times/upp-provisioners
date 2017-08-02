@@ -1,5 +1,7 @@
 # UPP RDS
 
+[![CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/upp-provisioners)
+
 The RDS provisioner will:
 
 * Create a RDS instance using the specified Cloudformation template

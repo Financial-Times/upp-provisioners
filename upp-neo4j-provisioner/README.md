@@ -1,5 +1,7 @@
 # Neo4j HA Cluster
 
+[![CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/upp-provisioners)
+
 Basic useful feature list:
 
  * Deploy cluster of 3 Neo4j nodes with 1 Read and 1 Write ALB

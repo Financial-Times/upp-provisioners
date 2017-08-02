@@ -1,6 +1,7 @@
 Docker image to provision a cluster
 ===================================
 
+[![CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/upp-provisioners)
 
 ### Table of Contents
 **[Tutorial](#tutorial)**  

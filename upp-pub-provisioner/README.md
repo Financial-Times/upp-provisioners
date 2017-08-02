@@ -1,7 +1,9 @@
- [![GitHub release](https://img.shields.io/badge/version-v1.0.15-green.svg?style=flat)](https://github.com/Financial-Times/upp-provisioners/releases)
+
 
 Docker image to provision a cluster
 ===================================
+
+[![CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/upp-provisioners)
 
 ### Table of Contents
 **[Tutorial](#tutorial)**  
