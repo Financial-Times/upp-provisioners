@@ -1,4 +1,7 @@
 # upp-provisioners
+
+[![CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/upp-provisioners)
+
 Contains the various provisioning projects used by the Universal Publishing Platform.
 See the relevant readme file of each project for more detail about each provisioner.
 
