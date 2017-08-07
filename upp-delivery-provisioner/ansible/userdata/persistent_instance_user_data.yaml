@@ -84,6 +84,12 @@ write_files:
       Compress=false
       RateLimitInterval=0
       RateLimitBurst=0
+  - path: /etc/systemd/journald.conf.d/11-override-config.conf
+    content: |
+      [Journal]
+      SystemMaxFiles=0
+      SystemMaxFileSize=512M
+      SystemMaxUse=50G
   - path: "/etc/profile.d/history_timestamps.sh"
     permissions: "0755"
     owner: "root"
