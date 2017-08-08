@@ -11,8 +11,10 @@ Automated builds for the provisioner projects are triggered in [CircleCI](https:
 The CircleCI configuration is located [here](https://github.com/Financial-Times/upp-provisioners/blob/master/.circleci/config.yml).
 
 Builds are triggered on commits and pull requests, and must pass to be able to merge into master.
+Note that only provisioners that have CircleCI configuration defined AND have been updated by your commits will be built.  
 
-Only provisioners that have been updated and have CircleCI configuration defined will be built.
+Commits to branches are automatically built, tagged and pushed with the branch name as the Docker image tag.  
+Note that due to tag naming restrictions, branch names containing `/` will only use the second part as the tag.
 
 To enable automated builds for new provisioner projects that contain a Dockerfile:
 

@@ -37,7 +37,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
-              echo 'export DOCKER_TAG=${CIRCLE_BRANCH}' >> $BASH_ENV
+              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
             fi
       - run:
           name: Build Docker image
@@ -82,7 +82,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
-              echo 'export DOCKER_TAG=${CIRCLE_BRANCH}' >> $BASH_ENV
+              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
             fi
       - run:
           name: Build Docker image
@@ -127,7 +127,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
-              echo 'export DOCKER_TAG=${CIRCLE_BRANCH}' >> $BASH_ENV
+              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
             fi
       - run:
           name: Build Docker image
@@ -172,7 +172,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
-              echo 'export DOCKER_TAG=${CIRCLE_BRANCH}' >> $BASH_ENV
+              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
             fi
       - run:
           name: Build Docker image
@@ -217,7 +217,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
-              echo 'export DOCKER_TAG=${CIRCLE_BRANCH}' >> $BASH_ENV
+              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
             fi
       - run:
           name: Build Docker image
@@ -262,7 +262,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
-              echo 'export DOCKER_TAG=${CIRCLE_BRANCH}' >> $BASH_ENV
+              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
             fi
       - run:
           name: Build Docker image
