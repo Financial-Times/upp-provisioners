@@ -77,7 +77,7 @@ Parameters:
   TagSystemCode:
     Description: Tag detail for the SystemCode
     Type: String
-    Default: UPP Neo4j HA
+    Default: upp
   TagIpCode:
     Description: Tag detail for the ipCode
     Type: String
