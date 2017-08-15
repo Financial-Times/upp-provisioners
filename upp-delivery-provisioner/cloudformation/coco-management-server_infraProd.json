@@ -16,7 +16,7 @@
                     { "Key": "environment", "Value": "d" },
                     { "Key": "ipCode", "Value": "P196" },
                     { "Key": "ec2Powercycle", "Value": "{ \"start\": \"0 8 * * 1-5\", \"stop\": \"55 17 * * 1-5\" }" },
-                    { "Key": "systemCode", "Value": "Content-Containers" },
+                    { "Key": "systemCode", "Value": "upp" },
                     { "Key": "teamDL", "Value": "universal.publishing.platform@ft.com" },
                     { "Key": "stopSchedule", "Value": "nostop" }
                 ],
