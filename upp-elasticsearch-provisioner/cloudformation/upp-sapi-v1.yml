@@ -67,7 +67,7 @@ Resources:
         - Key: teamDL
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode
-          Value: !Ref ClusterName
+          Value: "upp"
         - Key: ipcode
           Value: "P490"
         - Key: description
