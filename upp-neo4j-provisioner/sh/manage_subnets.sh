@@ -51,7 +51,7 @@ for each in ${PUB_CIDR[*]} ${PRI_CIDR[*]}; do
         aws ec2 create-subnet --vpc-id ${VPCID} --cidr-block ${each} --availability-zone ${AZS[$i]}
         if [[ "$?" -eq "0" ]]; then
           #Tag resource if creation was successful
-          aws ec2 create-tags --resources $(getSubnetId ${VPCID} ${each}) --tags Key=Name,Value=up-neo4j-${AZS[$i]} Key=Description,Value='Neo4j HA Cluster' Key=systemCode,Value='UPP Neo4j HA' Key=ipcode,Value=P196
+          aws ec2 create-tags --resources $(getSubnetId ${VPCID} ${each}) --tags Key=Name,Value=up-neo4j-${AZS[$i]} Key=Description,Value='Neo4j HA Cluster' Key=systemCode,Value='upp' Key=ipcode,Value=P196
           info "Subnet ${each} created successfully"
 
         else
