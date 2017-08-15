@@ -6,7 +6,7 @@
     #ami: ami-c3cae3b4 #eu-west-1 HMV CoreOS 815.0.0 (alpha)
     env: "{{ environment_type }}"
     ipcode: P196
-    systemCode: "CoreOS-Universal-Publishing"
+    systemCode: "upp"
     description: "CoreOS-Universal-Publishing"
     teamDL: "universal.publishing.platform@ft.com"
     environment_tag: default
