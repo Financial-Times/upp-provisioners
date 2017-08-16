@@ -4,6 +4,9 @@ Parameters:
   EnvironmentTag:
     Type: String
     Default: "pre-prod"
+  EnvironmentType:
+    Type: String
+    Default: "t"
   Region:
     Type: String
     Default: "Secondary region"
@@ -94,7 +97,7 @@ Resources:
           - Event: "s3:ObjectCreated:*"
             Topic: !Ref SNSTopic
 
-  # Create the concordance store table.
+  # Create the concordance store table. 
   ConcordanceStoreDynamoDB:
     Type: "AWS::DynamoDB::Table"
     Properties: 
@@ -109,3 +112,19 @@ Resources:
         WriteCapacityUnits: "5"
       TableName: !Join [ "", ["upp-concordance-store-", !Ref EnvironmentTag]]
 
+  # Create the concept notification stream
+  ConceptNotificationStream:
+    Type: "AWS::Kinesis::Stream"
+    Properties:
+      Name: !Join [ "", ["upp-concept-notification-stream-", !Ref EnvironmentTag]]
+      RetentionPeriodHours: 24
+      ShardCount: 1
+      Tags:
+        - Key: "systemCode"
+          Value: "upp"
+        - Key: "teamDL"
+          Value: "universal.publishing@ft.com"
+        - Key: "environment"
+          Value: !Ref EnvironmentType
+        - Key: "description"
+          Value: "Concept Notification Stream - {{environment_tag}}"
