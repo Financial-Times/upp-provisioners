@@ -133,7 +133,7 @@ Resources:
   ReadCapacityScalableTarget:
     Type: "AWS::ApplicationAutoScaling::ScalableTarget"
     Properties:
-      MaxCapacity: 10000
+      MaxCapacity: 300
       MinCapacity: 5
       ResourceId: !Join
         - /
@@ -159,7 +159,7 @@ Resources:
   WriteCapacityScalableTarget:
     Type: "AWS::ApplicationAutoScaling::ScalableTarget"
     Properties:
-      MaxCapacity: 10000
+      MaxCapacity: 300
       MinCapacity: 5
       ResourceId: !Join
         - /
