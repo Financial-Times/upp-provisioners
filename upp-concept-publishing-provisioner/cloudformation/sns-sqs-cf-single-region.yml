@@ -133,7 +133,7 @@ Resources:
   ReadCapacityScalableTarget:
     Type: "AWS::ApplicationAutoScaling::ScalableTarget"
     Properties:
-      MaxCapacity: 15
+      MaxCapacity: 10000
       MinCapacity: 5
       ResourceId: !Join
         - /
@@ -149,7 +149,7 @@ Resources:
       PolicyType: TargetTrackingScaling
       ScalingTargetId: !Ref ReadCapacityScalableTarget
       TargetTrackingScalingPolicyConfiguration:
-        TargetValue: 90.0
+        TargetValue: 80.0
         ScaleInCooldown: 60
         ScaleOutCooldown: 60
         PredefinedMetricSpecification:
@@ -159,7 +159,7 @@ Resources:
   WriteCapacityScalableTarget:
     Type: "AWS::ApplicationAutoScaling::ScalableTarget"
     Properties:
-      MaxCapacity: 15
+      MaxCapacity: 10000
       MinCapacity: 5
       ResourceId: !Join
         - /
@@ -175,7 +175,7 @@ Resources:
       PolicyType: TargetTrackingScaling
       ScalingTargetId: !Ref WriteCapacityScalableTarget
       TargetTrackingScalingPolicyConfiguration:
-        TargetValue: 90.0
+        TargetValue: 80.0
         ScaleInCooldown: 60
         ScaleOutCooldown: 60
         PredefinedMetricSpecification:
