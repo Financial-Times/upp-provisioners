@@ -127,7 +127,7 @@ Resources:
         - Key: "environment"
           Value: !Ref EnvironmentType
         - Key: "description"
-          Value: "Concept Notification Stream - {{environment_tag}}"
+          Value: !Join ["", ["Concept Notification Stream - ", !Ref EnvironmentTag]]
 
   # DynamoDB autoscaling for read throughput
   ReadCapacityScalableTarget:
