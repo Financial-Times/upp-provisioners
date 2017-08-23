@@ -55,11 +55,3 @@ docker run \
 ```
 
 - You can check the progress of the CF stack creation in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
-
-## Manual Step
-Manual step is only needed for multi-region deployment (pre-prod & prod environments).  
-You need to manually subscribe SQS queue in us-east-1 region to SNS topic in eu-west-1 region.  
-To do this..
-- In EU (Ireland) find SNS Topic ARN. Go to SNS section > filter "topics upp-concept-publishing-{pre-prod|prod}" > Copy topic's ARN to clipboard
-- In N.Virginia find SQS queue. Go to SQS > Filter "upp-concept-publish-notificationsg-{pre-prod|prod}" > select queue
-- Click Queue Actions > Subscribe to SNS Topic > Choose Topic region: EU (Ireland) and paste Topic ARN from clipboard > Ok
