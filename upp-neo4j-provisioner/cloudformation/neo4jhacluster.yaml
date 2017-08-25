@@ -474,7 +474,7 @@ Resources:
   Neo4jInstance2:
     Type: AWS::EC2::Instance
     Properties:
-      SubnetId: !Ref Subnet1
+      SubnetId: !Ref Subnet2
       SecurityGroupIds:
         - !Ref CoreOSSecurityGroup
       InstanceType: !Ref InstanceType
@@ -679,7 +679,7 @@ Resources:
   Neo4jInstance3:
     Type: AWS::EC2::Instance
     Properties:
-      SubnetId: !Ref Subnet1
+      SubnetId: !Ref Subnet3
       SecurityGroupIds:
         - !Ref CoreOSSecurityGroup
       InstanceType: !Ref InstanceType
