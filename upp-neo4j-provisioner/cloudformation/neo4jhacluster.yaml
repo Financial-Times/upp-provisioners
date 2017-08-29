@@ -104,9 +104,10 @@ Parameters:
     Description: Tag detail for the Environment
     Type: String
     AllowedValues:
+      - 'd'
       - 't'
       - 'p'
-    Default: t
+    Default: d
   TagTeamDL:
     Description: Tag of the TeamDL.
     Type: String
