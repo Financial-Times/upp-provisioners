@@ -107,6 +107,7 @@ Parameters:
       - 'd'
       - 't'
       - 'p'
+      - 'int'
     Default: d
   TagTeamDL:
     Description: Tag of the TeamDL.
@@ -134,9 +135,6 @@ Parameters:
     Description: Tag detail for the when the instance is to be powered off.
     Type: String
     Default: nostop
-
-Conditions:
-  EnableTerminationProtection: !Equals [ !Ref TagEnvironment, p ]
 
 Resources:
 
@@ -251,8 +249,6 @@ Resources:
         Ebs:
           VolumeType: gp2
           SnapshotId: !Ref EbsSnapshot
-      DisableApiTermination:
-        !If [EnableTerminationProtection, true, false]
       Tags:
       - Key: environment
         Value: !Ref TagEnvironment
@@ -288,8 +284,6 @@ Resources:
         Ebs:
           VolumeType: gp2
           SnapshotId: !Ref EbsSnapshot
-      DisableApiTermination:
-        !If [EnableTerminationProtection, true, false]
       Tags:
       - Key: environment
         Value: !Ref TagEnvironment
@@ -325,8 +319,6 @@ Resources:
         Ebs:
           VolumeType: gp2
           SnapshotId: !Ref EbsSnapshot
-      DisableApiTermination:
-        !If [EnableTerminationProtection, true, false]
       Tags:
       - Key: environment
         Value: !Ref TagEnvironment
