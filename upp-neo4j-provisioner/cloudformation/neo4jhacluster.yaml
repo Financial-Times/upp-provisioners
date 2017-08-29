@@ -243,7 +243,6 @@ Resources:
         - !Ref CoreOSSecurityGroup
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
-      # AssociatePublicIpAddress: false
       IamInstanceProfile: !Ref IamInstanceProfile
       BlockDeviceMappings:
       - DeviceName: "/dev/sdc"
@@ -279,7 +278,6 @@ Resources:
         - !Ref CoreOSSecurityGroup
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
-      # AssociatePublicIpAddress: false
       IamInstanceProfile: !Ref IamInstanceProfile
       BlockDeviceMappings:
       - DeviceName: "/dev/sdc"
@@ -315,7 +313,6 @@ Resources:
         - !Ref CoreOSSecurityGroup
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
-      # AssociatePublicIpAddress: false
       IamInstanceProfile: !Ref IamInstanceProfile
       BlockDeviceMappings:
       - DeviceName: "/dev/sdc"
