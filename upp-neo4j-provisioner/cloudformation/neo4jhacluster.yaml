@@ -106,7 +106,7 @@ Parameters:
     AllowedValues:
       - 't'
       - 'p'
-    Default: d
+    Default: t
   TagTeamDL:
     Description: Tag of the TeamDL.
     Type: String
