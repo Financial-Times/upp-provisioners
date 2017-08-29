@@ -119,7 +119,26 @@ read -r -d '' CF_PARAMS <<EOM
 ]
 EOM
 
-aws cloudformation create-stack --stack-name=upp-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}"
+read -r -d '' STACK_POLICY <<EOM
+[
+    {
+        "Statement":[
+            {
+                "Effect":"Allow",
+                "NotAction":"Update:Delete",
+                "Principal":"*",
+                "Resource":"*"
+            }
+        ]
+    }
+]
+EOM
+
+if ${ENVIRONMENT_TYPE} == 'p' ; then
+    aws cloudformation create-stack --stack-name=upp-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}" --stack-policy-body="${STACK_POLICY}"
+else
+    aws cloudformation create-stack --stack-name=upp-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}"
+fi
 
 echo -e "Tunnel CNAME:"
 echo -e "${ENVIRONMENT_TAG}-neo4j-tunnel-up.ft.com\n"
