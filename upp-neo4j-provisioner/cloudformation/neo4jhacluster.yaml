@@ -107,7 +107,6 @@ Parameters:
       - 'd'
       - 't'
       - 'p'
-      - 'int'
     Default: d
   TagTeamDL:
     Description: Tag of the TeamDL.
