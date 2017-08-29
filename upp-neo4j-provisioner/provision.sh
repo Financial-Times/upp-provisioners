@@ -43,6 +43,21 @@ case "$AWS_DEFAULT_REGION" in
         exit 1
 esac
 
+echo "EtcdToken=${TOKEN_URL}" >> /tmp/ft-env-variables
+echo "AWSAccessKeyId=${AWS_ACCESS_KEY_ID}" >> /tmp/ft-env-variables
+echo "AWSSecretAccessKey=${AWS_SECRET_ACCESS_KEY}" >> /tmp/ft-env-variables
+echo "KonstructorAPIKey=${KONSTRUCTOR_API_KEY}" >> /tmp/ft-env-variables
+echo "ServicesDefinitionRootURI=${SERVICES_DEFINITION_ROOT_URI}" >> /tmp/ft-env-variables
+echo "CocoEnvironmentTag=${ENVIRONMENT_TAG}" >> /tmp/ft-env-variables
+echo "SplunkHecURL=${SPLUNK_HEC_URL}" >> /tmp/ft-env-variables
+echo "SplunkHecToken=${SPLUNK_HEC_TOKEN}" >> /tmp/ft-env-variables
+echo "ExtraNeoConf=${NEO_EXTRA_CONF_URL}" >> /tmp/ft-env-variables
+echo "HeapMaxSize=${NEO_HEAP_SIZE}" >> /tmp/ft-env-variables
+echo "PageCacheSize=${NEO_CACHE_SIZE}" >> /tmp/ft-env-variables
+
+/substitute-ft-env-variables.sh
+/bin/base64 /userdata.yml | tr -d '\n' > /userdata.base64
+/usr/bin/split -b 4096 userdata.base64
 
 read -r -d '' CF_PARAMS <<EOM
 [
@@ -82,58 +97,23 @@ read -r -d '' CF_PARAMS <<EOM
         "UsePreviousValue": false
     },
     {
-        "ParameterKey": "AWSAccessKeyId",
-        "ParameterValue": "${AWS_ACCESS_KEY_ID}",
-        "UsePreviousValue": false
-    },
-    {
-        "ParameterKey": "AWSSecretAccessKey",
-        "ParameterValue": "${AWS_SECRET_ACCESS_KEY}",
-        "UsePreviousValue": false
-    },
-    {
-        "ParameterKey": "KonstructorAPIKey",
-        "ParameterValue": "${KONSTRUCTOR_API_KEY}",
-        "UsePreviousValue": false
-    },
-    {
-        "ParameterKey": "ServicesDefinitionRootURI",
-        "ParameterValue": "${SERVICES_DEFINITION_ROOT_URI}",
-        "UsePreviousValue": false
-    },
-    {
         "ParameterKey": "CocoEnvironmentTag",
         "ParameterValue": "${ENVIRONMENT_TAG}",
         "UsePreviousValue": false
     },
     {
-        "ParameterKey": "SplunkHecURL",
-        "ParameterValue": "${SPLUNK_HEC_URL}",
+        "ParameterKey": "UserData1",
+        "ParameterValue": "$(cat /xaa)",
         "UsePreviousValue": false
     },
     {
-        "ParameterKey": "SplunkHecToken",
-        "ParameterValue": "${SPLUNK_HEC_TOKEN}",
+        "ParameterKey": "UserData2",
+        "ParameterValue": "$(cat /xab)",
         "UsePreviousValue": false
     },
     {
-        "ParameterKey": "EtcdToken",
-        "ParameterValue": "${TOKEN_URL}",
-        "UsePreviousValue": false
-    },
-    {
-        "ParameterKey": "ExtraNeoConf",
-        "ParameterValue": "${NEO_EXTRA_CONF_URL}",
-        "UsePreviousValue": false
-    },
-    {
-        "ParameterKey": "HeapMaxSize",
-        "ParameterValue": "${NEO_HEAP_SIZE}",
-        "UsePreviousValue": false
-    },
-    {
-        "ParameterKey": "PageCacheSize",
-        "ParameterValue": "${NEO_CACHE_SIZE}",
+        "ParameterKey": "UserData3",
+        "ParameterValue": "$(cat /xac)",
         "UsePreviousValue": false
     }
 ]
