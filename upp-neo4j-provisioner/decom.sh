@@ -7,6 +7,17 @@ if [[ $ENVIRONMENT_TAG != *-data ]] ; then
     exit 1
 fi
 
+ENVIRONMENT_TYPE=$(aws cloudformation describe-stacks --stack-name upp-${ENVIRONMENT_TAG} | jq -r '.Stacks[].Parameters[] | select(.ParameterKey == "TagEnvironment") .ParameterValue')
+if [ "${ENVIRONMENT_TYPE}" == "p" ] ; then
+    echo WARNING - upp-${ENVIRONMENT_TAG} is a production stack!
+    echo Are you sure you want to decommission it? [y/N]
+    read input
+    if [ "${input}" != "y" ] ; then
+        echo Aborting
+        exit 0
+    fi
+fi
+
 echo "Deleting stack for environment ${ENVIRONMENT_TAG:?No environment tag provided.}"
 set AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID:?AWS Access Key not set.}"
 set AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY:?AWS Secret Access Key not set.}"

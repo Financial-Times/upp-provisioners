@@ -60,7 +60,7 @@ done
 - Run the following Docker command:
 ```
 docker pull coco/upp-neo4j-provisioner:latest
-docker run \
+docker run -it \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
