@@ -77,7 +77,7 @@ Resources:
             Action: "SQS:SendMessage"
             Resource: !GetAtt SQSQueue.Arn
             Condition:
-              ArnLike:
+              ArnEquals:
                 "aws:SourceArn": !Ref SNSTopic
           -
             Sid: "communicate-with-sqs"
