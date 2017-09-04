@@ -34,6 +34,14 @@ Resources:
             Condition:
               ArnLike: 
                 "aws:SourceArn": !Join ["" , ["arn:aws:s3:::", "upp-concept-normalised-store-", !Ref EnvironmentTag]]
+          - Sid: allow-content-container-apps-publish
+            Effect: Allow
+            Principal:
+              AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
+            Action:
+              - SNS:Publish
+              - SNS:GetTopicAttributes
+            Resource: !Ref SNSTopic
       Topics: 
         - !Ref SNSTopic
 
