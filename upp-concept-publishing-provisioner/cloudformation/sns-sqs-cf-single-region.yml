@@ -188,3 +188,8 @@ Resources:
         ScaleOutCooldown: 60
         PredefinedMetricSpecification:
           PredefinedMetricType: DynamoDBWriteCapacityUtilization
+
+Outputs:
+  SNSTopic1ARN:
+    Description: The SNSTopic ARN
+    Value: !Ref SNSTopic

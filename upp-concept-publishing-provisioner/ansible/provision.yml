@@ -25,6 +25,10 @@
     - debug:
         msg: "{{concept_pub_stack_output_1}}"
 
+    - name: Save SNSTopic ARN as a variable
+      set_fact:
+        SNSTopic1ARN: "{{concept_pub_stack_output_1.stack_outputs.SNSTopic1ARN}}"
+
     - name: Create Secondary Concept Publishing stack
       when: "{{is_multi_region|lower}} == true"
       cloudformation:
@@ -37,6 +41,7 @@
         template_parameters:
           EnvironmentTag: "{{environment_tag}}"
           Region: "{{aws_secondary_region}}"
+          SNSTopic1ARN: "{{SNSTopic1ARN}}"
         tags:
           environment: "{{environment_type}}"
           systemCode: "upp"
