@@ -38,16 +38,6 @@ Resources:
         Id: ConceptNotificationQueuePolicy
         Statement:
           -
-            Sid: "receive-from-sns"
-            Effect: "Allow"
-            Principal:
-              AWS: "*"
-            Action: "SQS:SendMessage"
-            Resource: !GetAtt SQSQueue.Arn
-            Condition:
-              ArnLike:
-                "aws:SourceArn": !Join ["", ["arn:aws:sns:eu-west-1:027104099916:upp-concept-publishing-", !Ref EnvironmentTag, "-SNSTopic*"]]
-          -
             Sid: "communicate-with-sqs"
             Effect: "Allow"
             Principal:
