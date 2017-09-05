@@ -6,21 +6,22 @@
 # Required-Start: $network $local_fs
 # Required-Stop: $network $local_fs
 # Short-Description: Update jumpbox hostname in dns
-# Description: Updates jump-<uk/us>-tunnel-up.ft.com dns address
+# Description: Updates jump-<uk/us>-tunnel-${dns_suffix}.ft.com dns address
 #              to the public ip of this host, if it is different.
 #              It just needs to run once when the host starts up.
 ### END INIT INFO
 
 KONKEY=$(cat /root/.kon_dns_key)
+DNS_SUFFIX=$(cat /root/.dns_suffix)
 REGION=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | awk -F "-" '{print $1}')
 NEWIP=$(curl -s 169.254.169.254/latest/meta-data/public-ipv4)
 
 
 # check what region we are in and set name accordingly 
 if [ ${REGION} == eu ]; then
-  NAME=jump-uk-tunnel-up
+  NAME="jump-eu-tunnel-${DNS_SUFFIX}"
 elif [ ${REGION} == us ]; then
-  NAME=jump-us-tunnel-up
+  NAME="jump-us-tunnel-${DNS_SUFFIX}"
 else
   echo "Region not found."
   exit 1

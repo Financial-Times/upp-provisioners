@@ -10,7 +10,14 @@ Metadata:
         default: Network Configuration
       Parameters:
       - VPC
-      - SubnetId
+      - Subnet1
+      - Subnet2
+      - Subnet3
+    - Label:
+        default: DNS configuration
+      Parameters:
+      - KonstructorAPIKey
+      - DnsSuffix
     - Label:
         default: Amazon EC2 Configuration
       Parameters:
@@ -31,6 +38,10 @@ Parameters:
   KonstructorAPIKey:
     Description: API Key used to access Konstructor DNS
     Type: String
+  DnsSuffix:
+    Description: "The suffix that will be appended to the DNS name exposed for the jumpbox. The whole DNS name for the jumpox will be: jump-{region}-tunnel-{DnsSuffix}.ft.com"
+    Type: String
+    Default: up
   DeploymentScriptURL:
     Description: Deployment script URL
     Type: String
@@ -256,4 +267,5 @@ Resources:
           #!/bin/bash -x
           # Pull and execute deployment script
           echo ${KonstructorAPIKey} > /root/.kon_dns_key
+          echo ${DnsSuffix} > /root/.dns_suffix
           /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash
