@@ -7,6 +7,9 @@ Parameters:
   Region:
     Type: String
     Default: "Secondary region"
+  SNSTopic1ARN:
+    Type: String
+    Default: "ARN of the primary SNS topic"
 
 Resources:
 
@@ -35,19 +38,18 @@ Resources:
         Id: ConceptNotificationQueuePolicy
         Statement:
           -
-            Sid: "receive-from-sns"
-            Effect: "Allow"
-            Principal:
-              AWS: "*"
-            Action: "SQS:SendMessage"
-            Resource: !GetAtt SQSQueue.Arn
-            Condition:
-              ArnLike:
-                "aws:SourceArn": !Join ["", ["arn:aws:sns:eu-west-1:027104099916:upp-concept-publishing-", !Ref EnvironmentTag, "-SNSTopic*"]]
-          -
             Sid: "communicate-with-sqs"
             Effect: "Allow"
             Principal:
               AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
             Action: "SQS:*"
             Resource: !GetAtt SQSQueue.Arn
+          -
+            Sid: "subscribe-to-primary-sns-queue"
+            Effect: "Allow"
+            Principal:
+              AWS: "*"
+            Action: "SQS:SendMessage"
+            Condition:
+              ArnEquals:
+                "aws:SourceArn": !Ref SNSTopic1ARN

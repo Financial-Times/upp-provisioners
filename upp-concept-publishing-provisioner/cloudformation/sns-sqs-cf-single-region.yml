@@ -77,8 +77,8 @@ Resources:
             Action: "SQS:SendMessage"
             Resource: !GetAtt SQSQueue.Arn
             Condition:
-              ArnLike:
-                "aws:SourceArn": !Join ["", ["arn:aws:sns:eu-west-1:027104099916:upp-concept-publishing-", !Ref EnvironmentTag, "-SNSTopic*"]]
+              ArnEquals:
+                "aws:SourceArn": !Ref SNSTopic
           -
             Sid: "communicate-with-sqs"
             Effect: "Allow"
@@ -188,3 +188,8 @@ Resources:
         ScaleOutCooldown: 60
         PredefinedMetricSpecification:
           PredefinedMetricType: DynamoDBWriteCapacityUtilization
+
+Outputs:
+  SNSTopic1ARN:
+    Description: The SNSTopic ARN
+    Value: !Ref SNSTopic
