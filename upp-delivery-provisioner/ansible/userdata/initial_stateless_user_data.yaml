@@ -20,6 +20,7 @@ write_files:
       coco_image_monitor_test_uuid={{coco_image_monitor_test_uuid}}
       dynamodb_table={{dynamodb_table}}
       environment_tag={{environment_tag}}
+      kinesis_stream_name={{kinesis_stream_name}}
       konstructor_api_key={{konstructor_api_key}}
       metadata_services_password={{metadata_services_password}}
       metadata_services_username={{metadata_services_username}}
