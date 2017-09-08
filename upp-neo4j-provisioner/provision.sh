@@ -7,7 +7,6 @@ if [[ $ENVIRONMENT_TAG != *-data ]] ; then
     exit 1
 fi
 
-echo "Creating stack for environment ${ENVIRONMENT_TAG:?No environment tag provided.}"
 set AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID:?AWS Access Key not set.}"
 set AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY:?AWS Secret Access Key not set.}"
 set SERVICES_DEFINITION_ROOT_URI = "${SERVICES_DEFINITION_ROOT_URI:?Service file definition not set.}"
@@ -119,7 +118,18 @@ read -r -d '' CF_PARAMS <<EOM
 ]
 EOM
 
-aws cloudformation create-stack --stack-name=upp-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}"
+# if the stack doesn't exist, create it
+# otherwise, update it
+aws cloudformation describe-stacks --stack-name=upp-${ENVIRONMENT_TAG} > /dev/null 2>&1
+status=$?
+
+if [ ${status} != 0 ]; then
+    echo "Creating stack upp-${ENVIRONMENT_TAG}"
+    aws cloudformation create-stack --stack-name=upp-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}"
+else
+    echo "Updating stack upp-${ENVIRONMENT_TAG}"
+    aws cloudformation update-stack --stack-name=upp-${ENVIRONMENT_TAG} --template-body=file:///neo4jhacluster.yaml --parameters="${CF_PARAMS}"
+fi
 
 echo -e "Tunnel CNAME:"
 echo -e "${ENVIRONMENT_TAG}-neo4j-tunnel-up.ft.com\n"
