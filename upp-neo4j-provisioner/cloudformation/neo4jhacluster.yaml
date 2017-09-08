@@ -440,6 +440,17 @@ Resources:
         Value: !Ref TagIpCode
       - Key: coco-environment-tag
         Value: !Ref CocoEnvironmentTag
+  ReadAlbListener80:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: ReadAlbTargetGroup7474
+      LoadBalancerArn:
+        Ref: ReadAlb
+      Port: 80
+      Protocol: HTTP
   ReadAlbListener7474:
     Type: "AWS::ElasticLoadBalancingV2::Listener"
     Properties:
@@ -564,6 +575,17 @@ Resources:
         Value: !Ref TagIpCode
       - Key: coco-environment-tag
         Value: !Ref CocoEnvironmentTag
+  WriteAlbListener80:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: WriteAlbTargetGroup7474
+      LoadBalancerArn:
+        Ref: WriteAlb
+      Port: 80
+      Protocol: HTTP
   WriteAlbListener7474:
     Type: "AWS::ElasticLoadBalancingV2::Listener"
     Properties:
