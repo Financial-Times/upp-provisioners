@@ -161,6 +161,10 @@ Resources:
         FromPort: 7687
         ToPort: 7687
         CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 7474
+        ToPort: 7474
+        CidrIp: 0.0.0.0/0
 
   # CoreOS security group
   CoreOSSecurityGroup:
@@ -445,7 +449,7 @@ Resources:
             Ref: ReadAlbTargetGroup7474
       LoadBalancerArn:
         Ref: ReadAlb
-      Port: 80
+      Port: 7474
       Protocol: HTTP
   ReadAlbListener7687:
     Type: "AWS::ElasticLoadBalancingV2::Listener"
@@ -569,7 +573,7 @@ Resources:
             Ref: WriteAlbTargetGroup7474
       LoadBalancerArn:
         Ref: WriteAlb
-      Port: 80
+      Port: 7474
       Protocol: HTTP
   WriteAlbListener7687:
     Type: "AWS::ElasticLoadBalancingV2::Listener"
