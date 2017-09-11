@@ -63,7 +63,6 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri ${ServicesDefinitionRootURI} >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_hec_url ${SplunkHecURL} >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_hec_token ${SplunkHecToken} >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/extra-conf-url ${ExtraNeoConf} >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/dbms-memory-heap-maxSize ${HeapMaxSize} >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/dbms-memory-pagecache-size ${PageCacheSize} >/dev/null 2>&1 || true;"
     - name: vol-neo4j.mount
