@@ -136,7 +136,6 @@ export SERVICES_DEFINITION_ROOT_URI="https://raw.githubusercontent.com/Financial
 export SPLUNK_HEC_TOKEN="splunk-token"
 export SPLUNK_HEC_URL="https://http-inputs-financialtimes.splunkcloud.com/services/collector/event"
 export KONSTRUCTOR_API_KEY="konstructor-key"
-export NEO_EXTRA_CONF_URL="https://raw.githubusercontent.com/Financial-Times/up-neo4j-service-files/master/neo4j-extra-conf.sh"
 export TOKEN_URL=$(curl -s https://discovery.etcd.io/new?size=3)
 export ENVIRONMENT_TYPE="d|t|p"
 

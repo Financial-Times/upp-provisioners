@@ -14,7 +14,6 @@ set SPLUNK_HEC_TOKEN = "${SPLUNK_HEC_TOKEN:?Splunk HEC Token not set.}"
 set SPLUNK_HEC_URL = "${SPLUNK_HEC_URL:?Splunk HEC URL not set.}"
 set KONSTRUCTOR_API_KEY = "${KONSTRUCTOR_API_KEY:?Konstructor API Key not set.}"
 set TOKEN_URL = "${TOKEN_URL:?Failed to get etcd2 token URL}"
-set NEO_EXTRA_CONF_URL = "${NEO_EXTRA_CONF_URL:?Neo4J Extra Conf URL not provided.}"
 set AWS_DEFAULT_REGION = "${AWS_DEFAULT_REGION:?AWS Region not set.}"
 set ENVIRONMENT_TYPE = "${ENVIRONMENT_TYPE:?Environment type not set.}"
 set NEO_HEAP_SIZE = "${NEO_HEAP_SIZE:?Neo4J Heap Size not provided.}"
@@ -50,7 +49,6 @@ echo "ServicesDefinitionRootURI=${SERVICES_DEFINITION_ROOT_URI}" >> /tmp/ft-env-
 echo "CocoEnvironmentTag=${ENVIRONMENT_TAG}" >> /tmp/ft-env-variables
 echo "SplunkHecURL=${SPLUNK_HEC_URL}" >> /tmp/ft-env-variables
 echo "SplunkHecToken=${SPLUNK_HEC_TOKEN}" >> /tmp/ft-env-variables
-echo "ExtraNeoConf=${NEO_EXTRA_CONF_URL}" >> /tmp/ft-env-variables
 echo "HeapMaxSize=${NEO_HEAP_SIZE}" >> /tmp/ft-env-variables
 echo "PageCacheSize=${NEO_CACHE_SIZE}" >> /tmp/ft-env-variables
 
