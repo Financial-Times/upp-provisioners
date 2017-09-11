@@ -74,7 +74,6 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '${services_definition_root_uri}'                         >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/authors '${authors_bertha_url}'                                            >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/roles '${roles_bertha_url}'                                                >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/bertha/urls/brands '${brands_bertha_url}'                                              >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/tme_host '${tme_host}'                                                                 >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/read-urls '${delivery_clusters_urls}'                                       >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/s3-image-bucket-urls '${s3_image_bucket_urls}'                              >/dev/null 2>&1 || true;"

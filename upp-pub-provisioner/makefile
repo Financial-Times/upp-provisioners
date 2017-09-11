@@ -18,7 +18,6 @@ provision:
     	-e "CLUSTER_BASIC_HTTP_CREDENTIALS=$(CLUSTER_BASIC_HTTP_CREDENTIALS)" \
     	-e "AUTHORS_BERTHA_URL=$(AUTHORS_BERTHA_URL)" \
     	-e "ROLES_BERTHA_URL=$(ROLES_BERTHA_URL)" \
-    	-e "BRANDS_BERTHA_URL=$(BRANDS_BERTHA_URL)" \
 	coco/upp-pub-provisioner:latest
 
 decom:
