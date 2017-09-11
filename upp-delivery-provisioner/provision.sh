@@ -44,5 +44,6 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   neo4j_fleet_endpoint=${NEO4J_FLEET_ENDPOINT} \
   branch_name=${BRANCH_NAME:=master} \
   publishing_authorization_key=${PUBLISHING_AUTHORIZATION_KEY} \
-  publishing_read_url=${PUBLISHING_READ_URL}" \
+  publishing_read_url=${PUBLISHING_READ_URL} \
+  kinesis_stream_name=${KINESIS_STREAM_NAME}" \
   --vault-password-file=/vault.pass
