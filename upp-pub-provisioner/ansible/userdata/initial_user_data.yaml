@@ -8,7 +8,6 @@ write_files:
       apps_aws_secret_access_key={{apps_aws_secret_access_key}}
       authors_bertha_url={{authors_bertha_url}}
       binary_s3_bucket={{binary_s3_bucket}}
-      brands_bertha_url={{brands_bertha_url}}
       carousel_bucket={{carousel_bucket}}
       carousel_enabled={{carousel_enabled}}
       clusterid={{clusterid}}

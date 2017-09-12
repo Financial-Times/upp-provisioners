@@ -144,10 +144,8 @@ export SYNTHETIC_LIST_UUID=
 ##URLs to Bertha endpoints for accessing to specific Google Spreadsheet data. Used in publishing cluster
 ##AUTHORS_BERTHA_URL refers to the spreadsheet of curated authors data.
 ##ROLES_BERTHA_URL refers to the spreadsheet of roles for curated authors.
-##BRANDS_BERTHA_URL refers to the spreadsheet of roles for curated brands.
 export AUTHORS_BERTHA_URL=http://bertha.site.example/123456XYZ/Authors
 export ROLES_BERTHA_URL=http://bertha.site.example/123456XYZ/Roles
-export BRANDS_BERTHA_URL=http://bertha.site.example/123456XYZ/Brands
 
 # The following variables are used by the concordance-rw-dynamodb. If you leave them blank the service will be unhealthy
 # CONCORDANCES_DYNAMODB_TABLE expects the name of the table that concordances will be written too.
@@ -201,7 +199,6 @@ docker run \
     -e "SYNTHETIC_LIST_UUID=$SYNTHETIC_LIST_UUID" \
     -e "AUTHORS_BERTHA_URL=$AUTHORS_BERTHA_URL" \
     -e "ROLES_BERTHA_URL=$ROLES_BERTHA_URL" \
-    -e "BRANDS_BERTHA_URL=$BRANDS_BERTHA_URL" \
     -e "BRANCH_NAME=$BRANCH_NAME" \
     coco/upp-pub-provisioner:local
 ```

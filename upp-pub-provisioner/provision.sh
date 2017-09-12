@@ -30,7 +30,6 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \
   authors_bertha_url=${AUTHORS_BERTHA_URL} \
   roles_bertha_url=${ROLES_BERTHA_URL} \
-  brands_bertha_url=${BRANDS_BERTHA_URL} \
   environment_tag=${ENVIRONMENT_TAG:=default} \
   environment_type=${ENVIRONMENT_TYPE:=p} \
   tme_host=${TME_HOST:=tme.ft.com} \
