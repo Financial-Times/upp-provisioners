@@ -50,7 +50,7 @@ etcdctl set /ft/config/neo4j/read_only_url http://upp-pre-prod-uk-data-read-alb-
 ```
 - The `*-rw-neo4j` and `public-*` services need to be restarted to pick up the new URLs. Run the following shell snippet on the delivery cluster:
 ```
-for service in `fleetctl list-units | grep -e -rw-neo4j@ -e public- | grep -v sidekick | cut -f 1` ; do
+for service in `fleetctl list-units | grep -e -rw-neo4j@ -e public- -e relations-api | grep -v sidekick | cut -f 1` ; do
     echo "Restarting ${service}"
     fleetctl ssh ${service} sudo systemctl restart ${service}
 done
