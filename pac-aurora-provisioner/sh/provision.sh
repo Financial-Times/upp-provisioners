@@ -35,7 +35,7 @@ aws rds create-db-parameter-group --db-parameter-group-name=pac-aurora-${CLUSTER
 aws rds create-db-cluster-parameter-group --db-cluster-parameter-group-name=pac-aurora-${CLUSTER}-clustergroup --db-parameter-group-family=aurora5.6 --description='PAC cluster parameter group'
 
 # Create a DB cluster
-aws rds create-db-cluster --db-cluster-identifier=pac-aurora-${CLUSTER}-useast --db-cluster-parameter-group-name=pac-aurora-${CLUSTER}-clustergroup --vpc-security-group-ids=sg-6b79a215 --db-subnet-group-name=pac-aurora-subnet-group --replication-source-identifier=${clusterARN} --engine=aurora
+aws rds create-db-cluster --db-cluster-identifier=pac-aurora-${CLUSTER}-useast --db-cluster-parameter-group-name=pac-aurora-${CLUSTER}-clustergroup --vpc-security-group-ids=sg-24e79e5a --db-subnet-group-name=pac-aurora-subnet-group --replication-source-identifier=${clusterARN} --engine=aurora
 
 # Create two instances and register with the DB cluster
 aws rds create-db-instance --db-cluster-identifier=pac-aurora-${CLUSTER}-useast --db-instance-class=db.t2.small --engine=aurora --db-instance-identifier=pac-aurora-${CLUSTER}-1 --db-parameter-group-name=pac-aurora-${CLUSTER}-dbgroup --no-publicly-accessible --db-subnet-group-name=pac-aurora-subnet-group

@@ -106,9 +106,9 @@ Resources:
         Properties:
             DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' subnet group']]
             SubnetIds:
-                - 'subnet-932717cb'
-                - 'subnet-c1b94888'
-                - 'subnet-2a1de94d'
+                - 'subnet-901020c8'
+                - 'subnet-5f00f438'
+                - 'subnet-8cbe4fc5'
             Tags:
               - Key: environment
                 Value: !Ref TagEnvironment
