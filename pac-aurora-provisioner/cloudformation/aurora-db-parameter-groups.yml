@@ -13,6 +13,14 @@ Parameters:
       ConstraintDescription: There must be a valid email address for the TeamDL
       Default: universal.publishing.platform@ft.com
 
+  TagEnvironment:
+      Description: Tag detail for the Environment
+      Type: String
+      AllowedValues:
+          - 't'
+          - 'p'
+      Default: t
+
   TagSystemCode:
       Description: The system code for the environment
       Type: String
@@ -42,38 +50,38 @@ Resources:
       Family: aurora5.6
       Parameters:
         binlog_format: 'MIXED'
-    Tags:
-      - Key: environment
-        Value: !Ref TagEnvironment
-      - Key: teamDL
-        Value: !Ref TagTeamDL
-      - Key: systemCode
-        Value: !Ref TagSystemCode
-      - Key: ipCode
-        Value: !Ref TagIpCode
-      - Key: description
-        Value: !Ref TagDescription
-      - Key: name
-        Value: !Sub ${TagName} - ${EnvironmentName}
+      Tags:
+        - Key: environment
+          Value: !Ref TagEnvironment
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: ipCode
+          Value: !Ref TagIpCode
+        - Key: description
+          Value: !Ref TagDescription
+        - Key: name
+          Value: !Sub ${TagName} - ${EnvironmentName}
 
   DBParameterGroup:
     Type: AWS::RDS::DBParameterGroup
     Properties:
       Description: !Join ['', [!Ref EnvironmentName, ' Parameter Group']]
       Family: aurora5.6
-    Tags:
-      - Key: environment
-        Value: !Ref TagEnvironment
-      - Key: teamDL
-        Value: !Ref TagTeamDL
-      - Key: systemCode
-        Value: !Ref TagSystemCode
-      - Key: ipCode
-        Value: !Ref TagIpCode
-      - Key: description
-        Value: !Ref TagDescription
-      - Key: name
-        Value: !Sub ${TagName} - ${EnvironmentName}
+      Tags:
+        - Key: environment
+          Value: !Ref TagEnvironment
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: ipCode
+          Value: !Ref TagIpCode
+        - Key: description
+          Value: !Ref TagDescription
+        - Key: name
+          Value: !Sub ${TagName} - ${EnvironmentName}
 
 Outputs:
   DBClusterParameterGroup:
