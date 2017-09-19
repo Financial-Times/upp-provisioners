@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This template deploys an Aurora Replica for the primary PAC DB cluster.
+Description: This template deploys a DB subnet group in the US
 
 Metadata:
   AWS::CloudFormation::Interface:

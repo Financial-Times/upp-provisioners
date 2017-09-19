@@ -25,6 +25,7 @@
       template: /cloudformation/aurora-db-parameter-groups.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
+        TagEnvironment: "{{ environment_type }}"
     register: db_param_group_eu
 
   - name: Add DB Parameter Groups to us-east-1
@@ -38,6 +39,7 @@
       template: /cloudformation/aurora-db-parameter-groups.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
+        TagEnvironment: "{{ environment_type }}"
     register: db_param_group_us
 
   - name: EU Parameter Group Outputs
@@ -85,6 +87,7 @@
       template: /cloudformation/aurora-pac-us-subnet.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
+        TagEnvironment: "{{ environment_type }}"
     register: db_subnet_us
 
   - name: Launch Replica Aurora DB Cloudformation stack in us-east-1

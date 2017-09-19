@@ -42,12 +42,38 @@ Resources:
       Family: aurora5.6
       Parameters:
         binlog_format: 'MIXED'
+    Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
+      - Key: name
+        Value: !Sub ${TagName} - ${EnvironmentName}
 
   DBParameterGroup:
     Type: AWS::RDS::DBParameterGroup
     Properties:
       Description: !Join ['', [!Ref EnvironmentName, ' Parameter Group']]
       Family: aurora5.6
+    Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: ipCode
+        Value: !Ref TagIpCode
+      - Key: description
+        Value: !Ref TagDescription
+      - Key: name
+        Value: !Sub ${TagName} - ${EnvironmentName}
 
 Outputs:
   DBClusterParameterGroup:
