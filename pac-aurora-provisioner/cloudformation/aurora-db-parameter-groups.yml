@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template deploys standard PAC DB Cluster Parameter group and DB Parameter group.
+
+Parameters:
+  EnvironmentName:
+      Description: An environment name that will be prefixed to resource names
+      Type: String
+
+  TagTeamDL:
+      Description: Tag of the TeamDL
+      Type: String
+      AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+      ConstraintDescription: There must be a valid email address for the TeamDL
+      Default: universal.publishing.platform@ft.com
+
+  TagSystemCode:
+      Description: The system code for the environment
+      Type: String
+      Default: pac
+
+  TagIpCode:
+      Description: The environment ipCode
+      Type: String
+      AllowedPattern: '[P][0-9]*'
+      Default: P196
+
+  TagDescription:
+      Description: Tag detail for the describing the instance
+      Type: String
+      Default: PAC Aurora
+
+  TagName:
+      Description: Tag detail for the Name used in the console of the instance
+      Type: String
+      Default: PAC Aurora
+
+Resources:
+  DBClusterParameterGroup:
+    Type: AWS::RDS::DBClusterParameterGroup
+    Properties:
+      Description: !Join ['', [!Ref EnvironmentName, ' Cluster Parameter Group']]
+      Family: aurora5.6
+      Parameters:
+        binlog_format: 'MIXED'
+
+  DBParameterGroup:
+    Type: AWS::RDS::DBParameterGroup
+    Properties:
+      Description: !Join ['', [!Ref EnvironmentName, ' Parameter Group']]
+      Family: aurora5.6
+
+Outputs:
+  DBClusterParameterGroup:
+    Description: A reference to the DBClusterParameterGroup
+    Value: !Ref DBClusterParameterGroup
+
+  DBParameterGroup:
+    Description: A reference to the DBParameterGroup
+    Value: !Ref DBParameterGroup

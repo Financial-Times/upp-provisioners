@@ -7,18 +7,50 @@
     cluster_name: "pac-aurora-{{ cluster }}"
 
   vars_files:
-  - vault_{{ environment_type }}.yml
+    - vault_{{ environment_type }}.yml
 
   tasks:
-  - name: Remove Aurora cloudformation in EU
+  - name: Remove Aurora in EU
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}"
+      stack_name: "{{ cluster_name }}-eu"
       region: "eu-west-1"
       state: "absent"
-    register: aurora_eu_stack
+    ignore_errors: yes
 
-  - name: show stack outputs
-    debug:
-      msg: "My stack outputs are {{ aurora_eu_stack }}"
+  - name: Remove Parameter groups in EU
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-eu-db-group"
+      region: "eu-west-1"
+      state: "absent"
+    ignore_errors: yes
+
+  - name: Remove Aurora replica in US
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-us"
+      region: "us-east-1"
+      state: "absent"
+    ignore_errors: yes
+
+  - name: Remove Aurora subnet in US
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-us-db-subnet"
+      region: "us-east-1"
+      state: "absent"
+    ignore_errors: yes
+
+  - name: Remove Parameter groups in US
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-us-db-group"
+      region: "us-east-1"
+      state: "absent"
+    ignore_errors: yes
