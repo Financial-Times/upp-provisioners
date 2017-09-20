@@ -37,7 +37,7 @@ Resources:
           - Sid: allow-content-container-apps-publish
             Effect: Allow
             Principal:
-              AWS: !Join ["", ["arn:aws:iam:", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
+              AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
             Action:
               - SNS:Publish
               - SNS:GetTopicAttributes
@@ -83,7 +83,7 @@ Resources:
             Sid: "communicate-with-sqs"
             Effect: "Allow"
             Principal:
-              AWS: !Join ["", ["arn:aws:iam:", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
+              AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
             Action: "SQS:*"
             Resource: !GetAtt SQSQueue.Arn
 
