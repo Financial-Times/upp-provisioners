@@ -35,6 +35,7 @@ docker run \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "IS_MULTI_REGION=$IS_MULTI_REGION" \
     -e "AWS_SECONDARY_REGION=$AWS_SECONDARY_REGION" \
+    -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     coco/upp-concept-publishing-provisioner:latest /bin/bash provision.sh
 ```
 
@@ -51,6 +52,7 @@ docker run \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "IS_MULTI_REGION=$IS_MULTI_REGION" \
     -e "AWS_SECONDARY_REGION=$AWS_SECONDARY_REGION" \
+    -e "AWS_ACCOUNT=$AWS_ACCOUNT" \    
     coco/upp-concept-publishing-provisioner:latest /bin/bash decom.sh
 ```
 
