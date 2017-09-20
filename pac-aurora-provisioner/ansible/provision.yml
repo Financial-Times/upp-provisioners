@@ -42,14 +42,6 @@
         TagEnvironment: "{{ environment_type }}"
     register: db_param_group_us
 
-  - name: EU Parameter Group Outputs
-    debug:
-      msg: "{{ db_param_group_eu.stack_outputs }}"
-
-  - name: US Parameter Group Outputs
-    debug:
-      msg: "{{ db_param_group_us.stack_outputs }}"
-
   - name: Launch Aurora DB Cloudformation stack in eu-west-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
@@ -73,7 +65,7 @@
     register: aurora_eu_stack
 
   - name: Retrieve EU DB Cluster ARN
-    script: /usr/local/bin/arn.sh
+    script: /usr/local/bin/arn.sh eu-west-1
     register: aurora_eu_arn
 
   - name: Add DB Subnet to us-east-1
@@ -113,13 +105,3 @@
         ReplicationSourceIdentifier: "{{ aurora_eu_arn.stdout }}"
         TagEnvironment: "{{ environment_type }}"
     register: aurora_us_stack
-
-  - name: Replica Output
-    debug:
-      msg: "My stack outputs are {{ aurora_us_stack.stack_outputs }}"
-
-  - name: Save Aurora Cluster host name in eu
-    set_fact:
-      aurora_eu_hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
-      aurora_eu_port: "{{ aurora_eu_stack.stack_outputs.DBPort }}"
-      aurora_eu_instancename: "{{ aurora_eu_stack.stack_outputs.DBInstanceName }}"
