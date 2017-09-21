@@ -106,6 +106,8 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/fleet_endpoint '${neo4j_fleet_endpoint}'                                           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/publishing/read_url '${publishing_read_url}'                                             >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/fleet-unit-healthcheck/timer_based_services 'mongo-backup(@\d+)?\.service,deployer\.service,image-cleaner\.service,os-upgrade\.service,neo4j-backup\.service,mongodb-online-backup.service,neo4j-hot-backup@\d+\.service'                                            >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/nexus/docker_user '${docker_user}'                                                 >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/nexus/docker_pass '${docker_pass}'                                                 >/dev/null 2>&1 || true;"
 
     - name: bootstrap.service
       command: start
