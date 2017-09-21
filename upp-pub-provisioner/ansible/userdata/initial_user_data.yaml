@@ -18,6 +18,8 @@ write_files:
       concordances_topic_arn={{concordances_topic_arn}}
       delivery_clusters_http_credentials={{delivery_clusters_http_credentials}}
       delivery_clusters_urls={{delivery_clusters_urls}}
+      docker_user={{docker_user}}
+      docker_pass={{docker_pass}}
       environment_tag={{environment_tag}}
       factset_key_first_part={{factset_key_first_part}}
       factset_key_second_part={{factset_key_second_part}}

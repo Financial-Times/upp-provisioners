@@ -93,7 +93,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/publish-carousel/enable '${carousel_enabled}'                                          >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/publish-read/read-credentials '${delivery_clusters_http_credentials}'            >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/publish-read/validator-credentials '${pam_validator_credentials}'                >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/pam/api-key '${pam_api_key}'                                                         >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/pam/api-key '${pam_api_key}'                                                     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/username '${factset_username}'                                           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/key/first_part '${factset_key_first_part}'                               >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/factset/key/second_part '${factset_key_second_part}'                             >/dev/null 2>&1 || true;"
@@ -103,6 +103,8 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/smartlogic/base_url '${smartlogic_base_url}'                                     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/smartlogic/model '${smartlogic_model}'                                           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/smartlogic/api_key '${smartlogic_api_key}'                                       >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/nexus/docker_user '${docker_user}'                                               >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/nexus/docker_pass '${docker_pass}'                                               >/dev/null 2>&1 || true;"
 
     - name: bootstrap.service
       command: start
