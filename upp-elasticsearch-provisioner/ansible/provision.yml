@@ -4,7 +4,7 @@
     cluster_name: "{{cf_template}}-{{delivery_cluster}}"
 
   vars_files:
-    - vault_{{environment_type}}.yml
+    - vault_{{aws_account}}.yml
 
   tasks:
 
@@ -31,7 +31,6 @@
         template_parameters:
           EnvironmentType: "{{environment_type}}"
           ClusterName: "{{cluster_name}}"
-          AccountID: "{{aws_account_id}}"
           Region: "{{aws_default_region}}"
         tags:
           Stack: "{{cluster_name}}"

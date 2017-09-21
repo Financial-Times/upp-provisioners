@@ -19,4 +19,5 @@ cf_template=${CF_TEMPLATE} \
 delivery_cluster=${DELIVERY_CLUSTER} \
 aws_default_region=${AWS_DEFAULT_REGION} \
 environment_type=${ENVIRONMENT_TYPE} \
-restore_es_snapshot=${RESTORE_ES_SNAPSHOT}"
+restore_es_snapshot=${RESTORE_ES_SNAPSHOT} \
+aws_account=${AWS_ACCOUNT}"
