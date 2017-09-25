@@ -9,6 +9,7 @@ fi
 
 set AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID:?AWS Access Key not set.}"
 set AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY:?AWS Secret Access Key not set.}"
+set AWS_ACCOUNT = "${AWS_ACCOUNT:?AWS account not set.}"
 set SERVICES_DEFINITION_ROOT_URI = "${SERVICES_DEFINITION_ROOT_URI:?Service file definition not set.}"
 set SPLUNK_HEC_TOKEN = "${SPLUNK_HEC_TOKEN:?Splunk HEC Token not set.}"
 set SPLUNK_HEC_URL = "${SPLUNK_HEC_URL:?Splunk HEC URL not set.}"
@@ -19,20 +20,23 @@ set ENVIRONMENT_TYPE = "${ENVIRONMENT_TYPE:?Environment type not set.}"
 set NEO_HEAP_SIZE = "${NEO_HEAP_SIZE:?Neo4J Heap Size not provided.}"
 set NEO_CACHE_SIZE = "${NEO_CACHE_SIZE:?Neo4J Page Cache Size not provided.}"
 
+aws_config_file="aws_configs/${AWS_ACCOUNT}_${AWS_DEFAULT_REGION}.sh"
+
+if [ -f ${aws_config_file} ]; then
+  source ${aws_config_file}
+else
+  echo "The AWS account specific configuration file '${aws_config_file}' does not exists. Please create it with the AWS values."
+  exit 1
+fi
+
 case "$AWS_DEFAULT_REGION" in
     eu-west-1)
-        export VPC_ID="vpc-36639c52"
-        export SUBNET1="subnet-a32021d5"
-        export SUBNET2="subnet-f11956a9"
-        export SUBNET3="subnet-00d8db64"
+        # The snapshot is shared across all the accounts
         export SNAPSHOT="snap-0e9ecacdd229f9d29"
         export AMI=$(curl -s https://coreos.com/dist/aws/aws-stable.json | jq '."eu-west-1".hvm')
         ;;
     us-east-1)
-        export VPC_ID="vpc-1d25657a"
-        export SUBNET1="subnet-4158091a"
-        export SUBNET2="subnet-64005a49"
-        export SUBNET3="subnet-1f383356"
+        # The snapshot is shared across all the accounts
         export SNAPSHOT="snap-068322a1e3e643d35"
         export AMI=$(curl -s https://coreos.com/dist/aws/aws-stable.json | jq '."us-east-1".hvm')
         ;;
