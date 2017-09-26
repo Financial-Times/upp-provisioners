@@ -1,4 +1,5 @@
 export VPC_ID="vpc-1d25657a"
+export VPC_CIDR="172.24.0.0/16"
 export SUBNET1="subnet-4158091a"
 export SUBNET2="subnet-64005a49"
 export SUBNET3="subnet-1f383356"

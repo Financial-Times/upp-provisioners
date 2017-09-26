@@ -83,6 +83,11 @@ read -r -d '' CF_PARAMS <<EOM
         "UsePreviousValue": false
     },
     {
+        "ParameterKey": "VPCCidr",
+        "ParameterValue": "${VPC_CIDR}",
+        "UsePreviousValue": false
+    },
+    {
         "ParameterKey": "Subnet1",
         "ParameterValue": "${SUBNET1}",
         "UsePreviousValue": false
