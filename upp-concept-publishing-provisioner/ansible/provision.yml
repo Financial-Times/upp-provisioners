@@ -1,7 +1,7 @@
 - hosts: all
 
   vars_files:
-    - vault.yml
+    - vault_{{ aws_account }}.yml
 
   tasks:
     - name: Create Primary Concept Publishing stack
