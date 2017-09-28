@@ -38,6 +38,7 @@ docker run \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "RESTORE_ES_SNAPSHOT=$RESTORE_ES_SNAPSHOT" \
+    -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     coco/upp-elasticsearch-provisioner:latest /bin/bash provision.sh
 ```
 
@@ -58,6 +59,7 @@ docker run \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "DELETE_S3_BUCKET=$DELETE_S3_BUCKET" \
+    -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     coco/upp-elasticsearch-provisioner:latest /bin/bash decom.sh
 ```
 
