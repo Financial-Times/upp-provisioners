@@ -45,5 +45,5 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   upp_gateway_host=$UPP_GATEWAY_HOST \
   upp_gateway_port=${UPP_GATEWAY_PORT:=443} \
   varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \
-  zones=$ZONES \"
+  zones=$ZONES" \
   --vault-password-file=/vault.pass
