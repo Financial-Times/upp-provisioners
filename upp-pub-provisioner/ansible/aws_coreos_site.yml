@@ -71,14 +71,15 @@
             to_port: 65535
             cidr_ip: 172.24.0.0/16
         rules_egress:
+          # Allow outbound TCP access
           - proto: tcp
             from_port: 0
             to_port: 65535
             cidr_ip: 0.0.0.0/0
-          # Allow timesync/ntp out
+          # Allow outbound UDP access
           - proto: udp
-            from_port: 123
-            to_port: 123
+            from_port: 0
+            to_port: 65535
             cidr_ip: 0.0.0.0/0
       register: fleet_group
 
