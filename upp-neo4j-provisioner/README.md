@@ -40,6 +40,18 @@ docker run \
 - If the cluster already exists, then the CloudFormation stack will be updated with the latest configuration.
 - You can monitor the provisioning by going to the CloudFormation section in the AWS console and looking for the stack `upp-<ENVIRONMENT_TAG>`.
 
+### Reprovisioning prod & pre-prod clusters
+
+Reprovisioning prod or pre-prod clusters will break the CloudWatch dashboards, as they will continue to pull metrics for the old (decommissioned) clusters.
+
+After reprovisioning, you will need to update the dashboards to point at the new metrics.
+
+The dashboards are located here:
+- [prod-uk-data](https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#dashboards:name=com-ft-up-prod-uk-neo4j)
+- [prod-us-data](https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#dashboards:name=com-ft-up-prod-us-neo4j)
+- [pre-prod-uk-data](https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#dashboards:name=com-ft-up-pre-prod-uk-data-neo4j)
+- [pre-prod-us-data](https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#dashboards:name=com-ft-up-pre-prod-us-data-neo4j)
+
 ## Attaching a delivery cluster to Neo4j
 - Once your Neo4j cluster is online and accessible, you will need to set two etcd keys in the delivery cluster.
   - `/ft/config/neo4j/read_write_url` - set this to the write ALB URL
