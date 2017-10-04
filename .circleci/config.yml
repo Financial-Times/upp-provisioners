@@ -32,9 +32,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -77,9 +79,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -122,9 +126,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -167,9 +173,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -212,9 +220,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -257,9 +267,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
