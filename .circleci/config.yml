@@ -65,7 +65,7 @@ jobs:
           command: |
             source ${BASH_ENV}
             echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
-            docker login -u ${DOCKER_USER} --password-stdin ${DOCKER_PASS}
+            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
   upp-delivery-provisioner:
     docker:
@@ -113,7 +113,7 @@ jobs:
           command: |
             source ${BASH_ENV}
             echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
-            docker login -u ${DOCKER_USER} --password-stdin ${DOCKER_PASS}
+            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
   upp-elasticsearch-provisioner:
     docker:
@@ -161,7 +161,7 @@ jobs:
           command: |
             source ${BASH_ENV}
             echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
-            docker login -u ${DOCKER_USER} --password-stdin ${DOCKER_PASS}
+            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
   upp-neo4j-provisioner:
     docker:
@@ -209,7 +209,7 @@ jobs:
           command: |
             source ${BASH_ENV}
             echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
-            docker login -u ${DOCKER_USER} --password-stdin ${DOCKER_PASS}
+            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
   upp-pub-provisioner:
     docker:
@@ -257,7 +257,7 @@ jobs:
           command: |
             source ${BASH_ENV}
             echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
-            docker login -u ${DOCKER_USER} --password-stdin ${DOCKER_PASS}
+            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
   upp-rds-provisioner:
     docker:
@@ -305,5 +305,5 @@ jobs:
           command: |
             source ${BASH_ENV}
             echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
-            docker login -u ${DOCKER_USER} --password-stdin ${DOCKER_PASS}
+            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
