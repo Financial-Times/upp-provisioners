@@ -3,7 +3,10 @@ workflows:
   version: 2
   build:
     jobs:
-      - trigger-provisioner-builds
+      - trigger-provisioner-builds:
+          filters:
+            tags:
+              only: /.*/
 jobs:
   trigger-provisioner-builds:
     docker:
@@ -13,6 +16,7 @@ jobs:
       - run:
           name: Trigger builds of updated provisioners
           command: |
+            apk -q --no-progress upgrade --no-cache libcurl
             apk -q --no-progress --update add curl
             .circleci/build_provisioners.sh
   upp-concept-publishing-provisioner:
@@ -32,9 +36,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -58,6 +64,7 @@ jobs:
           name: Push Docker image
           command: |
             source ${BASH_ENV}
+            echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
   upp-delivery-provisioner:
@@ -77,9 +84,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -103,6 +112,7 @@ jobs:
           name: Push Docker image
           command: |
             source ${BASH_ENV}
+            echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
   upp-elasticsearch-provisioner:
@@ -122,9 +132,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -148,6 +160,7 @@ jobs:
           name: Push Docker image
           command: |
             source ${BASH_ENV}
+            echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
   upp-neo4j-provisioner:
@@ -167,9 +180,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -193,6 +208,7 @@ jobs:
           name: Push Docker image
           command: |
             source ${BASH_ENV}
+            echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
   upp-pub-provisioner:
@@ -212,9 +228,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -238,6 +256,7 @@ jobs:
           name: Push Docker image
           command: |
             source ${BASH_ENV}
+            echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
   upp-rds-provisioner:
@@ -257,9 +276,11 @@ jobs:
             set +o pipefail
             docker load -i /caches/docker-cache.tar | true
       - run:
-          name: Set Docker image tag based on branch
+          name: Set Docker image tag based on branch or git tag
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            if [ ! -z "${CIRCLE_TAG}" ] ; then
+              echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
               echo 'export DOCKER_TAG=latest' >> $BASH_ENV
             else
               echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
@@ -283,5 +304,6 @@ jobs:
           name: Push Docker image
           command: |
             source ${BASH_ENV}
+            echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
