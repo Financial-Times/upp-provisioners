@@ -7,7 +7,7 @@ workflows:
 jobs:
   trigger-provisioner-builds:
     docker:
-      - image: docker:stable-git
+      - image: docker:stable
     steps:
       - checkout
       - run:
