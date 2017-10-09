@@ -1,3 +1,31 @@
+version: 2
+workflows:
+  version: 2
+  build:
+    jobs:
+      - trigger-provisioner-builds:
+          filters:
+            tags:
+              only: /.*/
+jobs:
+  trigger-provisioner-builds:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - run:
+          name: Trigger builds of updated provisioners
+          command: |
+            apk -q --no-progress upgrade --no-cache libcurl
+            apk -q --no-progress --update add curl
+            .circleci/build_provisioners.sh
+  upp-concept-publishing-provisioner: *build-config
+  upp-delivery-provisioner: *build-config
+  upp-elasticsearch-provisioner: *build-config
+  upp-neo4j-provisioner: *build-config
+  upp-pub-provisioner: *build-config
+  upp-rds-provisioner: *build-config
+
 build-config: &build-config
   docker:
     - image: docker:stable-git
@@ -46,31 +74,3 @@ build-config: &build-config
           echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
           docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
           docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
-
-version: 2
-workflows:
-  version: 2
-  build:
-    jobs:
-      - trigger-provisioner-builds:
-          filters:
-            tags:
-              only: /.*/
-jobs:
-  trigger-provisioner-builds:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - run:
-          name: Trigger builds of updated provisioners
-          command: |
-            apk -q --no-progress upgrade --no-cache libcurl
-            apk -q --no-progress --update add curl
-            .circleci/build_provisioners.sh
-  upp-concept-publishing-provisioner: *build-config
-  upp-delivery-provisioner: *build-config
-  upp-elasticsearch-provisioner: *build-config
-  upp-neo4j-provisioner: *build-config
-  upp-pub-provisioner: *build-config
-  upp-rds-provisioner: *build-config
