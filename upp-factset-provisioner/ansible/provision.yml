@@ -1,0 +1,31 @@
+---
+- name: provision stack
+  hosts: localhost
+  connection: local
+
+  vars:
+    cluster_name: "upp-factset-rds-{{ environment_tag }}"
+
+  tasks:
+  - name: Log vars
+    debug:
+      msg: "environment_tag: '{{ environment_tag }}'"
+
+  - name: Launch Aurora cloudformation stack in us-east
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "upp-factset-data-{{ environment_tag }}"
+      state: present
+      region: "us-east-1"
+      disable_rollback: true
+      template: /cloudformation/factset-provisioner.yml
+      template_parameters:
+        EnvironmentName: "{{ environment_tag }}"
+        DBVPC: vpc-f75fb790
+        DBSecurityGroup: sg-6b79a215
+        DBInstanceType: db.t2.small
+        DBInstanceMasterUsername: Administrator
+        DBInstanceMasterPassword: "{{ db_master_password }}"
+        TagEnvironment: "{{ environment_type }}"
+    register: factset_us_east_stack

@@ -1,0 +1,200 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template deploys an Aurora instance and an S3 bucket for Factset data.
+
+Metadata:
+    AWS::CloudFormation::Interface:
+        - Label: FT standard tagging
+          Parameters:
+             - TagEnvironment
+             - TagTeamDL
+             - TagSystemCode
+             - TagIpCode
+             - TagDescription
+             - TagName
+
+Parameters:
+    DBVPC:
+        Description: Choose which VPC the Aurora DB should be deployed TagStopSchedule
+        Type: AWS::EC2::VPC::Id
+
+    DBSecurityGroup:
+        Description: Select the Security group to allow access to the Aurora instance
+        Type: AWS::EC2::SecurityGroup::Id
+
+    DBInstanceType:
+        Description: The instance type to use for the database
+        Type: String
+        AllowedValues:
+            - db.t2.small
+            - db.t2.medium
+            - db.r3.large
+            - db.r3.xlarge
+            - db.r3.2xlarge
+            - db.r3.4xlarge
+            - db.r3.8xlarge
+        Default: db.t2.small
+
+    DBInstanceMasterUsername:
+        Description: The master Username for the database
+        Type: String
+        MinLength: 1
+        MaxLength: 16
+        AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+        ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+
+    DBInstanceMasterPassword:
+        Description: The master password for the database
+        NoEcho: true
+        Type: String
+        MinLength: 10
+        MaxLength: 41
+        AllowedPattern: '[a-zA-Z0-9]*'
+        ConstraintDescription: must contain only alphanumeric characters.
+
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+
+    TagEnvironment:
+        Description: Tag detail for the Environment
+        Type: String
+        AllowedValues:
+            - 't'
+            - 'p'
+        Default: t
+
+    TagTeamDL:
+        Description: Tag of the TeamDL
+        Type: String
+        AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+        ConstraintDescription: There must be a valid email address for the TeamDL
+        Default: universal.publishing.platform@ft.com
+
+    TagSystemCode:
+        Description: The system code for the environment
+        Type: String
+        Default: upp
+
+    TagIpCode:
+        Description: The environment ipCode
+        Type: String
+        AllowedPattern: '[P][0-9]*'
+        Default: P196
+
+    TagDescription:
+        Description: Tag detail for the describing the instance
+        Type: String
+        Default: UPP Factset store
+
+    TagName:
+        Description: Tag detail for the Name used in the console of the instance
+        Type: String
+        Default: UPP Factset store
+
+Resources:
+    #Bucket for Factset files
+    S3ConceptPublish:
+        Type: "AWS::S3::Bucket"
+        Properties:
+            BucketName: !Join [ "", ["upp-factset-file-store-", !Ref EnvironmentName]]
+            AccessControl: AuthenticatedRead
+            Tags:
+                - Key: environment
+                  Value: !Ref TagEnvironment
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
+                - Key: name
+                  Value: !Sub ${TagName} - ${EnvironmentName}
+
+    #Aurora RDS store
+    DBSubnetGroup:
+        Type: AWS::RDS::DBSubnetGroup
+        Properties:
+            DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' subnet group']]
+            SubnetIds:
+                - 'subnet-932717cb'
+                - 'subnet-c1b94888'
+                - 'subnet-2a1de94d'
+            Tags:
+                - Key: environment
+                  Value: !Ref TagEnvironment
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
+                - Key: name
+                  Value: !Sub ${TagName} - ${EnvironmentName}
+
+    DBCluster:
+        Type: AWS::RDS::DBCluster
+        Properties:
+            Engine: aurora
+            DBSubnetGroupName: !Ref DBSubnetGroup
+            MasterUsername: !Ref DBInstanceMasterUsername
+            MasterUserPassword: !Ref DBInstanceMasterPassword
+            DBClusterParameterGroupName: !Ref DBClusterParameterGroup
+            VpcSecurityGroupIds:
+                - Ref: DBSecurityGroup
+            Tags:
+                - Key: environment
+                  Value: !Ref TagEnvironment
+                - Key: teamDL
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
+                - Key: name
+                  Value: !Sub ${TagName} - ${EnvironmentName}
+
+    DBPrimaryInstance:
+        Type: AWS::RDS::DBInstance
+        Properties:
+            DBClusterIdentifier: !Ref DBCluster
+            DBInstanceClass: !Ref DBInstanceType
+            Engine: aurora
+            DBParameterGroupName: !Ref DBParameterGroup
+            DBSubnetGroupName: !Ref DBSubnetGroup
+            DBInstanceIdentifier: !Join ["" , ["upp-factset-data-", !Ref EnvironmentName]]
+            PubliclyAccessible: false
+            Tags:
+                - Key: environment
+                  Value: !Ref TagEnvironment
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
+                - Key: name
+                  Value: !Sub ${TagName} - ${EnvironmentName}
+
+    DBClusterParameterGroup:
+        Type: AWS::RDS::DBClusterParameterGroup
+        Properties:
+            Description: !Join ['', [!Ref EnvironmentName, ' cluster parameter group']]
+            Family: aurora5.6
+            Parameters:
+                binlog_format: 'MIXED'
+
+    DBParameterGroup:
+        Type: AWS::RDS::DBParameterGroup
+        Properties:
+            Description: !Join ['', [!Ref EnvironmentName, ' parameter group']]
+            Family: aurora5.6
