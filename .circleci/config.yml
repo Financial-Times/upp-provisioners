@@ -1,3 +1,5 @@
+# define our templated standard build config here
+# this has to go at the start, so we can reference it in our CircleCI job config later
 build-config: &build-config
   docker:
     - image: docker:stable-git
@@ -47,6 +49,7 @@ build-config: &build-config
           docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
           docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
 
+# define our CircleCI config here
 version: 2
 workflows:
   version: 2
