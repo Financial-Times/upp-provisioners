@@ -6,7 +6,7 @@
 
 The UPP Factset Provisioner can be built locally as a Docker image:
 
-`docker build -t upp-factset-provisioner:local .`
+`docker build -t coco/upp-factset-provisioner:local .`
 
 ## Provisioning a cluster
 
