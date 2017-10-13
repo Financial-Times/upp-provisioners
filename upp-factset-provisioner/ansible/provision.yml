@@ -3,29 +3,25 @@
   hosts: localhost
   connection: local
 
-  vars:
-    cluster_name: "upp-factset-rds-{{ environment_tag }}"
+  vars_files:
+    - vault_{{ aws_account }}.yml
 
   tasks:
-  - name: Log vars
-    debug:
-      msg: "environment_tag: '{{ environment_tag }}'"
-
-  - name: Launch Aurora cloudformation stack in us-east
+  - name: Launch Factset cloudformation stack
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "upp-factset-data-{{ environment_tag }}"
+      stack_name: "upp-factset-data-{{ environment_name }}"
       state: present
-      region: "us-east-1"
+      region: eu-west-1
       disable_rollback: true
       template: /cloudformation/factset-provisioner.yml
       template_parameters:
-        EnvironmentName: "{{ environment_tag }}"
-        DBVPC: vpc-f75fb790
-        DBSecurityGroup: sg-6b79a215
+        DBVPC: "{{ vpc_id }}"
+        DBSecurityGroup: "{{ security_group }}"
+        DBSubnetIds: "{{ subnet_ids }}"
         DBInstanceType: db.t2.small
-        DBInstanceMasterUsername: Administrator
+        DBInstanceMasterUsername: Admin
         DBInstanceMasterPassword: "{{ db_master_password }}"
-        TagEnvironment: "{{ environment_type }}"
-    register: factset_us_east_stack
+        EnvironmentName: "{{ environment_name }}"
+        TagEnvironment: "{{ tag_environment }}"

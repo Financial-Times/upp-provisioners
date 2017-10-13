@@ -22,6 +22,10 @@ Parameters:
         Description: Select the Security group to allow access to the Aurora instance
         Type: AWS::EC2::SecurityGroup::Id
 
+    DBSubnetIds:
+        Description: List of comma separated subnet IDs
+        Type: CommaDelimitedList
+
     DBInstanceType:
         Description: The instance type to use for the database
         Type: String
@@ -48,7 +52,7 @@ Parameters:
         NoEcho: true
         Type: String
         MinLength: 10
-        MaxLength: 41
+        MaxLength: 25
         AllowedPattern: '[a-zA-Z0-9]*'
         ConstraintDescription: must contain only alphanumeric characters.
 
@@ -85,7 +89,7 @@ Parameters:
     TagDescription:
         Description: Tag detail for the describing the instance
         Type: String
-        Default: UPP Factset store
+        Default: UPP Factset Aurora Store
 
     TagName:
         Description: Tag detail for the Name used in the console of the instance
@@ -93,35 +97,11 @@ Parameters:
         Default: UPP Factset store
 
 Resources:
-    #Bucket for Factset files
-    S3ConceptPublish:
-        Type: "AWS::S3::Bucket"
-        Properties:
-            BucketName: !Join [ "", ["upp-factset-file-store-", !Ref EnvironmentName]]
-            AccessControl: AuthenticatedRead
-            Tags:
-                - Key: environment
-                  Value: !Ref TagEnvironment
-                - Key: teamDL
-                  Value: !Ref TagTeamDL
-                - Key: systemCode
-                  Value: !Ref TagSystemCode
-                - Key: ipCode
-                  Value: !Ref TagIpCode
-                - Key: description
-                  Value: !Ref TagDescription
-                - Key: name
-                  Value: !Sub ${TagName} - ${EnvironmentName}
-
-    #Aurora RDS store
     DBSubnetGroup:
         Type: AWS::RDS::DBSubnetGroup
         Properties:
             DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' subnet group']]
-            SubnetIds:
-                - 'subnet-932717cb'
-                - 'subnet-c1b94888'
-                - 'subnet-2a1de94d'
+            SubnetIds: !Ref DBSubnetIds
             Tags:
                 - Key: environment
                   Value: !Ref TagEnvironment
@@ -167,7 +147,6 @@ Resources:
             DBClusterIdentifier: !Ref DBCluster
             DBInstanceClass: !Ref DBInstanceType
             Engine: aurora
-            DBParameterGroupName: !Ref DBParameterGroup
             DBSubnetGroupName: !Ref DBSubnetGroup
             DBInstanceIdentifier: !Join ["" , ["upp-factset-data-", !Ref EnvironmentName]]
             PubliclyAccessible: false
@@ -193,8 +172,3 @@ Resources:
             Parameters:
                 binlog_format: 'MIXED'
 
-    DBParameterGroup:
-        Type: AWS::RDS::DBParameterGroup
-        Properties:
-            Description: !Join ['', [!Ref EnvironmentName, ' parameter group']]
-            Family: aurora5.6

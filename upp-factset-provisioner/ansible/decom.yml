@@ -1,0 +1,16 @@
+---
+- name: Decommission stack
+  hosts: localhost
+  connection: local
+
+  vars_files:
+  - vault_{{ aws_account }}.yml
+
+  tasks:
+  - name: Remove Factset Cloudformation
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "upp-factset-data-{{ environment_name }}"
+      region: eu-west-1
+      state: "absent"

@@ -1,10 +1,10 @@
 #!/bin/bash
 
+echo $VAULT_PASS > /ansible/vault.pass
+
 cd /ansible
 
-ansible-playbook provision.yml --extra-vars "\
-aws_access_key=${ACCESS_KEY} \
-aws_secret_key=${SECRET_KEY} \
-environment_tag=${ENVIRONMENT_TAG} \
-db_master_password=${PASSWORD} \
-environment_type=${ENVIRONMENT_TYPE}"
+ansible-playbook --vault-password-file=vault.pass provision.yml --extra-vars "\
+environment_name=${ENVIRONMENT_NAME} \
+db_master_password=${MASTER_PASSWORD} \
+aws_account=${AWS_ACCOUNT}"
