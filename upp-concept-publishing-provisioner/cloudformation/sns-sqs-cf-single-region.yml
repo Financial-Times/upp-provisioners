@@ -37,7 +37,7 @@ Resources:
           - Sid: allow-content-container-apps-publish
             Effect: Allow
             Principal:
-              AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
+              AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
             Action:
               - SNS:Publish
               - SNS:GetTopicAttributes
@@ -83,7 +83,7 @@ Resources:
             Sid: "communicate-with-sqs"
             Effect: "Allow"
             Principal:
-              AWS: "arn:aws:iam::027104099916:user/content-containers-apps"
+              AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
             Action: "SQS:*"
             Resource: !GetAtt SQSQueue.Arn
 
@@ -104,6 +104,8 @@ Resources:
         TopicConfigurations:
           - Event: "s3:ObjectCreated:*"
             Topic: !Ref SNSTopic
+    # The topic policy has to be created before the S3 bucket
+    DependsOn: "SNSTopicPolicy"
 
   # Create the concordance store table. 
   ConcordanceStoreDynamoDB:
@@ -147,7 +149,7 @@ Resources:
         - /
         - - table
           - !Ref ConcordanceStoreDynamoDB
-      RoleARN: arn:aws:iam::027104099916:role/service-role/DynamoDBAutoscaleRole
+      RoleARN: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":role/service-role/DynamoDBAutoscaleRole"]]
       ScalableDimension: dynamodb:table:ReadCapacityUnits
       ServiceNamespace: dynamodb
   ReadScalingPolicy:
@@ -173,7 +175,7 @@ Resources:
         - /
         - - table
           - !Ref ConcordanceStoreDynamoDB
-      RoleARN: arn:aws:iam::027104099916:role/service-role/DynamoDBAutoscaleRole
+      RoleARN: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":role/service-role/DynamoDBAutoscaleRole"]]
       ScalableDimension: dynamodb:table:WriteCapacityUnits
       ServiceNamespace: dynamodb
   WriteScalingPolicy:

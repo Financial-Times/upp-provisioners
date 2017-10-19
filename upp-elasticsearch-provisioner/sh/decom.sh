@@ -18,4 +18,5 @@ cf_template=${CF_TEMPLATE} \
 delivery_cluster=${DELIVERY_CLUSTER} \
 aws_default_region=${AWS_DEFAULT_REGION} \
 environment_type=${ENVIRONMENT_TYPE} \
-delete_s3_bucket=${DELETE_S3_BUCKET}"
+delete_s3_bucket=${DELETE_S3_BUCKET} \
+aws_account=${AWS_ACCOUNT}"

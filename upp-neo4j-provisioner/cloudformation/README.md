@@ -131,6 +131,7 @@ Before running the script you must set the following environment variables.
 export ENVIRONMENT_TAG="unique-env-name"
 export AWS_ACCESS_KEY_ID="key"
 export AWS_SECRET_ACCESS_KEY="secret"
+export AWS_ACCOUNT="infra-prod|content-test|content-prod"
 export AWS_DEFAULT_REGION="eu-west-1|us-east-1"
 export SERVICES_DEFINITION_ROOT_URI="https://raw.githubusercontent.com/Financial-Times/up-neo4j-service-files/master/"
 export SPLUNK_HEC_TOKEN="splunk-token"

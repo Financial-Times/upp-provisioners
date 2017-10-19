@@ -9,6 +9,7 @@ Metadata:
     - Label: Network Configuration
       Parameters:
       - VPC
+      - VPCCidr
       - Subnet1
       - Subnet2
       - Subnet3
@@ -41,6 +42,10 @@ Parameters:
     Description: This is the VPC the stack will be deployed inside.
     Type: AWS::EC2::VPC::Id
     Default: vpc-9fcb94fb
+  VPCCidr:
+    Description: The CIDR of the VPC. Used for allowing access from withing the VPC to the neo4j machines.
+    Type: String
+    Default: 172.24.0.0/16
   Subnet1:
     Description: Subnet 172.24.0.0/18, eu-west-1a
     Type: AWS::EC2::Subnet::Id
@@ -225,7 +230,7 @@ Resources:
       - IpProtocol: tcp
         FromPort: 0
         ToPort: 65535
-        CidrIp: 172.24.0.0/16
+        CidrIp: !Ref VPCCidr
       SecurityGroupEgress:
       - IpProtocol: tcp
         FromPort: 0

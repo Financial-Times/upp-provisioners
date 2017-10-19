@@ -30,6 +30,7 @@ docker run \
     -e "SPLUNK_HEC_URL=$SPLUNK_HEC_URL" \
     -e "SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN" \
     -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
+    -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     -e "TOKEN_URL=$TOKEN_URL" \
     -e "NEO_HEAP_SIZE=$NEO_HEAP_SIZE" \
     -e "NEO_CACHE_SIZE=$NEO_CACHE_SIZE" \
@@ -38,6 +39,18 @@ docker run \
 - If the cluster does not exist, the CloudFormation stack will be created.
 - If the cluster already exists, then the CloudFormation stack will be updated with the latest configuration.
 - You can monitor the provisioning by going to the CloudFormation section in the AWS console and looking for the stack `upp-<ENVIRONMENT_TAG>`.
+
+### Reprovisioning prod & pre-prod clusters
+
+Reprovisioning prod or pre-prod clusters will break the CloudWatch dashboards, as they will continue to pull metrics for the old (decommissioned) clusters.
+
+After reprovisioning, you will need to update the dashboards to point at the new metrics.
+
+The dashboards are located here:
+- [prod-uk-data](https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#dashboards:name=com-ft-up-prod-uk-neo4j)
+- [prod-us-data](https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#dashboards:name=com-ft-up-prod-us-neo4j)
+- [pre-prod-uk-data](https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#dashboards:name=com-ft-up-pre-prod-uk-data-neo4j)
+- [pre-prod-us-data](https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#dashboards:name=com-ft-up-pre-prod-us-data-neo4j)
 
 ## Attaching a delivery cluster to Neo4j
 - Once your Neo4j cluster is online and accessible, you will need to set two etcd keys in the delivery cluster.
@@ -50,7 +63,7 @@ etcdctl set /ft/config/neo4j/read_only_url http://upp-pre-prod-uk-data-read-alb-
 ```
 - The `*-rw-neo4j` and `public-*` services need to be restarted to pick up the new URLs. Run the following shell snippet on the delivery cluster:
 ```
-for service in `fleetctl list-units | grep -e -rw-neo4j@ -e public- | grep -v sidekick | cut -f 1` ; do
+for service in `fleetctl list-units | grep -e -rw-neo4j@ -e public- -e relations-api | grep -v sidekick | cut -f 1` ; do
     echo "Restarting ${service}"
     fleetctl ssh ${service} sudo systemctl restart ${service}
 done

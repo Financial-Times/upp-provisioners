@@ -4,7 +4,7 @@
     cluster_name: "{{cf_template}}-{{delivery_cluster}}"
 
   vars_files:
-    - vault_{{environment_type}}.yml
+    - vault_{{aws_account}}.yml
 
   tasks:
     - name: Get the ElasticSearch endpoint

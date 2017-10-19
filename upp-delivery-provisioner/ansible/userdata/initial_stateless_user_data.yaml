@@ -18,6 +18,8 @@ write_files:
       clusterid={{clusterid}}
       cms_notifier_credentials={{cms_notifier_credentials}}
       coco_image_monitor_test_uuid={{coco_image_monitor_test_uuid}}
+      docker_user={{docker_user}}
+      docker_pass={{docker_pass}}
       dynamodb_table={{dynamodb_table}}
       environment_tag={{environment_tag}}
       kinesis_stream_name={{kinesis_stream_name}}

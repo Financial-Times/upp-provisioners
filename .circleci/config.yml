@@ -1,9 +1,64 @@
+# define our templated standard build config here
+# this has to go at the start, so we can reference it in our CircleCI job config later
+build-config: &build-config
+  docker:
+    - image: docker:stable-git
+  steps:
+    - checkout
+    - setup_remote_docker
+    - restore_cache:
+        keys:
+          - v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
+        paths:
+          - /caches/docker-cache.tar
+    - run:
+        name: Load previous Docker image layer cache
+        command: |
+          set +o pipefail
+          docker load -i /caches/docker-cache.tar | true
+    - run:
+        name: Set Docker image tag based on branch or git tag
+        command: |
+          if [ ! -z "${CIRCLE_TAG}" ] ; then
+            echo 'export DOCKER_TAG=${CIRCLE_TAG}' >> $BASH_ENV
+          elif [ "${CIRCLE_BRANCH}" == "master" ] ; then
+            echo 'export DOCKER_TAG=latest' >> $BASH_ENV
+          else
+            echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
+          fi
+    - run:
+        name: Build Docker image
+        command: |
+          source ${BASH_ENV}
+          docker build --cache-from=coco/${CIRCLE_JOB}:${DOCKER_TAG} -t coco/${CIRCLE_JOB}:${DOCKER_TAG} ${CIRCLE_JOB}/
+    - run:
+        name: Create new Docker image layer cache
+        command: |
+          source ${BASH_ENV}
+          mkdir -p /caches
+          docker save -o /caches/docker-cache.tar coco/${CIRCLE_JOB}:${DOCKER_TAG}
+    - save_cache:
+        key: v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
+        paths:
+          - /caches/docker-cache.tar
+    - deploy:
+        name: Push Docker image
+        command: |
+          source ${BASH_ENV}
+          echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
+          docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+          docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
+
+# define our CircleCI config here
 version: 2
 workflows:
   version: 2
   build:
     jobs:
-      - trigger-provisioner-builds
+      - trigger-provisioner-builds:
+          filters:
+            tags:
+              only: /.*/
 jobs:
   trigger-provisioner-builds:
     docker:
@@ -13,275 +68,12 @@ jobs:
       - run:
           name: Trigger builds of updated provisioners
           command: |
+            apk -q --no-progress upgrade --no-cache libcurl
             apk -q --no-progress --update add curl
             .circleci/build_provisioners.sh
-  upp-concept-publishing-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
-          paths:
-            - /caches/docker-cache.tar
-      - run:
-          name: Load previous Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/docker-cache.tar | true
-      - run:
-          name: Set Docker image tag based on branch
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
-              echo 'export DOCKER_TAG=latest' >> $BASH_ENV
-            else
-              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
-            fi
-      - run:
-          name: Build Docker image
-          command: |
-            source ${BASH_ENV}
-            docker build --cache-from=coco/${CIRCLE_JOB}:${DOCKER_TAG} -t coco/${CIRCLE_JOB}:${DOCKER_TAG} ${CIRCLE_JOB}/
-      - run:
-          name: Create new Docker image layer cache
-          command: |
-            source ${BASH_ENV}
-            mkdir -p /caches
-            docker save -o /caches/docker-cache.tar coco/${CIRCLE_JOB}:${DOCKER_TAG}
-      - save_cache:
-          key: v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/docker-cache.tar
-      - deploy:
-          name: Push Docker image
-          command: |
-            source ${BASH_ENV}
-            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-            docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
-  upp-delivery-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
-          paths:
-            - /caches/docker-cache.tar
-      - run:
-          name: Load previous Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/docker-cache.tar | true
-      - run:
-          name: Set Docker image tag based on branch
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
-              echo 'export DOCKER_TAG=latest' >> $BASH_ENV
-            else
-              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
-            fi
-      - run:
-          name: Build Docker image
-          command: |
-            source ${BASH_ENV}
-            docker build --cache-from=coco/${CIRCLE_JOB}:${DOCKER_TAG} -t coco/${CIRCLE_JOB}:${DOCKER_TAG} ${CIRCLE_JOB}/
-      - run:
-          name: Create new Docker image layer cache
-          command: |
-            source ${BASH_ENV}
-            mkdir -p /caches
-            docker save -o /caches/docker-cache.tar coco/${CIRCLE_JOB}:${DOCKER_TAG}
-      - save_cache:
-          key: v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/docker-cache.tar
-      - deploy:
-          name: Push Docker image
-          command: |
-            source ${BASH_ENV}
-            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-            docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
-  upp-elasticsearch-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
-          paths:
-            - /caches/docker-cache.tar
-      - run:
-          name: Load previous Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/docker-cache.tar | true
-      - run:
-          name: Set Docker image tag based on branch
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
-              echo 'export DOCKER_TAG=latest' >> $BASH_ENV
-            else
-              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
-            fi
-      - run:
-          name: Build Docker image
-          command: |
-            source ${BASH_ENV}
-            docker build --cache-from=coco/${CIRCLE_JOB}:${DOCKER_TAG} -t coco/${CIRCLE_JOB}:${DOCKER_TAG} ${CIRCLE_JOB}/
-      - run:
-          name: Create new Docker image layer cache
-          command: |
-            source ${BASH_ENV}
-            mkdir -p /caches
-            docker save -o /caches/docker-cache.tar coco/${CIRCLE_JOB}:${DOCKER_TAG}
-      - save_cache:
-          key: v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/docker-cache.tar
-      - deploy:
-          name: Push Docker image
-          command: |
-            source ${BASH_ENV}
-            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-            docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
-  upp-neo4j-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
-          paths:
-            - /caches/docker-cache.tar
-      - run:
-          name: Load previous Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/docker-cache.tar | true
-      - run:
-          name: Set Docker image tag based on branch
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
-              echo 'export DOCKER_TAG=latest' >> $BASH_ENV
-            else
-              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
-            fi
-      - run:
-          name: Build Docker image
-          command: |
-            source ${BASH_ENV}
-            docker build --cache-from=coco/${CIRCLE_JOB}:${DOCKER_TAG} -t coco/${CIRCLE_JOB}:${DOCKER_TAG} ${CIRCLE_JOB}/
-      - run:
-          name: Create new Docker image layer cache
-          command: |
-            source ${BASH_ENV}
-            mkdir -p /caches
-            docker save -o /caches/docker-cache.tar coco/${CIRCLE_JOB}:${DOCKER_TAG}
-      - save_cache:
-          key: v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/docker-cache.tar
-      - deploy:
-          name: Push Docker image
-          command: |
-            source ${BASH_ENV}
-            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-            docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
-  upp-pub-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
-          paths:
-            - /caches/docker-cache.tar
-      - run:
-          name: Load previous Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/docker-cache.tar | true
-      - run:
-          name: Set Docker image tag based on branch
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
-              echo 'export DOCKER_TAG=latest' >> $BASH_ENV
-            else
-              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
-            fi
-      - run:
-          name: Build Docker image
-          command: |
-            source ${BASH_ENV}
-            docker build --cache-from=coco/${CIRCLE_JOB}:${DOCKER_TAG} -t coco/${CIRCLE_JOB}:${DOCKER_TAG} ${CIRCLE_JOB}/
-      - run:
-          name: Create new Docker image layer cache
-          command: |
-            source ${BASH_ENV}
-            mkdir -p /caches
-            docker save -o /caches/docker-cache.tar coco/${CIRCLE_JOB}:${DOCKER_TAG}
-      - save_cache:
-          key: v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/docker-cache.tar
-      - deploy:
-          name: Push Docker image
-          command: |
-            source ${BASH_ENV}
-            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-            docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
-  upp-rds-provisioner:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
-          paths:
-            - /caches/docker-cache.tar
-      - run:
-          name: Load previous Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/docker-cache.tar | true
-      - run:
-          name: Set Docker image tag based on branch
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ] ; then
-              echo 'export DOCKER_TAG=latest' >> $BASH_ENV
-            else
-              echo 'export DOCKER_TAG=$( echo ${CIRCLE_BRANCH} | cut -f 2 -d / )' >> $BASH_ENV
-            fi
-      - run:
-          name: Build Docker image
-          command: |
-            source ${BASH_ENV}
-            docker build --cache-from=coco/${CIRCLE_JOB}:${DOCKER_TAG} -t coco/${CIRCLE_JOB}:${DOCKER_TAG} ${CIRCLE_JOB}/
-      - run:
-          name: Create new Docker image layer cache
-          command: |
-            source ${BASH_ENV}
-            mkdir -p /caches
-            docker save -o /caches/docker-cache.tar coco/${CIRCLE_JOB}:${DOCKER_TAG}
-      - save_cache:
-          key: v1-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/docker-cache.tar
-      - deploy:
-          name: Push Docker image
-          command: |
-            source ${BASH_ENV}
-            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-            docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
+  upp-concept-publishing-provisioner: *build-config
+  upp-delivery-provisioner: *build-config
+  upp-elasticsearch-provisioner: *build-config
+  upp-neo4j-provisioner: *build-config
+  upp-pub-provisioner: *build-config
+  upp-rds-provisioner: *build-config
