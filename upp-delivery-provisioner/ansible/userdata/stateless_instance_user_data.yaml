@@ -3,6 +3,8 @@
 coreos:
   update:
     reboot-strategy: off
+    group: {{environment_tag}}
+    server: https://coreupdate-eu-prod.memb.ft.com/v1/update/
   etcd2:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
     discovery: ${token}
@@ -18,9 +20,6 @@ coreos:
     etcd_request_timeout: 3.0
     metadata: host_type=stateless
   units:
-    - name: update-engine.service
-      command: stop
-      mask: true
     - name: locksmithd.service
       command: stop
     - name: authorized_keys.timer
