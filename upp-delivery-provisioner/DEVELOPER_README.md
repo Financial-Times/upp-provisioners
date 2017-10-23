@@ -140,10 +140,6 @@ export KINESIS_STREAM_NAME=
 
 ## Neo4j Fleet Endpoint URL
 export NEO4J_FLEET_ENDPOINT=
-
-## The read url (the non-regional load-balanced url) for the corresponding Publishing cluster and its authorization key. i.e. for pre-prod, this should be set to https://pub-pre-prod-up.ft.com
-export PUBLISHING_READ_URL=
-export PUBLISHING_AUTHORIZATION_KEY=
 ```
 
 
@@ -179,8 +175,6 @@ docker run \
     -e "AGGREGATE_CONCEPT_QUEUE=$AGGREGATE_CONCEPT_QUEUE" \
     -e "KINESIS_STREAM_NAME=$KINESIS_STREAM_NAME" \
     -e "NEO4J_FLEET_ENDPOINT=$NEO4J_FLEET_ENDPOINT" \
-    -e "PUBLISHING_READ_URL=$PUBLISHING_READ_URL" \
-    -e "PUBLISHING_AUTHORIZATION_KEY=$PUBLISHING_AUTHORIZATION_KEY" \
     coco/upp-delivery-provisioner:local
 ```
 
