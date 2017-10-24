@@ -37,8 +37,6 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   neo4j_fleet_endpoint=${NEO4J_FLEET_ENDPOINT} \
   neo4j_read_url=$NEO4J_READ_URL \
   neo4j_write_url=$NEO4J_WRITE_URL \
-  publishing_authorization_key=${PUBLISHING_AUTHORIZATION_KEY} \
-  publishing_read_url=${PUBLISHING_READ_URL} \
   region=$AWS_DEFAULT_REGION \
   services_definition_root_uri=${SERVICES_DEFINITION_ROOT_URI:=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/} \
   token=$TOKEN_URL \
