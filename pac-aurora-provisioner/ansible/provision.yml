@@ -87,8 +87,16 @@
       rds_hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
 
   - name: Retrieve EU DB Cluster ARN
-    script: /usr/local/bin/arn.sh eu-west-1
+    script: /usr/local/bin/arn.sh
+    environment:
+      AWS_REGION: eu-west-1
+      AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
     register: aurora_eu_arn
+
+  - name: EU Cluster ARN
+    debug:
+      msg: "EU ARN: '{{ aurora_eu_arn.stdout }}'"
 
   - name: Add DB Subnet to us-east-1
     cloudformation:
