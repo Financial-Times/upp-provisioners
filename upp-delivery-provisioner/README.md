@@ -70,8 +70,6 @@ docker run \
     -e "DYNAMODB_TABLE"=$DYNAMODB_TABLE \
     -e "KINESIS_STREAM_NAME"=$KINESIS_STREAM_NAME \
     -e "NEO4J_FLEET_ENDPOINT=$NEO4J_FLEET_ENDPOINT" \
-    -e "PUBLISHING_READ_URL=$PUBLISHING_READ_URL" \
-    -e "PUBLISHING_AUTHORIZATION_KEY=$PUBLISHING_AUTHORIZATION_KEY" \
     coco/upp-delivery-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'

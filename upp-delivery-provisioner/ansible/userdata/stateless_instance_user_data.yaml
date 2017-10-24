@@ -3,6 +3,8 @@
 coreos:
   update:
     reboot-strategy: off
+    group: {{environment_tag}}
+    server: https://coreupdate-eu-prod.memb.ft.com/v1/update/
   etcd2:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
     discovery: ${token}
@@ -18,9 +20,6 @@ coreos:
     etcd_request_timeout: 3.0
     metadata: host_type=stateless
   units:
-    - name: update-engine.service
-      command: stop
-      mask: true
     - name: locksmithd.service
       command: stop
     - name: authorized_keys.timer
@@ -70,7 +69,6 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/methode-api/authorization_key '${methode_api_proxy_authorization_key}'             >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/nexus/docker_pass '${docker_pass}'                                                 >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/nexus/docker_user '${docker_user}'                                                 >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/publishing/authorization_key '${publishing_authorization_key}'                     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/password '${tme_password}'                                                     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/token '${tme_token}'                                                           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/tme/username '${tme_username}'                                                     >/dev/null 2>&1 || true;"
@@ -99,7 +97,6 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/read_only_url '${neo4j_read_url}'                                                  >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/read_write_url '${neo4j_write_url}'                                                >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/notifications-rw/search-window '90days'                                                  >/dev/null 2>&1 || true;"
-          ExecStart=/bin/sh -c "etcdctl mk /ft/config/publishing/read_url '${publishing_read_url}'                                             >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri '${services_definition_root_uri}'                           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_hec_token '${splunk_hec_token}'                                  >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_hec_url '${splunk_hec_url}'                                      >/dev/null 2>&1 || true;"
