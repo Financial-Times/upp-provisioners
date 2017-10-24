@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This template deploys a DB subnet group in the US
+Description: This template deploys a DB subnet group
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -24,7 +24,12 @@ Parameters:
         AllowedValues:
             - 't'
             - 'p'
+            - 'd'
         Default: t
+
+    DBSubnetIds:
+        Description: The DB Subnets to use
+        Type: List<AWS::EC2::Subnet::Id>
 
     TagTeamDL:
         Description: Tag of the TeamDL
@@ -59,10 +64,7 @@ Resources:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
       DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' subnet group']]
-      SubnetIds:
-        - 'subnet-d63d859e'
-        - 'subnet-a8dc1384'
-        - 'subnet-f9fcc99c'
+      SubnetIds: !Ref DBSubnetIds
       Tags:
         - Key: environment
           Value: !Ref TagEnvironment
