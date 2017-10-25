@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This template deploys a Aurora cluster for PAC.
+Description: This template deploys an Aurora Replica for the primary PAC DB cluster.
 
 Metadata:
     AWS::CloudFormation::Interface:
@@ -68,6 +68,14 @@ Parameters:
         Description: The DBClusterParameterGroup name to use
         Type: String
 
+    DBSubnetGroup:
+        Description: The DBSubnetGroup name to use
+        Type: String
+
+    ReplicationSourceIdentifier:
+        Description: The ARN of the master source, from which this database will replicate.
+        Type: String
+
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
@@ -109,36 +117,12 @@ Parameters:
         Default: PAC Aurora
 
 Resources:
-    DBSubnetGroup:
-        Type: AWS::RDS::DBSubnetGroup
-        Properties:
-            DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' subnet group']]
-            SubnetIds:
-                - 'subnet-901020c8'
-                - 'subnet-5f00f438'
-                - 'subnet-8cbe4fc5'
-            Tags:
-              - Key: environment
-                Value: !Ref TagEnvironment
-              - Key: teamDL
-                Value: !Ref TagTeamDL
-              - Key: systemCode
-                Value: !Ref TagSystemCode
-              - Key: ipCode
-                Value: !Ref TagIpCode
-              - Key: description
-                Value: !Ref TagDescription
-              - Key: name
-                Value: !Sub ${TagName} - ${EnvironmentName}
-
     DBCluster:
         Type: AWS::RDS::DBCluster
         Properties:
             Engine: aurora
-            DatabaseName: !Ref DBInstanceDBName
             DBSubnetGroupName: !Ref DBSubnetGroup
-            MasterUsername: !Ref DBInstanceMasterUsername
-            MasterUserPassword: !Ref DBInstanceMasterPassword
+            ReplicationSourceIdentifier: !Ref ReplicationSourceIdentifier
             VpcSecurityGroupIds:
                 - Ref: DBSecurityGroup
             DBClusterParameterGroupName: !Ref DBClusterParameterGroup
@@ -205,10 +189,6 @@ Resources:
                   Value: !Sub ${TagName} - ${EnvironmentName}
 
 Outputs:
-    DBCluster:
-        Description: A reference to the DBCluster
-        Value: !Ref DBCluster
-
     DBHostname:
         Description: A reference to the DBCluster hostname
         Value: !GetAtt [DBCluster, Endpoint.Address]

@@ -2,7 +2,7 @@
 - name: provision stack
   hosts: localhost
   connection: local
-  
+
   vars:
     cluster_name: "pac-aurora-{{ cluster }}"
 
@@ -14,19 +14,49 @@
     debug:
       msg: "cluster_name: '{{ cluster_name }}'"
 
-  - name: Launch Aurora cloudformation stack in eu-west
+  - name: Add DB Parameter Groups to eu-west-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}"
+      stack_name: "{{ cluster_name }}-eu-db-group"
+      state: present
+      region: "eu-west-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-db-parameter-groups.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        TagEnvironment: "{{ environment_type }}"
+    register: db_param_group_eu
+
+  - name: Add DB Parameter Groups to us-east-1
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-us-db-group"
+      state: present
+      region: "us-east-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-db-parameter-groups.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        TagEnvironment: "{{ environment_type }}"
+    register: db_param_group_us
+
+  - name: Launch Aurora DB Cloudformation stack in eu-west-1
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-eu"
       state: present
       region: "eu-west-1"
       disable_rollback: true
       template: /cloudformation/aurora-pac-eu.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
-        DBVPC: vpc-f75fb790
-        DBSecurityGroup: sg-dc82faa5
+        DBVPC: vpc-ee57bf89
+        DBSecurityGroup: sg-f5f68e8c
+        DBParameterGroup: "{{ db_param_group_eu.stack_outputs.DBParameterGroup }}"
+        DBClusterParameterGroup: "{{ db_param_group_eu.stack_outputs.DBClusterParameterGroup }}"
         DBInstanceType: db.t2.small
         DBInstanceMasterUsername: AdminUser
         DBInstanceMasterPassword: "{{ db_master_password }}"
@@ -34,12 +64,44 @@
         TagEnvironment: "{{ environment_type }}"
     register: aurora_eu_stack
 
-  - name: CF output
-    debug:
-      msg: "My stack outputs are {{ aurora_eu_stack.stack_outputs }}"
+  - name: Retrieve EU DB Cluster ARN
+    script: /usr/local/bin/arn.sh eu-west-1
+    register: aurora_eu_arn
 
-  - name: Save Aurora Cluster host name in eu
-    set_fact:
-      aurora_eu_hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
-      aurora_eu_port: "{{ aurora_eu_stack.stack_outputs.DBPort }}"
-      aurora_eu_instancename: "{{ aurora_eu_stack.stack_outputs.DBInstanceName }}"
+  - name: Add DB Subnet to us-east-1
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-us-db-subnet"
+      state: present
+      region: "us-east-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-pac-us-subnet.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        TagEnvironment: "{{ environment_type }}"
+    register: db_subnet_us
+
+  - name: Launch Replica Aurora DB Cloudformation stack in us-east-1
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-us"
+      state: present
+      region: "us-east-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-pac-replica.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        DBVPC: vpc-4bc03f32
+        DBSecurityGroup: sg-24e79e5a
+        DBParameterGroup: "{{ db_param_group_us.stack_outputs.DBParameterGroup }}"
+        DBClusterParameterGroup: "{{ db_param_group_us.stack_outputs.DBClusterParameterGroup }}"
+        DBSubnetGroup: "{{ db_subnet_us.stack_outputs.DBSubnetGroup }}"
+        DBInstanceType: db.t2.small
+        DBInstanceMasterUsername: AdminUser
+        DBInstanceMasterPassword: "{{ db_master_password }}"
+        DBInstanceDBName: pac
+        ReplicationSourceIdentifier: "{{ aurora_eu_arn.stdout }}"
+        TagEnvironment: "{{ environment_type }}"
+    register: aurora_us_stack

@@ -20,6 +20,7 @@ The PAC provisioner can be built locally as a Docker image:
 ## Provisioning a cluster
 
 - Get the environment variables from the **User pac-content-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
+- Set the `CLUSTER` environment variable, this be appended to `pac-aurora` for all the provisioned infrastructure. Note: The cluster name should be region agnostic, for example, `staging` will provision `pac-aurora-staging-eu` and `pac-aurora-staging-us` database instances.
 - Run the following docker command
 
 ```
@@ -50,7 +51,5 @@ docker run \
 ```
 
 ## Things to do
-
-* The creation of the read replica in US is done using AWS CLI, because cloudformation can't be used as the DBCluster type it uses to create a read replica is missing a parameter `ReplicationSourceIdentifier`. Feature request raised with AWS. Once that gets addressed, the provisioning of the read replica will be done using a cloudformation stack.
 
 * Create DNS name for the cluster using konstructor using ansible
