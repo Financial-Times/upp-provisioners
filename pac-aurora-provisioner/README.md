@@ -31,11 +31,11 @@ export ENVIRONMENT_TYPE=p
 ansible-vault edit ./ansible/vaults/vault_${ENVIRONMENT_TYPE}.yml
 ```
 
-You will be prompted for a `Vault Password`, this can be found in the **pac-content-provisioner** LastPass note.
+You will be prompted for a `Vault Password`, this can be found in the **pac-aurora-provisioner** LastPass note.
 
 ## Provisioning a cluster
 
-- Get the environment variables from the **pac-content-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
+- Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Set the `CLUSTER` environment variable, this be appended to `pac-aurora` for all the provisioned infrastructure. Note: The cluster name should be region agnostic, for example, `staging` will provision `pac-aurora-staging-eu` and `pac-aurora-staging-us` database instances.
 - Run the following docker command
 
@@ -51,7 +51,7 @@ Note that the process may take approximately an hour to provision fully.
 
 ## Decommissioning a cluster
 
-- Get the environment variables from the **pac-content-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
+- Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Run the following docker command
 
 ```
