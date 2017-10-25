@@ -84,7 +84,7 @@
   - include: tasks/create_cname.yml
     vars:
       dns_cname: "{{ cluster }}-eu-rds-pac"
-      rds_hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
+      hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
 
   - name: Retrieve EU DB Cluster ARN
     script: /usr/local/bin/arn.sh
@@ -140,4 +140,9 @@
   - include: tasks/create_cname.yml
     vars:
       dns_cname: "{{ cluster }}-us-rds-pac"
-      rds_hostname: "{{ aurora_us_stack.stack_outputs.DBHostname }}"
+      hostname: "{{ aurora_us_stack.stack_outputs.DBHostname }}"
+
+  - include: tasks/create_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-rds-pac"
+      hostname: "{{ cluster }}-eu-rds-pac.ft.com"

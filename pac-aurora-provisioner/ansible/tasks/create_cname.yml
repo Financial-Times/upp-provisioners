@@ -1,7 +1,7 @@
 ---
 - name: Creating CNAME for Aurora
   debug:
-    msg: "{{ dns_cname }} -> {{ rds_hostname }}"
+    msg: "{{ dns_cname }} -> {{ hostname }}"
 
 - name: If it doesn't exist, create a new CNAME record
   uri:
@@ -12,7 +12,7 @@
     body:
       zone: ft.com
       name: "{{ dns_cname }}"
-      rdata: "{{ rds_hostname }}"
+      rdata: "{{ hostname }}"
       ttl: "300"
       emailAddress: "universal.publishing.platform@ft.com"
     body_format: json
