@@ -71,3 +71,7 @@
   - include: tasks/delete_cname.yml
     vars:
       dns_cname: "{{ cluster }}-us-rds-pac"
+
+  - include: tasks/delete_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-rds-pac"
