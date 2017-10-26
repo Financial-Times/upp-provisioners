@@ -18,9 +18,9 @@ Parameters:
         Description: Choose which VPC the Aurora DB should be deployed TagStopSchedule
         Type: AWS::EC2::VPC::Id
 
-    DBSecurityGroup:
+    DBSecurityGroups:
         Description: Select the Security group to allow access to the Aurora instance
-        Type: AWS::EC2::SecurityGroup::Id
+        Type: List<AWS::EC2::SecurityGroup::Id>
 
     DBInstanceType:
         Description: The instance type to use for the database
@@ -122,8 +122,7 @@ Resources:
             DBSubnetGroupName: !Ref DBSubnetGroup
             MasterUsername: !Ref DBInstanceMasterUsername
             MasterUserPassword: !Ref DBInstanceMasterPassword
-            VpcSecurityGroupIds:
-                - Ref: DBSecurityGroup
+            VpcSecurityGroupIds: !Ref DBSecurityGroups
             DBClusterParameterGroupName: !Ref DBClusterParameterGroup
             Tags:
                 - Key: environment

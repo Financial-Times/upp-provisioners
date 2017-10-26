@@ -71,7 +71,7 @@
         EnvironmentName: "{{ cluster_name }}"
         DBVPC: "{{ eu_vpc }}"
         DBSubnetGroup: "{{ db_subnet_eu.stack_outputs.DBSubnetGroup }}"
-        DBSecurityGroup: "{{ eu_security_group }}"
+        DBSecurityGroups: "{{ eu_security_groups }}"
         DBParameterGroup: "{{ db_param_group_eu.stack_outputs.DBParameterGroup }}"
         DBClusterParameterGroup: "{{ db_param_group_eu.stack_outputs.DBClusterParameterGroup }}"
         DBInstanceType: db.t2.small
@@ -125,7 +125,7 @@
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
         DBVPC: "{{ us_vpc }}"
-        DBSecurityGroup: "{{ us_security_group }}"
+        DBSecurityGroups: "{{ us_security_groups }}"
         DBParameterGroup: "{{ db_param_group_us.stack_outputs.DBParameterGroup }}"
         DBClusterParameterGroup: "{{ db_param_group_us.stack_outputs.DBClusterParameterGroup }}"
         DBSubnetGroup: "{{ db_subnet_us.stack_outputs.DBSubnetGroup }}"

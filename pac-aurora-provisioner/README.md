@@ -1,20 +1,5 @@
 # PAC Aurora Provisioning
 
-The provisioning process will:
-
-* Create a DB parameter group and DB cluster parameter group in eu-west-1 and us-east-1.
-* Create DB subnet group in us-east-1.
-* Creates a cluster in eu-west-1 using CloudFormation. This is formed of two DB instances in two local AZs.
-* Creates a read replica cluster in us-east-1. This is also formed of two DB instances in two local AZs.
-* Creates DNS entries via Konstructor for both regional clusters.
-
-The decommissioning process will:
-
-* Delete the DB parameter groups and cluster parameter groups in both regions.
-* Delete the cluster in eu-west-1
-* Deletes the Read Replica cluster in us-east-1
-* Deletes the DNS entries via Konstructor in both regions.
-
 ## Building the Docker image
 
 The PAC provisioner can be built locally as a Docker image:
@@ -35,6 +20,16 @@ You will be prompted for a `Vault Password`, this can be found in the **pac-auro
 
 ## Provisioning a cluster
 
+The provisioning process will:
+
+* Create a DB parameter group and DB cluster parameter group in eu-west-1 and us-east-1.
+* Create DB subnet group in us-east-1.
+* Creates a cluster in eu-west-1 using CloudFormation. This is formed of two DB instances in two local AZs.
+* Creates a read replica cluster in us-east-1. This is also formed of two DB instances in two local AZs.
+* Creates DNS entries via Konstructor for both regional clusters.
+
+To provision a new PAC Aurora database cluster:
+
 - Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Set the `CLUSTER` environment variable, this be appended to `pac-aurora` for all the provisioned infrastructure. Note: The cluster name should be region agnostic, for example, `staging` will provision `pac-aurora-staging-eu` and `pac-aurora-staging-us` database instances.
 - Run the following docker command
@@ -50,6 +45,15 @@ docker run \
 Note that the process may take approximately an hour to provision fully.
 
 ## Decommissioning a cluster
+
+The decommissioning process will:
+
+* Delete the DB parameter groups and cluster parameter groups in both regions.
+* Delete the cluster in eu-west-1
+* Deletes the Read Replica cluster in us-east-1
+* Deletes the DNS entries via Konstructor in both regions.
+
+To decommission a PAC Aurora database cluster:
 
 - Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Run the following docker command
