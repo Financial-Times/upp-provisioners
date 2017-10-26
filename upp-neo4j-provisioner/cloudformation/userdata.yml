@@ -3,8 +3,6 @@
 coreos:
   update:
     reboot-strategy: off
-    group: {{environment_tag}}
-    server: https://coreupdate-eu-prod.memb.ft.com/v1/update/
   etcd2:
     discovery: ${EtcdToken}
     advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
@@ -74,6 +72,9 @@ coreos:
         What=/dev/xvdc
         Where=/vol/neo4j
         Type=ext4
+    - name: update-engine.service
+      command: stop
+      mask: true
     - name: bootstrap.service
       command: start
       content: |
