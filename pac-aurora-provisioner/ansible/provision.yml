@@ -66,7 +66,7 @@
       state: present
       region: "eu-west-1"
       disable_rollback: true
-      template: /cloudformation/aurora-pac-eu.yml
+      template: /cloudformation/aurora-pac-master.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
         DBVPC: "{{ eu_vpc }}"
