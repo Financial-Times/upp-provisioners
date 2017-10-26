@@ -3,8 +3,6 @@
 coreos:
   update:
     reboot-strategy: off
-    group: {{environment_tag}}
-    server: https://coreupdate-eu-prod.memb.ft.com/v1/update/
   etcd2:
     discovery: ${token}
     heartbeat-interval: 300
@@ -17,6 +15,9 @@ coreos:
     etcd_request_timeout: 3.0
     metadata: host_type=persistent,persistent_tag=${persistent_tag}
   units:
+    - name: update-engine.service
+      command: stop
+      mask: true
     - name: locksmithd.service
       command: stop
     - name: authorized_keys.timer
