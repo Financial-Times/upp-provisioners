@@ -7,7 +7,7 @@
     cluster_name: "pac-aurora-{{ cluster }}"
 
   vars_files:
-    - vault_{{ environment_type }}.yml
+    - vaults/vault_{{ environment_type }}.yml
 
   tasks:
   - name: Remove Aurora in EU
@@ -24,6 +24,15 @@
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
       stack_name: "{{ cluster_name }}-eu-db-group"
+      region: "eu-west-1"
+      state: "absent"
+    ignore_errors: yes
+
+  - name: Remove Aurora subnet in EU
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-eu-db-subnet"
       region: "eu-west-1"
       state: "absent"
     ignore_errors: yes
@@ -54,3 +63,15 @@
       region: "us-east-1"
       state: "absent"
     ignore_errors: yes
+
+  - include: tasks/delete_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-eu-rds-pac"
+
+  - include: tasks/delete_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-us-rds-pac"
+
+  - include: tasks/delete_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-rds-pac"

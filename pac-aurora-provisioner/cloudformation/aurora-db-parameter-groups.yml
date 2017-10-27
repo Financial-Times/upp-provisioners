@@ -19,6 +19,7 @@ Parameters:
       AllowedValues:
           - 't'
           - 'p'
+          - 'd'
       Default: t
 
   TagSystemCode:
