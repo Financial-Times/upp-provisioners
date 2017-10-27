@@ -70,6 +70,10 @@ docker run \
     -e "DYNAMODB_TABLE"=$DYNAMODB_TABLE \
     -e "KINESIS_STREAM_NAME"=$KINESIS_STREAM_NAME \
     -e "NEO4J_FLEET_ENDPOINT=$NEO4J_FLEET_ENDPOINT" \
+    -e "CONTENT_RETRIEVAL_THROTTLE=$CONTENT_RETRIEVAL_THROTTLE" \
+    -e "EXPORTS_BUCKET_NAME=$EXPORTS_BUCKET_NAME" \
+    -e "BUCKET_CONTENT_PREFIX=$BUCKET_CONTENT_PREFIX" \
+    -e "BUCKET_CONCEPT_PREFIX=$BUCKET_CONCEPT_PREFIX" \
     coco/upp-delivery-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'

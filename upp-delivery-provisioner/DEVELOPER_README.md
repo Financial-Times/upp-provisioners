@@ -140,6 +140,18 @@ export KINESIS_STREAM_NAME=
 
 ## Neo4j Fleet Endpoint URL
 export NEO4J_FLEET_ENDPOINT=
+
+## Throttle config for UPP content/concepts archives
+export CONTENT_RETRIEVAL_THROTTLE=
+
+## S3 bucket name for UPP content/concepts archives
+export EXPORTS_BUCKET_NAME=
+
+## S3 bucket prefix for UPP content archives
+export BUCKET_CONTENT_PREFIX=
+
+## S3 bucket prefix for UPP concepts archives
+export BUCKET_CONCEPT_PREFIX=
 ```
 
 
