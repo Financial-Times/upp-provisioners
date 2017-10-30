@@ -46,3 +46,6 @@ No further changes should be required, as the job config is fully parameterised.
 - [upp-rds-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-rds-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission UPP AWS RDS stacks.
 
+- [upp-factset-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-factset-provisioner)
+    - Docker image, running Ansible & CloudFormation to provision and decommission UPP Factset RDS stacks.
+
