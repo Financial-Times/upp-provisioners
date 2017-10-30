@@ -17,6 +17,7 @@
       emailAddress: "universal.publishing.platform@ft.com"
     body_format: json
   register: dns_create_output
+  ignore_errors: yes
 
 - name: DNS create output
   debug:
