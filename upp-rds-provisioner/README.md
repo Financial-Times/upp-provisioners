@@ -1,3 +1,4 @@
+# **DECOMMISIONED see upp-factset-provisioner instead**
 # UPP RDS
 
 [![CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/upp-provisioners)
