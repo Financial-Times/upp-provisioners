@@ -60,13 +60,14 @@ Parameters:
         Description: An environment name that will be prefixed to resource names
         Type: String
 
-    TagEnvironment:
-        Description: Tag detail for the Environment
+    EnvironmentTag:
+        Description: Tag detail for the Environment; d for team clusters, t for staging and p for production
         Type: String
         AllowedValues:
+            - 'd'
             - 't'
             - 'p'
-        Default: t
+        Default: d
 
     TagTeamDL:
         Description: Tag of the TeamDL
@@ -104,7 +105,7 @@ Resources:
             SubnetIds: !Ref DBSubnetIds
             Tags:
                 - Key: environment
-                  Value: !Ref TagEnvironment
+                  Value: !Ref EnvironmentTag
                 - Key: teamDL
                   Value: !Ref TagTeamDL
                 - Key: systemCode
@@ -128,7 +129,7 @@ Resources:
                 - Ref: DBSecurityGroup
             Tags:
                 - Key: environment
-                  Value: !Ref TagEnvironment
+                  Value: !Ref EnvironmentTag
                 - Key: teamDL
                 - Key: teamDL
                   Value: !Ref TagTeamDL
@@ -152,7 +153,7 @@ Resources:
             PubliclyAccessible: false
             Tags:
                 - Key: environment
-                  Value: !Ref TagEnvironment
+                  Value: !Ref EnvironmentTag
                 - Key: teamDL
                   Value: !Ref TagTeamDL
                 - Key: systemCode

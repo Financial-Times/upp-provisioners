@@ -20,6 +20,7 @@ How to run:
 
 * MASTER_PASSWORD: Master password of RDS instance; must be 10-25 alpha numeric characters
 * ENVIRONMENT_NAME: Used to distinguish between stacks, stack name will be upp-factset-data-{ENVIRONMENT_NAME}
+* ENVIRONMENT_TAG: Used for AWS resource tagging.
 * VAULT_PASS: Used to read ansible provisioning data, can be found in last pass under upp-factset-provisioner
 * AWS_ACCOUNT: Account in which to provision RDS; must be either content-test or content-prod
 
@@ -27,6 +28,7 @@ How to run:
 docker run   \
     -e "MASTER_PASSWORD=$MASTER_PASSWORD" \
     -e "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" \
+    -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     coco/upp-factset-provisioner:local /bin/bash provision.sh

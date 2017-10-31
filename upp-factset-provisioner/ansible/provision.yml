@@ -24,4 +24,4 @@
         DBInstanceMasterUsername: Admin
         DBInstanceMasterPassword: "{{ db_master_password }}"
         EnvironmentName: "{{ environment_name }}"
-        TagEnvironment: "{{ tag_environment }}"
+        EnvironmentTag: "{{ environment_tag }}"
