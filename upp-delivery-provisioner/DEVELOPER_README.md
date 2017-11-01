@@ -86,7 +86,11 @@ export ENVIRONMENT_TAG=
 ## For TEST: t
 export ENVIRONMENT_TYPE=
 
-## the public dns name for the cluster
+## The public dns name for the cluster type, regardless of the region it has been provisioned in.
+## It is used to define whether a cluster is serving traffic.
+## For PROD: prod-coco-up-read.ft.com
+## For PRE-PROD: pre-prod-up-read.ft.com
+## For your domain cluster, simply use the DNS name formed by the rule: ${CLUSTER_NAME}-up.ft.com
 export DNS_ADDRESS=
 
 ## Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
