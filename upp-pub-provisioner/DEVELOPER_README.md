@@ -72,6 +72,9 @@ export ENVIRONMENT_TAG=
 ## For TEST: t
 export ENVIRONMENT_TYPE=
 
+## the public dns name for the cluster
+export DNS_ADDRESS=
+
 ## Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
 ## See Lastpass: 'CoCo Basic Auth' for current cluster values.
 export CLUSTER_BASIC_HTTP_CREDENTIALS=
@@ -175,6 +178,7 @@ docker run \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "DNS_ADDRESS=$DNS_ADDRESS" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "API_HOST=$API_HOST" \
     -e "CLUSTER_BASIC_HTTP_CREDENTIALS=$CLUSTER_BASIC_HTTP_CREDENTIALS" \

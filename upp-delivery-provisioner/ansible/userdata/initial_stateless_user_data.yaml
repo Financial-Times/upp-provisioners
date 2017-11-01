@@ -22,6 +22,7 @@ write_files:
       docker_pass={{docker_pass}}
       dynamodb_table={{dynamodb_table}}
       environment_tag={{environment_tag}}
+      dns_address={{dns_address}}
       kinesis_stream_name={{kinesis_stream_name}}
       konstructor_api_key={{konstructor_api_key}}
       metadata_services_password={{metadata_services_password}}
@@ -47,6 +48,9 @@ write_files:
       varnish_access_credentials={{varnish_access_credentials}}
       wordpress_api_key={{wordpress_api_key}}
       wp_contentApi_key={{wp_contentApi_key}}
+      splunk_user={{splunk_user}}
+      splunk_password={{splunk_password}}
+      splunk_url={{splunk_url}}
 
 coreos:
   units:

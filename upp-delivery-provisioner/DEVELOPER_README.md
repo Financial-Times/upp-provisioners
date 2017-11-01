@@ -86,6 +86,9 @@ export ENVIRONMENT_TAG=
 ## For TEST: t
 export ENVIRONMENT_TYPE=
 
+## the public dns name for the cluster
+export DNS_ADDRESS=
+
 ## Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
 ## See Lastpass: 'CoCo Basic Auth' for current cluster values.
 export CLUSTER_BASIC_HTTP_CREDENTIALS=
@@ -140,6 +143,11 @@ export KINESIS_STREAM_NAME=
 
 ## Neo4j Fleet Endpoint URL
 export NEO4J_FLEET_ENDPOINT=
+
+## Splunk API credentials
+export SPLUNK_USER=
+export SPLUNK_PASSWORD=
+
 ```
 
 
@@ -157,6 +165,7 @@ docker run \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "DNS_ADDRESS=$DNS_ADDRESS" \
     -e "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
     -e "BRANCH_NAME=$BRANCH_NAME" \
     -e "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
@@ -175,6 +184,8 @@ docker run \
     -e "AGGREGATE_CONCEPT_QUEUE=$AGGREGATE_CONCEPT_QUEUE" \
     -e "KINESIS_STREAM_NAME=$KINESIS_STREAM_NAME" \
     -e "NEO4J_FLEET_ENDPOINT=$NEO4J_FLEET_ENDPOINT" \
+    -e "SPLUNK_USER=$SPLUNK_USER" \
+    -e "SPLUNK_PASSWORD=$SPLUNK_PASSWORD" \
     coco/upp-delivery-provisioner:local
 ```
 

@@ -21,6 +21,7 @@ write_files:
       docker_user={{docker_user}}
       docker_pass={{docker_pass}}
       environment_tag={{environment_tag}}
+      dns_address={{dns_address}}
       factset_key_first_part={{factset_key_first_part}}
       factset_key_second_part={{factset_key_second_part}}
       factset_username={{factset_username}}
