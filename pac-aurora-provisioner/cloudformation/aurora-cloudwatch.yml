@@ -32,12 +32,13 @@ Resources:
       TreatMissingData: breaching
       Unit: Milliseconds
 
+  # Alarms containing 'critical' will cause dashing to show a critical RED tile.
   WriterEngineUptimeAlarm:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
       ActionsEnabled: False
       AlarmDescription: Monitors for engine uptime, which is a proxy for measuring database availability.
-      AlarmName: !Sub '${EnvironmentName}-engine-uptime-writer'
+      AlarmName: !Sub '${EnvironmentName}-critical-engine-uptime-writer'
       Namespace: AWS/RDS
       ComparisonOperator: LessThanOrEqualToThreshold
       Dimensions:
@@ -91,7 +92,7 @@ Resources:
       MetricName: CPUUtilization
       Period: 60
       Statistic: Average
-      Threshold: 90
+      Threshold: 75
       TreatMissingData: breaching
       Unit: Percent
 
@@ -112,7 +113,7 @@ Resources:
       MetricName: CPUUtilization
       Period: 60
       Statistic: Average
-      Threshold: 90
+      Threshold: 75
       TreatMissingData: breaching
       Unit: Percent
 
