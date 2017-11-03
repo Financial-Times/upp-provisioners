@@ -11,6 +11,7 @@ Parameters:
     Type: String
 
 Resources:
+  # Alarms containing 'critical' will cause dashing to show a critical RED tile.
   WriterReplicaLagAlarm:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
@@ -32,7 +33,6 @@ Resources:
       TreatMissingData: breaching
       Unit: Milliseconds
 
-  # Alarms containing 'critical' will cause dashing to show a critical RED tile.
   WriterEngineUptimeAlarm:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
