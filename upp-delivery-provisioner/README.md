@@ -74,6 +74,7 @@ docker run \
     -e "EXPORTS_BUCKET_NAME=$EXPORTS_BUCKET_NAME" \
     -e "BUCKET_CONTENT_PREFIX=$BUCKET_CONTENT_PREFIX" \
     -e "BUCKET_CONCEPT_PREFIX=$BUCKET_CONCEPT_PREFIX" \
+    -e "EXPORTS_AUTHORIZATION=$EXPORTS_AUTHORIZATION" \
     coco/upp-delivery-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'

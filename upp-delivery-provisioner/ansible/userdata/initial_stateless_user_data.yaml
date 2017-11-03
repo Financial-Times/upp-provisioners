@@ -45,6 +45,7 @@ write_files:
       upp_exports_content_bucket_name={{upp_exports_content_bucket_name}}
       upp_exports_content_bucket_prefix={{upp_exports_content_bucket_prefix}}
       upp_exports_concepts_bucket_prefix={{upp_exports_concepts_bucket_prefix}}
+      upp_exports_authorization={{upp_exports_authorization}}
       upp_gateway_credentials={{upp_gateway_credentials}}
       upp_gateway_host={{upp_gateway_host}}
       upp_gateway_port={{upp_gateway_port}}

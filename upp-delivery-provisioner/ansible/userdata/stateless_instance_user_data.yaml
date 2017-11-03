@@ -61,6 +61,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_secret_access_key '${apps_aws_secret_access_key}'                          >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/ces/auth '${ces_credentials}'                                                      >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/cms-notifier/post-credentials '${cms_notifier_credentials}'                        >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/content-exporter/authorization '${upp_exports_authorization}'                      >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/elb_name 'coreos-up-${clusterid}'                                                  >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/kafka-bridge-pub-pre-prod/authorization_key '${pub_pre_prod_credentials}'          >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/kafka-bridge-pub-prod/authorization_key '${pub_prod_credentials}'                  >/dev/null 2>&1 || true;"

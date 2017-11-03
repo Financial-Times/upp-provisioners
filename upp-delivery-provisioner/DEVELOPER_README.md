@@ -152,6 +152,9 @@ export BUCKET_CONTENT_PREFIX=
 
 ## S3 bucket prefix for UPP concepts archives
 export BUCKET_CONCEPT_PREFIX=
+
+## Basic auth credentials used for UPP content/concepts archives
+export EXPORTS_AUTHORIZATION=
 ```
 
 

@@ -44,6 +44,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   upp_exports_content_bucket_name=$EXPORTS_BUCKET_NAME \
   upp_exports_content_bucket_prefix=$BUCKET_CONTENT_PREFIX \
   upp_exports_concepts_bucket_prefix=$BUCKET_CONCEPT_PREFIX \
+  upp_exports_authorization=$EXPORTS_AUTHORIZATION \
   upp_gateway_host=$UPP_GATEWAY_HOST \
   upp_gateway_port=${UPP_GATEWAY_PORT:=443} \
   varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \
