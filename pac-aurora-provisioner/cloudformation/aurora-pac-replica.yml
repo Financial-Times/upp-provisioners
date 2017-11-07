@@ -189,6 +189,10 @@ Resources:
                   Value: !Sub ${TagName} - ${EnvironmentName}
 
 Outputs:
+    DBCluster:
+        Description: A reference to the DBCluster
+        Value: !Ref DBCluster
+
     DBHostname:
         Description: A reference to the DBCluster hostname
         Value: !GetAtt [DBCluster, Endpoint.Address]
