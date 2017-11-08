@@ -1,0 +1,20 @@
+---
+- name: Creating 'pac' user for Aurora
+  debug:
+    msg: "{{ login_host }}"
+
+- name: Create the user and give permissions
+  mysql_user:
+    login_user: "{{ login_user }}"
+    login_password: "{{ login_password }}"
+    login_host: "{{ login_host }}"
+    name: "{{ username }}"
+    password: "{{ password }}"
+    host: "%" # ensure the login can occur from any host
+    priv: "{{ privileges }}"
+    state: present
+  register: mysql_user_create_output
+
+- name: User create output
+  debug:
+    msg: "{{ mysql_user_create_output }}"

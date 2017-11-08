@@ -99,6 +99,15 @@
       dns_cname: "{{ cluster }}-eu-rds-pac"
       hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
 
+  - include: tasks/create_pac_user.yml
+    vars:
+      username: "pac"
+      password: "{{ pac_db_user_password }}"
+      login_host: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
+      login_user: "AdminUser"
+      login_password: "{{ db_master_password }}"
+      privileges: "pac.*:ALL"
+
   - name: Retrieve EU DB Cluster ARN
     script: /usr/local/bin/arn.sh
     environment:
@@ -149,7 +158,7 @@
         ReplicationSourceIdentifier: "{{ aurora_eu_arn.stdout }}"
         TagEnvironment: "{{ environment_type }}"
     register: aurora_us_stack
-  
+
   - name: Create Aurora CloudWatch alarms for the cluster in the US
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
