@@ -86,6 +86,13 @@ export ENVIRONMENT_TAG=
 ## For TEST: t
 export ENVIRONMENT_TYPE=
 
+## The public dns name for the cluster type, regardless of the region it has been provisioned in.
+## It is used to define whether a cluster is serving traffic.
+## For PROD: prod-coco-up-read.ft.com
+## For PRE-PROD: pre-prod-up-read.ft.com
+## For your domain cluster, simply use the DNS name formed by the rule: ${CLUSTER_NAME}-up.ft.com
+export DNS_ADDRESS=
+
 ## Comma separated username:password which will be used to authenticate(Basic auth) when connecting to the cluster over https.
 ## See Lastpass: 'CoCo Basic Auth' for current cluster values.
 export CLUSTER_BASIC_HTTP_CREDENTIALS=
@@ -155,6 +162,10 @@ export BUCKET_CONCEPT_PREFIX=
 
 ## Basic auth credentials used for UPP content/concepts archives
 export EXPORTS_AUTHORIZATION=
+
+## Splunk API credentials
+export SPLUNK_USER=
+export SPLUNK_PASSWORD=
 ```
 
 
@@ -172,6 +183,7 @@ docker run \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "DNS_ADDRESS=$DNS_ADDRESS" \
     -e "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
     -e "BRANCH_NAME=$BRANCH_NAME" \
     -e "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
@@ -195,6 +207,8 @@ docker run \
     -e "BUCKET_CONTENT_PREFIX=$BUCKET_CONTENT_PREFIX" \
     -e "BUCKET_CONCEPT_PREFIX=$BUCKET_CONCEPT_PREFIX" \
     -e "EXPORTS_AUTHORIZATION=$EXPORTS_AUTHORIZATION" \
+    -e "SPLUNK_USER=$SPLUNK_USER" \
+    -e "SPLUNK_PASSWORD=$SPLUNK_PASSWORD" \
     coco/upp-delivery-provisioner:local
 ```
 

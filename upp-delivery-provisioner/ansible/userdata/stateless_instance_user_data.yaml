@@ -93,6 +93,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/cluster_id '${clusterid}'                                                                >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/content-exporter/content-retrieval-throttle '${content_retrieval_throttle}'              >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag '${environment_tag}'                                                     >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/public_address '${dns_address}'                                                          >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/fleet-unit-healthcheck/timer_based_services 'mongo-backup(@\d+)?\.service,deployer\.service,image-cleaner\.service,os-upgrade\.service,neo4j-backup\.service,mongodb-online-backup.service,neo4j-hot-backup@\d+\.service'                                            >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/generic-rw-s3/bucket 'com.ft.universalpublishing.v2-suggestions-cache.${environment_tag}' >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/methode-api '${methode_api}'                                                             >/dev/null 2>&1 || true;"
@@ -111,6 +112,9 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/upp-exports-rw-s3/bucket-content-prefix '${upp_exports_content_bucket_prefix}'           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/upp-gateway/host '${upp_gateway_host}'                                                   >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/upp-gateway/port '${upp_gateway_port}'                                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-event-reader/user '${splunk_user}'                                                >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-event-reader/password '${splunk_password}'                                        >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-event-reader/url '${splunk_url}'                                                  >/dev/null 2>&1 || true;"
 
     - name: bootstrap.service
       command: start

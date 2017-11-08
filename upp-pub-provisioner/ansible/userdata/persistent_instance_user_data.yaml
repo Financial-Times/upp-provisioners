@@ -83,6 +83,7 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/concordances-rw-dynamodb/dynamodb_table '${concordances_dynamodb_table}'               >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/concordances-rw-dynamodb/sns_topic_arn '${concordances_topic_arn}'                     >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag '${environment_tag}'                                                   >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/public_address '${dns_address}'                                                        >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/binary-s3-bucket '${binary_s3_bucket}'                                      >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-credential-validation-uuid '${pam_credential_validation_uuid}'          >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/monitoring/pam-maicm-validation-url '${pam_maicm_validation_url}'                      >/dev/null 2>&1 || true;"

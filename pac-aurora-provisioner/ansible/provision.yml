@@ -7,7 +7,8 @@
     cluster_name: "pac-aurora-{{ cluster }}"
 
   vars_files:
-  - vault_{{ environment_type }}.yml
+    - vaults/vault_{{ environment_type }}.yml
+    - vars/{{ aws_account }}.yml
 
   tasks:
   - name: Log vars
@@ -42,6 +43,21 @@
         TagEnvironment: "{{ environment_type }}"
     register: db_param_group_us
 
+  - name: Add DB Subnet to eu-west-1
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-eu-db-subnet"
+      state: present
+      region: "eu-west-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-pac-subnet.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        TagEnvironment: "{{ environment_type }}"
+        DBSubnetIds: "{{ eu_subnets }}"
+    register: db_subnet_eu
+
   - name: Launch Aurora DB Cloudformation stack in eu-west-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
@@ -50,11 +66,12 @@
       state: present
       region: "eu-west-1"
       disable_rollback: true
-      template: /cloudformation/aurora-pac-eu.yml
+      template: /cloudformation/aurora-pac-master.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
-        DBVPC: vpc-ee57bf89
-        DBSecurityGroup: sg-f5f68e8c
+        DBVPC: "{{ eu_vpc }}"
+        DBSubnetGroup: "{{ db_subnet_eu.stack_outputs.DBSubnetGroup }}"
+        DBSecurityGroups: "{{ eu_security_groups }}"
         DBParameterGroup: "{{ db_param_group_eu.stack_outputs.DBParameterGroup }}"
         DBClusterParameterGroup: "{{ db_param_group_eu.stack_outputs.DBClusterParameterGroup }}"
         DBInstanceType: db.t2.small
@@ -64,9 +81,35 @@
         TagEnvironment: "{{ environment_type }}"
     register: aurora_eu_stack
 
+  - name: Create Aurora CloudWatch alarms for the cluster in the EU
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-eu-alarms"
+      state: present
+      region: "eu-west-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-cloudwatch.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        DBClusterIdentifier: "{{ aurora_eu_stack.stack_outputs.DBCluster }}"
+
+  - include: tasks/create_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-eu-rds-pac"
+      hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
+
   - name: Retrieve EU DB Cluster ARN
-    script: /usr/local/bin/arn.sh eu-west-1
+    script: /usr/local/bin/arn.sh
+    environment:
+      AWS_REGION: eu-west-1
+      AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
     register: aurora_eu_arn
+
+  - name: EU Cluster ARN
+    debug:
+      msg: "EU ARN: '{{ aurora_eu_arn.stdout }}'"
 
   - name: Add DB Subnet to us-east-1
     cloudformation:
@@ -76,10 +119,11 @@
       state: present
       region: "us-east-1"
       disable_rollback: true
-      template: /cloudformation/aurora-pac-us-subnet.yml
+      template: /cloudformation/aurora-pac-subnet.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
         TagEnvironment: "{{ environment_type }}"
+        DBSubnetIds: "{{ us_subnets }}"
     register: db_subnet_us
 
   - name: Launch Replica Aurora DB Cloudformation stack in us-east-1
@@ -93,8 +137,8 @@
       template: /cloudformation/aurora-pac-replica.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
-        DBVPC: vpc-4bc03f32
-        DBSecurityGroup: sg-24e79e5a
+        DBVPC: "{{ us_vpc }}"
+        DBSecurityGroups: "{{ us_security_groups }}"
         DBParameterGroup: "{{ db_param_group_us.stack_outputs.DBParameterGroup }}"
         DBClusterParameterGroup: "{{ db_param_group_us.stack_outputs.DBClusterParameterGroup }}"
         DBSubnetGroup: "{{ db_subnet_us.stack_outputs.DBSubnetGroup }}"
@@ -105,3 +149,26 @@
         ReplicationSourceIdentifier: "{{ aurora_eu_arn.stdout }}"
         TagEnvironment: "{{ environment_type }}"
     register: aurora_us_stack
+  
+  - name: Create Aurora CloudWatch alarms for the cluster in the US
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-us-alarms"
+      state: present
+      region: "us-east-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-cloudwatch.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        DBClusterIdentifier: "{{ aurora_us_stack.stack_outputs.DBCluster }}"
+
+  - include: tasks/create_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-us-rds-pac"
+      hostname: "{{ aurora_us_stack.stack_outputs.DBHostname }}"
+
+  - include: tasks/create_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-rds-pac"
+      hostname: "{{ cluster }}-eu-rds-pac.ft.com"

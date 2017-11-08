@@ -33,6 +33,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   dynamodb_table=${DYNAMODB_TABLE} \
   environment_tag=${ENVIRONMENT_TAG:=default} \
   environment_type=${ENVIRONMENT_TYPE:=p} \
+  dns_address=$DNS_ADDRESS \
   kinesis_stream_name=${KINESIS_STREAM_NAME} \
   methode_api=${METHODE_API} \
   neo4j_fleet_endpoint=${NEO4J_FLEET_ENDPOINT} \
@@ -48,5 +49,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   upp_gateway_host=$UPP_GATEWAY_HOST \
   upp_gateway_port=${UPP_GATEWAY_PORT:=443} \
   varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \
-  zones=$ZONES" \
+  zones=$ZONES \
+  splunk_user=$SPLUNK_USER \
+  splunk_password=$SPLUNK_PASSWORD" \
   --vault-password-file=/vault.pass

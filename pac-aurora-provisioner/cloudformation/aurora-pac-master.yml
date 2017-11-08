@@ -18,9 +18,9 @@ Parameters:
         Description: Choose which VPC the Aurora DB should be deployed TagStopSchedule
         Type: AWS::EC2::VPC::Id
 
-    DBSecurityGroup:
+    DBSecurityGroups:
         Description: Select the Security group to allow access to the Aurora instance
-        Type: AWS::EC2::SecurityGroup::Id
+        Type: List<AWS::EC2::SecurityGroup::Id>
 
     DBInstanceType:
         Description: The instance type to use for the database
@@ -68,6 +68,10 @@ Parameters:
         Description: The DBClusterParameterGroup name to use
         Type: String
 
+    DBSubnetGroup:
+        Description: The DBSubnetGroup name to use
+        Type: String
+
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
@@ -78,6 +82,7 @@ Parameters:
         AllowedValues:
             - 't'
             - 'p'
+            - 'd'
         Default: t
 
     TagTeamDL:
@@ -109,28 +114,6 @@ Parameters:
         Default: PAC Aurora
 
 Resources:
-    DBSubnetGroup:
-        Type: AWS::RDS::DBSubnetGroup
-        Properties:
-            DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' subnet group']]
-            SubnetIds:
-                - 'subnet-901020c8'
-                - 'subnet-5f00f438'
-                - 'subnet-8cbe4fc5'
-            Tags:
-              - Key: environment
-                Value: !Ref TagEnvironment
-              - Key: teamDL
-                Value: !Ref TagTeamDL
-              - Key: systemCode
-                Value: !Ref TagSystemCode
-              - Key: ipCode
-                Value: !Ref TagIpCode
-              - Key: description
-                Value: !Ref TagDescription
-              - Key: name
-                Value: !Sub ${TagName} - ${EnvironmentName}
-
     DBCluster:
         Type: AWS::RDS::DBCluster
         Properties:
@@ -139,8 +122,7 @@ Resources:
             DBSubnetGroupName: !Ref DBSubnetGroup
             MasterUsername: !Ref DBInstanceMasterUsername
             MasterUserPassword: !Ref DBInstanceMasterPassword
-            VpcSecurityGroupIds:
-                - Ref: DBSecurityGroup
+            VpcSecurityGroupIds: !Ref DBSecurityGroups
             DBClusterParameterGroupName: !Ref DBClusterParameterGroup
             Tags:
                 - Key: environment

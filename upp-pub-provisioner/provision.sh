@@ -34,6 +34,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   delivery_clusters_urls=${DELIVERY_CLUSTERS_URLS} \
   environment_tag=${ENVIRONMENT_TAG:=default} \
   environment_type=${ENVIRONMENT_TYPE:=p} \
+  dns_address=$DNS_ADDRESS \
   pam_api_key=${PAM_API_KEY}\
   pam_credential_validation_uuid=${PAM_CREDENTIAL_VALIDATION_UUID} \
   pam_maicm_validation_url=${PAM_MAICM_VALIDATION_URL} \

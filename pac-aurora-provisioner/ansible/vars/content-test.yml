@@ -1,0 +1,8 @@
+eu_vpc: vpc-f75fb790
+us_vpc: vpc-d2bca9b4
+
+eu_security_groups: sg-dc82faa5, sg-8bcb5ff2
+us_security_groups: sg-6b79a215, sg-277d4c58
+
+eu_subnets: subnet-932717cb, subnet-c1b94888, subnet-2a1de94d
+us_subnets: subnet-62bee007, subnet-1520f95d, subnet-dd638cf1

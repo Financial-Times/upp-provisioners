@@ -1,0 +1,198 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template creates cloudwatch alarms for newly provisioned Aurora instances
+
+Parameters:
+  DBClusterIdentifier:
+    Description: The DBClusterIdentifier to use.
+    Type: String
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+Resources:
+  # Alarms containing 'critical' will cause dashing to show a critical RED tile.
+  WriterReplicaLagAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      ActionsEnabled: False
+      AlarmDescription: Monitors for Replica lag
+      AlarmName: !Sub '${EnvironmentName}-replica-lag-writer'
+      Namespace: AWS/RDS
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: DBClusterIdentifier
+          Value: !Ref DBClusterIdentifier
+        - Name: Role
+          Value: WRITER
+      EvaluationPeriods: 3
+      MetricName: AuroraReplicaLagMaximum
+      Period: 60
+      Statistic: Average
+      Threshold: 500
+      TreatMissingData: breaching
+      Unit: Milliseconds
+
+  WriterEngineUptimeAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      ActionsEnabled: False
+      AlarmDescription: Monitors for engine uptime, which is a proxy for measuring database availability.
+      AlarmName: !Sub '${EnvironmentName}-critical-engine-uptime-writer'
+      Namespace: AWS/RDS
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Dimensions:
+        - Name: DBClusterIdentifier
+          Value: !Ref DBClusterIdentifier
+        - Name: Role
+          Value: WRITER
+      EvaluationPeriods: 1
+      MetricName: EngineUptime
+      Period: 60
+      Statistic: Average
+      Threshold: 0
+      TreatMissingData: breaching
+      Unit: Seconds
+
+  ReaderEngineUptimeAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      ActionsEnabled: False
+      AlarmDescription: Monitors for engine uptime, which is a proxy for measuring database availability.
+      AlarmName: !Sub '${EnvironmentName}-engine-uptime-reader'
+      Namespace: AWS/RDS
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Dimensions:
+        - Name: DBClusterIdentifier
+          Value: !Ref DBClusterIdentifier
+        - Name: Role
+          Value: READER
+      EvaluationPeriods: 1
+      MetricName: EngineUptime
+      Period: 60
+      Statistic: Average
+      Threshold: 0
+      TreatMissingData: breaching
+      Unit: Seconds
+
+  WriterCPUUtilizationAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      ActionsEnabled: False
+      AlarmDescription: Monitors for high cpu usage
+      AlarmName: !Sub '${EnvironmentName}-cpu-utilization-writer'
+      Namespace: AWS/RDS
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: DBClusterIdentifier
+          Value: !Ref DBClusterIdentifier
+        - Name: Role
+          Value: WRITER
+      EvaluationPeriods: 3
+      MetricName: CPUUtilization
+      Period: 60
+      Statistic: Average
+      Threshold: 75
+      TreatMissingData: breaching
+      Unit: Percent
+
+  ReaderCPUUtilizationAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      ActionsEnabled: False
+      AlarmDescription: Monitors for high cpu usage
+      AlarmName: !Sub '${EnvironmentName}-cpu-utilization-reader'
+      Namespace: AWS/RDS
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: DBClusterIdentifier
+          Value: !Ref DBClusterIdentifier
+        - Name: Role
+          Value: READER
+      EvaluationPeriods: 3
+      MetricName: CPUUtilization
+      Period: 60
+      Statistic: Average
+      Threshold: 75
+      TreatMissingData: breaching
+      Unit: Percent
+
+  WriterCPUCreditBalanceAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      ActionsEnabled: False
+      AlarmDescription: Monitors for a low CPU Credit Balance. Low balance can limit a cluster's capability to burst above the allotted CPU.
+      AlarmName: !Sub '${EnvironmentName}-cpu-credit-balance-writer'
+      Namespace: AWS/RDS
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Dimensions:
+        - Name: DBClusterIdentifier
+          Value: !Ref DBClusterIdentifier
+        - Name: Role
+          Value: WRITER
+      EvaluationPeriods: 3
+      MetricName: CPUCreditBalance
+      Period: 300
+      Statistic: Average
+      Threshold: 15
+      TreatMissingData: breaching
+      Unit: Count
+
+  ReaderCPUCreditBalanceAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      ActionsEnabled: False
+      AlarmDescription: Monitors for a low CPU Credit Balance. Low balance can limit a cluster's capability to burst above the allotted CPU.
+      AlarmName: !Sub '${EnvironmentName}-cpu-credit-balance-reader'
+      Namespace: AWS/RDS
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Dimensions:
+        - Name: DBClusterIdentifier
+          Value: !Ref DBClusterIdentifier
+        - Name: Role
+          Value: READER
+      EvaluationPeriods: 3
+      MetricName: CPUCreditBalance
+      Period: 300
+      Statistic: Average
+      Threshold: 15
+      TreatMissingData: breaching
+      Unit: Count
+
+  PrimaryInstanceFreeableMemoryAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      ActionsEnabled: False
+      AlarmDescription: Monitors for a low amount of available random access memory.
+      AlarmName: !Sub '${EnvironmentName}-1-freeable-memory'
+      Namespace: AWS/RDS
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Sub '${EnvironmentName}-1-${AWS::Region}'
+      EvaluationPeriods: 3
+      MetricName: FreeableMemory
+      Period: 60
+      Statistic: Average
+      Threshold: 67108864
+      TreatMissingData: breaching
+      Unit: Bytes
+
+  SecondaryInstanceFreeableMemoryAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      ActionsEnabled: False
+      AlarmDescription: Monitors for a low amount of available random access memory.
+      AlarmName: !Sub '${EnvironmentName}-2-freeable-memory'
+      Namespace: AWS/RDS
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Dimensions:
+        - Name: DBInstanceIdentifier
+          Value: !Sub '${EnvironmentName}-1-${AWS::Region}'
+      EvaluationPeriods: 3
+      MetricName: FreeableMemory
+      Period: 60
+      Statistic: Average
+      Threshold: 67108864
+      TreatMissingData: breaching
+      Unit: Bytes
