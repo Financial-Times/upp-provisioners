@@ -31,7 +31,8 @@ The provisioning process will:
 To provision a new PAC Aurora database cluster:
 
 - Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
-- Set the `CLUSTER` environment variable, this be appended to `pac-aurora` for all the provisioned infrastructure. Note: The cluster name should be region agnostic, for example, `staging` will provision `pac-aurora-staging-eu` and `pac-aurora-staging-us` database instances.
+- Set the `CLUSTER` environment variable, this will be appended to `pac-aurora` for all provisioned infrastructure. Note: The cluster name should be region agnostic, for example, `staging` will provision `pac-aurora-staging-eu` and `pac-aurora-staging-us` database instances.
+- Set the `PAC_DB_USER_PASSWORD` environment variable. The provisioner will create a `pac` user with appropriate permissions in the new database, which is identified by the provided the password.
 - Run the following docker command
 
 ```
@@ -39,6 +40,7 @@ docker run \
     -e "CLUSTER=$CLUSTER" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
+    -e "PAC_DB_USER_PASSWORD=$PAC_DB_USER_PASSWORD" \
     pac-provisioner:local /bin/bash provision.sh
 ```
 
