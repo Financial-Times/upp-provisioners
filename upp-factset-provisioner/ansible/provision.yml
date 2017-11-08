@@ -1,0 +1,27 @@
+---
+- name: provision stack
+  hosts: localhost
+  connection: local
+
+  vars_files:
+    - vault_{{ aws_account }}.yml
+
+  tasks:
+  - name: Launch Factset cloudformation stack
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "upp-factset-data-{{ environment_name }}"
+      state: present
+      region: eu-west-1
+      disable_rollback: true
+      template: /cloudformation/factset-provisioner.yml
+      template_parameters:
+        DBVPC: "{{ vpc_id }}"
+        DBSecurityGroup: "{{ security_group }}"
+        DBSubnetIds: "{{ subnet_ids }}"
+        DBInstanceType: db.t2.small
+        DBInstanceMasterUsername: Admin
+        DBInstanceMasterPassword: "{{ db_master_password }}"
+        EnvironmentName: "{{ environment_name }}"
+        EnvironmentTag: "{{ environment_tag }}"
