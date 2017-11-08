@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This template deploys an Aurora instance and an S3 bucket for Factset data.
+Description: This template deploys an Aurora cluster with one instance for Factset data.
 
 Metadata:
     AWS::CloudFormation::Interface:
@@ -14,13 +14,9 @@ Metadata:
              - TagName
 
 Parameters:
-    DBVPC:
-        Description: Choose which VPC the Aurora DB should be deployed TagStopSchedule
-        Type: AWS::EC2::VPC::Id
-
     DBSecurityGroup:
-        Description: Select the Security group to allow access to the Aurora instance
-        Type: AWS::EC2::SecurityGroup::Id
+        Description: Security group id
+        Type: String
 
     DBSubnetIds:
         Description: List of comma separated subnet IDs
@@ -40,7 +36,7 @@ Parameters:
         Default: db.t2.small
 
     DBInstanceMasterUsername:
-        Description: The master Username for the database
+        Description: The master username for the database
         Type: String
         MinLength: 1
         MaxLength: 16
@@ -125,8 +121,7 @@ Resources:
             MasterUsername: !Ref DBInstanceMasterUsername
             MasterUserPassword: !Ref DBInstanceMasterPassword
             DBClusterParameterGroupName: !Ref DBClusterParameterGroup
-            VpcSecurityGroupIds:
-                - Ref: DBSecurityGroup
+            VpcSecurityGroupIds: [ !Ref DBSecurityGroup ]
             Tags:
                 - Key: environment
                   Value: !Ref EnvironmentTag
@@ -149,8 +144,8 @@ Resources:
             DBInstanceClass: !Ref DBInstanceType
             Engine: aurora
             DBSubnetGroupName: !Ref DBSubnetGroup
-            DBInstanceIdentifier: !Join ["" , ["upp-factset-data-", !Ref EnvironmentName]]
-            PubliclyAccessible: false
+            DBInstanceIdentifier: !Join ["" , [!Ref TagSystemCode, "-factset-rds-", !Ref EnvironmentName]]
+            PubliclyAccessible: true
             Tags:
                 - Key: environment
                   Value: !Ref EnvironmentTag
@@ -172,4 +167,3 @@ Resources:
             Family: aurora5.6
             Parameters:
                 binlog_format: 'MIXED'
-

@@ -7,10 +7,18 @@
   - vault_{{ aws_account }}.yml
 
   tasks:
-  - name: Remove Factset Cloudformation
+  - name: Remove Factset security group
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "upp-factset-data-{{ environment_name }}"
+      stack_name: "{{ system_code }}-factset-security-group-{{ environment_name }}"
+      region: eu-west-1
+      state: "absent"
+
+  - name: Remove Factset Rds stack
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ system_code }}-factset-rds-{{ environment_name }}"
       region: eu-west-1
       state: "absent"

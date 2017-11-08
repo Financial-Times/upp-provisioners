@@ -7,21 +7,44 @@
     - vault_{{ aws_account }}.yml
 
   tasks:
-  - name: Launch Factset cloudformation stack
+  - name: Launch Factset security group stack
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "upp-factset-data-{{ environment_name }}"
+      stack_name: "{{ system_code }}-factset-security-group-{{ environment_name }}"
       state: present
       region: eu-west-1
       disable_rollback: true
-      template: /cloudformation/factset-provisioner.yml
+      template: /cloudformation/security-group-provisioner.yml
       template_parameters:
         DBVPC: "{{ vpc_id }}"
-        DBSecurityGroup: "{{ security_group }}"
+        EnvironmentName: "{{ environment_name }}"
+        EnvironmentTag: "{{ environment_tag }}"
+        TagSystemCode: "{{ system_code }}"
+    register: security_group_stack_output
+
+  - debug:
+        msg: "{{ security_group_stack_output }}"
+
+  - name: Save security group id as variable
+    set_fact:
+      FactsetSecurityGroupId: "{{security_group_stack_output.stack_outputs.FactsetSecurityGroupId}}"
+
+  - name: Launch Factset rds stack
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ system_code }}-factset-rds-{{ environment_name }}"
+      state: present
+      region: eu-west-1
+      disable_rollback: true
+      template: /cloudformation/rds-provisioner.yml
+      template_parameters:
         DBSubnetIds: "{{ subnet_ids }}"
         DBInstanceType: db.t2.small
-        DBInstanceMasterUsername: Admin
+        DBInstanceMasterUsername: "{{ db_master_username }}"
         DBInstanceMasterPassword: "{{ db_master_password }}"
         EnvironmentName: "{{ environment_name }}"
         EnvironmentTag: "{{ environment_tag }}"
+        TagSystemCode: "{{ system_code }}"
+        DBSecurityGroup: "{{ FactsetSecurityGroupId }}"

@@ -27,10 +27,12 @@ How to run:
 ```
 docker run   \
     -e "MASTER_PASSWORD=$MASTER_PASSWORD" \
+    -e "MASTER_USERNAME=$MASTER_USERNAME" \
     -e "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
+    -e "SYSTEM_CODE=$SYSTEM_CODE" \
     coco/upp-factset-provisioner:local /bin/bash provision.sh
 ```
 
