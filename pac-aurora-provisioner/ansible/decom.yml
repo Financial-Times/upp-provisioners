@@ -14,7 +14,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu"
+      stack_name: "{{ cluster_name }}"
       region: "eu-west-1"
       state: "absent"
     ignore_errors: yes
@@ -23,7 +23,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-db-group"
+      stack_name: "{{ cluster_name }}-db-group"
       region: "eu-west-1"
       state: "absent"
     ignore_errors: yes
@@ -32,7 +32,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-db-subnet"
+      stack_name: "{{ cluster_name }}-db-subnet"
       region: "eu-west-1"
       state: "absent"
     ignore_errors: yes
@@ -41,7 +41,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-alarms"
+      stack_name: "{{ cluster_name }}-alarms"
       region: "eu-west-1"
       state: "absent"
     ignore_errors: yes
@@ -50,7 +50,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us"
+      stack_name: "{{ cluster_name }}"
       region: "us-east-1"
       state: "absent"
     ignore_errors: yes
@@ -59,7 +59,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-db-subnet"
+      stack_name: "{{ cluster_name }}-db-subnet"
       region: "us-east-1"
       state: "absent"
     ignore_errors: yes
@@ -68,7 +68,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-db-group"
+      stack_name: "{{ cluster_name }}-db-group"
       region: "us-east-1"
       state: "absent"
     ignore_errors: yes
@@ -77,7 +77,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-alarms"
+      stack_name: "{{ cluster_name }}-alarms"
       region: "us-east-1"
       state: "absent"
     ignore_errors: yes
