@@ -19,7 +19,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-db-group"
+      stack_name: "{{ cluster_name }}-db-group"
       state: present
       region: "eu-west-1"
       disable_rollback: true
@@ -33,7 +33,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-db-group"
+      stack_name: "{{ cluster_name }}-db-group"
       state: present
       region: "us-east-1"
       disable_rollback: true
@@ -47,7 +47,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-db-subnet"
+      stack_name: "{{ cluster_name }}-db-subnet"
       state: present
       region: "eu-west-1"
       disable_rollback: true
@@ -62,7 +62,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu"
+      stack_name: "{{ cluster_name }}"
       state: present
       region: "eu-west-1"
       disable_rollback: true
@@ -85,7 +85,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-alarms"
+      stack_name: "{{ cluster_name }}-alarms"
       state: present
       region: "eu-west-1"
       disable_rollback: true
@@ -109,7 +109,7 @@
       privileges: "pac.*:ALL"
 
   - name: Retrieve EU DB Cluster ARN
-    script: /usr/local/bin/arn.sh
+    script: tasks/get_cluster_arn.sh
     environment:
       AWS_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
@@ -124,7 +124,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-db-subnet"
+      stack_name: "{{ cluster_name }}-db-subnet"
       state: present
       region: "us-east-1"
       disable_rollback: true
@@ -139,7 +139,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us"
+      stack_name: "{{ cluster_name }}"
       state: present
       region: "us-east-1"
       disable_rollback: true
@@ -163,7 +163,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-alarms"
+      stack_name: "{{ cluster_name }}-alarms"
       state: present
       region: "us-east-1"
       disable_rollback: true
