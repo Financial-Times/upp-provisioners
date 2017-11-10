@@ -63,7 +63,7 @@ Resources:
     FactsetSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupName: !Join ["" , [!Ref TagSystemCode, " Factset RDS Server"]]
+        GroupName: !Join ["" , [!Ref TagSystemCode, "-factset-security-group-", !Ref EnvironmentName]]
         GroupDescription: !Join ["" , [!Ref TagSystemCode, "-factset-security-group-", !Ref EnvironmentName]]
         VpcId: !Ref DBVPC
         Tags:

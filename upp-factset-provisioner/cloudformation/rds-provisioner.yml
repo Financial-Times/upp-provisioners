@@ -122,6 +122,7 @@ Resources:
             MasterUserPassword: !Ref DBInstanceMasterPassword
             DBClusterParameterGroupName: !Ref DBClusterParameterGroup
             VpcSecurityGroupIds: [ !Ref DBSecurityGroup ]
+            StorageEncrypted: true
             Tags:
                 - Key: environment
                   Value: !Ref EnvironmentTag
@@ -146,6 +147,7 @@ Resources:
             DBSubnetGroupName: !Ref DBSubnetGroup
             DBInstanceIdentifier: !Join ["" , [!Ref TagSystemCode, "-factset-rds-", !Ref EnvironmentName]]
             PubliclyAccessible: true
+            StorageEncrypted: true
             Tags:
                 - Key: environment
                   Value: !Ref EnvironmentTag
