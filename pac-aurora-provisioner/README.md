@@ -96,3 +96,30 @@ docker run \
     -e "FAILOVER_TO_REGION=us-east-1" \
     pac-provisioner:local /bin/bash failover.sh
 ```
+
+## Automated Cleanup of the Failed Database
+
+After the Master has been failed over to another region, we need to reestablish the resiliency of our database, and tidy up the now orphaned Master database. To following `failover-cleanup` script will:
+
+* Decommission the existing orphaned Master database.
+* Ensure that a valid RDS subnet group and parameter group are setup in that region.
+* Create a new Replica database cluster.
+* Recreate Cloudwatch alarms for the replica.
+
+To trigger the failover cleanup:
+
+* Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
+* Set the `CLUSTER` environment variable to the cluster that you wish to failover, i.e. `staging`.
+* Set the `ENVIRONMENT_TYPE` environment variable to type of environment the cluster is, i.e. `t` for staging, `p` for production and `d` for anything else.
+* Determine which AWS region you failed over **FROM** and which you failed over **TO**. For example, if your faulty Master database was in `eu-west-1` and your new healthy Master is in `us-east-1`, then you would set `FAILOVER_FROM_REGION=eu-west-1` and `FAILOVER_TO_REGION=us-east-1`.
+* Run the following docker command:
+
+```
+docker run \
+    -e "CLUSTER=$CLUSTER" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "FAILOVER_FROM_REGION=eu-west-1" \
+    -e "FAILOVER_TO_REGION=us-east-1" \
+    pac-provisioner:local /bin/bash failover-cleanup.sh
+```
