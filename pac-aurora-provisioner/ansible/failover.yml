@@ -10,7 +10,6 @@
     - vaults/vault_{{ environment_type }}.yml
     - vars/{{ aws_account }}.yml
 
-
   tasks:
   - name: Log vars
     debug:

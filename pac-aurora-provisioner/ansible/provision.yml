@@ -55,7 +55,7 @@
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
         TagEnvironment: "{{ environment_type }}"
-        DBSubnetIds: "{{ eu_subnets }}"
+        DBSubnetIds: "{{ regions['eu-west-1'].subnets }}"
     register: db_subnet_eu
 
   - name: Launch Aurora DB Cloudformation stack in eu-west-1
@@ -69,9 +69,9 @@
       template: /cloudformation/aurora-pac-master.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
-        DBVPC: "{{ eu_vpc }}"
+        DBVPC: "{{ regions['eu-west-1'].vpc }}"
         DBSubnetGroup: "{{ db_subnet_eu.stack_outputs.DBSubnetGroup }}"
-        DBSecurityGroups: "{{ eu_security_groups }}"
+        DBSecurityGroups: "{{ regions['eu-west-1'].security_groups }}"
         DBParameterGroup: "{{ db_param_group_eu.stack_outputs.DBParameterGroup }}"
         DBClusterParameterGroup: "{{ db_param_group_eu.stack_outputs.DBClusterParameterGroup }}"
         DBInstanceType: db.t2.small
@@ -132,7 +132,7 @@
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
         TagEnvironment: "{{ environment_type }}"
-        DBSubnetIds: "{{ us_subnets }}"
+        DBSubnetIds: "{{ regions['us-east-1'].subnets }}"
     register: db_subnet_us
 
   - name: Launch Replica Aurora DB Cloudformation stack in us-east-1
@@ -146,8 +146,8 @@
       template: /cloudformation/aurora-pac-replica.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
-        DBVPC: "{{ us_vpc }}"
-        DBSecurityGroups: "{{ us_security_groups }}"
+        DBVPC: "{{ regions['us-east-1'].vpc }}"
+        DBSecurityGroups: "{{ regions['us-east-1'].security_groups }}"
         DBParameterGroup: "{{ db_param_group_us.stack_outputs.DBParameterGroup }}"
         DBClusterParameterGroup: "{{ db_param_group_us.stack_outputs.DBClusterParameterGroup }}"
         DBSubnetGroup: "{{ db_subnet_us.stack_outputs.DBSubnetGroup }}"
