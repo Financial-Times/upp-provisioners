@@ -10,6 +10,14 @@
     - vaults/vault_{{ environment_type }}.yml
 
   tasks:
+  - name: Promote EU DB Cluster # this step ensures that we can decom the cluster regardless of whether it is the Master db or not.
+    script: tasks/promote_read_replica.sh
+    environment:
+      AWS_REGION: "eu-west-1"
+      AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+    ignore_errors: yes
+
   - name: Remove Aurora in EU
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
