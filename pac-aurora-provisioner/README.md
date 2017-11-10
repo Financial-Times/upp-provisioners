@@ -99,7 +99,7 @@ docker run \
 
 ## Automated Cleanup of the Failed Database
 
-After the Master has been failed over to another region, we need to reestablish the resiliency of our database, and tidy up the now orphaned Master database. To following `failover-cleanup` script will:
+After the Master has been failed over to another region, we need to reestablish the resiliency of our database, and tidy up the now orphaned Master database. The following `failover-cleanup` script will:
 
 * Decommission the existing orphaned Master database.
 * Ensure that a valid RDS subnet group and parameter group are setup in that region.
