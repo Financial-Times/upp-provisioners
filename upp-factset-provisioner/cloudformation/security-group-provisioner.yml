@@ -79,6 +79,32 @@ Resources:
               Value: !Ref TagDescription
             - Key: name
               Value: !Sub ${TagName} - ${EnvironmentName}
+        SecurityGroupIngress:
+            # OSB + LDNWebPerf
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 82.136.1.214/32
+            # Park Royal
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 213.216.148.1/32
+            # XP - Cluj Office
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 194.117.242.0/23
+            # EU VPN Client
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 62.25.64.1/32
+            # US VPN Client
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 64.210.200.1/32
 
 Outputs:
   FactsetSecurityGroupId:
