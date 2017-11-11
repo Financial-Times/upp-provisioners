@@ -1,0 +1,20 @@
+- hosts: all
+
+  vars_files:
+    - vault_{{aws_account}}.yml
+
+  tasks:
+    - name: Delete Jenkins CloudFormation stack
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        region: "{{aws_default_region}}"
+        stack_name: "{{instance_name}}"
+        state: "absent"
+      register: cf_stack_output
+
+    - debug:
+        msg: "{{cf_stack_output}}"
+
+    - name: Delete cluster CNAME
+      include: tasks/delete_cname.yml

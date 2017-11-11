@@ -74,6 +74,7 @@ jobs:
   upp-concept-publishing-provisioner: *build-config
   upp-delivery-provisioner: *build-config
   upp-elasticsearch-provisioner: *build-config
+  upp-jenkins-provisioner: *build-config
   upp-neo4j-provisioner: *build-config
   upp-pub-provisioner: *build-config
   upp-rds-provisioner: *build-config

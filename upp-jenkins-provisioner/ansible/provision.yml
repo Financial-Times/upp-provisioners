@@ -1,0 +1,32 @@
+- hosts: all
+
+  vars:
+    aws_default_region: "eu-west-1"
+
+  vars_files:
+    - vault_{{aws_account}}.yml
+
+  tasks:
+    - name: Create Jenkins CloudFormation stack
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        stack_name: "{{instance_name}}"
+        state: "present"
+        region: "{{aws_default_region}}"
+        template: "/cloudformation/jenkins.yml"
+        template_parameters:
+          InstanceName: "{{instance_name}}"
+          InstanceUserData: "{{instance_user_data}}"
+        tags:
+          Name: "{{instance_name}}"
+          environment: "p"
+          teamDL: "universal.publishing.platform@ft.com"
+          systemCode: "upp"
+      register: cf_stack_output
+
+    - debug:
+        msg: "{{cf_stack_output}}"
+
+    - name: Create or update Jenkins CNAME
+      include: tasks/create_update_cname.yml
