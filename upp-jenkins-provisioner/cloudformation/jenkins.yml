@@ -18,11 +18,14 @@ Mappings:
   "469211898354":
     eu-west-1:
       ImageId: "ami-760aaa0f"
-      InstanceSubnetId: "subnet-901020c8"
+      InstanceSubnetId: "subnet-901020c8" # FT-Content-Platform-Prod-AZa-Private
       ALBSubnets:
-        - "subnet-76cbfa2e"
-        - "subnet-c1bb4fa6"
-        - "subnet-3bd42272"
+        # FT-Content-Platform-Prod-AZa-Private
+        - "subnet-901020c8"
+        # FT-Content-Platform-Prod-AZb-Private
+        - "subnet-5f00f438"
+        # FT-Content-Platform-Prod-AZc-Private
+        - "subnet-8cbe4fc5"
       InstanceSecurityGroupIds:
         # default
         - "sg-97ec78ee"
