@@ -37,6 +37,15 @@
       state: "absent"
     ignore_errors: yes
 
+  - name: Remove Cloudwatch alarms in EU
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-eu-alarms"
+      region: "eu-west-1"
+      state: "absent"
+    ignore_errors: yes
+
   - name: Remove Aurora replica in US
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
@@ -60,6 +69,15 @@
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
       stack_name: "{{ cluster_name }}-us-db-group"
+      region: "us-east-1"
+      state: "absent"
+    ignore_errors: yes
+
+  - name: Remove Cloudwatch alarms in US
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-us-alarms"
       region: "us-east-1"
       state: "absent"
     ignore_errors: yes

@@ -81,10 +81,32 @@
         TagEnvironment: "{{ environment_type }}"
     register: aurora_eu_stack
 
+  - name: Create Aurora CloudWatch alarms for the cluster in the EU
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-eu-alarms"
+      state: present
+      region: "eu-west-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-cloudwatch.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        DBClusterIdentifier: "{{ aurora_eu_stack.stack_outputs.DBCluster }}"
+
   - include: tasks/create_cname.yml
     vars:
       dns_cname: "{{ cluster }}-eu-rds-pac"
       hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
+
+  - include: tasks/create_pac_user.yml
+    vars:
+      username: "pac"
+      password: "{{ pac_db_user_password }}"
+      login_host: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
+      login_user: "AdminUser"
+      login_password: "{{ db_master_password }}"
+      privileges: "pac.*:ALL"
 
   - name: Retrieve EU DB Cluster ARN
     script: /usr/local/bin/arn.sh
@@ -136,6 +158,19 @@
         ReplicationSourceIdentifier: "{{ aurora_eu_arn.stdout }}"
         TagEnvironment: "{{ environment_type }}"
     register: aurora_us_stack
+
+  - name: Create Aurora CloudWatch alarms for the cluster in the US
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-us-alarms"
+      state: present
+      region: "us-east-1"
+      disable_rollback: true
+      template: /cloudformation/aurora-cloudwatch.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        DBClusterIdentifier: "{{ aurora_us_stack.stack_outputs.DBCluster }}"
 
   - include: tasks/create_cname.yml
     vars:

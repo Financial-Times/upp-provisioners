@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This template deploys an Aurora Replica for the primary PAC DB cluster.
+Description: This template deploys an Aurora cluster with one instance for Factset data.
 
 Metadata:
     AWS::CloudFormation::Interface:
@@ -14,13 +14,13 @@ Metadata:
              - TagName
 
 Parameters:
-    DBVPC:
-        Description: Choose which VPC the Aurora DB should be deployed TagStopSchedule
-        Type: AWS::EC2::VPC::Id
+    DBSecurityGroup:
+        Description: Security group id
+        Type: String
 
-    DBSecurityGroups:
-        Description: Select the Security group to allow access to the Aurora instance
-        Type: List<AWS::EC2::SecurityGroup::Id>
+    DBSubnetIds:
+        Description: List of comma separated subnet IDs
+        Type: CommaDelimitedList
 
     DBInstanceType:
         Description: The instance type to use for the database
@@ -36,7 +36,7 @@ Parameters:
         Default: db.t2.small
 
     DBInstanceMasterUsername:
-        Description: The master Username for the database
+        Description: The master username for the database
         Type: String
         MinLength: 1
         MaxLength: 16
@@ -48,46 +48,22 @@ Parameters:
         NoEcho: true
         Type: String
         MinLength: 10
-        MaxLength: 41
+        MaxLength: 25
         AllowedPattern: '[a-zA-Z0-9]*'
         ConstraintDescription: must contain only alphanumeric characters.
-
-    DBInstanceDBName:
-        Description: The string that will be prefixed to each instance name
-        Type: String
-        MinLength: 1
-        MaxLength: 16
-        AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
-        ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
-
-    DBParameterGroup:
-        Description: The DBParameterGroup name to use
-        Type: String
-
-    DBClusterParameterGroup:
-        Description: The DBClusterParameterGroup name to use
-        Type: String
-
-    DBSubnetGroup:
-        Description: The DBSubnetGroup name to use
-        Type: String
-
-    ReplicationSourceIdentifier:
-        Description: The ARN of the master source, from which this database will replicate.
-        Type: String
 
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
 
-    TagEnvironment:
-        Description: Tag detail for the Environment
+    EnvironmentTag:
+        Description: Tag detail for the Environment; d for team clusters, t for staging and p for production
         Type: String
         AllowedValues:
+            - 'd'
             - 't'
             - 'p'
-            - 'd'
-        Default: t
+        Default: d
 
     TagTeamDL:
         Description: Tag of the TeamDL
@@ -99,7 +75,7 @@ Parameters:
     TagSystemCode:
         Description: The system code for the environment
         Type: String
-        Default: pac
+        Default: upp
 
     TagIpCode:
         Description: The environment ipCode
@@ -110,25 +86,47 @@ Parameters:
     TagDescription:
         Description: Tag detail for the describing the instance
         Type: String
-        Default: PAC Aurora
+        Default: UPP Factset Aurora Store
 
     TagName:
         Description: Tag detail for the Name used in the console of the instance
         Type: String
-        Default: PAC Aurora
+        Default: UPP Factset store
 
 Resources:
+    DBSubnetGroup:
+        Type: AWS::RDS::DBSubnetGroup
+        Properties:
+            DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' subnet group']]
+            SubnetIds: !Ref DBSubnetIds
+            Tags:
+                - Key: environment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
+                - Key: name
+                  Value: !Sub ${TagName} - ${EnvironmentName}
+
     DBCluster:
         Type: AWS::RDS::DBCluster
         Properties:
             Engine: aurora
             DBSubnetGroupName: !Ref DBSubnetGroup
-            ReplicationSourceIdentifier: !Ref ReplicationSourceIdentifier
-            VpcSecurityGroupIds: !Ref DBSecurityGroups
+            MasterUsername: !Ref DBInstanceMasterUsername
+            MasterUserPassword: !Ref DBInstanceMasterPassword
             DBClusterParameterGroupName: !Ref DBClusterParameterGroup
+            VpcSecurityGroupIds: [ !Ref DBSecurityGroup ]
+            StorageEncrypted: true
             Tags:
                 - Key: environment
-                  Value: !Ref TagEnvironment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
                 - Key: teamDL
                   Value: !Ref TagTeamDL
                 - Key: systemCode
@@ -146,13 +144,13 @@ Resources:
             DBClusterIdentifier: !Ref DBCluster
             DBInstanceClass: !Ref DBInstanceType
             Engine: aurora
-            DBParameterGroupName: !Ref DBParameterGroup
             DBSubnetGroupName: !Ref DBSubnetGroup
-            DBInstanceIdentifier: !Sub '${EnvironmentName}-1-${AWS::Region}'
-            PubliclyAccessible: false
+            DBInstanceIdentifier: !Join ["" , [!Ref TagSystemCode, "-factset-rds-", !Ref EnvironmentName]]
+            PubliclyAccessible: true
+            StorageEncrypted: true
             Tags:
                 - Key: environment
-                  Value: !Ref TagEnvironment
+                  Value: !Ref EnvironmentTag
                 - Key: teamDL
                   Value: !Ref TagTeamDL
                 - Key: systemCode
@@ -164,43 +162,10 @@ Resources:
                 - Key: name
                   Value: !Sub ${TagName} - ${EnvironmentName}
 
-    DBReplicaInstance:
-        Type: AWS::RDS::DBInstance
+    DBClusterParameterGroup:
+        Type: AWS::RDS::DBClusterParameterGroup
         Properties:
-            DBClusterIdentifier: !Ref DBCluster
-            DBInstanceClass: !Ref DBInstanceType
-            Engine: aurora
-            DBParameterGroupName: !Ref DBParameterGroup
-            DBSubnetGroupName: !Ref DBSubnetGroup
-            DBInstanceIdentifier: !Sub '${EnvironmentName}-2-${AWS::Region}'
-            PubliclyAccessible: false
-            Tags:
-                - Key: environment
-                  Value: !Ref TagEnvironment
-                - Key: teamDL
-                  Value: !Ref TagTeamDL
-                - Key: systemCode
-                  Value: !Ref TagSystemCode
-                - Key: ipCode
-                  Value: !Ref TagIpCode
-                - Key: description
-                  Value: !Ref TagDescription
-                - Key: name
-                  Value: !Sub ${TagName} - ${EnvironmentName}
-
-Outputs:
-    DBCluster:
-        Description: A reference to the DBCluster
-        Value: !Ref DBCluster
-
-    DBHostname:
-        Description: A reference to the DBCluster hostname
-        Value: !GetAtt [DBCluster, Endpoint.Address]
-
-    DBPort:
-        Description: A reference to the DBCluster port
-        Value: !GetAtt [DBCluster, Endpoint.Port]
-
-    DBInstanceName:
-        Description: A reference to the DBPrimaryInstance Name
-        Value: !Sub '${EnvironmentName}-primary-${AWS::Region}'
+            Description: !Join ['', [!Ref EnvironmentName, ' cluster parameter group']]
+            Family: aurora5.6
+            Parameters:
+                binlog_format: 'MIXED'

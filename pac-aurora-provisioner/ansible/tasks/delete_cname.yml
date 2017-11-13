@@ -15,6 +15,7 @@
       emailAddress: "universal.publishing.platform@ft.com"
     body_format: json
   register: dns_delete_output
+  ignore_errors: yes
 
 - debug:
     msg: "{{ dns_delete_output }}"

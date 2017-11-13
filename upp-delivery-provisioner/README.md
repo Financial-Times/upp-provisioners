@@ -48,6 +48,7 @@ docker run \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "DNS_ADDRESS=$DNS_ADDRESS" \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "BINARY_WRITER_BUCKET=$BINARY_WRITER_BUCKET" \
     -e "AWS_MONITOR_TEST_UUID=$AWS_MONITOR_TEST_UUID" \
@@ -70,6 +71,8 @@ docker run \
     -e "DYNAMODB_TABLE"=$DYNAMODB_TABLE \
     -e "KINESIS_STREAM_NAME"=$KINESIS_STREAM_NAME \
     -e "NEO4J_FLEET_ENDPOINT=$NEO4J_FLEET_ENDPOINT" \
+    -e "SPLUNK_USER=$SPLUNK_USER" \
+    -e "SPLUNK_PASSWORD=$SPLUNK_PASSWORD" \
     coco/upp-delivery-provisioner:latest
 
 ## Note - if you require a specific version of the docker image, you can replace 'latest' with 'v1.0.17'
