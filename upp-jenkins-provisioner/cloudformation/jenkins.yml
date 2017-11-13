@@ -9,6 +9,12 @@ Parameters:
   InstanceUserData:
     Description: Base64 encoded instance userdata
     Type: String
+  EnvironmentType:
+    Description: Environment type (Test or Production).
+    Type: String
+    AllowedValues:
+      - 't'
+      - 'p'
 
 Mappings:
   # Content Prod
@@ -43,7 +49,7 @@ Resources:
         - Key: Name
           Value: !Ref InstanceName
         - Key: environment
-          Value: "p"
+          Value: !Ref EnvironmentType
         - Key: teamDL
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode
@@ -63,7 +69,7 @@ Resources:
         - Key: Name
           Value: !Ref InstanceName
         - Key: environment
-          Value: "p"
+          Value: !Ref EnvironmentType
         - Key: teamDL
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode
@@ -85,7 +91,7 @@ Resources:
         - Key: Name
           Value: !Ref InstanceName
         - Key: environment
-          Value: "p"
+          Value: !Ref EnvironmentType
         - Key: teamDL
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode

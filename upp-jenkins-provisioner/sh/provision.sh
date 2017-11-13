@@ -10,4 +10,5 @@ cd /ansible
 
 ansible-playbook --vault-password-file=vault.pass provision.yml --extra-vars "\
 instance_name=${INSTANCE_NAME} \
+environment_type=${ENVIRONMENT_TYPE} \
 aws_account=${AWS_ACCOUNT}"
