@@ -29,5 +29,9 @@
     - debug:
         msg: "{{cf_stack_output}}"
 
+    - name: Save ElasticSearch cluster endpoint as a variable
+      set_fact:
+        alb_dns: "{{cf_stack_output.stack_outputs.JenkinsALBDNS}}"
+
     - name: Create or update Jenkins CNAME
       include: tasks/create_update_cname.yml

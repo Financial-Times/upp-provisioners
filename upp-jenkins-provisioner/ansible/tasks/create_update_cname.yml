@@ -12,10 +12,10 @@
     HEADER_x-api-key: "{{konstructor_api_key}}"
     body:
       zone: "ft.com"
-      name: "{{cluster_name}}.in"
+      name: "{{instance_name}}.in"
       # trim the last character of the FQDN - Dyn doesn't like the trailing dot
       oldRdata: "{{dns_lookup_output[:-1]}}"
-      newRdata: "{{es_endpoint}}"
+      newRdata: "{{alb_dns}}"
       ttl: "300"
       emailAddress: "universal.publishing.platform@ft.com"
     body_format: json
@@ -32,8 +32,8 @@
     HEADER_x-api-key: "{{konstructor_api_key}}"
     body:
       zone: "ft.com"
-      name: "{{cluster_name}}.in"
-      rdata: "{{es_endpoint}}"
+      name: "{{instance_name}}.in"
+      rdata: "{{alb_dns}}"
       ttl: "300"
       emailAddress: "universal.publishing.platform@ft.com"
     body_format: json
