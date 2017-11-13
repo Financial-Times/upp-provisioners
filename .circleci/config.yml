@@ -76,4 +76,3 @@ jobs:
   upp-elasticsearch-provisioner: *build-config
   upp-neo4j-provisioner: *build-config
   upp-pub-provisioner: *build-config
-  upp-rds-provisioner: *build-config
