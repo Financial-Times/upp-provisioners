@@ -2,7 +2,6 @@
 
   vars:
     aws_default_region: "eu-west-1"
-    instance_user_data: "{{ lookup('file', '/cloudformation/userdata.base64') }}"
 
   vars_files:
     - vault_{{aws_account}}.yml
@@ -18,7 +17,6 @@
         template: "/cloudformation/jenkins.yml"
         template_parameters:
           InstanceName: "{{instance_name}}"
-          InstanceUserData: "{{instance_user_data}}"
         tags:
           Name: "{{instance_name}}"
           environment: "{{environment_type}}"

@@ -6,9 +6,6 @@ Parameters:
   InstanceName:
     Description: Jenkins instance name
     Type: String
-  InstanceUserData:
-    Description: Base64 encoded instance userdata
-    Type: String
   EnvironmentType:
     Description: Environment type (Test or Production).
     Type: String
@@ -43,7 +40,6 @@ Resources:
       InstanceType: "t2.medium"
       SubnetId: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "InstanceSubnetId"]
       IamInstanceProfile: "FT-Linux-Role"
-      UserData: !Ref InstanceUserData
       SecurityGroups: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "InstanceSecurityGroups"]
       Tags:
         - Key: Name
