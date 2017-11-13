@@ -37,6 +37,9 @@ No further changes should be required, as the job config is fully parameterised.
 - [upp-elasticsearch-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-elasticsearch-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission UPP ElasticSearch clusters.
 
+- [upp-jenkins-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-jenkins-provisioner)
+    - Docker image, running Ansible & CloudFormation to provision and decommission UPP Jenkins infrastructure.
+
 - [upp-neo4j-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-neo4j-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission UPP Neo4j persistent data clusters.
 
