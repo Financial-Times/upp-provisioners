@@ -33,7 +33,7 @@ Mappings:
         - "sg-f294008b"
         # aws-composer-security-groups-eu-west-1-stack-ResourcesSG-1PGBZWRWYJKAN
         - "sg-39ef7b40"
-      ALBSecurityGroupIds:
+      ALBSecurityGroups:
         # default
         - "sg-97ec78ee"
         # aws-composer-security-groups-eu-west-1-stack-ResourcesSG-1PGBZWRWYJKAN
@@ -67,7 +67,7 @@ Resources:
     Properties:
       Name: !Ref InstanceName
       Scheme: internal
-      SecurityGroupIds: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "ALBSecurityGroupIds"]
+      SecurityGroups: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "ALBSecurityGroups"]
       Subnets: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "ALBSubnets"]
       Tags:
         - Key: Name
