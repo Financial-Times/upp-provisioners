@@ -17,6 +17,7 @@
         template: "/cloudformation/jenkins.yml"
         template_parameters:
           InstanceName: "{{instance_name}}"
+          EnvironmentType: "{{environment_type}}"
         tags:
           Name: "{{instance_name}}"
           environment: "{{environment_type}}"
