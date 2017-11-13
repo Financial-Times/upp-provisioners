@@ -19,7 +19,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-db-group"
+      stack_name: "{{ cluster_name }}-db-group"
       state: present
       region: "eu-west-1"
       disable_rollback: true
@@ -33,7 +33,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-db-group"
+      stack_name: "{{ cluster_name }}-db-group"
       state: present
       region: "us-east-1"
       disable_rollback: true
@@ -47,7 +47,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-db-subnet"
+      stack_name: "{{ cluster_name }}-db-subnet"
       state: present
       region: "eu-west-1"
       disable_rollback: true
@@ -55,23 +55,23 @@
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
         TagEnvironment: "{{ environment_type }}"
-        DBSubnetIds: "{{ eu_subnets }}"
+        DBSubnetIds: "{{ regions['eu-west-1'].subnets }}"
     register: db_subnet_eu
 
   - name: Launch Aurora DB Cloudformation stack in eu-west-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu"
+      stack_name: "{{ cluster_name }}"
       state: present
       region: "eu-west-1"
       disable_rollback: true
       template: /cloudformation/aurora-pac-master.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
-        DBVPC: "{{ eu_vpc }}"
+        DBVPC: "{{ regions['eu-west-1'].vpc }}"
         DBSubnetGroup: "{{ db_subnet_eu.stack_outputs.DBSubnetGroup }}"
-        DBSecurityGroups: "{{ eu_security_groups }}"
+        DBSecurityGroups: "{{ regions['eu-west-1'].security_groups }}"
         DBParameterGroup: "{{ db_param_group_eu.stack_outputs.DBParameterGroup }}"
         DBClusterParameterGroup: "{{ db_param_group_eu.stack_outputs.DBClusterParameterGroup }}"
         DBInstanceType: db.t2.small
@@ -85,7 +85,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-alarms"
+      stack_name: "{{ cluster_name }}-alarms"
       state: present
       region: "eu-west-1"
       disable_rollback: true
@@ -109,7 +109,7 @@
       privileges: "pac.*:ALL"
 
   - name: Retrieve EU DB Cluster ARN
-    script: /usr/local/bin/arn.sh
+    script: tasks/get_cluster_arn.sh
     environment:
       AWS_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
@@ -124,7 +124,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-db-subnet"
+      stack_name: "{{ cluster_name }}-db-subnet"
       state: present
       region: "us-east-1"
       disable_rollback: true
@@ -132,22 +132,22 @@
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
         TagEnvironment: "{{ environment_type }}"
-        DBSubnetIds: "{{ us_subnets }}"
+        DBSubnetIds: "{{ regions['us-east-1'].subnets }}"
     register: db_subnet_us
 
   - name: Launch Replica Aurora DB Cloudformation stack in us-east-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us"
+      stack_name: "{{ cluster_name }}"
       state: present
       region: "us-east-1"
       disable_rollback: true
       template: /cloudformation/aurora-pac-replica.yml
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
-        DBVPC: "{{ us_vpc }}"
-        DBSecurityGroups: "{{ us_security_groups }}"
+        DBVPC: "{{ regions['us-east-1'].vpc }}"
+        DBSecurityGroups: "{{ regions['us-east-1'].security_groups }}"
         DBParameterGroup: "{{ db_param_group_us.stack_outputs.DBParameterGroup }}"
         DBClusterParameterGroup: "{{ db_param_group_us.stack_outputs.DBClusterParameterGroup }}"
         DBSubnetGroup: "{{ db_subnet_us.stack_outputs.DBSubnetGroup }}"
@@ -163,7 +163,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-alarms"
+      stack_name: "{{ cluster_name }}-alarms"
       state: present
       region: "us-east-1"
       disable_rollback: true
