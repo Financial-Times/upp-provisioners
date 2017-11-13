@@ -2,6 +2,7 @@
 
   vars:
     aws_default_region: "eu-west-1"
+    instance_user_data: "{{ lookup('file', /cloudformation/userdata.base64) }}"
 
   vars_files:
     - vault_{{aws_account}}.yml
