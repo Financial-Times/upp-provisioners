@@ -19,5 +19,5 @@
     - debug:
         msg: "{{cf_stack_output}}"
 
-    - name: Delete cluster CNAME
+    - name: Delete instance CNAME
       include: tasks/delete_cname.yml

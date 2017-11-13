@@ -28,7 +28,7 @@
     - debug:
         msg: "{{cf_stack_output}}"
 
-    - name: Save ElasticSearch cluster endpoint as a variable
+    - name: Save ALB DNS as a variable
       set_fact:
         alb_dns: "{{cf_stack_output.stack_outputs.JenkinsALBDNS}}"
 

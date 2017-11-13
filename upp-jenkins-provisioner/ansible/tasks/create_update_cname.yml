@@ -1,6 +1,6 @@
-- name: Perform a lookup on the cluster CNAME
+- name: Perform a lookup on the instance CNAME
   set_fact:
-    dns_lookup_output: "{{ lookup('dig', '{{cluster_name}}.in.ft.com/CNAME') }}"
+    dns_lookup_output: "{{ lookup('dig', '{{instance_name}}.in.ft.com/CNAME') }}"
 
 - debug:
     msg: "{{dns_lookup_output}}"

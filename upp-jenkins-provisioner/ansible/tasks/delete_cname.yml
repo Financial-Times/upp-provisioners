@@ -1,4 +1,4 @@
-- name: Delete cluster CNAME
+- name: Delete instance CNAME
   uri:
     url: "https://dns-api.in.ft.com/v2/"
     method: DELETE
