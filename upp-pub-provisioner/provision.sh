@@ -55,10 +55,8 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   synthetic_article_payload=${SYNTHETIC_ARTICLE_PAYLOAD:=/com/ft/syntheticpublicationmonitor/templates/article-payload.json} \
   synthetic_article_uuid=${SYNTHETIC_ARTICLE_UUID} \
   synthetic_list_uuid=${SYNTHETIC_LIST_UUID} \
-  s3_exports_year_to_start=${S3_EXPORTS_YEAR_TO_START} \
   s3_exports_content_folder=${S3_EXPORTS_CONTENT_FOLDER} \
   s3_exports_concept_folder=${S3_EXPORTS_CONCEPT_FOLDER} \
-  s3_exports_max_no_of_goroutines=${S3_EXPORTS_MAX_NO_OF_GOROUTINES} \
   s3_exports_bucket_name=${S3_EXPORTS_BUCKET_NAME} \
   s3_exports_archives_folder=${S3_EXPORTS_ARCHIVES_FOLDER} \
   tme_host=${TME_HOST:=tme.ft.com} \
