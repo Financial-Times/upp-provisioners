@@ -2,7 +2,8 @@
   uri:
     url: "https://dns-api.in.ft.com/v2/"
     method: DELETE
-    HEADER_x-api-key: "{{konstructor_api_key}}"
+    headers:
+      x-api-key: "{{konstructor_api_key}}"
     body:
       zone: "ft.com"
       name: "{{instance_name}}.in"
