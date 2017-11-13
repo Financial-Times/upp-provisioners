@@ -9,7 +9,8 @@
   uri:
     url: "https://dns-api.in.ft.com/v2/"
     method: PUT
-    HEADER_x-api-key: "{{konstructor_api_key}}"
+    headers:
+      x-api-key: "{{konstructor_api_key}}"
     body:
       zone: "ft.com"
       name: "{{instance_name}}.in"
@@ -29,7 +30,8 @@
   uri:
     url: "https://dns-api.in.ft.com/v2/"
     method: POST
-    HEADER_x-api-key: "{{konstructor_api_key}}"
+    headers:
+      x-api-key: "{{konstructor_api_key}}"
     body:
       zone: "ft.com"
       name: "{{instance_name}}.in"
