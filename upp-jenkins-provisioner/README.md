@@ -48,6 +48,7 @@ docker pull coco/upp-jenkins-provisioner:latest
 docker run \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     -e "INSTANCE_NAME=$INSTANCE_NAME" \
+    -e "VAULT_PASS=$VAULT_PASS" \
     coco/upp-jenkins-provisioner:latest /bin/bash decom.sh
 ```
 
