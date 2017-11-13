@@ -90,3 +90,8 @@ Resources:
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode
           Value: "upp"
+
+Outputs:
+  JenkinsALBDNS:
+    Description: Jenkins ALB DNS record
+    Value: !GetAtt JenkinsALB.DNSName
