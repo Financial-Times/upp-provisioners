@@ -17,7 +17,7 @@ Mappings:
   # Content Prod
   "469211898354":
     eu-west-1:
-      ImageId: "ami-760aaa0f"
+      ImageId: "ami-760aaa0f" # Amazon Linux AMI 2017.09.1 (HVM), SSD Volume Type
       InstanceSubnetId: "subnet-901020c8" # FT-Content-Platform-Prod-AZa-Private
       ALBSubnets:
         # FT-Content-Platform-Prod-AZa-Private
@@ -36,7 +36,7 @@ Mappings:
         - "sg-13e97d6a"
         # aws-composer-security-groups-eu-west-1-stack-ResourcesSG-1PGBZWRWYJKAN
         - "sg-39ef7b40"
-      VPC: "vpc-ee57bf89"
+      VPC: "vpc-ee57bf89" # FT-Content-Platform-Prod
 
 Resources:
   JenkinsInstance: 
