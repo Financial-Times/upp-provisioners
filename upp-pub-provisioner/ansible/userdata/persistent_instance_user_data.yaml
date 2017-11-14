@@ -105,6 +105,12 @@ coreos:
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_hec_url '${splunk_hec_url}'                                    >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_url 'https://ingest.splunk.glb.ft.com/coco-up/fleet'           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/config/tme_host '${tme_host}'                                                                 >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/zipper-s3/year-to-start '${s3_exports_year_to_start}'                                  >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/zipper-s3/s3-content-folder '${s3_exports_content_folder}'                             >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/zipper-s3/s3-concept-folder '${s3_exports_concept_folder}'                             >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/zipper-s3/max-no-of-goroutines '${s3_exports_max_no_of_goroutines}'                    >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/zipper-s3/bucket-name '${s3_exports_bucket_name}'                                      >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/zipper-s3/s3-archives-folder '${s3_exports_archives_folder}'                           >/dev/null 2>&1 || true;"
           ExecStart=/bin/sh -c "etcdctl mk /ft/healthcheck-categories/publish/enabled 'false'                                                >/dev/null 2>&1 || true;"
 
     - name: bootstrap.service

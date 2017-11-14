@@ -148,10 +148,24 @@ export KINESIS_STREAM_NAME=
 ## Neo4j Fleet Endpoint URL
 export NEO4J_FLEET_ENDPOINT=
 
+## Throttle config for UPP content/concepts archives
+export CONTENT_RETRIEVAL_THROTTLE=
+
+## S3 bucket name for UPP content/concepts archives
+export EXPORTS_BUCKET_NAME=
+
+## S3 bucket prefix for UPP content archives
+export BUCKET_CONTENT_PREFIX=
+
+## S3 bucket prefix for UPP concepts archives
+export BUCKET_CONCEPT_PREFIX=
+
+## Basic auth credentials used for UPP content/concepts archives
+export EXPORTS_AUTHORIZATION=
+
 ## Splunk API credentials
 export SPLUNK_USER=
 export SPLUNK_PASSWORD=
-
 ```
 
 
@@ -188,6 +202,11 @@ docker run \
     -e "AGGREGATE_CONCEPT_QUEUE=$AGGREGATE_CONCEPT_QUEUE" \
     -e "KINESIS_STREAM_NAME=$KINESIS_STREAM_NAME" \
     -e "NEO4J_FLEET_ENDPOINT=$NEO4J_FLEET_ENDPOINT" \
+    -e "CONTENT_RETRIEVAL_THROTTLE=$CONTENT_RETRIEVAL_THROTTLE" \
+    -e "EXPORTS_BUCKET_NAME=$EXPORTS_BUCKET_NAME" \
+    -e "BUCKET_CONTENT_PREFIX=$BUCKET_CONTENT_PREFIX" \
+    -e "BUCKET_CONCEPT_PREFIX=$BUCKET_CONCEPT_PREFIX" \
+    -e "EXPORTS_AUTHORIZATION=$EXPORTS_AUTHORIZATION" \
     -e "SPLUNK_USER=$SPLUNK_USER" \
     -e "SPLUNK_PASSWORD=$SPLUNK_PASSWORD" \
     coco/upp-delivery-provisioner:local

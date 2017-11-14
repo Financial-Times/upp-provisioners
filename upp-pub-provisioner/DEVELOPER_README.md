@@ -165,6 +165,12 @@ export CONCORDANCES_TOPIC_ARN=[The topic name(which is included in the ARN) foll
 export SMARTLOGIC_BASE_URL=
 export SMARTLOGIC_MODEL=
 export SMARTLOGIC_API_KEY=
+
+# The following variables are used by the zipper, for UPP Daily Exports
+export S3_EXPORTS_CONTENT_FOLDER=
+export S3_EXPORTS_CONCEPT_FOLDER=
+export S3_EXPORTS_BUCKET_NAME=
+export S3_EXPORTS_ARCHIVES_FOLDER=
 ```
 
 Run the image
@@ -208,6 +214,10 @@ docker run \
     -e "AUTHORS_BERTHA_URL=$AUTHORS_BERTHA_URL" \
     -e "ROLES_BERTHA_URL=$ROLES_BERTHA_URL" \
     -e "BRANCH_NAME=$BRANCH_NAME" \
+    -e "S3_EXPORTS_CONTENT_FOLDER=$S3_EXPORTS_CONTENT_FOLDER" \
+    -e "S3_EXPORTS_CONCEPT_FOLDER=$S3_EXPORTS_CONCEPT_FOLDER" \
+    -e "S3_EXPORTS_BUCKET_NAME=$S3_EXPORTS_BUCKET_NAME" \
+    -e "S3_EXPORTS_ARCHIVES_FOLDER=$S3_EXPORTS_ARCHIVES_FOLDER" \
     coco/upp-pub-provisioner:local
 ```
 

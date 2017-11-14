@@ -29,6 +29,7 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   ces_host=$CES_HOST \
   clusterid=$CLUSTERID \
   coco_image_monitor_test_uuid=$COCO_MONITOR_TEST_UUID \
+  content_retrieval_throttle=$CONTENT_RETRIEVAL_THROTTLE \
   dynamodb_table=${DYNAMODB_TABLE} \
   environment_tag=${ENVIRONMENT_TAG:=default} \
   environment_type=${ENVIRONMENT_TYPE:=p} \
@@ -41,6 +42,10 @@ echo $VAULT_PASS > /vault.pass && ansible-playbook -i ~/.ansible_hosts /ansible/
   region=$AWS_DEFAULT_REGION \
   services_definition_root_uri=${SERVICES_DEFINITION_ROOT_URI:=https://raw.githubusercontent.com/Financial-Times/up-service-files/master/} \
   token=$TOKEN_URL \
+  upp_exports_content_bucket_name=$EXPORTS_BUCKET_NAME \
+  upp_exports_content_bucket_prefix=$BUCKET_CONTENT_PREFIX \
+  upp_exports_concepts_bucket_prefix=$BUCKET_CONCEPT_PREFIX \
+  upp_exports_authorization=$EXPORTS_AUTHORIZATION \
   upp_gateway_host=$UPP_GATEWAY_HOST \
   upp_gateway_port=${UPP_GATEWAY_PORT:=443} \
   varnish_access_credentials=${CLUSTER_BASIC_HTTP_CREDENTIALS} \

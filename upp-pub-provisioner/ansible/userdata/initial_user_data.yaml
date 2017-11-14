@@ -39,6 +39,12 @@ write_files:
       persistent_tag={{persistent_tag}}
       region={{region}}
       roles_bertha_url={{roles_bertha_url}}
+      s3_exports_year_to_start={{s3_exports_year_to_start}}
+      s3_exports_content_folder={{s3_exports_content_folder}}
+      s3_exports_concept_folder={{s3_exports_concept_folder}}
+      s3_exports_max_no_of_goroutines={{s3_exports_max_no_of_goroutines}}
+      s3_exports_bucket_name={{s3_exports_bucket_name}}
+      s3_exports_archives_folder={{s3_exports_archives_folder}}
       s3_image_bucket_urls={{s3_image_bucket_urls}}
       services_definition_root_uri={{services_definition_root_uri}}
       smartlogic_base_url={{smartlogic_base_url}}
