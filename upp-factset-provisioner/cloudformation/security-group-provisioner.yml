@@ -1,0 +1,112 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template deploys a security group to be used by the rds-provisioner.yml
+
+Metadata:
+    AWS::CloudFormation::Interface:
+        - Label: FT standard tagging
+          Parameters:
+             - TagEnvironment
+             - TagTeamDL
+             - TagSystemCode
+             - TagIpCode
+             - TagDescription
+             - TagName
+
+Parameters:
+    DBVPC:
+        Description: Choose which VPC the Aurora DB should be deployed TagStopSchedule
+        Type: AWS::EC2::VPC::Id
+
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+
+    EnvironmentTag:
+        Description: Tag detail for the Environment; d for team clusters, t for staging and p for production
+        Type: String
+        AllowedValues:
+            - 'd'
+            - 't'
+            - 'p'
+        Default: d
+
+    TagTeamDL:
+        Description: Tag of the TeamDL
+        Type: String
+        AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+        ConstraintDescription: There must be a valid email address for the TeamDL
+        Default: universal.publishing.platform@ft.com
+
+    TagSystemCode:
+        Description: The system code for the environment
+        Type: String
+        Default: upp
+
+    TagIpCode:
+        Description: The environment ipCode
+        Type: String
+        AllowedPattern: '[P][0-9]*'
+        Default: P196
+
+    TagDescription:
+        Description: Tag detail for the describing the instance
+        Type: String
+        Default: UPP Factset Aurora Store
+
+    TagName:
+        Description: Tag detail for the Name used in the console of the instance
+        Type: String
+        Default: UPP Factset store
+
+Resources:
+    FactsetSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupName: !Join ["" , [!Ref TagSystemCode, "-factset-security-group-", !Ref EnvironmentName]]
+        GroupDescription: !Join ["" , [!Ref TagSystemCode, "-factset-security-group-", !Ref EnvironmentName]]
+        VpcId: !Ref DBVPC
+        Tags:
+            - Key: environment
+              Value: !Ref EnvironmentTag
+            - Key: teamDL
+              Value: !Ref TagTeamDL
+            - Key: systemCode
+              Value: !Ref TagSystemCode
+            - Key: ipCode
+              Value: !Ref TagIpCode
+            - Key: description
+              Value: !Ref TagDescription
+            - Key: name
+              Value: !Sub ${TagName} - ${EnvironmentName}
+        SecurityGroupIngress:
+            # OSB + LDNWebPerf
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 82.136.1.214/32
+            # Park Royal
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 213.216.148.1/32
+            # XP - Cluj Office
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 194.117.242.0/23
+            # EU VPN Client
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 62.25.64.1/32
+            # US VPN Client
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 64.210.200.1/32
+
+Outputs:
+  FactsetSecurityGroupId:
+    Description: Id of newly created security group
+    Value: !Ref FactsetSecurityGroup

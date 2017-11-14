@@ -32,6 +32,7 @@ To provision a new PAC Aurora database cluster:
 
 - Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Set the `CLUSTER` environment variable, this will be appended to `pac-aurora` for all provisioned infrastructure. Note: The cluster name should be region agnostic, for example, `staging` will provision `pac-aurora-staging-eu` and `pac-aurora-staging-us` database instances.
+- Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster will be, i.e. `t` for staging, `p` for production and `d` for anything else.
 - Set the `PAC_DB_USER_PASSWORD` environment variable. The provisioner will create a `pac` user with appropriate permissions in the new database, which is identified by the provided the password.
 - Run the following docker command
 
@@ -57,8 +58,10 @@ The decommissioning process will:
 
 To decommission a PAC Aurora database cluster:
 
-- Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
-- Run the following docker command
+* Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
+* Set the `CLUSTER` environment variable to the cluster that you wish to decommission, i.e. `staging`.
+* Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster is, i.e. `t` for staging, `p` for production and `d` for anything else.
+* Run the following docker command
 
 ```
 docker run \
@@ -66,4 +69,57 @@ docker run \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
     pac-provisioner:local /bin/bash decom.sh
+```
+
+## Automated Failover between two regions
+
+The provisioner is also capable of failing over the Master database to a replica in another region. The failover will:
+
+* Promote the replica to become a Master database, which severs replication from the previous Master.
+* Remove Cloudwatch alarms from the previous Master database. This ensures that our monitoring is aware that the previous Master is no longer used.
+* Updates the top level DNS via Konstructor to point to the new Master database.
+
+To trigger the failover:
+
+* Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
+* Set the `CLUSTER` environment variable to the cluster that you wish to failover, i.e. `staging`.
+* Set the `ENVIRONMENT_TYPE` environment variable to type of environment the cluster is, i.e. `t` for staging, `p` for production and `d` for anything else.
+* Determine which AWS region you are failing over **FROM** and which you are failing over **TO**. For example, if your faulty Master database is in `eu-west-1` and your healthy replica is in `us-east-1`, then you would set `FAILOVER_FROM_REGION=eu-west-1` and `FAILOVER_TO_REGION=us-east-1`.
+* Run the following docker command:
+
+```
+docker run \
+    -e "CLUSTER=$CLUSTER" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "FAILOVER_FROM_REGION=eu-west-1" \
+    -e "FAILOVER_TO_REGION=us-east-1" \
+    pac-provisioner:local /bin/bash failover.sh
+```
+
+## Automated Cleanup of the Failed Database
+
+After the Master has been failed over to another region, we need to reestablish the resiliency of our database, and tidy up the now orphaned Master database. The following `failover-cleanup` script will:
+
+* Decommission the existing orphaned Master database.
+* Ensure that a valid RDS subnet group and parameter group are setup in that region.
+* Create a new Replica database cluster.
+* Recreate Cloudwatch alarms for the replica.
+
+To trigger the failover cleanup:
+
+* Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
+* Set the `CLUSTER` environment variable to the cluster that you wish to failover, i.e. `staging`.
+* Set the `ENVIRONMENT_TYPE` environment variable to type of environment the cluster is, i.e. `t` for staging, `p` for production and `d` for anything else.
+* Determine which AWS region you failed over **FROM** and which you failed over **TO**. For example, if your faulty Master database was in `eu-west-1` and your new healthy Master is in `us-east-1`, then you would set `FAILOVER_FROM_REGION=eu-west-1` and `FAILOVER_TO_REGION=us-east-1`.
+* Run the following docker command:
+
+```
+docker run \
+    -e "CLUSTER=$CLUSTER" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "FAILOVER_FROM_REGION=eu-west-1" \
+    -e "FAILOVER_TO_REGION=us-east-1" \
+    pac-provisioner:local /bin/bash failover-cleanup.sh
 ```

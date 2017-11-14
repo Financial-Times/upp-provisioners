@@ -1,0 +1,116 @@
+---
+- name: Failover Cleanup
+  hosts: localhost
+  connection: local
+
+  vars:
+    cluster_name: "pac-aurora-{{ cluster }}"
+
+  vars_files:
+    - vaults/vault_{{ environment_type }}.yml
+    - vars/{{ aws_account }}.yml
+
+  tasks:
+  - name: Log vars
+    debug:
+      msg: "Cleaning up after failing over cluster_name: '{{ cluster_name }}' from region '{{ failover_from_region }}' to region '{{ failover_to_region }}'"
+
+  - name: Remove Database in Failed Region
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}"
+      region: "{{ failover_from_region }}"
+      state: "absent"
+    ignore_errors: yes
+
+  - name: Ensure DB Parameter Group exists in failed region
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-db-group"
+      state: present
+      region: "{{ failover_from_region }}"
+      disable_rollback: true
+      template: /cloudformation/aurora-db-parameter-groups.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        TagEnvironment: "{{ environment_type }}"
+    register: db_parameter_group
+
+  - name: Ensure DB Subnet exists in failed region
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-db-subnet"
+      state: present
+      region: "{{ failover_from_region }}"
+      disable_rollback: true
+      template: /cloudformation/aurora-pac-subnet.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        TagEnvironment: "{{ environment_type }}"
+        DBSubnetIds: "{{ regions[failover_from_region].subnets }}"
+    register: db_subnet
+
+  - name: Parameter group output
+    debug:
+      msg: "{{ db_parameter_group }}"
+
+  - name: Subnet output
+    debug:
+      msg: "{{ db_subnet }}"
+
+  - name: Retrieve Master DB Cluster ARN
+    script: tasks/get_cluster_arn.sh
+    environment:
+      AWS_REGION: "{{ failover_to_region }}"
+      AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+    register: master_db_arn
+
+  - name: Launch Replica Aurora DB
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}"
+      state: present
+      region: "{{ failover_from_region }}"
+      disable_rollback: true
+      template: /cloudformation/aurora-pac-replica.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        DBVPC: "{{ regions[failover_from_region].vpc }}"
+        DBSecurityGroups: "{{ regions[failover_from_region].security_groups }}"
+        DBParameterGroup: "{{ db_parameter_group.stack_outputs.DBParameterGroup }}"
+        DBClusterParameterGroup: "{{ db_parameter_group.stack_outputs.DBClusterParameterGroup }}"
+        DBSubnetGroup: "{{ db_subnet.stack_outputs.DBSubnetGroup }}"
+        DBInstanceType: db.t2.small
+        DBInstanceMasterUsername: AdminUser
+        DBInstanceMasterPassword: "{{ db_master_password }}"
+        DBInstanceDBName: pac
+        ReplicationSourceIdentifier: "{{ master_db_arn.stdout }}"
+        TagEnvironment: "{{ environment_type }}"
+    register: aurora_replica_stack
+
+  - name: Create Aurora CloudWatch alarms for the new cluster in the Failed Region
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      stack_name: "{{ cluster_name }}-alarms"
+      state: present
+      region: "{{ failover_from_region }}"
+      disable_rollback: true
+      template: /cloudformation/aurora-cloudwatch.yml
+      template_parameters:
+        EnvironmentName: "{{ cluster_name }}"
+        DBClusterIdentifier: "{{ aurora_replica_stack.stack_outputs.DBCluster }}"
+
+  - include: tasks/delete_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-{{ regions[failover_from_region].shortname }}-rds-pac"
+
+  - include: tasks/create_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-{{ regions[failover_from_region].shortname }}-rds-pac"
+      hostname: "{{ aurora_replica_stack.stack_outputs.DBHostname }}"

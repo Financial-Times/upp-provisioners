@@ -10,11 +10,19 @@
     - vaults/vault_{{ environment_type }}.yml
 
   tasks:
+  - name: Promote EU DB Cluster # this step ensures that we can decom the cluster regardless of whether it is the Master db or not.
+    script: tasks/promote_read_replica.sh
+    environment:
+      AWS_REGION: "eu-west-1"
+      AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+    ignore_errors: yes
+
   - name: Remove Aurora in EU
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu"
+      stack_name: "{{ cluster_name }}"
       region: "eu-west-1"
       state: "absent"
     ignore_errors: yes
@@ -23,7 +31,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-db-group"
+      stack_name: "{{ cluster_name }}-db-group"
       region: "eu-west-1"
       state: "absent"
     ignore_errors: yes
@@ -32,7 +40,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-db-subnet"
+      stack_name: "{{ cluster_name }}-db-subnet"
       region: "eu-west-1"
       state: "absent"
     ignore_errors: yes
@@ -41,7 +49,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-eu-alarms"
+      stack_name: "{{ cluster_name }}-alarms"
       region: "eu-west-1"
       state: "absent"
     ignore_errors: yes
@@ -50,7 +58,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us"
+      stack_name: "{{ cluster_name }}"
       region: "us-east-1"
       state: "absent"
     ignore_errors: yes
@@ -59,7 +67,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-db-subnet"
+      stack_name: "{{ cluster_name }}-db-subnet"
       region: "us-east-1"
       state: "absent"
     ignore_errors: yes
@@ -68,7 +76,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-db-group"
+      stack_name: "{{ cluster_name }}-db-group"
       region: "us-east-1"
       state: "absent"
     ignore_errors: yes
@@ -77,7 +85,7 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "{{ cluster_name }}-us-alarms"
+      stack_name: "{{ cluster_name }}-alarms"
       region: "us-east-1"
       state: "absent"
     ignore_errors: yes
