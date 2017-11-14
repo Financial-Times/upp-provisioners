@@ -80,7 +80,6 @@ Resources:
   JenkinsALBTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Ref InstanceName
       Port: 8080
       Protocol: HTTPS
       VpcId: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "VPC"]
