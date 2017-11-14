@@ -81,7 +81,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Port: 8080
-      Protocol: HTTPS
+      Protocol: HTTP
       VpcId: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "VPC"]
       HealthCheckPort: 8080
       HealthyThresholdCount: 2
