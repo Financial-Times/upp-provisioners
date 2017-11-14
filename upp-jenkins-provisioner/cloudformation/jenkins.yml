@@ -84,6 +84,7 @@ Resources:
       Protocol: HTTPS
       VpcId: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "VPC"]
       HealthCheckPort: 8080
+      HealthyThresholdCount: 2
       Matcher:
         HttpCode: '403'
       Targets:
