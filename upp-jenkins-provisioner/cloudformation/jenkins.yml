@@ -37,9 +37,7 @@ Mappings:
         # aws-composer-security-groups-eu-west-1-stack-ResourcesSG-1PGBZWRWYJKAN
         - "sg-39ef7b40"
       VPC: "vpc-ee57bf89" # FT-Content-Platform-Prod
-      ALBListenerCertificates:
-        # *.in.ft.com
-        - "arn:aws:acm:eu-west-1:469211898354:certificate/ff693a19-d441-4073-88bd-1fb559c0f11b"
+      ALBListenerCertificates: "arn:aws:acm:eu-west-1:469211898354:certificate/ff693a19-d441-4073-88bd-1fb559c0f11b" # *.in.ft.com
 
 Resources:
   JenkinsInstance: 
@@ -112,7 +110,8 @@ Resources:
         Ref: JenkinsALB
       Port: 443
       Protocol: HTTPS
-      Certificates: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "ALBListenerCertificates"]
+      Certificates: 
+      - CertificateArn: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "ALBListenerCertificates"]
 
 Outputs:
   JenkinsALBDNS:
