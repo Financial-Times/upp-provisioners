@@ -3,7 +3,7 @@
   debug:
     msg: "{{ dns_cname }} changed from {{ previous_hostname }} -> {{ updated_hostname }}"
 
-- name: If it doesn't exist, create a new CNAME record
+- name: Update an existing CNAME record
   uri:
     url: https://dns-api.in.ft.com/v2
     method: PUT
