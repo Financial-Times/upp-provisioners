@@ -18,17 +18,20 @@ Note that due to tag naming restrictions, branch names containing `/` will only 
 
 To enable automated builds for new provisioner projects that contain a Dockerfile:
 
-- Copy the configuration from an existing job, eg: [upp-elasticsearch-provisioner](https://github.com/Financial-Times/upp-provisioners/blob/master/.circleci/config.yml#L108-L152)
+- Copy the configuration from an existing job, eg: [upp-elasticsearch-provisioner](https://github.com/Financial-Times/upp-provisioners/blob/master/.circleci/config.yml#L76)
 - Update the job name to match the name of the new provisioner
 
 No further changes should be required, as the job config is fully parameterised.
 
 ### Provisioners
 
+- [content-jenkins-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/content-jenkins-provisioner)
+    - Docker image, running Ansible & CloudFormation to provision and decommission Content Jenkins infrastructure.
+
 - [upp-concept-publishing-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-concept-publishing-provisioner)
     - CloudFormation to spin up an S3 bucket, SNS Topic and 1/2 SQS Queues to be used as part of the event-driven concept publishing pipeline.  
 
--  [upp-coreupdate-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-coreupdate-provisioner)
+- [upp-coreupdate-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-coreupdate-provisioner)
     - Provisioning instructions for manually creating a CoreUpdate instance.
 
 - [upp-delivery-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-delivery-provisioner)
@@ -36,9 +39,6 @@ No further changes should be required, as the job config is fully parameterised.
 
 - [upp-elasticsearch-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-elasticsearch-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission UPP ElasticSearch clusters.
-
-- [upp-jenkins-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-jenkins-provisioner)
-    - Docker image, running Ansible & CloudFormation to provision and decommission UPP Jenkins infrastructure.
 
 - [upp-neo4j-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-neo4j-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission UPP Neo4j persistent data clusters.
