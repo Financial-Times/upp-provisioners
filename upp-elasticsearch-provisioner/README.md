@@ -124,7 +124,7 @@ aws s3 sync . s3://upp-concepts-target-cluster-backup/ --profile content-test
 
 - Send a `GET` request to check the snapshot is visible in your target cluster:
 ```
-https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/all
+https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/_all
 ```
 
 - Trigger a restore of the snapshot in the target cluster. Send a `POST` request to the following URL:
