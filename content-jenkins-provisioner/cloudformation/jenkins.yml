@@ -56,7 +56,7 @@ Resources:
         - Key: teamDL
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode
-          Value: "upp"
+          Value: "content"
         - Key: ec2Powercycle
           Value: '{ "start": "45 5 * * 1-5", "stop": "15 19 * * *" }'
         - Key: scheduler:ebs-snapshot
@@ -76,7 +76,7 @@ Resources:
         - Key: teamDL
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode
-          Value: "upp"
+          Value: "content"
   JenkinsALBTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -98,7 +98,7 @@ Resources:
         - Key: teamDL
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode
-          Value: "upp"
+          Value: "content"
   JenkinsALBListener:
     Type: "AWS::ElasticLoadBalancingV2::Listener"
     Properties:
