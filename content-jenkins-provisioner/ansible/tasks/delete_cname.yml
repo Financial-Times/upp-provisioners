@@ -1,0 +1,15 @@
+- name: Delete instance CNAME
+  uri:
+    url: "https://dns-api.in.ft.com/v2/"
+    method: DELETE
+    headers:
+      x-api-key: "{{konstructor_api_key}}"
+    body:
+      zone: "ft.com"
+      name: "{{instance_name}}.in"
+      emailAddress: "universal.publishing.platform@ft.com"
+    body_format: json
+  register: dns_delete_output
+
+- debug:
+    msg: "{{dns_delete_output}}"

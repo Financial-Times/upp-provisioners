@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Creates a Jenkins EC2 instance and ALB
+
+Parameters:
+  InstanceName:
+    Description: Jenkins instance name
+    Type: String
+  EnvironmentType:
+    Description: Environment type (Test or Production).
+    Type: String
+    AllowedValues:
+      - 't'
+      - 'p'
+
+Mappings:
+  # Content Prod
+  "469211898354":
+    eu-west-1:
+      ImageId: "ami-760aaa0f" # Amazon Linux AMI 2017.09.1 (HVM), SSD Volume Type
+      InstanceSubnetId: "subnet-901020c8" # FT-Content-Platform-Prod-AZa-Private
+      ALBSubnets:
+        # FT-Content-Platform-Prod-AZa-Private
+        - "subnet-901020c8"
+        # FT-Content-Platform-Prod-AZb-Private
+        - "subnet-5f00f438"
+        # FT-Content-Platform-Prod-AZc-Private
+        - "subnet-8cbe4fc5"
+      InstanceSecurityGroupIds:
+        # aws-composer-security-groups-eu-west-1-stack-PrivateSG-1B7OWE62DWYVS
+        - "sg-f294008b"
+        # aws-composer-security-groups-eu-west-1-stack-ResourcesSG-1PGBZWRWYJKAN
+        - "sg-39ef7b40"
+      ALBSecurityGroups:
+        # default
+        - "sg-13e97d6a"
+        # aws-composer-security-groups-eu-west-1-stack-ResourcesSG-1PGBZWRWYJKAN
+        - "sg-39ef7b40"
+      VPC: "vpc-ee57bf89" # FT-Content-Platform-Prod
+      ALBListenerCertificates: "arn:aws:acm:eu-west-1:469211898354:certificate/ff693a19-d441-4073-88bd-1fb559c0f11b" # *.in.ft.com
+
+Resources:
+  JenkinsInstance: 
+    Type: "AWS::EC2::Instance"
+    Properties: 
+      ImageId: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "ImageId"]
+      InstanceType: "t2.medium"
+      SubnetId: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "InstanceSubnetId"]
+      IamInstanceProfile: "FT-Linux-Role"
+      SecurityGroupIds: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "InstanceSecurityGroupIds"]
+      Tags:
+        - Key: Name
+          Value: !Ref InstanceName
+        - Key: environment
+          Value: !Ref EnvironmentType
+        - Key: teamDL
+          Value: "universal.publishing.platform@ft.com"
+        - Key: systemCode
+          Value: "content"
+        - Key: ec2Powercycle
+          Value: '{ "start": "45 5 * * 1-5", "stop": "15 19 * * *" }'
+        - Key: scheduler:ebs-snapshot
+          Value: default
+  JenkinsALB:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Name: !Ref InstanceName
+      Scheme: internal
+      SecurityGroups: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "ALBSecurityGroups"]
+      Subnets: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "ALBSubnets"]
+      Tags:
+        - Key: Name
+          Value: !Ref InstanceName
+        - Key: environment
+          Value: !Ref EnvironmentType
+        - Key: teamDL
+          Value: "universal.publishing.platform@ft.com"
+        - Key: systemCode
+          Value: "content"
+  JenkinsALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 8080
+      Protocol: HTTP
+      VpcId: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "VPC"]
+      HealthCheckPort: 8080
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '403'
+      Targets:
+      - Id:
+          Ref: JenkinsInstance
+      Tags:
+        - Key: Name
+          Value: !Ref InstanceName
+        - Key: environment
+          Value: !Ref EnvironmentType
+        - Key: teamDL
+          Value: "universal.publishing.platform@ft.com"
+        - Key: systemCode
+          Value: "content"
+  JenkinsALBListener:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn:
+            Ref: JenkinsALBTargetGroup
+      LoadBalancerArn:
+        Ref: JenkinsALB
+      Port: 443
+      Protocol: HTTPS
+      Certificates: 
+      - CertificateArn: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "ALBListenerCertificates"]
+
+Outputs:
+  JenkinsALBDNS:
+    Description: Jenkins ALB DNS record
+    Value: !GetAtt JenkinsALB.DNSName
