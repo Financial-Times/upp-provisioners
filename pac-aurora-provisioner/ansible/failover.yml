@@ -15,6 +15,12 @@
     debug:
       msg: "Failing over cluster_name: '{{ cluster_name }}' from region '{{ failover_from_region }}' to region '{{ failover_to_region }}'"
 
+  - include: tasks/update_cname.yml
+    vars:
+      dns_cname: "{{ cluster }}-rds-pac"
+      previous_hostname: "{{ cluster }}-{{ regions[failover_from_region].shortname }}-rds-pac.ft.com"
+      updated_hostname: "{{ cluster }}-{{ regions[failover_to_region].shortname }}-rds-pac.ft.com"
+
   - name: Promote DB Cluster
     script: tasks/promote_read_replica.sh
     environment:
@@ -35,17 +41,3 @@
       region: "{{ failover_from_region }}"
       state: "absent"
     ignore_errors: yes
-
-  - include: tasks/update_cname.yml
-    when: failover_to_region == "us-east-1"
-    vars:
-      dns_cname: "{{ cluster }}-rds-pac"
-      previous_hostname: "{{ cluster }}-eu-rds-pac.ft.com"
-      updated_hostname: "{{ cluster }}-us-rds-pac.ft.com"
-
-  - include: tasks/update_cname.yml
-    when: failover_to_region == "eu-west-1"
-    vars:
-      dns_cname: "{{ cluster }}-rds-pac"
-      previous_hostname: "{{ cluster }}-us-rds-pac.ft.com"
-      updated_hostname: "{{ cluster }}-eu-rds-pac.ft.com"
