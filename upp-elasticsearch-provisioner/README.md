@@ -109,7 +109,7 @@ aws s3 ls --summarize --human-readable --recursive s3://upp-concepts-source-clus
 - Sync the S3 bucket to your EC2 instance - make sure you do this in an empty directory:
 
 ```
-aws s3 sync . s3://upp-concepts-source-cluster-backup/ --profile content-prod
+aws s3 sync s3://upp-concepts-source-cluster-backup/ . --profile content-prod
 ```
 
 - Sync the data on your EC2 instance to the target S3 bucket:
