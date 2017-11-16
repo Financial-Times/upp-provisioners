@@ -1,6 +1,6 @@
 # Jenkins provisioner
 
-[![CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/upp-provisioners)
+[![CircleCI](https://circleci.com/gh/Financial-Times/content-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/content-provisioners)
 
 The Jenkins provisioning process will:
 
@@ -10,7 +10,7 @@ The Jenkins provisioning process will:
 The new instance will be tagged with `scheduler:ebs-snapshot`, which will automatically take nightly EBS snapshots of the instance volume. See [here](http://docs.aws.amazon.com/solutions/latest/ebs-snapshot-scheduler/overview.html) for more details.
 
 Note that the provisioner will not automatically install Jenkins or deploy any config.
-Our current plan is to manually restore the previous EBS snapshot from an existing Jenkins - see [here](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-jenkins-provisioner#restoring-an-ebs-snapshot) for more details.
+Our current plan is to manually restore the previous EBS snapshot from an existing Jenkins - see [here](https://github.com/Financial-Times/content-provisioners/tree/master/content-jenkins-provisioner#restoring-an-ebs-snapshot) for more details.
 
 The decommissioning process will:
 
@@ -21,21 +21,21 @@ The decommissioning process will:
 ## Building the Docker image
 The Jenkins provisioner can be built locally as a Docker image:
 
-`docker build -t coco/upp-jenkins-provisioner:local .`
+`docker build -t coco/content-jenkins-provisioner:local .`
 
-Automated CircleCI builds are also triggered on branch commits and merges to master, located [here](https://circleci.com/gh/Financial-Times/upp-provisioners).
+Automated CircleCI builds are also triggered on branch commits and merges to master, located [here](https://circleci.com/gh/Financial-Times/content-provisioners).
 
 ## Provisioning a Jenkins instance
 - Grab, customize and export the environment variables from the **UPP Jenkins - Provisioning & Decommissioning** LastPass note.
 - Run the following Docker commands:
 ```
-docker pull coco/upp-jenkins-provisioner:latest
+docker pull coco/content-jenkins-provisioner:latest
 docker run \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "INSTANCE_NAME=$INSTANCE_NAME" \
     -e "VAULT_PASS=$VAULT_PASS" \
-    coco/upp-jenkins-provisioner:latest /bin/bash provision.sh
+    coco/content-jenkins-provisioner:latest /bin/bash provision.sh
 ```
 
 - You can check the progress of the CF stack creation in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
@@ -44,12 +44,12 @@ docker run \
 - Grab, customize and export the environment variables from the **UPP Jenkins - Provisioning & Decommissioning** LastPass note.
 - Run the following Docker commands:
 ```
-docker pull coco/upp-jenkins-provisioner:latest
+docker pull coco/content-jenkins-provisioner:latest
 docker run \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     -e "INSTANCE_NAME=$INSTANCE_NAME" \
     -e "VAULT_PASS=$VAULT_PASS" \
-    coco/upp-jenkins-provisioner:latest /bin/bash decom.sh
+    coco/content-jenkins-provisioner:latest /bin/bash decom.sh
 ```
 
 - You can check the progress of the CF stack deletion in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
