@@ -28,6 +28,7 @@
       AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
       AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
     register: promote_output
+    ignore_errors: yes
 
   - name: Log promote output
     debug:
