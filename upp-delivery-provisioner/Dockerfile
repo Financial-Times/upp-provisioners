@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.5
 
 RUN echo "[localhost]" > ~/.ansible_hosts \
  && echo '127.0.0.1 ansible_python_interpreter=/.venv/bin/python' >> ~/.ansible_hosts \
