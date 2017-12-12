@@ -15,6 +15,7 @@
     subnets_id_1: "{% if region == 'us-east-1' %}subnet-5a978b02{% else %}subnet-b59b54c3{% endif %}"
     subnets_id_2: "{% if region == 'us-east-1' %}subnet-b9c608f0{% else %}subnet-1cba5f44{% endif %}"
     subnets_id_3: "{% if region == 'us-east-1' %}subnet-b5b5aa9f{% else %}subnet-fcfa5e98{% endif %}"
+    elb_listener_arn: "{% if region == 'us-east-1' %}arn:aws:acm:us-east-1:027104099916:certificate/84f2639f-aa9d-41aa-92ec-c13075ed258b{% else %}arn:aws:acm:eu-west-1:027104099916:certificate/ef3f86ce-cf66-41df-810d-2a9ad2b654bb{% endif %}"
   vars_files:
     - keys.yaml
 
@@ -120,7 +121,7 @@
             load_balancer_port: 443
             instance_protocol: http
             instance_port: 80
-            ssl_certificate_id: "arn:aws:iam::027104099916:server-certificate/wildcard.ft.com"
+            ssl_certificate_id: "{{ elb_listener_arn }}"
         purge_listeners: True
         health_check:
           ping_protocol: tcp # options are http, https, ssl, tcp
