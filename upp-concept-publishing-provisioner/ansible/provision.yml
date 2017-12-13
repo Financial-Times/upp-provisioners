@@ -40,6 +40,7 @@
         template: "/cloudformation/sns-sqs-cf-multi-region.yml"
         template_parameters:
           EnvironmentTag: "{{environment_tag}}"
+          EnvironmentType: "{{environment_type}}"
           Region: "{{aws_secondary_region}}"
           SNSTopic1ARN: "{{SNSTopic1ARN}}"
         tags:
