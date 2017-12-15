@@ -72,6 +72,12 @@ Parameters:
         Description: The DBSubnetGroup name to use
         Type: String
 
+    DBBackupRetentionPeriod:
+        Description: Backup retention period in days to use
+        Type: Number
+        MinValue: 1
+        MaxValue: 35
+
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
@@ -124,6 +130,7 @@ Resources:
             MasterUserPassword: !Ref DBInstanceMasterPassword
             VpcSecurityGroupIds: !Ref DBSecurityGroups
             DBClusterParameterGroupName: !Ref DBClusterParameterGroup
+            BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
             Tags:
                 - Key: environment
                   Value: !Ref TagEnvironment

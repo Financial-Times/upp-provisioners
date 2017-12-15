@@ -72,6 +72,12 @@ Parameters:
         Description: The DBSubnetGroup name to use
         Type: String
 
+    DBBackupRetentionPeriod:
+        Description: Backup retention period in days to use
+        Type: Number
+        MinValue: 1
+        MaxValue: 35
+
     ReplicationSourceIdentifier:
         Description: The ARN of the master source, from which this database will replicate.
         Type: String
@@ -126,6 +132,7 @@ Resources:
             ReplicationSourceIdentifier: !Ref ReplicationSourceIdentifier
             VpcSecurityGroupIds: !Ref DBSecurityGroups
             DBClusterParameterGroupName: !Ref DBClusterParameterGroup
+            BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
             Tags:
                 - Key: environment
                   Value: !Ref TagEnvironment

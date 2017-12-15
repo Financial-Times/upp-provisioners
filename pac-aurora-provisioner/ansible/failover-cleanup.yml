@@ -90,6 +90,7 @@
         DBInstanceMasterPassword: "{{ db_master_password }}"
         DBInstanceDBName: pac
         ReplicationSourceIdentifier: "{{ master_db_arn.stdout }}"
+        DBBackupRetentionPeriod: "35"
         TagEnvironment: "{{ environment_type }}"
     register: aurora_replica_stack
 
