@@ -78,6 +78,7 @@
         DBInstanceMasterUsername: AdminUser
         DBInstanceMasterPassword: "{{ db_master_password }}"
         DBInstanceDBName: pac
+        DBBackupRetentionPeriod: "35"
         TagEnvironment: "{{ environment_type }}"
     register: aurora_eu_stack
 
@@ -156,6 +157,7 @@
         DBInstanceMasterPassword: "{{ db_master_password }}"
         DBInstanceDBName: pac
         ReplicationSourceIdentifier: "{{ aurora_eu_arn.stdout }}"
+        DBBackupRetentionPeriod: "35"
         TagEnvironment: "{{ environment_type }}"
     register: aurora_us_stack
 
