@@ -1,9 +1,12 @@
-Description: "Creates SNS Topic and SQS Queues in secondary region for publishing of concepts in UPP."
+Description: "Creates SQS Queue and kinesis stream in secondary region for publishing of concepts in UPP."
 
 Parameters:
   EnvironmentTag:
     Type: String
     Default: "pre-prod"
+  EnvironmentType:
+    Type: String
+    Default: "t"
   Region:
     Type: String
     Default: "Secondary region"
@@ -53,3 +56,20 @@ Resources:
             Condition:
               ArnEquals:
                 "aws:SourceArn": !Ref SNSTopic1ARN
+
+    # Create the concept notification stream
+  ConceptNotificationStream:
+    Type: "AWS::Kinesis::Stream"
+    Properties:
+      Name: !Join [ "", ["upp-secondary-concept-notification-stream-", !Ref EnvironmentTag]]
+      RetentionPeriodHours: 24
+      ShardCount: 1
+      Tags:
+        - Key: "systemCode"
+          Value: "upp"
+        - Key: "teamDL"
+          Value: "universal.publishing@ft.com"
+        - Key: "environment"
+          Value: !Ref EnvironmentType
+        - Key: "description"
+          Value: !Join ["", ["Secondary Concept Notification Stream - ", !Ref EnvironmentTag]]
