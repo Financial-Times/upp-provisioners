@@ -41,21 +41,22 @@ Resources:
         Id: ConceptNotificationQueuePolicy
         Statement:
           -
+            Sid: "subscribe-to-primary-sns-queue"
+            Effect: "Allow"
+            Principal:
+              AWS: "*"
+            Action: "SQS:SendMessage"
+            Resource: !GetAtt SQSQueue.Arn
+            Condition:
+              ArnEquals:
+                "aws:SourceArn": !Ref SNSTopic1ARN
+          -
             Sid: "communicate-with-sqs"
             Effect: "Allow"
             Principal:
               AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
             Action: "SQS:*"
             Resource: !GetAtt SQSQueue.Arn
-          -
-            Sid: "subscribe-to-primary-sns-queue"
-            Effect: "Allow"
-            Principal:
-              AWS: "*"
-            Action: "SQS:SendMessage"
-            Condition:
-              ArnEquals:
-                "aws:SourceArn": !Ref SNSTopic1ARN
 
     # Create the concept notification stream
   ConceptNotificationStream:
