@@ -52,7 +52,7 @@ Resources:
       AdvancedOptions:
         rest.action.multi.allow_explicit_index: "true"
       Tags:
-        - Key: env
+        - Key: environment
           Value: !Ref EnvironmentType
         - Key: teamDL
           Value: "universal.publishing.platform@ft.com"
