@@ -79,6 +79,7 @@
         DBInstanceMasterPassword: "{{ db_master_password }}"
         DBInstanceDBName: pac
         DBBackupRetentionPeriod: "35"
+        SourceSnapshot: "{{ source_snapshot }}"
         TagEnvironment: "{{ environment_type }}"
     register: aurora_eu_stack
 
@@ -101,6 +102,7 @@
       hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
 
   - include: tasks/create_pac_user.yml
+    when: source_snapshot == ""
     vars:
       username: "pac"
       password: "{{ pac_db_user_password }}"

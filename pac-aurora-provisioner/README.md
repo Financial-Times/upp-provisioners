@@ -18,7 +18,7 @@ ansible-vault edit ./ansible/vaults/vault_${ENVIRONMENT_TYPE}.yml
 
 You will be prompted for a `Vault Password`, this can be found in the **pac-aurora-provisioner** LastPass note.
 
-## Provisioning a cluster
+## Provisioning a cluster with an empty database
 
 The provisioning process will:
 
@@ -46,6 +46,39 @@ docker run \
 ```
 
 Note that the process may take approximately an hour to provision fully.
+
+## Provisioning a cluster from an existing database snapshot
+
+The provisioning process will reflect the same for provisioning a cluster with an empty database
+except that the Aurora cluster in eu-west-1 will be created from an existing DB snapshot in AWS.
+
+To provision a new PAC Aurora database cluster:
+
+- Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
+- Set the `CLUSTER` environment variable, this will be appended to `pac-aurora` for all provisioned infrastructure. Note: The cluster name should be region agnostic, for example, `staging` will provision `pac-aurora-staging-eu` and `pac-aurora-staging-us` database instances.
+- Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster will be, i.e. `t` for staging, `p` for production and `d` for anything else.
+- Set the `SOURCE_SNAPSHOT` environment variable to specify from which DB snapshot you want to 
+provision the cluster. The variable value is the ARN of the DB snapshot, which is available in 
+the AWS console. 
+- Run the following docker command
+
+```
+docker run \
+    -e "CLUSTER=$CLUSTER" \
+    -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "SOURCE_SNAPSHOT=$SOURCE_SNAPSHOT" \
+    pac-provisioner:local /bin/bash provision.sh
+```
+
+**NB:** 
+* The cluster can be provisioned only in the same AWS account where the source snapshot has been created.
+To use a DB snapshot from a different account you need to share the snapshot to the AWS account
+in which you want to provision the new Aurora cluster. Details on sharing DB snapshots are available 
+[here](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ShareSnapshot.html).     
+* `PAC_DB_USER_PASSWORD` variable is going to be ignored. 
+The password for the PAC DB user is the one used by the DB of which the snapshot has been made.
+* Note that the process may take approximately an hour and half to provision fully.
 
 ## Decommissioning a cluster
 
