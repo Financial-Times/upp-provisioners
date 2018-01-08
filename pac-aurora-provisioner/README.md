@@ -51,6 +51,8 @@ Note that the process may take approximately an hour to provision fully.
 
 The provisioning process will reflect the same for provisioning a cluster with an empty database
 except that the Aurora cluster in eu-west-1 will be created from an existing DB snapshot in AWS.
+This implies that the restored snapshot will be propagated to the replica Aurora cluster in us-east-1 
+region.   
 
 To provision a new PAC Aurora database cluster:
 
@@ -78,7 +80,8 @@ in which you want to provision the new Aurora cluster. Details on sharing DB sna
 [here](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ShareSnapshot.html).     
 * `PAC_DB_USER_PASSWORD` variable is going to be ignored. 
 The password for the PAC DB user is the one used by the DB of which the snapshot has been made.
-* Note that the process may take approximately an hour and half to provision fully.
+* Note that the process may take approximately an hour and half to provision fully. 
+This time have been measured on January 2018, based on a 1GB snapshot.
 
 ## Decommissioning a cluster
 
