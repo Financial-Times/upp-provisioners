@@ -12,14 +12,14 @@ The UPP Factset Provisioner can be built locally as a Docker image:
 
 The provisioning process will:
 
-* Creates an aurora cluster, db subnet group and cluster parameter group in eu-west-1 using the cloud formation template
+* Creates an aurora cluster, subnet group and cluster parameter group in eu-west-1 using the cloud formation template
 
 How to run:
 
 # Parameters
 
 * MASTER_PASSWORD: Master password of RDS instance; must be 10-25 alpha numeric characters
-* ENVIRONMENT_NAME: Used to distinguish between stacks, stack name will be upp-factset-data-{ENVIRONMENT_NAME}
+* ENVIRONMENT_NAME: Used to distinguish between stacks
 * ENVIRONMENT_TAG: Used for AWS resource tagging.
 * VAULT_PASS: Used to read ansible provisioning data, can be found in last pass under upp-factset-provisioner
 * AWS_ACCOUNT: Account in which to provision RDS; must be either content-test or content-prod
@@ -27,16 +27,18 @@ How to run:
 ```
 docker run   \
     -e "MASTER_PASSWORD=$MASTER_PASSWORD" \
-    -e "MASTER_USERNAME=$MASTER_USERNAME" \
     -e "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
-    -e "SYSTEM_CODE=$SYSTEM_CODE" \
     coco/upp-factset-provisioner:local /bin/bash provision.sh
 ```
 
 - Note that the creation of DB cluster will take up to 15 mins.
+
+## Manual Setup
+
+There are a few manual steps which need to be run after successful provisioning of a stack which can be found [here](https://docs.google.com/document/d/1GEu0HKSgdq38bPX7RqRyWSftHhwCoMe-iW8nErbqy7A/edit?usp=sharing)
 
 ## Decommissioning a cluster
 

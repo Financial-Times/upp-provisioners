@@ -1,0 +1,104 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template deploys an EC2 instance and installs Factset's Loader Application
+
+Metadata:
+    AWS::CloudFormation::Interface:
+        - Label: FT standard tagging
+          Parameters:
+             - TagEnvironment
+             - TagTeamDL
+             - TagSystemCode
+             - TagIpCode
+             - TagDescription
+
+Parameters:
+    LoaderSecurityGroup:
+        Description: Security group id
+        Type: String
+
+    DBSubnetIds:
+        Description: List of comma separated subnet IDs
+        Type: CommaDelimitedList
+
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+
+    EnvironmentTag:
+        Description: Tag detail for the Environment; d for team clusters, t for staging and p for production
+        Type: String
+        AllowedValues:
+            - 'd'
+            - 't'
+            - 'p'
+        Default: d
+
+    Ec2InstanceType:
+        Description: Size of ec2 Instance
+        Type: String
+        Default: m5.large
+
+    TagTeamDL:
+        Description: Tag of the TeamDL
+        Type: String
+        AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+        ConstraintDescription: There must be a valid email address for the TeamDL
+        Default: universal.publishing.platform@ft.com
+
+    TagSystemCode:
+        Description: The system code for the environment
+        Type: String
+        Default: upp
+
+    TagIpCode:
+        Description: The environment ipCode
+        Type: String
+        AllowedPattern: '[P][0-9]*'
+        Default: P196
+
+    TagDescription:
+        Description: Tag detail for the describing the instance
+        Type: String
+        Default: UPP Factset Aurora Store
+
+Resources:
+  FactsetLoader:
+    Type: AWS::EC2::Instance
+    Properties:
+      BlockDeviceMappings:
+        - DeviceName: "/dev/xvda"
+          Ebs:
+            VolumeType: "gp2"
+            VolumeSize: 250
+      IamInstanceProfile: "FT-EC2-Role"
+      ImageId: "ami-1a962263"
+      InstanceType: !Ref Ec2InstanceType
+      KeyName: "semantic"
+      SecurityGroupIds: [ !Ref LoaderSecurityGroup ]
+      SubnetId: !Select [0, !Ref DBSubnetIds ]
+      Tags:
+          - Key: Name
+            Value: !Join ["" , ["Upp Factset Loader ", !Ref EnvironmentName]]
+          - Key: environment
+            Value: !Ref EnvironmentTag
+          - Key: teamDL
+            Value: !Ref TagTeamDL
+          - Key: systemCode
+            Value: !Ref TagSystemCode
+          - Key: ipCode
+            Value: !Ref TagIpCode
+          - Key: description
+            Value: !Ref TagDescription
+          - Key: ec2Powercycle
+            Value: '{ "start": "00 4 * * *", "stop": "00 6 * * *" }'
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -x
+          cd /home/ec2-user
+          wget https://dev.mysql.com/get/Downloads/Connector-ODBC/5.3/mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
+          wget https://www.factset.com/download/datafeedloader/FDSLoader-Linux.zip
+          yum -y install mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
+          unzip FDSLoader-Linux.zip -d FactsetLoader
+          chown ec2-user:ec2-user -R FactsetLoader
+          rm FDSLoader-Linux.zip mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm

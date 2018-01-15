@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This template deploys a security group to be used by the rds-provisioner.yml
+Description: This template deploys a security group and a parameter group to be used by UPP Factset RDS Store
 
 Metadata:
     AWS::CloudFormation::Interface:
@@ -11,7 +11,6 @@ Metadata:
              - TagSystemCode
              - TagIpCode
              - TagDescription
-             - TagName
 
 Parameters:
     DBVPC:
@@ -30,6 +29,10 @@ Parameters:
             - 't'
             - 'p'
         Default: d
+
+    LoaderSecurityGroup:
+        Description: Factset Loader security group id
+        Type: String
 
     TagTeamDL:
         Description: Tag of the TeamDL
@@ -52,21 +55,18 @@ Parameters:
     TagDescription:
         Description: Tag detail for the describing the instance
         Type: String
-        Default: UPP Factset Aurora Store
-
-    TagName:
-        Description: Tag detail for the Name used in the console of the instance
-        Type: String
-        Default: UPP Factset store
+        Default: UPP Factset RDS Group
 
 Resources:
     FactsetSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupName: !Join ["" , [!Ref TagSystemCode, "-factset-security-group-", !Ref EnvironmentName]]
-        GroupDescription: !Join ["" , [!Ref TagSystemCode, "-factset-security-group-", !Ref EnvironmentName]]
+        GroupName: !Join ["" , ["upp-factset-rds-security-group-", !Ref EnvironmentName]]
+        GroupDescription: "Security group for UPP Factset RDS store"
         VpcId: !Ref DBVPC
         Tags:
+            - Key: Name
+              Value: !Join ["" , ["UPP Factset RDS Security Group ", !Ref EnvironmentName]]
             - Key: environment
               Value: !Ref EnvironmentTag
             - Key: teamDL
@@ -76,14 +76,17 @@ Resources:
             - Key: ipCode
               Value: !Ref TagIpCode
             - Key: description
-              Value: !Ref TagDescription
-            - Key: name
-              Value: !Sub ${TagName} - ${EnvironmentName}
+              Value: "Security group for UPP Factset RDS store"
         SecurityGroupIngress:
             # OSB + LDNWebPerf
             - IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
+              CidrIp: 82.136.1.214/32
+            # SSH
+            - IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
               CidrIp: 82.136.1.214/32
             # Park Royal
             - IpProtocol: tcp
@@ -105,8 +108,39 @@ Resources:
               FromPort: 3306
               ToPort: 3306
               CidrIp: 64.210.200.1/32
+            # Permit access to factset-loader
+            - IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              SourceSecurityGroupId: !Ref LoaderSecurityGroup
+
+    FactsetParameterGroup:
+      Type: AWS::RDS::DBParameterGroup
+      Properties:
+        Description: 'UPP Factset RDS Parameter Group'
+        Family: aurora5.6
+        Parameters:
+          innodb_large_prefix: 1
+          innodb_file_format: Barracuda
+          local_infile: 1
+        Tags:
+            - Key: Name
+              Value: !Join ["" , ["UPP Factset RDS Parameter Group ", !Ref EnvironmentName]]
+            - Key: environment
+              Value: !Ref EnvironmentTag
+            - Key: teamDL
+              Value: !Ref TagTeamDL
+            - Key: systemCode
+              Value: !Ref TagSystemCode
+            - Key: ipCode
+              Value: !Ref TagIpCode
+            - Key: description
+              Value: 'Parameter Group for Factset RDS Store'
 
 Outputs:
   FactsetSecurityGroupId:
     Description: Id of newly created security group
     Value: !Ref FactsetSecurityGroup
+  FactsetParameterGroupName:
+    Description: Name of the newly created parameter group
+    Value: !Ref FactsetParameterGroup
