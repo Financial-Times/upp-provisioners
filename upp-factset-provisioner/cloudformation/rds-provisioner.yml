@@ -11,7 +11,6 @@ Metadata:
              - TagSystemCode
              - TagIpCode
              - TagDescription
-             - TagName
 
 Parameters:
     DBSecurityGroup:
@@ -26,14 +25,8 @@ Parameters:
         Description: The instance type to use for the database
         Type: String
         AllowedValues:
-            - db.t2.small
-            - db.t2.medium
-            - db.r3.large
-            - db.r3.xlarge
-            - db.r3.2xlarge
-            - db.r3.4xlarge
-            - db.r3.8xlarge
-        Default: db.t2.small
+            - db.r4.large
+        Default: db.r4.large
 
     DBInstanceMasterUsername:
         Description: The master username for the database
@@ -51,6 +44,10 @@ Parameters:
         MaxLength: 25
         AllowedPattern: '[a-zA-Z0-9]*'
         ConstraintDescription: must contain only alphanumeric characters.
+
+    DBParameterGroup:
+        Description: Name of the parameter group to use
+        Type: String
 
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
@@ -88,18 +85,15 @@ Parameters:
         Type: String
         Default: UPP Factset Aurora Store
 
-    TagName:
-        Description: Tag detail for the Name used in the console of the instance
-        Type: String
-        Default: UPP Factset store
-
 Resources:
     DBSubnetGroup:
         Type: AWS::RDS::DBSubnetGroup
         Properties:
-            DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' subnet group']]
+            DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' Factset RDS Subnet Group']]
             SubnetIds: !Ref DBSubnetIds
             Tags:
+                - Key: Name
+                  Value: !Join ["" , ["UPP Factset RDS Subnet Group ", !Ref EnvironmentName]]
                 - Key: environment
                   Value: !Ref EnvironmentTag
                 - Key: teamDL
@@ -110,8 +104,6 @@ Resources:
                   Value: !Ref TagIpCode
                 - Key: description
                   Value: !Ref TagDescription
-                - Key: name
-                  Value: !Sub ${TagName} - ${EnvironmentName}
 
     DBCluster:
         Type: AWS::RDS::DBCluster
@@ -124,9 +116,10 @@ Resources:
             VpcSecurityGroupIds: [ !Ref DBSecurityGroup ]
             StorageEncrypted: true
             Tags:
+                - Key: Name
+                  Value: !Join ["" , ["UPP Factset RDS Cluster ", !Ref EnvironmentName]]
                 - Key: environment
                   Value: !Ref EnvironmentTag
-                - Key: teamDL
                 - Key: teamDL
                   Value: !Ref TagTeamDL
                 - Key: systemCode
@@ -135,8 +128,6 @@ Resources:
                   Value: !Ref TagIpCode
                 - Key: description
                   Value: !Ref TagDescription
-                - Key: name
-                  Value: !Sub ${TagName} - ${EnvironmentName}
 
     DBPrimaryInstance:
         Type: AWS::RDS::DBInstance
@@ -145,10 +136,33 @@ Resources:
             DBInstanceClass: !Ref DBInstanceType
             Engine: aurora
             DBSubnetGroupName: !Ref DBSubnetGroup
-            DBInstanceIdentifier: !Join ["" , [!Ref TagSystemCode, "-factset-rds-", !Ref EnvironmentName]]
+            DBInstanceIdentifier: !Join ["" , ["upp-factset-rds-", !Ref EnvironmentName]]
             PubliclyAccessible: true
             StorageEncrypted: true
+            DBParameterGroupName: !Ref DBParameterGroup
             Tags:
+                - Key: Name
+                  Value: !Join ["" , ["UPP Factset RDS Instance ", !Ref EnvironmentName]]
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
+
+    DBClusterParameterGroup:
+        Type: AWS::RDS::DBClusterParameterGroup
+        Properties:
+            Description: !Join ['', [!Ref EnvironmentName, ' cluster parameter group']]
+            Family: aurora5.6
+            Parameters:
+                binlog_format: 'MIXED'
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , ["UPP Factset RDS Cluster Parameter Group ", !Ref EnvironmentName]]
                 - Key: environment
                   Value: !Ref EnvironmentTag
                 - Key: teamDL
@@ -159,13 +173,3 @@ Resources:
                   Value: !Ref TagIpCode
                 - Key: description
                   Value: !Ref TagDescription
-                - Key: name
-                  Value: !Sub ${TagName} - ${EnvironmentName}
-
-    DBClusterParameterGroup:
-        Type: AWS::RDS::DBClusterParameterGroup
-        Properties:
-            Description: !Join ['', [!Ref EnvironmentName, ' cluster parameter group']]
-            Family: aurora5.6
-            Parameters:
-                binlog_format: 'MIXED'
