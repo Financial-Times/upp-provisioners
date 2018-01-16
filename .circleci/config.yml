@@ -78,3 +78,4 @@ jobs:
   upp-neo4j-provisioner: *build-config
   upp-pub-provisioner: *build-config
   pac-aurora-provisioner: *build-config
+  upp-factset-provisioner: *build-config
