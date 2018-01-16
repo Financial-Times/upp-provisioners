@@ -74,7 +74,7 @@ Resources:
       IamInstanceProfile: "FT-EC2-Role"
       ImageId: "ami-1a962263"
       InstanceType: !Ref Ec2InstanceType
-      KeyName: "semantic"
+      KeyName: !Join ["" , ["factset-", !Ref EnvironmentName]]
       SecurityGroupIds: [ !Ref LoaderSecurityGroup ]
       SubnetId: !Select [0, !Ref DBSubnetIds ]
       Tags:
