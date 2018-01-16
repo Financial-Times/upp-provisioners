@@ -35,6 +35,6 @@
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      stack_name: "upp-factset-loader-secrurity-group-{{ environment_name }}"
+      stack_name: "upp-factset-loader-security-group-{{ environment_name }}"
       region: eu-west-1
       state: "absent"
