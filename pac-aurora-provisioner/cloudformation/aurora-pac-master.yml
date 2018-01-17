@@ -125,38 +125,10 @@ Parameters:
 
 Conditions:
     UseDBSnapshot: !Not [!Equals [!Ref SourceSnapshot, ""]]
-    DoNotUseDBSnapshot: !Not [Condition: UseDBSnapshot]
 
 Resources:
     DBCluster:
         Type: AWS::RDS::DBCluster
-        Condition: DoNotUseDBSnapshot
-        Properties:
-            Engine: aurora
-            DatabaseName: !Ref DBInstanceDBName
-            DBSubnetGroupName: !Ref DBSubnetGroup
-            MasterUsername: !Ref DBInstanceMasterUsername
-            MasterUserPassword: !Ref DBInstanceMasterPassword
-            VpcSecurityGroupIds: !Ref DBSecurityGroups
-            DBClusterParameterGroupName: !Ref DBClusterParameterGroup
-            BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
-            Tags:
-                - Key: environment
-                  Value: !Ref TagEnvironment
-                - Key: teamDL
-                  Value: !Ref TagTeamDL
-                - Key: systemCode
-                  Value: !Ref TagSystemCode
-                - Key: ipCode
-                  Value: !Ref TagIpCode
-                - Key: description
-                  Value: !Ref TagDescription
-                - Key: name
-                  Value: !Sub ${TagName} - ${EnvironmentName}
-
-    DBClusterFromSnapshot:
-        Type: AWS::RDS::DBCluster
-        Condition: UseDBSnapshot
         Properties:
             Engine: aurora
             DatabaseName: !Ref DBInstanceDBName
@@ -164,7 +136,9 @@ Resources:
             VpcSecurityGroupIds: !Ref DBSecurityGroups
             DBClusterParameterGroupName: !Ref DBClusterParameterGroup
             BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
-            SnapshotIdentifier: !Ref SourceSnapshot
+            MasterUsername: !If [UseDBSnapshot, !Ref "AWS::NoValue", !Ref DBInstanceMasterUsername]
+            MasterUserPassword: !If [UseDBSnapshot, !Ref "AWS::NoValue", !Ref DBInstanceMasterPassword]
+            SnapshotIdentifier: !If [UseDBSnapshot, !Ref SourceSnapshot, !Ref "AWS::NoValue"]
             Tags:
                 - Key: environment
                   Value: !Ref TagEnvironment
@@ -182,8 +156,7 @@ Resources:
     DBPrimaryInstance:
         Type: AWS::RDS::DBInstance
         Properties:
-            DBClusterIdentifier:
-              !If [UseDBSnapshot, !Ref DBClusterFromSnapshot, !Ref DBCluster]
+            DBClusterIdentifier: !Ref DBCluster
             DBInstanceClass: !Ref DBInstanceType
             Engine: aurora
             DBParameterGroupName: !Ref DBParameterGroup
@@ -207,8 +180,7 @@ Resources:
     DBReplicaInstance:
         Type: AWS::RDS::DBInstance
         Properties:
-            DBClusterIdentifier:
-              !If [UseDBSnapshot, !Ref DBClusterFromSnapshot, !Ref DBCluster]
+            DBClusterIdentifier: !Ref DBCluster
             DBInstanceClass: !Ref DBInstanceType
             Engine: aurora
             DBParameterGroupName: !Ref DBParameterGroup
@@ -232,18 +204,15 @@ Resources:
 Outputs:
     DBCluster:
         Description: A reference to the DBCluster
-        Value:
-          !If [UseDBSnapshot, !Ref DBClusterFromSnapshot, !Ref DBCluster]
+        Value: !Ref DBCluster
 
     DBHostname:
         Description: A reference to the DBCluster hostname
-        Value:
-          !If [UseDBSnapshot, !GetAtt [DBClusterFromSnapshot, Endpoint.Address], !GetAtt [DBCluster, Endpoint.Address]]
+        Value: !GetAtt [DBCluster, Endpoint.Address]
 
     DBPort:
         Description: A reference to the DBCluster port
-        Value:
-          !If [UseDBSnapshot, !GetAtt [DBClusterFromSnapshot, Endpoint.Port], !GetAtt [DBCluster, Endpoint.Port]]
+        Value: !GetAtt [DBCluster, Endpoint.Port]
 
     DBInstanceName:
         Description: A reference to the DBPrimaryInstance Name
