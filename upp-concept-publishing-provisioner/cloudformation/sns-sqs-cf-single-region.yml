@@ -57,7 +57,7 @@ Resources:
       QueueName: !Join ["", ["upp-concept-publish-notifications-", !Ref EnvironmentTag, "-1"]]
       ReceiveMessageWaitTimeSeconds: 20
       RedrivePolicy:
-        deadLetterTargetArn: !GetAtt SNSDeadLetterConceptQueue.Arn
+        deadLetterTargetArn: !GetAtt SQSDeadLetterConceptQueue.Arn
         maxReceiveCount: 5
 
   SQSConceptQueuePolicy:
@@ -192,20 +192,12 @@ Resources:
         PredefinedMetricSpecification:
           PredefinedMetricType: DynamoDBWriteCapacityUtilization
 
-# SQS queue, policy and dead letter queue for concept carousel
-  ConceptCarouselDeadLetterQueue:
-    Type: "AWS::SQS::Queue"
-    Properties:
-      QueueName: !Join ["", ["upp-concept-carousel-dead-letter-", !Ref EnvironmentTag]]
-
+# SQS queue and policy for concept carousel
   ConceptCarouselQueue:
     Type: "AWS::SQS::Queue"
     Properties:
       QueueName: !Join ["", ["upp-concept-carousel-queue-", !Ref EnvironmentTag]]
       ReceiveMessageWaitTimeSeconds: 20
-      RedrivePolicy:
-        deadLetterTargetArn: !GetAtt ConceptCarouselDeadLetterQueue.Arn
-        maxReceiveCount: 5
 
   ConceptCarouselQueuePolicy:
     Type: "AWS::SQS::QueuePolicy"
