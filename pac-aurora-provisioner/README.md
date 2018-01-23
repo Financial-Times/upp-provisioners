@@ -6,6 +6,13 @@ The PAC provisioner can be built locally as a Docker image:
 
 `docker build -t pac-provisioner:local .`
 
+## Using latest stable verion of the PAC Aurora provisioning scripts
+
+Everytime a new branch is merged in master, a new docker image with the latest stable version of the provisioning scripts 
+is pushed in Docker Hub as a Docker image. To use the latest Docker image run:
+
+`docker pull coco/pac-aurora-provisioner:latest`
+
 ## IMPORTANT: Check Configuration
 
 Before proceeding with provisioning or decommissioning an Aurora cluster, please double check the Ansible vault configuration. To do that, first [install Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html) locally, then run the following:
