@@ -32,7 +32,7 @@ Resources:
             Action: sns:Publish
             Resource: !Ref SNSTopic
             Condition:
-              ArnLike: 
+              ArnLike:
                 "aws:SourceArn": !Join ["" , ["arn:aws:s3:::", "upp-concept-normalised-store-", !Ref EnvironmentTag]]
           - Sid: allow-content-container-apps-publish
             Effect: Allow
@@ -42,29 +42,29 @@ Resources:
               - SNS:Publish
               - SNS:GetTopicAttributes
             Resource: !Ref SNSTopic
-      Topics: 
+      Topics:
         - !Ref SNSTopic
 
-  # Create the first SQS queue - this always happens.
-  SNSDeadLetterQueue:
+  # Create a concept SQS queue - this always happens.
+  SQSDeadLetterConceptQueue:
     Type: "AWS::SQS::Queue"
     Properties:
       QueueName: !Join ["", ["upp-concept-publish-dead-letter-", !Ref EnvironmentTag, "-1"]]
 
-  SQSQueue:
+  SQSConceptQueue:
     Type: "AWS::SQS::Queue"
     Properties:
       QueueName: !Join ["", ["upp-concept-publish-notifications-", !Ref EnvironmentTag, "-1"]]
       ReceiveMessageWaitTimeSeconds: 20
       RedrivePolicy:
-        deadLetterTargetArn: !GetAtt SNSDeadLetterQueue.Arn
+        deadLetterTargetArn: !GetAtt SQSDeadLetterConceptQueue.Arn
         maxReceiveCount: 5
 
-  SQSQueuePolicy:
+  SQSConceptQueuePolicy:
     Type: "AWS::SQS::QueuePolicy"
     Properties:
       Queues:
-        - !Ref SQSQueue
+        - !Ref SQSConceptQueue
       PolicyDocument:
         Version: "2012-10-17"
         Id: ConceptNotificationQueuePolicy
@@ -75,7 +75,7 @@ Resources:
             Principal:
               AWS: "*"
             Action: "SQS:SendMessage"
-            Resource: !GetAtt SQSQueue.Arn
+            Resource: !GetAtt SQSConceptQueue.Arn
             Condition:
               ArnEquals:
                 "aws:SourceArn": !Ref SNSTopic
@@ -85,12 +85,13 @@ Resources:
             Principal:
               AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
             Action: "SQS:*"
-            Resource: !GetAtt SQSQueue.Arn
+            Resource: !GetAtt SQSConceptQueue.Arn
 
+# Subscribe the concept queue to the topic
   SQSSubscription:
     Type: "AWS::SNS::Subscription"
-    Properties: 
-      Endpoint: !GetAtt SQSQueue.Arn
+    Properties:
+      Endpoint: !GetAtt SQSConceptQueue.Arn
       Protocol: sqs
       TopicArn: !Ref SNSTopic
 
@@ -107,10 +108,10 @@ Resources:
     # The topic policy has to be created before the S3 bucket
     DependsOn: "SNSTopicPolicy"
 
-  # Create the concordance store table. 
+  # Create the concordance store table.
   ConcordanceStoreDynamoDB:
     Type: "AWS::DynamoDB::Table"
-    Properties: 
+    Properties:
       AttributeDefinitions:
       - AttributeName: "conceptId"
         AttributeType: "S"
@@ -190,6 +191,29 @@ Resources:
         ScaleOutCooldown: 60
         PredefinedMetricSpecification:
           PredefinedMetricType: DynamoDBWriteCapacityUtilization
+
+# SQS queue and policy for concept carousel
+  ConceptCarouselQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: !Join ["", ["upp-concept-carousel-queue-", !Ref EnvironmentTag]]
+      ReceiveMessageWaitTimeSeconds: 20
+
+  ConceptCarouselQueuePolicy:
+    Type: "AWS::SQS::QueuePolicy"
+    Properties:
+      Queues:
+        - !Ref ConceptCarouselQueue
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: ConceptCarouselQueuePolicy
+        Statement:
+          - Sid: "communicate-with-carousel-queue"
+            Effect: "Allow"
+            Principal:
+              AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
+            Action: "SQS:*"
+            Resource: !GetAtt ConceptCarouselQueue.Arn
 
 Outputs:
   SNSTopic1ARN:
