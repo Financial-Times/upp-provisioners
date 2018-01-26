@@ -11,4 +11,4 @@ aws_default_region=${AWS_DEFAULT_REGION} \
 is_multi_region=${IS_MULTI_REGION} \
 aws_secondary_region=${AWS_SECONDARY_REGION} \
 aws_account=${AWS_ACCOUNT} \
-delete_concept_bucket=${DELETE_CONCEPT_BUCKET}"
+decom_dbs=${DECOM_DBS}"

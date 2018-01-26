@@ -4,42 +4,41 @@
     - vault_{{ aws_account }}.yml
 
   tasks:
-    - name: Delete bucket and its contents
-      when: "{{ delete_concept_bucket }} == true"
-      s3:
-        aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
-        region: "{{aws_default_region}}"
-        bucket: "upp-concept-normalised-store-{{environment_tag}}"
-        validate_certs: no
-        mode: delete
-      register: delete_s3_bucket_output
-
-    - debug:
-        msg: "{{delete_s3_bucket_output}}"
-
-
-    - name: Delete Concept Publishing cluster
+    - name: Delete Database Stack
+      when: "{{decom_dbs|lower}} == true"
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
         region: "{{aws_default_region}}"
-        stack_name: "upp-concept-publishing-{{environment_tag}}"
+        stack_name: "upp-concept-publishing-databases-{{environment_tag}}"
         state: "absent"
-      register: concept_pub_stack_output
+      register: concept_pub_db_stack_output
 
     - debug:
-        msg: "{{concept_pub_stack_output}}"
+        msg: "{{concept_pub_db_stack_output}}"
 
-    - name: Delete Secondary Concept Publishing stack
+
+    - name: Delete Primary Queue Stack
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        region: "{{aws_default_region}}"
+        stack_name: "upp-concept-publishing-primary-{{environment_tag}}"
+        state: "absent"
+      register: concept_pub_p_stack_output
+
+    - debug:
+        msg: "{{concept_pub_p_stack_output}}"
+
+    - name: Delete Secondary Queue stack
       when: "{{is_multi_region|lower}} == true"
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
         region: "{{aws_secondary_region}}"
-        stack_name: "upp-concept-publishing-{{environment_tag}}"
+        stack_name: "upp-concept-publishing-secondary-{{environment_tag}}"
         state: "absent"
-      register: concept_pub_secondary_stack_output
+      register: concept_pub_s_stack_output
 
     - debug:
-        msg: "{{concept_pub_secondary_stack_output}}"
+        msg: "{{concept_pub_s_stack_output}}"

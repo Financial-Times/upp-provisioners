@@ -1,4 +1,4 @@
-Description: "Creates S3 Bucket, SNS Topic and SQS Queues for publishing concepts in UPP."
+Description: "Creates SNS Topic and SQS Queues for publishing concepts in UPP."
 
 Parameters:
   EnvironmentTag:
@@ -95,34 +95,6 @@ Resources:
       Protocol: sqs
       TopicArn: !Ref SNSTopic
 
-  # Create the S3 bucket with the notifications.
-  S3ConceptPublish:
-    Type: "AWS::S3::Bucket"
-    Properties:
-      BucketName: !Join [ "", ["upp-concept-normalised-store-", !Ref EnvironmentTag]]
-      AccessControl: AuthenticatedRead
-      NotificationConfiguration:
-        TopicConfigurations:
-          - Event: "s3:ObjectCreated:*"
-            Topic: !Ref SNSTopic
-    # The topic policy has to be created before the S3 bucket
-    DependsOn: "SNSTopicPolicy"
-
-  # Create the concordance store table.
-  ConcordanceStoreDynamoDB:
-    Type: "AWS::DynamoDB::Table"
-    Properties:
-      AttributeDefinitions:
-      - AttributeName: "conceptId"
-        AttributeType: "S"
-      KeySchema:
-      - AttributeName: "conceptId"
-        KeyType: "HASH"
-      ProvisionedThroughput:
-        ReadCapacityUnits: "5"
-        WriteCapacityUnits: "5"
-      TableName: !Join [ "", ["upp-concordance-store-", !Ref EnvironmentTag]]
-
   # Create the concept notification stream
   ConceptNotificationStream:
     Type: "AWS::Kinesis::Stream"
@@ -139,58 +111,6 @@ Resources:
           Value: !Ref EnvironmentType
         - Key: "description"
           Value: !Join ["", ["Concept Notification Stream - ", !Ref EnvironmentTag]]
-
-  # DynamoDB autoscaling for read throughput
-  ReadCapacityScalableTarget:
-    Type: "AWS::ApplicationAutoScaling::ScalableTarget"
-    Properties:
-      MaxCapacity: 300
-      MinCapacity: 5
-      ResourceId: !Join
-        - /
-        - - table
-          - !Ref ConcordanceStoreDynamoDB
-      RoleARN: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":role/service-role/DynamoDBAutoscaleRole"]]
-      ScalableDimension: dynamodb:table:ReadCapacityUnits
-      ServiceNamespace: dynamodb
-  ReadScalingPolicy:
-    Type: "AWS::ApplicationAutoScaling::ScalingPolicy"
-    Properties:
-      PolicyName: ReadAutoScalingPolicy
-      PolicyType: TargetTrackingScaling
-      ScalingTargetId: !Ref ReadCapacityScalableTarget
-      TargetTrackingScalingPolicyConfiguration:
-        TargetValue: 80.0
-        ScaleInCooldown: 60
-        ScaleOutCooldown: 60
-        PredefinedMetricSpecification:
-          PredefinedMetricType: DynamoDBReadCapacityUtilization
-
-  # DynamoDB autoscaling for write throughput
-  WriteCapacityScalableTarget:
-    Type: "AWS::ApplicationAutoScaling::ScalableTarget"
-    Properties:
-      MaxCapacity: 300
-      MinCapacity: 5
-      ResourceId: !Join
-        - /
-        - - table
-          - !Ref ConcordanceStoreDynamoDB
-      RoleARN: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":role/service-role/DynamoDBAutoscaleRole"]]
-      ScalableDimension: dynamodb:table:WriteCapacityUnits
-      ServiceNamespace: dynamodb
-  WriteScalingPolicy:
-    Type: "AWS::ApplicationAutoScaling::ScalingPolicy"
-    Properties:
-      PolicyName: WriteAutoScalingPolicy
-      PolicyType: TargetTrackingScaling
-      ScalingTargetId: !Ref WriteCapacityScalableTarget
-      TargetTrackingScalingPolicyConfiguration:
-        TargetValue: 80.0
-        ScaleInCooldown: 60
-        ScaleOutCooldown: 60
-        PredefinedMetricSpecification:
-          PredefinedMetricType: DynamoDBWriteCapacityUtilization
 
 # SQS queue and policy for concept carousel
   ConceptCarouselQueue:

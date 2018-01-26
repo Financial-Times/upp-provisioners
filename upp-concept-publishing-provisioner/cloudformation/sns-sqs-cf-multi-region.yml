@@ -15,7 +15,6 @@ Parameters:
     Default: "ARN of the primary SNS topic"
 
 Resources:
-
   # Create another SQS queue if multi-region is set to true.
   SNSDeadLetterQueue:
     Type: "AWS::SQS::Queue"
