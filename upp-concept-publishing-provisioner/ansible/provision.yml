@@ -4,11 +4,11 @@
     - vault_{{ aws_account }}.yml
 
   tasks:
-    - name: Create Primary Concept Publishing stack
+    - name: Create Primary Queues Concept Publishing Stack
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
-        stack_name: "upp-concept-publishing-{{environment_tag}}"
+        stack_name: "upp-concept-publishing-primary-{{environment_tag}}"
         state: "present"
         region: "{{aws_default_region}}"
         template: "/cloudformation/sns-sqs-cf-single-region.yml"
@@ -19,7 +19,7 @@
           environment: "{{environment_type}}"
           systemCode: "upp"
           teamDL: "universal.publishing.platform@ft.com"
-          description: "Concept Publishing Cloudformation Stack - {{environment_tag}}"
+          description: "Concept Publishing Primary Queues Stack - {{environment_tag}}"
       register: concept_pub_stack_output_1
 
     - debug:
@@ -29,12 +29,30 @@
       set_fact:
         SNSTopic1ARN: "{{concept_pub_stack_output_1.stack_outputs.SNSTopic1ARN}}"
 
-    - name: Create Secondary Concept Publishing stack
+    - name: Create Databases for Concept Publishing Stack
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        stack_name: "upp-concept-publishing-databases-{{environment_tag}}"
+        state: "present"
+        region: "{{aws_default_region}}"
+        template: "/cloudformation/databases.yml"
+        template_parameters:
+          EnvironmentTag: "{{environment_tag}}"
+          EnvironmentType: "{{environment_type}}"
+          SNSTopic1ARN: "{{SNSTopic1ARN}}"
+        tags:
+          environment: "{{environment_type}}"
+          systemCode: "upp"
+          teamDL: "universal.publishing.platform@ft.com"
+          description: "Concept Publishing Database Stack - {{environment_tag}}"
+
+    - name: Create Secondary Queues Concept Publishing Stack
       when: "{{is_multi_region|lower}} == true"
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
-        stack_name: "upp-concept-publishing-{{environment_tag}}"
+        stack_name: "upp-concept-publishing-secondary-{{environment_tag}}"
         state: "present"
         region: "{{aws_secondary_region}}"
         template: "/cloudformation/sns-sqs-cf-multi-region.yml"
@@ -47,7 +65,7 @@
           environment: "{{environment_type}}"
           systemCode: "upp"
           teamDL: "universal.publishing.platform@ft.com"
-          description: "Concept Publishing Cloudformation Stack - {{environment_tag}}"
+          description: "Concept Publishing Secondary Queues Stack - {{environment_tag}}"
       register: concept_pub_stack_output_2
 
     - debug:
