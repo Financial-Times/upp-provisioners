@@ -44,7 +44,7 @@ Resources:
     Type: "AWS::EC2::Instance"
     Properties: 
       ImageId: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "ImageId"]
-      InstanceType: "t2.medium"
+      InstanceType: "m5.large"
       SubnetId: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "InstanceSubnetId"]
       IamInstanceProfile: "FT-Linux-Role"
       SecurityGroupIds: !FindInMap [!Ref "AWS::AccountId", !Ref "AWS::Region", "InstanceSecurityGroupIds"]
