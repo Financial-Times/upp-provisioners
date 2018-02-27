@@ -80,3 +80,4 @@ jobs:
   upp-jenkins-provisioner: *build-config
   upp-neo4j-provisioner: *build-config
   upp-pub-provisioner: *build-config
+  upp-concept-notifications-provisioner: *build-config

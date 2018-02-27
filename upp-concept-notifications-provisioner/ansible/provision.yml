@@ -1,0 +1,39 @@
+- hosts: all
+
+  vars_files:
+    - vault_{{ aws_account }}.yml
+
+  tasks:
+    - name: Create primary kinesis concept notification stream
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        stack_name: "upp-primary-concept-notifications-stack-{{environment_tag}}"
+        state: "present"
+        region: "eu-west-1"
+        template: "/cloudformation/notification-stream-eu.yml"
+        template_parameters:
+          EnvironmentTag: "{{environment_tag}}"
+          EnvironmentType: "{{environment_type}}"
+        tags:
+          environment: "{{environment_type}}"
+          systemCode: "upp"
+          teamDL: "universal.publishing.platform@ft.com"
+          description: "Primary Concept Notifications Stack - {{environment_tag}}"
+
+    - name: Create secondary kinesis concept notification stream
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        stack_name: "upp-secondary-concept-notifications-stack-{{environment_tag}}"
+        state: "present"
+        region: "us-east-1"
+        template: "/cloudformation/notification-stream-us.yml"
+        template_parameters:
+          EnvironmentTag: "{{environment_tag}}"
+          EnvironmentType: "{{environment_type}}"
+        tags:
+          environment: "{{environment_type}}"
+          systemCode: "upp"
+          teamDL: "universal.publishing.platform@ft.com"
+          description: "Secondary Concept Notifications Stack - {{environment_tag}}"
