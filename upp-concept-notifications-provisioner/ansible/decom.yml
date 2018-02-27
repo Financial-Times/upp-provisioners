@@ -1,0 +1,21 @@
+- hosts: all
+
+  vars_files:
+    - vault_{{ aws_account }}.yml
+
+  tasks:
+    - name: Delete primary stream stack
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        region: "eu-west-1"
+        stack_name: "upp-primary-concept-notifications-stack-{{environment_tag}}"
+        state: "absent"
+
+    - name: Delete secondary stream stack
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        region: "us-east-1"
+        stack_name: "upp-secondary-concept-notifications-stack-{{environment_tag}}"
+        state: "absent"
