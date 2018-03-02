@@ -1,13 +1,10 @@
 - hosts: all
 
-  vars_files:
-    - vault_{{ aws_account }}.yml
-
   tasks:
     - name: Create primary kinesis concept notification stream
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         stack_name: "upp-primary-concept-notifications-stack-{{environment_tag}}"
         state: "present"
         region: "eu-west-1"
@@ -24,7 +21,7 @@
     - name: Create secondary kinesis concept notification stream
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         stack_name: "upp-secondary-concept-notifications-stack-{{environment_tag}}"
         state: "present"
         region: "us-east-1"
