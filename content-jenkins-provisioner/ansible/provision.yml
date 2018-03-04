@@ -10,7 +10,7 @@
     - name: Create Jenkins CloudFormation stack
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         stack_name: "{{instance_name}}"
         state: "present"
         region: "{{aws_default_region}}"

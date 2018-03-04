@@ -27,11 +27,14 @@ Automated CircleCI builds are also triggered on branch commits and merges to mas
 
 ## Provisioning a Jenkins instance
 - Grab, customize and export the environment variables from the **UPP Jenkins - Provisioning & Decommissioning** LastPass note.
+- Generate credentials for the IAM user `content-jenkins-provisioner` in content-prod aws account
 - Run the following Docker commands:
 ```
 docker pull coco/content-jenkins-provisioner:latest
 docker run \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "INSTANCE_NAME=$INSTANCE_NAME" \
     -e "VAULT_PASS=$VAULT_PASS" \
@@ -42,11 +45,14 @@ docker run \
 
 ## Decommissioning a Jenkins instance
 - Grab, customize and export the environment variables from the **UPP Jenkins - Provisioning & Decommissioning** LastPass note.
+- Generate credentials for the IAM user `content-jenkins-provisioner` in content-prod aws account
 - Run the following Docker commands:
 ```
 docker pull coco/content-jenkins-provisioner:latest
 docker run \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "INSTANCE_NAME=$INSTANCE_NAME" \
     -e "VAULT_PASS=$VAULT_PASS" \
     coco/content-jenkins-provisioner:latest /bin/bash decom.sh
