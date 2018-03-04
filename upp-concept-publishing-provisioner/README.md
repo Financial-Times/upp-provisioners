@@ -21,7 +21,7 @@ The Concept Publishing provisioner can be built locally as a Docker image:
 - Grab, customize and export the environment variables from the **AWS Concept Publishing Provisioning** LastPass note.
 - The stack name will be `upp-concept-publishing-${ENVIRONMENT_TAG}` - eg, `upp-concept-publishing-pre-prod`
 - The environment tag length must be less than or equal to 28
-- Generate credentials for the IAM user `upp-concept-publishing-provisioner` in content-test aws account for a dev stack or in content-prod aws account for a staging/ prod stack.
+- Generate credentials for the IAM user `upp-concept-publishing-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
 - The cloudformation script requires five parameters:
   * Environment Tag - Which environment this belongs to. e.g pre-prod
   * IsMultiRegion - Whether the stack needs to be read in multiple regions (will spin up 2 SQS queues rather than 1)
@@ -48,6 +48,7 @@ docker run \
 
 ## Decommissioning a cluster
 - Grab, customize and export the environment variables from the **AWS Concept Publishing Provisioning** LastPass note.
+- Generate credentials for the IAM user `upp-concept-publishing-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
 - - Run the following Docker commands:
 ```
 docker pull coco/upp-concept-publishing-provisioner:latest
