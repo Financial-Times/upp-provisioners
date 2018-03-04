@@ -16,13 +16,17 @@ The provisioning process will:
 
 How to run:
 
+- Generate credentials for the IAM user `upp-factset-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
+
 # Parameters
 
 * MASTER_PASSWORD: Master password of RDS instance; must be 10-25 alpha numeric characters
 * ENVIRONMENT_NAME: Used to distinguish between stacks
 * ENVIRONMENT_TAG: Used for AWS resource tagging.
-* VAULT_PASS: Used to read ansible provisioning data, can be found in last pass under upp-factset-provisioner
+* VAULT_PASS: Used to read ansible provisioning data, can be found in last pass under **UPP Factset Provisioner**
 * AWS_ACCOUNT: Account in which to provision RDS; must be either content-test or content-prod
+* AWS_ACCESS_KEY: Access key of the IAM provisioner user
+* AWS_SECRET_ACCESS_KEY: Secret Access key of the IAM provisioner user
 
 `docker pull coco/upp-factset-provisioner:latest`
 ```
@@ -32,6 +36,8 @@ docker run   \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     coco/upp-factset-provisioner:latest /bin/bash provision.sh
 ```
 
@@ -49,7 +55,8 @@ The de-commissioning process will:
 
 How to run:
 
-- Get the environment variables from the **User upp-factset-provisioner** LastPass note in the **Shared-UPP Credentials & Services Login Details** folder.
+- Generate credentials for the IAM user `upp-factset-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
+- Get the environment variables from the **UPP Factset Provisioner** LastPass note in the **Shared-UPP Credentials & Services Login Details** folder.
 - Run the following docker command
 
 ```
@@ -57,5 +64,7 @@ docker run   \
     -e "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     coco/upp-factset-provisioner:local /bin/bash decom.sh
 ```
