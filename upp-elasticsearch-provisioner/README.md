@@ -41,6 +41,7 @@ docker run \
     -e "RESTORE_ES_SNAPSHOT=$RESTORE_ES_SNAPSHOT" \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     coco/upp-elasticsearch-provisioner:latest /bin/bash provision.sh
 ```
 
@@ -64,6 +65,7 @@ docker run \
     -e "DELETE_S3_BUCKET=$DELETE_S3_BUCKET" \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     coco/upp-elasticsearch-provisioner:latest /bin/bash decom.sh
 ```
 
