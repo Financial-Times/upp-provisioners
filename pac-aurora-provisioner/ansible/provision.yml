@@ -18,7 +18,7 @@
   - name: Add DB Parameter Groups to eu-west-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}-db-group"
       state: present
       region: "eu-west-1"
@@ -32,7 +32,7 @@
   - name: Add DB Parameter Groups to us-east-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}-db-group"
       state: present
       region: "us-east-1"
@@ -46,7 +46,7 @@
   - name: Add DB Subnet to eu-west-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}-db-subnet"
       state: present
       region: "eu-west-1"
@@ -61,7 +61,7 @@
   - name: Launch Aurora DB Cloudformation stack in eu-west-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}"
       state: present
       region: "eu-west-1"
@@ -86,7 +86,7 @@
   - name: Create Aurora CloudWatch alarms for the cluster in the EU
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}-alarms"
       state: present
       region: "eu-west-1"
@@ -116,7 +116,7 @@
     environment:
       AWS_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
-      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
     register: aurora_eu_arn
 
   - name: EU Cluster ARN
@@ -126,7 +126,7 @@
   - name: Add DB Subnet to us-east-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}-db-subnet"
       state: present
       region: "us-east-1"
@@ -141,7 +141,7 @@
   - name: Launch Replica Aurora DB Cloudformation stack in us-east-1
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}"
       state: present
       region: "us-east-1"
@@ -166,7 +166,7 @@
   - name: Create Aurora CloudWatch alarms for the cluster in the US
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}-alarms"
       state: present
       region: "us-east-1"

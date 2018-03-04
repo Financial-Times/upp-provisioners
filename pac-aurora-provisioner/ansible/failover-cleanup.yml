@@ -18,7 +18,7 @@
   - name: Remove Database in Failed Region
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}"
       region: "{{ failover_from_region }}"
       state: "absent"
@@ -27,7 +27,7 @@
   - name: Ensure DB Parameter Group exists in failed region
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}-db-group"
       state: present
       region: "{{ failover_from_region }}"
@@ -41,7 +41,7 @@
   - name: Ensure DB Subnet exists in failed region
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}-db-subnet"
       state: present
       region: "{{ failover_from_region }}"
@@ -66,13 +66,13 @@
     environment:
       AWS_REGION: "{{ failover_to_region }}"
       AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
-      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
     register: master_db_arn
 
   - name: Launch Replica Aurora DB
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}"
       state: present
       region: "{{ failover_from_region }}"
@@ -97,7 +97,7 @@
   - name: Create Aurora CloudWatch alarms for the new cluster in the Failed Region
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cluster_name }}-alarms"
       state: present
       region: "{{ failover_from_region }}"
