@@ -8,7 +8,7 @@
       when: "{{decom_dbs|lower}} == true"
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         region: "{{aws_default_region}}"
         stack_name: "upp-concept-publishing-databases-{{environment_tag}}"
         state: "absent"
@@ -21,7 +21,7 @@
     - name: Delete Primary Queue Stack
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         region: "{{aws_default_region}}"
         stack_name: "upp-concept-publishing-primary-{{environment_tag}}"
         state: "absent"
@@ -34,7 +34,7 @@
       when: "{{is_multi_region|lower}} == true"
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         region: "{{aws_secondary_region}}"
         stack_name: "upp-concept-publishing-secondary-{{environment_tag}}"
         state: "absent"
