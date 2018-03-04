@@ -21,4 +21,5 @@ aws_default_region=${AWS_DEFAULT_REGION} \
 environment_type=${ENVIRONMENT_TYPE} \
 restore_es_snapshot=${RESTORE_ES_SNAPSHOT} \
 aws_access_key=${AWS_ACCESS_KEY} \
-aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}"
+aws_secret_access_key=${AWS_SECRET_ACCESS_KEY} \
+aws_account=${AWS_ACCOUNT}"
