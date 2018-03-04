@@ -25,7 +25,7 @@ Automated DockerHub builds are also triggered on new releases, located [here](ht
 
 ## Provisioning a cluster
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
-- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in content-test aws account for a dev stack or in content-prod aws account for a staging/ prod stack.
+- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
 - The full cluster name will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
 - The full cluster name has a maxmimum length of 28 characters.
 - If provisioning a cluster that has previously had a snapshot taken, and you wish to restore the latest ES snapshot, set `$RESTORE_ES_SNAPSHOT"` to `true`.
@@ -50,7 +50,7 @@ docker run \
 
 ## Decommissioning a cluster
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
-- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in content-test aws account for a dev stack or in content-prod aws account for a staging/ prod stack.
+- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
 - The decommissioned cluster will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
 - If fully decommissioning a cluster, and you no longer need the S3 bucket or the ES snapshots inside, set `$DELETE_S3_BUCKET` to `true`.
 - Run the following Docker command:
