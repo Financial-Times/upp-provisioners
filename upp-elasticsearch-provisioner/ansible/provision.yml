@@ -11,7 +11,7 @@
     - name: Ensure S3 bucket exists
       s3_bucket:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         name: "{{cluster_name}}-backup"
         region: "{{aws_default_region}}"
         policy: "{{ lookup('template','files/s3-bucket-policy.json') }}"
@@ -23,7 +23,7 @@
     - name: Create ElasticSearch cluster
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         stack_name: "{{cluster_name}}"
         state: "present"
         region: "{{aws_default_region}}"
