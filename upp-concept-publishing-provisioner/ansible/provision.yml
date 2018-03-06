@@ -1,13 +1,10 @@
 - hosts: all
 
-  vars_files:
-    - vault_{{ aws_account }}.yml
-
   tasks:
     - name: Create Primary Queues Concept Publishing Stack
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         stack_name: "upp-concept-publishing-primary-{{environment_tag}}"
         state: "present"
         region: "{{aws_default_region}}"
@@ -32,7 +29,7 @@
     - name: Create Databases for Concept Publishing Stack
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         stack_name: "upp-concept-publishing-databases-{{environment_tag}}"
         state: "present"
         region: "{{aws_default_region}}"
@@ -51,7 +48,7 @@
       when: "{{is_multi_region|lower}} == true"
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
         stack_name: "upp-concept-publishing-secondary-{{environment_tag}}"
         state: "present"
         region: "{{aws_secondary_region}}"
