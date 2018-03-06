@@ -10,7 +10,7 @@
   - name: Remove Factset Ec2 Instance stack
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "upp-factset-loader-{{ environment_name }}"
       region: eu-west-1
       state: "absent"
@@ -18,7 +18,7 @@
   - name: Remove Factset Rds stack
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "upp-factset-rds-{{ environment_name }}"
       region: eu-west-1
       state: "absent"
@@ -26,7 +26,7 @@
   - name: Remove Factset RDS Security Group
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "upp-factset-rds-security-group-{{ environment_name }}"
       region: eu-west-1
       state: "absent"
@@ -34,7 +34,7 @@
   - name: Remove Factset Ec2 Security Group stack
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
-      aws_secret_key: "{{ aws_secret_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "upp-factset-loader-security-group-{{ environment_name }}"
       region: eu-west-1
       state: "absent"
