@@ -25,6 +25,7 @@ Automated DockerHub builds are also triggered on new releases, located [here](ht
 
 ## Provisioning a cluster
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
+- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
 - The full cluster name will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
 - The full cluster name has a maxmimum length of 28 characters.
 - If provisioning a cluster that has previously had a snapshot taken, and you wish to restore the latest ES snapshot, set `$RESTORE_ES_SNAPSHOT"` to `true`.
@@ -38,6 +39,8 @@ docker run \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "RESTORE_ES_SNAPSHOT=$RESTORE_ES_SNAPSHOT" \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     coco/upp-elasticsearch-provisioner:latest /bin/bash provision.sh
 ```
@@ -47,6 +50,7 @@ docker run \
 
 ## Decommissioning a cluster
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
+- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
 - The decommissioned cluster will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
 - If fully decommissioning a cluster, and you no longer need the S3 bucket or the ES snapshots inside, set `$DELETE_S3_BUCKET` to `true`.
 - Run the following Docker command:
@@ -59,6 +63,8 @@ docker run \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
     -e "DELETE_S3_BUCKET=$DELETE_S3_BUCKET" \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     coco/upp-elasticsearch-provisioner:latest /bin/bash decom.sh
 ```

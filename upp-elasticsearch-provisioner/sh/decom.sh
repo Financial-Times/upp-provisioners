@@ -19,4 +19,6 @@ delivery_cluster=${DELIVERY_CLUSTER} \
 aws_default_region=${AWS_DEFAULT_REGION} \
 environment_type=${ENVIRONMENT_TYPE} \
 delete_s3_bucket=${DELETE_S3_BUCKET} \
+aws_access_key=${AWS_ACCESS_KEY} \
+aws_secret_access_key=${AWS_SECRET_ACCESS_KEY} \
 aws_account=${AWS_ACCOUNT}"
