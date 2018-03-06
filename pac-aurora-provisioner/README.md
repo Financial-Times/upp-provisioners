@@ -37,6 +37,7 @@ The provisioning process will:
 
 To provision a new PAC Aurora database cluster:
 
+- Generate credentials for the IAM user `pac-content-provisioner` in content-test aws account for a dev stack or in content-prod aws account for a staging/ prod stack.
 - Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Set the `CLUSTER` environment variable, this will be appended to `pac-aurora` for all provisioned infrastructure. Note: The cluster name should be region agnostic, for example, `staging` will provision `pac-aurora-staging-eu` and `pac-aurora-staging-us` database instances.
 - Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster will be, i.e. `t` for staging, `p` for production and `d` for anything else.
@@ -45,6 +46,8 @@ To provision a new PAC Aurora database cluster:
 
 ```
 docker run \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "CLUSTER=$CLUSTER" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
@@ -63,6 +66,7 @@ region.
 
 To provision a new PAC Aurora database cluster:
 
+- Generate credentials for the IAM user `pac-content-provisioner` in content-test aws account for a dev stack or in content-prod aws account for a staging/ prod stack.
 - Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Set the `CLUSTER` environment variable, this will be appended to `pac-aurora` for all provisioned infrastructure. Note: The cluster name should be region agnostic, for example, `staging` will provision `pac-aurora-staging-eu` and `pac-aurora-staging-us` database instances.
 - Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster will be, i.e. `t` for staging, `p` for production and `d` for anything else.
@@ -73,6 +77,8 @@ the AWS console.
 
 ```
 docker run \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "CLUSTER=$CLUSTER" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
@@ -101,6 +107,7 @@ The decommissioning process will:
 
 To decommission a PAC Aurora database cluster:
 
+* Generate credentials for the IAM user `pac-content-provisioner` in content-test aws account for a dev stack or in content-prod aws account for a staging/ prod stack.
 * Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 * Set the `CLUSTER` environment variable to the cluster that you wish to decommission, i.e. `staging`.
 * Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster is, i.e. `t` for staging, `p` for production and `d` for anything else.
@@ -108,6 +115,8 @@ To decommission a PAC Aurora database cluster:
 
 ```
 docker run \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "CLUSTER=$CLUSTER" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
@@ -124,6 +133,7 @@ The provisioner is also capable of failing over the Master database to a replica
 
 To trigger the failover:
 
+* Generate credentials for the IAM user `pac-content-provisioner` in content-test aws account for a dev stack or in content-prod aws account for a staging/ prod stack.
 * Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 * Set the `CLUSTER` environment variable to the cluster that you wish to failover, i.e. `staging`.
 * Set the `ENVIRONMENT_TYPE` environment variable to type of environment the cluster is, i.e. `t` for staging, `p` for production and `d` for anything else.
@@ -132,6 +142,8 @@ To trigger the failover:
 
 ```
 docker run \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "CLUSTER=$CLUSTER" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
@@ -151,6 +163,7 @@ After the Master has been failed over to another region, we need to reestablish 
 
 To trigger the failover cleanup:
 
+* Generate credentials for the IAM user `pac-content-provisioner` in content-test aws account for a dev stack or in content-prod aws account for a staging/ prod stack.
 * Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 * Set the `CLUSTER` environment variable to the cluster that you wish to failover, i.e. `staging`.
 * Set the `ENVIRONMENT_TYPE` environment variable to type of environment the cluster is, i.e. `t` for staging, `p` for production and `d` for anything else.
@@ -159,6 +172,8 @@ To trigger the failover cleanup:
 
 ```
 docker run \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "CLUSTER=$CLUSTER" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
