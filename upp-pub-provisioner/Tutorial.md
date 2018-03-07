@@ -1,1 +1,0 @@
-# See [Tutorial](https://github.com/Financial-Times/coco-provisioner/blob/master/Tutorial.md)

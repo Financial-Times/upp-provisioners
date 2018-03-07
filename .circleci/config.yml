@@ -74,10 +74,6 @@ jobs:
   content-jenkins-provisioner: *build-config
   pac-aurora-provisioner: *build-config
   upp-concept-publishing-provisioner: *build-config
-  upp-delivery-provisioner: *build-config
   upp-elasticsearch-provisioner: *build-config
   upp-factset-provisioner: *build-config
-  upp-jenkins-provisioner: *build-config
-  upp-neo4j-provisioner: *build-config
-  upp-pub-provisioner: *build-config
   upp-concept-notifications-provisioner: *build-config

@@ -1,1 +1,0 @@
-# See [ACCESS_CLUSTER](https://github.com/Financial-Times/coco-provisioner/blob/master/ACCESS_CLUSTER.md)
