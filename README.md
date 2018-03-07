@@ -34,17 +34,8 @@ No further changes should be required, as the job config is fully parameterised.
 - [upp-coreupdate-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-coreupdate-provisioner)
     - Provisioning instructions for manually creating a CoreUpdate instance.
 
-- [upp-delivery-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-delivery-provisioner)
-    - Docker image, which runs an Ansible playbook to provision and decommission UPP delivery clusters.
-
 - [upp-elasticsearch-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-elasticsearch-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission UPP ElasticSearch clusters.
-
-- [upp-neo4j-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-neo4j-provisioner)
-    - Docker image, running Ansible & CloudFormation to provision and decommission UPP Neo4j persistent data clusters.
-
-- [upp-pub-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-pub-provisioner)
-    - Docker image, running Ansible to provision and decommission UPP publishing clusters.
 
 - [upp-factset-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-factset-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission UPP Factset RDS stacks.

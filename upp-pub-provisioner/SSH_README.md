@@ -1,1 +1,0 @@
-# See [SSH_README](https://github.com/Financial-Times/coco-provisioner/blob/master/SSH_README.md)
