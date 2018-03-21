@@ -1,0 +1,26 @@
+Description: "Subscribes secondary queue to sns topic"
+
+Parameters:
+  EnvironmentTag:
+    Type: String
+    Default: "dev"
+  EnvironmentType:
+    Type: String
+    Default: "d"
+  Region:
+    Type: String
+    Default: "eu-west-1"
+  SecondaryQueueARN:
+    Type: String
+    Default: "ARN of the secondary SQS queue"
+  ConceptTopicARN:
+    Type: String
+    Default: "ARN of the SNS topic"
+
+Resources:
+  SecondarySubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      Endpoint: !Ref SecondaryQueueARN
+      Protocol: sqs
+      TopicArn: !Ref ConceptTopicARN

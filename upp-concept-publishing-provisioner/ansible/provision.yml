@@ -17,14 +17,14 @@
           systemCode: "upp"
           teamDL: "universal.publishing.platform@ft.com"
           description: "Concept Publishing Primary Queues Stack - {{environment_tag}}"
-      register: concept_pub_stack_output_1
+      register: primary_concept_pub_stack_output
 
     - debug:
-        msg: "{{concept_pub_stack_output_1}}"
+        msg: "{{primary_concept_pub_stack_output}}"
 
-    - name: Save SNSTopic ARN as a variable
+    - name: Save primary sqs arn and topic arns as variables
       set_fact:
-        SNSTopic1ARN: "{{concept_pub_stack_output_1.stack_outputs.SNSTopic1ARN}}"
+        SNSConceptTopicARN: "{{primary_concept_pub_stack_output.stack_outputs.ConceptTopicARN}}"
 
     - name: Create Databases for Concept Publishing Stack
       cloudformation:
@@ -37,7 +37,7 @@
         template_parameters:
           EnvironmentTag: "{{environment_tag}}"
           EnvironmentType: "{{environment_type}}"
-          SNSTopic1ARN: "{{SNSTopic1ARN}}"
+          SNSTopicARN: "{{SNSConceptTopicARN}}"
         tags:
           environment: "{{environment_type}}"
           systemCode: "upp"
@@ -57,13 +57,43 @@
           EnvironmentTag: "{{environment_tag}}"
           EnvironmentType: "{{environment_type}}"
           Region: "{{aws_secondary_region}}"
-          SNSTopic1ARN: "{{SNSTopic1ARN}}"
+          SNSTopicARN: "{{SNSConceptTopicARN}}"
         tags:
           environment: "{{environment_type}}"
           systemCode: "upp"
           teamDL: "universal.publishing.platform@ft.com"
           description: "Concept Publishing Secondary Queues Stack - {{environment_tag}}"
-      register: concept_pub_stack_output_2
+      register: secondary_concept_pub_stack_output
 
     - debug:
-        msg: "{{concept_pub_stack_output_2}}"
+        msg: "{{secondary_concept_pub_stack_output}}"
+
+    - name: Save secondary sqs arn as a variable
+      when: "{{is_multi_region|lower}} == true"
+      set_fact:
+        SQSSecondaryConceptARN: "{{secondary_concept_pub_stack_output.stack_outputs.SecondaryConceptARN}}"
+
+    - name: Subscribe queues to topic
+      when: "{{is_multi_region|lower}} == true"
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
+        stack_name: "upp-concept-publishing-subscriptions-{{environment_tag}}"
+        state: "present"
+        region: "{{aws_default_region}}"
+        template: "/cloudformation/subscribeToTopic.yml"
+        template_parameters:
+          EnvironmentTag: "{{environment_tag}}"
+          EnvironmentType: "{{environment_type}}"
+          Region: "eu-west-1"
+          ConceptTopicARN: "{{SNSConceptTopicARN}}"
+          SecondaryQueueARN: "{{SQSSecondaryConceptARN}}"
+        tags:
+          environment: "{{environment_type}}"
+          systemCode: "upp"
+          teamDL: "universal.publishing.platform@ft.com"
+          description: "Concept Publishing Secondary Queues Stack - {{environment_tag}}"
+      register: subscription_stack_output
+
+    - debug:
+        msg: "{{subscription_stack_output}}"

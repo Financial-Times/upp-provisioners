@@ -10,7 +10,7 @@ Parameters:
   Region:
     Type: String
     Default: "Secondary region"
-  SNSTopic1ARN:
+  SNSTopicARN:
     Type: String
     Default: "ARN of the primary SNS topic"
 
@@ -48,7 +48,7 @@ Resources:
             Resource: !GetAtt SQSQueue.Arn
             Condition:
               ArnEquals:
-                "aws:SourceArn": !Ref SNSTopic1ARN
+                "aws:SourceArn": !Ref SNSTopicARN
           -
             Sid: "communicate-with-sqs"
             Effect: "Allow"
@@ -57,19 +57,7 @@ Resources:
             Action: "SQS:*"
             Resource: !GetAtt SQSQueue.Arn
 
-    # Create the concept notification stream
-  ConceptNotificationStream:
-    Type: "AWS::Kinesis::Stream"
-    Properties:
-      Name: !Join [ "", ["upp-secondary-concept-notification-stream-", !Ref EnvironmentTag]]
-      RetentionPeriodHours: 24
-      ShardCount: 1
-      Tags:
-        - Key: "systemCode"
-          Value: "upp"
-        - Key: "teamDL"
-          Value: "universal.publishing@ft.com"
-        - Key: "environment"
-          Value: !Ref EnvironmentType
-        - Key: "description"
-          Value: !Join ["", ["Secondary Concept Notification Stream - ", !Ref EnvironmentTag]]
+Outputs:
+  SecondaryConceptARN:
+    Description: Secondary regions SQS ARN
+    Value: !GetAtt SQSQueue.Arn
