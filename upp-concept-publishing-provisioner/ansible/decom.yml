@@ -1,8 +1,5 @@
 - hosts: all
 
-  vars_files:
-    - vault_{{ aws_account }}.yml
-
   tasks:
     - name: Delete Database Stack
       when: "{{decom_dbs|lower}} == true"
@@ -17,7 +14,6 @@
     - debug:
         msg: "{{concept_pub_db_stack_output}}"
 
-
     - name: Delete Primary Queue Stack
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
@@ -25,10 +21,10 @@
         region: "{{aws_default_region}}"
         stack_name: "upp-concept-publishing-primary-{{environment_tag}}"
         state: "absent"
-      register: concept_pub_p_stack_output
+      register: primary_concept_pub_stack_output
 
     - debug:
-        msg: "{{concept_pub_p_stack_output}}"
+        msg: "{{primary_concept_pub_stack_output}}"
 
     - name: Delete Secondary Queue stack
       when: "{{is_multi_region|lower}} == true"
@@ -38,7 +34,19 @@
         region: "{{aws_secondary_region}}"
         stack_name: "upp-concept-publishing-secondary-{{environment_tag}}"
         state: "absent"
-      register: concept_pub_s_stack_output
+      register: secondary_concept_pub_stack_output
 
     - debug:
-        msg: "{{concept_pub_s_stack_output}}"
+        msg: "{{secondary_concept_pub_stack_output}}"
+
+    - name: Delete Subscription stack
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
+        region: "eu-west-1"
+        stack_name: "upp-concept-publishing-subscriptions-{{environment_tag}}"
+        state: "absent"
+      register: concept_sub_stack_output
+
+    - debug:
+        msg: "{{concept_sub_stack_output}}"

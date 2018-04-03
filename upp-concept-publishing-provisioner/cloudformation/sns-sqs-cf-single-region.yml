@@ -9,7 +9,7 @@ Parameters:
     Default: "t"
   Region:
     Type: String
-    Default: "Secondary region"
+    Default: "eu-west-1"
 
 Resources:
   # Create the topic and the policy.
@@ -87,30 +87,12 @@ Resources:
             Action: "SQS:*"
             Resource: !GetAtt SQSConceptQueue.Arn
 
-# Subscribe the concept queue to the topic
-  SQSSubscription:
+  PrimarySubscription:
     Type: "AWS::SNS::Subscription"
     Properties:
       Endpoint: !GetAtt SQSConceptQueue.Arn
       Protocol: sqs
       TopicArn: !Ref SNSTopic
-
-  # Create the concept notification stream
-  ConceptNotificationStream:
-    Type: "AWS::Kinesis::Stream"
-    Properties:
-      Name: !Join [ "", ["upp-concept-notification-stream-", !Ref EnvironmentTag]]
-      RetentionPeriodHours: 24
-      ShardCount: 1
-      Tags:
-        - Key: "systemCode"
-          Value: "upp"
-        - Key: "teamDL"
-          Value: "universal.publishing@ft.com"
-        - Key: "environment"
-          Value: !Ref EnvironmentType
-        - Key: "description"
-          Value: !Join ["", ["Concept Notification Stream - ", !Ref EnvironmentTag]]
 
 # SQS queue and policy for concept carousel
   ConceptCarouselQueue:
@@ -136,6 +118,6 @@ Resources:
             Resource: !GetAtt ConceptCarouselQueue.Arn
 
 Outputs:
-  SNSTopic1ARN:
+  ConceptTopicARN:
     Description: The SNSTopic ARN
     Value: !Ref SNSTopic
