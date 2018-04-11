@@ -4,7 +4,20 @@
   connection: local
 
   vars:
+    use_suffix: true
+    when: cluster_suffix is defined and foo != ''
+
     cluster_name: "pac-aurora-{{ cluster }}"
+    when: not use_suffix
+
+    cluster_name: "pac-aurora-{{ cluster }}-{{cluster_suffix}}"
+    when: use_suffix
+
+    dns_cluster_name: {{cluster}}
+    when: not use_suffix
+
+    dns_cluster_name: "{{cluster}}-{{cluster_suffix}}"
+    when: use_suffix
 
   vars_files:
     - vaults/vault_{{ environment_type }}.yml
@@ -178,10 +191,16 @@
 
   - include: tasks/create_cname.yml
     vars:
-      dns_cname: "{{ cluster }}-us-rds-pac"
+      dns_cname: "{{ dns_cluster_name }}-us-rds-pac"
       hostname: "{{ aurora_us_stack.stack_outputs.DBHostname }}"
 
   - include: tasks/create_cname.yml
     vars:
+      dns_cname: "{{ dns_cluster_name }}-rds-pac"
+      hostname: "{{ dns_cluster_name }}-eu-rds-pac.ft.com"
+
+  - include: tasks/create_cname.yml
+    when: use_suffix
+    vars:
       dns_cname: "{{ cluster }}-rds-pac"
-      hostname: "{{ cluster }}-eu-rds-pac.ft.com"
+      hostname: "{{ dns_cluster_name }}-rds-pac"
