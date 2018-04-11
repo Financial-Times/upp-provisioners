@@ -13,7 +13,7 @@
     cluster_name: "pac-aurora-{{ cluster }}-{{cluster_suffix}}"
     when: use_suffix
 
-    dns_cluster_name: {{cluster}}
+    dns_cluster_name: "{{cluster}}"
     when: not use_suffix
 
     dns_cluster_name: "{{cluster}}-{{cluster_suffix}}"
