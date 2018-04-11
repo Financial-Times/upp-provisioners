@@ -4,29 +4,27 @@
   connection: local
 
   vars:
-    use_suffix: true
-    when: cluster_suffix is defined and foo != ''
-
+    use_suffix: false
     cluster_name: "pac-aurora-{{ cluster }}"
-    when: not use_suffix
-
-    cluster_name: "pac-aurora-{{ cluster }}-{{cluster_suffix}}"
-    when: use_suffix
-
     dns_cluster_name: "{{cluster}}"
-    when: not use_suffix
-
-    dns_cluster_name: "{{cluster}}-{{cluster_suffix}}"
-    when: use_suffix
 
   vars_files:
     - vaults/vault_{{ environment_type }}.yml
     - vars/{{ aws_account }}.yml
 
   tasks:
+  - name: Set cluster name with suffix
+    when: cluster_suffix != ""
+    set_fact:
+       cluster_name: "pac-aurora-{{ cluster }}-{{ cluster_suffix }}"
+  - name: Set DNS cluster name with suffix
+    when: cluster_suffix != ""
+    set_fact:
+       dns_cluster_name: "{{ cluster }}-{{ cluster_suffix }}"
+
   - name: Log vars
     debug:
-      msg: "cluster_name: '{{ cluster_name }}'"
+      msg: "cluster_name: '{{ cluster_name }}', cluster-suffix: {{ cluster_suffix }}, dns_cluster_name: {{dns_cluster_name}} "
 
   - name: Add DB Parameter Groups to eu-west-1
     cloudformation:
@@ -111,7 +109,7 @@
 
   - include: tasks/create_cname.yml
     vars:
-      dns_cname: "{{ cluster }}-eu-rds-pac"
+      dns_cname: "{{ dns_cluster_name }}-eu-rds-pac"
       hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
 
   - include: tasks/create_pac_user.yml
