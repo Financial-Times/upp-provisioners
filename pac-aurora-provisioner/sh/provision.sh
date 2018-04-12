@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Create Ansible vault credentials
+# the following are optional (used for db restore or db disaster recovery): cluster_suffix, current_rdata_cname, source_snapshot
 echo ${VAULT_PASS} > /ansible/vault.pass
 
 cd /ansible
@@ -10,6 +11,7 @@ aws_access_key=${AWS_ACCESS_KEY} \
 aws_secret_access_key=${AWS_SECRET_ACCESS_KEY} \
 cluster=${CLUSTER} \
 cluster_suffix=${CLUSTER_SUFFIX} \
+current_rdata_cname=${CURRENT_RDATA_CNAME} \
 pac_db_user_password=${PAC_DB_USER_PASSWORD} \
 environment_type=${ENVIRONMENT_TYPE} \
 source_snapshot=${SOURCE_SNAPSHOT} "
