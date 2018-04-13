@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Create Ansible vault credentials
-# the following are optional (used for db restore or db disaster recovery): cluster_suffix, current_rdata_cname, source_snapshot
 echo ${VAULT_PASS} > /ansible/vault.pass
 
 cd /ansible

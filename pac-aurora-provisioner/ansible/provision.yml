@@ -198,7 +198,7 @@
       hostname: "{{ dns_cluster_name }}-eu-rds-pac.ft.com"
 
   - include: tasks/update_cname.yml
-    when: cluster_suffix != ""
+    when: current_rdata_cname != ""
     vars:
       dns_cname: "{{ cluster }}-rds-pac"
       previous_hostname: "{{current_rdata_cname}}-rds-pac.ft.com"
