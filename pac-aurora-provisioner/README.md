@@ -17,9 +17,11 @@ is pushed in Docker Hub as a Docker image. To use the latest Docker image run:
 
 Before proceeding with provisioning or decommissioning an Aurora cluster, please double check the Ansible vault configuration. To do that, first [install Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html) locally, then run the following:
 
+```
 `# Environment Type can be 'p', 't' or 'd' depending on the type of cluster you will be working with.
 export ENVIRONMENT_TYPE=p
 ansible-vault edit ./ansible/vaults/vault_${ENVIRONMENT_TYPE}.yml`
+```
 
 You will be prompted for a `Vault Password`, this can be found in the **pac-aurora-provisioner** LastPass note.
 
@@ -44,8 +46,8 @@ To provision a new PAC Aurora database cluster:
 - Generate credentials for the IAM user `pac-content-provisioner` in content-test aws account for a dev stack or in content-prod aws account for a staging/ prod stack.
 - Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Set the `CLUSTER` environment variable and the `CLUSTER_SUFFIX`, this will be appended to `pac-aurora` for all provisioned infrastructure. `CLUSTER_SUFFIX` will be appended to the environment name it is possible to provision a db without a suffix however for DR purposes you should always add a suffix (currently we are working off a list of composer name [here](https://docs.google.com/spreadsheets/d/1cyqrrC5T24EU3frwPtXe8xr3mrOPSNxxvSB88IDZsaE/edit#gid=0 "composer list")).
-  Note: The cluster name should be region agnostic, for example, `staging_xxx` will provision `pac-aurora-staging_xxx-eu` and `pac-aurora-staging_xxx-us` database instances.
-- Set the `CURRENT_RDATA_CNAME` this is the CNAME the toplevel GLB address is pointing too. you can find out what it is by  doing an nslookup or dig on the toplevel GLB address, e.g. nslookup prod.rds.pac.ft.com.
+  Note: The cluster name should be region agnostic, for example, `staging-xxx` will provision `pac-aurora-staging-xxx-eu` and `pac-aurora-staging-xxx-us` database instances.
+- Set the `CURRENT_RDATA_CNAME` this is the CNAME the top level GLB address is pointing to. you can find out what it is by  doing an nslookup or dig on the top level GLB address, e.g. nslookup prod.rds.pac.ft.com.
   See note above regarding DNS configuration.
 - Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster will be, i.e. `t` for staging, `p` for production and `d` for anything else.
 - Set the `PAC_DB_USER_PASSWORD` environment variable. The provisioner will create a `pac` user with appropriate permissions in the new database, which is identified by the provided the password.
@@ -81,8 +83,8 @@ To provision a new PAC Aurora database cluster:
 - Generate credentials for the IAM user `pac-content-provisioner` in content-test aws account for a dev stack or in content-prod aws account for a staging/ prod stack.
 - Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Set the `CLUSTER` environment variable and the `CLUSTER_SUFFIX`, this will be appended to `pac-aurora` for all provisioned infrastructure. `CLUSTER_SUFFIX` will be appended to the environment name it is possible to provision a db without a suffix however for DR purposes you should always add a suffix (currently we are working off a list of composer name [here](https://docs.google.com/spreadsheets/d/1cyqrrC5T24EU3frwPtXe8xr3mrOPSNxxvSB88IDZsaE/edit#gid=0 "composer list")).
-  Note: The cluster name should be region agnostic, for example, `staging_xxx` will provision `pac-aurora-staging_xxx-eu` and `pac-aurora-staging_xxx-us` database instances.
-- Set the `CURRENT_RDATA_CNAME` this is the CNAME the toplevel GLB address is pointing too. you can find out what it is by  doing an nslookup or dig on the toplevel GLB address, e.g. nslookup prod.rds.pac.ft.com.
+  Note: The cluster name should be region agnostic, for example, `staging-xxx` will provision `pac-aurora-staging-xxx-eu` and `pac-aurora-staging-xxx-us` database instances.
+- Set the `CURRENT_RDATA_CNAME` this is the CNAME the top level GLB address is pointing to. you can find out what it is by  doing an nslookup or dig on the top level GLB address, e.g. nslookup prod.rds.pac.ft.com.
   See note above regarding DNS configuration.
 - Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster will be, i.e. `t` for staging, `p` for production and `d` for anything else.
 - Set the `SOURCE_SNAPSHOT` environment variable to specify from which DB snapshot you want to
@@ -164,7 +166,7 @@ To trigger the failover:
 * Run the following docker command:
 
 
-NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the toplevel GLB address, e.g. nslookup prod.rds.pac.ft.com.
+NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod.rds.pac.ft.com.
 See note above regarding DNS configuration.
 
 ```
@@ -197,7 +199,7 @@ To trigger the failover cleanup:
 * Determine which AWS region you failed over **FROM** and which you failed over **TO**. For example, if your faulty Master database was in `eu-west-1` and your new healthy Master is in `us-east-1`, then you would set `FAILOVER_FROM_REGION=eu-west-1` and `FAILOVER_TO_REGION=us-east-1`.
 * Run the following docker command:
 
-NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the toplevel GLB address, e.g. nslookup prod.rds.pac.ft.com.
+NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod.rds.pac.ft.com.
 See note above regarding DNS configuration.
 
 ```
