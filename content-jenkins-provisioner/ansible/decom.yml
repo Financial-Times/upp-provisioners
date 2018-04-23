@@ -3,9 +3,6 @@
   vars:
     aws_default_region: "eu-west-1"
 
-  vars_files:
-    - vault_{{aws_account}}.yml
-
   tasks:
     - name: Delete Jenkins CloudFormation stack
       cloudformation:

@@ -10,4 +10,5 @@ aws_account=${AWS_ACCOUNT} \
 environment_type=${ENVIRONMENT_TYPE} \
 instance_name=${INSTANCE_NAME} \
 aws_access_key=${AWS_ACCESS_KEY} \
+konstructor_api_key=${KONSTRUCTOR_API_KEY} \
 aws_secret_access_key=${AWS_SECRET_ACCESS_KEY} "

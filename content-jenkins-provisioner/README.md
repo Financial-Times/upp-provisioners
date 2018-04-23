@@ -37,7 +37,7 @@ docker run \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "INSTANCE_NAME=$INSTANCE_NAME" \
-    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
     coco/content-jenkins-provisioner:latest /bin/bash provision.sh
 ```
 
@@ -54,7 +54,7 @@ docker run \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "INSTANCE_NAME=$INSTANCE_NAME" \
-    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "KONSTRUCTOR_API_KEY=$KONSTRUCTOR_API_KEY" \
     coco/content-jenkins-provisioner:latest /bin/bash decom.sh
 ```
 
