@@ -94,7 +94,7 @@ Resources:
       Protocol: sqs
       TopicArn: !Ref SNSTopic
 
-# SQS queue and policy for concept carousel
+  # SQS queue and policy for concept carousel
   ConceptCarouselQueue:
     Type: "AWS::SQS::Queue"
     Properties:
