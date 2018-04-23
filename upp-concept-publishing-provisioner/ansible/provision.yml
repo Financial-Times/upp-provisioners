@@ -12,6 +12,7 @@
         template_parameters:
           EnvironmentTag: "{{environment_tag}}"
           EnvironmentType: "{{environment_type}}"
+          SQSConceptQueueMaxDepth: "{{sqs_concept_max_depth}}"
         tags:
           environment: "{{environment_type}}"
           systemCode: "upp"
@@ -58,6 +59,7 @@
           EnvironmentType: "{{environment_type}}"
           Region: "{{aws_secondary_region}}"
           SNSTopicARN: "{{SNSConceptTopicARN}}"
+          SQSConceptQueueMaxDepth: "{{sqs_concept_max_depth}}"
         tags:
           environment: "{{environment_type}}"
           systemCode: "upp"
