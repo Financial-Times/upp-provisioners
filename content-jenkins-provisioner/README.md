@@ -102,4 +102,4 @@ This can be achieved at this moment in the following way:
        ```
 
 1. Do the tests you need
-1. Decomision the Jenkins instance
+1. Decommission the Jenkins instance
