@@ -78,3 +78,28 @@ Once you have provisioned a Jenkins instance, perform the following steps:
 - Power the instance back on.
 
 The new instance should now boot with a complete copy of the data from the snapshot.
+
+## How to provision a staging env
+
+Testing a Jenkins update or introducing a new Jenkins plugin requires a staging environment.
+This can be achieved at this moment in the following way:
+
+1. Provision a new Jenkins box using this provisioner
+1. Restore the backed up EBS snapshot, but mount it on this new provisioned instance. See [Restoring an EBS snapshot](#restoring-an-ebs-snapshot)
+1. On startup Jenkins will load all of your jobs that are also on production, so please be aware that any job triggered automatically in the jenkins prod will also be triggered for your instance.
+   In order to prevent this just delete the jobs configurations that are triggering deploys from the disk. To do this do the following:
+
+       1. Login onto the Jenkins box
+   ```ssh ${your_username}@${jenkins_instance_private_ip}```
+       1. Remove the Job configs:
+       ```
+       sudo -s
+       service jenkins stop
+       cd /var/lib/jenkins/
+       rm -rf jobs/k8s-deployment/jobs/apps-deployment/
+       rm -rf jobs/k8s-deployment/jobs/pac-apps-deployment/
+       service jenkins start
+       ```
+
+1. Do the tests you need
+1. Decomision the Jenkins instance
