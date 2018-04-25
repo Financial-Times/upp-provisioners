@@ -10,6 +10,9 @@ Parameters:
   Region:
     Type: String
     Default: "eu-west-1"
+  SQSConceptQueueMaxDepth:
+    Type: Number
+    Default: 50000
 
 Resources:
   # Create the topic and the policy.
@@ -60,6 +63,38 @@ Resources:
         deadLetterTargetArn: !GetAtt SQSDeadLetterConceptQueue.Arn
         maxReceiveCount: 5
 
+  SQSConceptQueueOverflowAlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Join ["", ["Triggered when SQS concept queue alarms"]]
+
+  SQSConceptQueueOverflowAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Join ["", ["upp-concept-publish-notifications-alarm-", !Ref EnvironmentTag, "-1"]]
+      AlarmDescription: !Join ["", ["Alarm if queue depth grows beyond ", !Ref SQSConceptQueueMaxDepth, " messages"]]
+      Namespace: "AWS/SQS"
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+        - Name: QueueName
+          Value : { "Fn::GetAtt" : [ "SQSConceptQueue", "QueueName"] }
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: !Ref SQSConceptQueueMaxDepth
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - Ref: SQSConceptQueueOverflowAlarmTopic
+      InsufficientDataActions:
+        - Ref: SQSConceptQueueOverflowAlarmTopic
+
+  SQSConceptQueueOverflowAlarmSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: p2o5v3s3i6a7x0q7@financialtimes.slack.com #upp-concept-load-err channel on Slack
+      Protocol: email
+      TopicArn: !Ref SQSConceptQueueOverflowAlarmTopic
+
   SQSConceptQueuePolicy:
     Type: "AWS::SQS::QueuePolicy"
     Properties:
@@ -94,7 +129,7 @@ Resources:
       Protocol: sqs
       TopicArn: !Ref SNSTopic
 
-# SQS queue and policy for concept carousel
+  # SQS queue and policy for concept carousel
   ConceptCarouselQueue:
     Type: "AWS::SQS::Queue"
     Properties:
