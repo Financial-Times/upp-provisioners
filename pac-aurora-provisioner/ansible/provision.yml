@@ -128,6 +128,7 @@
       AWS_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
       AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+      CLUSTER: "{{dns_cluster_name}}"
     register: aurora_eu_arn
 
   - name: EU Cluster ARN

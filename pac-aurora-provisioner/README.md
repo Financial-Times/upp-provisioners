@@ -27,7 +27,7 @@ You will be prompted for a `Vault Password`, this can be found in the **pac-auro
 
 ## IMPORTANT: DNS Configuration
 
-PAC Aurora DNS configuration is shown here. there is one level of indirection between the permanent GLB CNAME and the actual cluster GLB CNAME. This allows us to provision two clusters and flip the TOP Level DNS name between them as required (for DR)
+PAC Aurora DNS configuration is shown [here](https://docs.google.com/drawings/d/1qhEvsPCkblwb4xBAG4RVxv-_s_Z3siGE1h3krabycEQ/edit). there is one level of indirection between the permanent GLB CNAME and the actual cluster GLB CNAME. This allows us to provision two clusters and flip the TOP Level DNS name between them as required (for DR)
 
 This is important as in the provisioner script the CLUSTER (prod, staging) is passed in seperately from the CLUSTER_SUFFIX some of the scripts e.g. failover, decom, clean up the CLUSTER is the  full clustername e.g. prod-suffix.
 
@@ -84,10 +84,10 @@ To provision a new PAC Aurora database cluster:
 - Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Set the `CLUSTER` environment variable and the `CLUSTER_SUFFIX`, this will be appended to `pac-aurora` for all provisioned infrastructure. `CLUSTER_SUFFIX` will be appended to the environment name it is possible to provision a db without a suffix however for DR purposes you should always add a suffix (currently we are working off a list of composer name [here](https://docs.google.com/spreadsheets/d/1cyqrrC5T24EU3frwPtXe8xr3mrOPSNxxvSB88IDZsaE/edit#gid=0 "composer list")).
   Note: The cluster name should be region agnostic, for example, `staging-xxx` will provision `pac-aurora-staging-xxx-eu` and `pac-aurora-staging-xxx-us` database instances.
-- Set the `CURRENT_RDATA_CNAME` this is the CNAME the top level GLB address is pointing to. you can find out what it is by  doing an nslookup or dig on the top level GLB address, e.g. nslookup prod.rds.pac.ft.com.
+- Set the `CURRENT_RDATA_CNAME` this is the CNAME the top level GLB address is pointing to. you can find out what it is by  doing an nslookup or dig on the top level GLB address, e.g. nslookup prod-rds-pac.ft.com
   See note above regarding DNS configuration.
 - Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster will be, i.e. `t` for staging, `p` for production and `d` for anything else.
-- Set the `SOURCE_SNAPSHOT` environment variable to specify from which DB snapshot you want to
+- Set the `SOURCE_SNAPSHOT` environment variable to specify from which DB snapshot you want to provision the cluster. The variable value is the ARN of the DB snapshot, which is available in the AWS console.
 
 NOTE: if there is a need a database can be provisioned without the `CLUSTER_SUFFIX` and `CURRENT_RDATA_CNAME` the script will support it. this will result in DNS set up of one leve GLB e.g. staging-rds-pac, staging-rds-eu-pac and staging-rds-us-pac.
 
@@ -101,7 +101,7 @@ docker run \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "CLUSTER=$CLUSTER" \
-    -e "CLUSTER=$CLUSTER_SUFFIX" \
+    -e "CLUSTER_SUFFIX=$CLUSTER_SUFFIX" \
     -e "CURRENT_RDATA_CNAME=$CURRENT_RDATA_CNAME" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
@@ -166,7 +166,7 @@ To trigger the failover:
 * Run the following docker command:
 
 
-NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod.rds.pac.ft.com.
+NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod-rds-pac.ft.com
 See note above regarding DNS configuration.
 
 ```
@@ -199,7 +199,7 @@ To trigger the failover cleanup:
 * Determine which AWS region you failed over **FROM** and which you failed over **TO**. For example, if your faulty Master database was in `eu-west-1` and your new healthy Master is in `us-east-1`, then you would set `FAILOVER_FROM_REGION=eu-west-1` and `FAILOVER_TO_REGION=us-east-1`.
 * Run the following docker command:
 
-NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod.rds.pac.ft.com.
+NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod-rds-pac.ft.com
 See note above regarding DNS configuration.
 
 ```
