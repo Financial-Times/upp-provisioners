@@ -202,5 +202,5 @@
     when: current_rdata_cname != ""
     vars:
       dns_cname: "{{ cluster }}-rds-pac"
-      previous_hostname: "{{current_rdata_cname}}-rds-pac.ft.com"
+      previous_hostname: "{{current_rdata_cname}}"
       updated_hostname: "{{ dns_cluster_name }}-rds-pac.ft.com"
