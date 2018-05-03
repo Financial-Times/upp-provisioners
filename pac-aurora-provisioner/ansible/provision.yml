@@ -4,16 +4,27 @@
   connection: local
 
   vars:
+    use_suffix: false
     cluster_name: "pac-aurora-{{ cluster }}"
+    dns_cluster_name: "{{cluster}}"
 
   vars_files:
     - vaults/vault_{{ environment_type }}.yml
     - vars/{{ aws_account }}.yml
 
   tasks:
+  - name: Set cluster name with suffix
+    when: cluster_suffix != ""
+    set_fact:
+       cluster_name: "pac-aurora-{{ cluster }}-{{ cluster_suffix }}"
+  - name: Set DNS cluster name with suffix
+    when: cluster_suffix != ""
+    set_fact:
+       dns_cluster_name: "{{ cluster }}-{{ cluster_suffix }}"
+
   - name: Log vars
     debug:
-      msg: "cluster_name: '{{ cluster_name }}'"
+      msg: "cluster_name: '{{ cluster_name }}', cluster-suffix: {{ cluster_suffix }}, dns_cluster_name: {{dns_cluster_name}} "
 
   - name: Add DB Parameter Groups to eu-west-1
     cloudformation:
@@ -98,7 +109,7 @@
 
   - include: tasks/create_cname.yml
     vars:
-      dns_cname: "{{ cluster }}-eu-rds-pac"
+      dns_cname: "{{ dns_cluster_name }}-eu-rds-pac"
       hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
 
   - include: tasks/create_pac_user.yml
@@ -117,6 +128,7 @@
       AWS_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
       AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+      CLUSTER: "{{dns_cluster_name}}"
     register: aurora_eu_arn
 
   - name: EU Cluster ARN
@@ -178,10 +190,17 @@
 
   - include: tasks/create_cname.yml
     vars:
-      dns_cname: "{{ cluster }}-us-rds-pac"
+      dns_cname: "{{ dns_cluster_name }}-us-rds-pac"
       hostname: "{{ aurora_us_stack.stack_outputs.DBHostname }}"
 
   - include: tasks/create_cname.yml
     vars:
+      dns_cname: "{{ dns_cluster_name }}-rds-pac"
+      hostname: "{{ dns_cluster_name }}-eu-rds-pac.ft.com"
+
+  - include: tasks/update_cname.yml
+    when: current_rdata_cname != ""
+    vars:
       dns_cname: "{{ cluster }}-rds-pac"
-      hostname: "{{ cluster }}-eu-rds-pac.ft.com"
+      previous_hostname: "{{current_rdata_cname}}"
+      updated_hostname: "{{ dns_cluster_name }}-rds-pac.ft.com"
