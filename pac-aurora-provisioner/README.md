@@ -18,9 +18,9 @@ is pushed in Docker Hub as a Docker image. To use the latest Docker image run:
 Before proceeding with provisioning or decommissioning an Aurora cluster, please double check the Ansible vault configuration. To do that, first [install Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html) locally, then run the following:
 
 ```
-`# Environment Type can be 'p', 't' or 'd' depending on the type of cluster you will be working with.
+# Environment Type can be 'p', 't' or 'd' depending on the type of cluster you will be working with.
 export ENVIRONMENT_TYPE=p
-ansible-vault edit ./ansible/vaults/vault_${ENVIRONMENT_TYPE}.yml`
+ansible-vault edit ./ansible/vaults/vault_${ENVIRONMENT_TYPE}.yml
 ```
 
 You will be prompted for a `Vault Password`, this can be found in the **pac-aurora-provisioner** LastPass note.
