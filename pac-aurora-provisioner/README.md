@@ -47,7 +47,7 @@ To provision a new PAC Aurora database cluster:
 - Get the environment variables from the **pac-aurora-provisioner** LastPass note in the **Shared-PAC Credentials & Services Login Details** folder.
 - Set the `CLUSTER` environment variable and the `CLUSTER_SUFFIX`, this will be appended to `pac-aurora` for all provisioned infrastructure. `CLUSTER_SUFFIX` will be appended to the environment name it is possible to provision a db without a suffix however for DR purposes you should always add a suffix (currently we are working off a list of composer name [here](https://docs.google.com/spreadsheets/d/1cyqrrC5T24EU3frwPtXe8xr3mrOPSNxxvSB88IDZsaE/edit#gid=0 "composer list")).
   Note: The cluster name should be region agnostic, for example, `staging-xxx` will provision `pac-aurora-staging-xxx-eu` and `pac-aurora-staging-xxx-us` database instances.
-- Set the `CURRENT_RDATA_CNAME` this is the CNAME the top level GLB address is pointing to (e.g. staging-xxx-rds-pac.ft.com). you can find out what it is by  doing an nslookup or dig on the top level GLB address, e.g. nslookup prod.rds.pac.ft.com.
+- Set the `CURRENT_RDATA_CNAME` this is the CNAME the top level GLB address is pointing to (e.g. staging-xxx-rds-pac.ft.com). you can find out what it is by  doing an nslookup or dig on the top level GLB address, e.g. nslookup prod-rds-pac.ft.com
   See note above regarding DNS configuration.
 - Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster will be, i.e. `t` for staging, `p` for production and `d` for anything else.
 - Set the `PAC_DB_USER_PASSWORD` environment variable. The provisioner will create a `pac` user with appropriate permissions in the new database, which is identified by the provided the password.
