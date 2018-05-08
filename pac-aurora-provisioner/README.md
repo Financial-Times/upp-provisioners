@@ -27,7 +27,7 @@ You will be prompted for a `Vault Password`, this can be found in the **pac-auro
 
 ## IMPORTANT: DNS Configuration
 
-PAC Aurora DNS configuration is shown [here](https://docs.google.com/drawings/d/1qhEvsPCkblwb4xBAG4RVxv-_s_Z3siGE1h3krabycEQ/edit). there is one level of indirection between the permanent GLB CNAME and the actual cluster GLB CNAME. This allows us to provision two clusters and flip the TOP Level DNS name between them as required (for DR)
+PAC Aurora DNS configuration is shown [here](https://www.lucidchart.com/invitations/accept/4589688d-9eb6-46b7-ab41-3768418fe925). there is one level of indirection between the permanent GLB CNAME and the actual cluster GLB CNAME. This allows us to provision two clusters and flip the TOP Level DNS name between them as required (for DR)
 
 This is important as in the provisioner script the CLUSTER (prod, staging) is passed in seperately from the CLUSTER_SUFFIX some of the scripts e.g. failover, decom, clean up the CLUSTER is the  full clustername e.g. prod-suffix.
 
