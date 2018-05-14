@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Create Ansible vault credentials
-echo ${VAULT_PASS} > /ansible/vault.pass
-
 cd /ansible
 
 ansible-playbook decom.yml --extra-vars "\
