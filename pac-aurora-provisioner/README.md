@@ -196,8 +196,8 @@ To trigger the failover cleanup:
 * Determine which AWS region you failed over **FROM** and which you failed over **TO**. For example, if your faulty Master database was in `eu-west-1` and your new healthy Master is in `us-east-1`, then you would set `FAILOVER_FROM_REGION=eu-west-1` and `FAILOVER_TO_REGION=us-east-1`.
 * Run the following docker command:
 
-** NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod-rds-pac.ft.com
-See note above regarding DNS configuration. **
+**NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod-rds-pac.ft.com
+See note above regarding DNS configuration.**
 
 ```
 docker run \
