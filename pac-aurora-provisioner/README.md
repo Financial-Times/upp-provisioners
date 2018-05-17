@@ -61,7 +61,7 @@ docker run \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "CLUSTER=$CLUSTER" \
-    -e "CLUSTER=$CLUSTER_SUFFIX" \
+    -e "CLUSTER_SUFFIX=$CLUSTER_SUFFIX" \
     -e "CURRENT_RDATA_CNAME=$CURRENT_RDATA_CNAME" \
     -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
     -e "VAULT_PASS=$VAULT_PASS" \
@@ -90,9 +90,6 @@ To provision a new PAC Aurora database cluster:
 - Set the `SOURCE_SNAPSHOT` environment variable to specify from which DB snapshot you want to provision the cluster. The variable value is the ARN of the DB snapshot, which is available in the AWS console.
 
 NOTE: if there is a need a database can be provisioned without the `CLUSTER_SUFFIX` and `CURRENT_RDATA_CNAME` the script will support it. this will result in DNS set up of one leve GLB e.g. staging-rds-pac, staging-rds-eu-pac and staging-rds-us-pac.
-
-provision the cluster. The variable value is the ARN of the DB snapshot, which is available in 
-the AWS console.
 
 - Run the following docker command
 
@@ -136,7 +133,7 @@ To decommission a PAC Aurora database cluster:
 * Set the `ENVIRONMENT_TYPE` environment variable to the type of environment the cluster is, i.e. `t` for staging, `p` for production and `d` for anything else.
 * Run the following docker command
 
-NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach
+**NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach**
 
 ```
 docker run \
@@ -166,8 +163,8 @@ To trigger the failover:
 * Run the following docker command:
 
 
-NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod-rds-pac.ft.com
-See note above regarding DNS configuration.
+**NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod-rds-pac.ft.com
+See note above regarding DNS configuration.**
 
 ```
 docker run \
@@ -199,8 +196,8 @@ To trigger the failover cleanup:
 * Determine which AWS region you failed over **FROM** and which you failed over **TO**. For example, if your faulty Master database was in `eu-west-1` and your new healthy Master is in `us-east-1`, then you would set `FAILOVER_FROM_REGION=eu-west-1` and `FAILOVER_TO_REGION=us-east-1`.
 * Run the following docker command:
 
-NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod-rds-pac.ft.com
-See note above regarding DNS configuration.
+**NOTE:- `CLUSTER` here is the full cluster name including a suffix if there is one. e.g. staging-bach, you can check what this is by doing an nslookup or dig on the top level GLB address, e.g. nslookup prod-rds-pac.ft.com
+See note above regarding DNS configuration.**
 
 ```
 docker run \
