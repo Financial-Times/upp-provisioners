@@ -1,0 +1,16 @@
+---
+- name: Decomm Fluentd Kinesis
+  hosts: localhost
+  connection: local
+
+  vars:
+    cloudformation_stack: "content-fluentd-kinesis-{{ cluster }}"
+
+  tasks:
+  - name: Decommission Content Fluentd Kinesis
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
+      region: "{{ aws_region }}"
+      stack_name: "{{ cloudformation_stack }}"
+      state: "absent"

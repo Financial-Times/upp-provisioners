@@ -1,0 +1,22 @@
+---
+- name: Provision Fluentd Kinesis
+  hosts: localhost
+  connection: local
+
+  vars:
+    cloudformation_stack: "content-fluentd-kinesis-{{ cluster }}"
+
+  tasks:
+  - name: Create Content Fluentd Kinesis
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
+      stack_name: "{{ cloudformation_stack }}"
+      state: present
+      region: "{{ aws_region }}"
+      disable_rollback: true
+      template: /cloudformation/kinesis.yml
+      template_parameters:
+        EnvironmentName: "{{ cloudformation_stack }}"
+        TagEnvironment: "{{ environment_type }}"
+    register: kinesis

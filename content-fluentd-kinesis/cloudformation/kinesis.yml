@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template creates a kinesis stream for use with Content Fluentd
+
+Parameters:
+  TagTeamDL:
+      Description: Tag of the TeamDL
+      Type: String
+      AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+      ConstraintDescription: There must be a valid email address for the TeamDL
+      Default: universal.publishing.platform@ft.com
+
+  TagEnvironment:
+      Description: Tag detail for the Environment
+      Type: String
+      AllowedValues:
+          - 't'
+          - 'p'
+          - 'd'
+      Default: t
+
+  TagSystemCode:
+      Description: The system code for the environment
+      Type: String
+      Default: content-fluentd-stream
+
+  TagIpCode:
+      Description: The environment ipCode
+      Type: String
+      AllowedPattern: '[P][0-9]*'
+      Default: P196
+
+  TagDescription:
+      Description: Tag detail for the describing the instance
+      Type: String
+      Default: Kinesis stream to process Content Logs from Fluentd
+
+  TagName:
+      Description: Tag detail for the Name used in the console of the instance
+      Type: String
+      Default: Content Fluentd Kinesis Stream
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+Resources:
+  ContentFluentdKinesisStream:
+    Type: "AWS::Kinesis::Stream"
+    Properties:
+      RetentionPeriodHours: 24
+      ShardCount: 1
+      Tags:
+        - Key: environment
+          Value: !Ref TagEnvironment
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: ipCode
+          Value: !Ref TagIpCode
+        - Key: description
+          Value: !Ref TagDescription
+        - Key: name
+          Value: !Sub ${TagName} - ${EnvironmentName}
