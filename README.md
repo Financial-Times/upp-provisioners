@@ -39,3 +39,6 @@ No further changes should be required, as the job config is fully parameterised.
 
 - [upp-factset-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-factset-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission UPP Factset RDS stacks.
+
+- [content-fluentd-kinesis](https://github.com/Financial-Times/upp-provisioners/tree/master/content-fluentd-kinesis)
+    - Docker image, running Ansible & CloudFormation to provision and decommission Content Fluentd Kinesis.
