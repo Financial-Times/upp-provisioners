@@ -1,5 +1,7 @@
 ---
 - name: Provision Annotations Monitoring kinesis analytics application
+  hosts: localhost
+  connection: local
 
   vars:
     cloudformation_stack: "annotations-monitoring-{{ cluster }}"
@@ -7,7 +9,7 @@
   tasks:
   - name: Create Annotations Monitoring Kinesis analytics app
     cloudformation:
-      aws_access_key: "{{ aws_access_key }}"
+      aws_access_key: "{{ aws_access_key_id }}"
       aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "{{ cloudformation_stack }}"
       state: present
@@ -20,3 +22,12 @@
         EnvironmentName: "{{ cloudformation_stack }}"
         TagEnvironment: "{{ environment_type }}"
     register: kinesis
+
+  - name: Start the new application
+    script: tasks/start_kinesis_analytics_app.sh
+    environment:
+      AWS_REGION: eu-west-1
+      AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+      APPLICATION_NAME: "{{cloudformation_stack}}-annotations-monitoring-analytics-application"
+      INPUT_KINESIS_STREAM_ARN: "{{ input_kinesis_stream_arn }}"

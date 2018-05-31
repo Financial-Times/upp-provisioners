@@ -1,5 +1,7 @@
 ---
 - name: Decomm Fluentd Kinesis
+  hosts: localhost
+  connection: local
 
   vars:
     cloudformation_stack: "annotations-monitoring-{{ cluster }}"
@@ -7,7 +9,7 @@
   tasks:
   - name: Decommission annotations monitoring kinesis analytics application
     cloudformation:
-      aws_access_key: "{{ aws_access_key }}"
+      aws_access_key: "{{ aws_access_key_id }}"
       aws_secret_key: "{{ aws_secret_access_key }}"
       region: "{{ aws_region }}"
       stack_name: "{{ cloudformation_stack }}"

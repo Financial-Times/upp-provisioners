@@ -58,7 +58,7 @@ Resources:
       ApplicationName: !Sub ${EnvironmentName}-annotations-monitoring-analytics-application
       ApplicationDescription: !Ref TagDescription
       Inputs:
-        - NamePrefix: "content-fluentd-input"
+        - NamePrefix: "content_fluentd_input"
           InputSchema:
             RecordColumns:
               - Name: "event_time"
@@ -112,7 +112,7 @@ Resources:
         CREATE OR REPLACE PUMP "PUBLISH_START_PUMP" AS INSERT INTO "PUBLISH_START_STREAM"
 
         SELECT STREAM "uuid", "transaction_id", "content_type", "event", "event_time"
-        FROM "SOURCE_SQL_STREAM_001"
+        FROM "content_fluentd_input_001"
         WHERE ("event" = 'PublishStart' AND "content_type" = 'Annotations');
 
 
@@ -129,7 +129,7 @@ Resources:
         CREATE OR REPLACE PUMP "SAVE_NEO4J_PUMP" AS INSERT INTO "SAVE_NEO4J_STREAM"
 
         SELECT STREAM "uuid", "transaction_id", "content_type", "event", "event_time"
-        FROM "SOURCE_SQL_STREAM_001"
+        FROM "content_fluentd_input_001"
         WHERE ("event" = 'SaveNeo4j' AND "content_type" = 'Annotations');
 
 
@@ -146,7 +146,7 @@ Resources:
         CREATE OR REPLACE PUMP "MAP_PUMP" AS INSERT INTO "MAP_STREAM"
 
         SELECT STREAM  "uuid", "transaction_id", "content_type", "event", "event_time"
-        FROM "SOURCE_SQL_STREAM_001"
+        FROM "content_fluentd_input_001"
         WHERE ("event" = 'Map' AND "content_type" = 'Annotations');
 
 
@@ -208,16 +208,3 @@ Resources:
               LEFT OUTER JOIN MAP_STREAM OVER SLA AS m ON (p."transaction_id" = m."transaction_id" AND p."uuid" = m."uuid")
            WHERE (m."event_time" is null OR s."event_time" is null)
            WINDOW SLA AS (RANGE INTERVAL '2' MINUTE PRECEDING);
-      Tags:
-        - Key: environment
-          Value: !Ref TagEnvironment
-        - Key: teamDL
-          Value: !Ref TagTeamDL
-        - Key: systemCode
-          Value: !Ref TagSystemCode
-        - Key: ipCode
-          Value: !Ref TagIpCode
-        - Key: description
-          Value: !Ref TagDescription
-        - Key: name
-          Value: !Sub ${TagName} - ${EnvironmentName}
