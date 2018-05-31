@@ -71,5 +71,5 @@ docker run \
     -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" \
     -e "AWS_REGION=${AWS_REGION}" \
     -e "CLUSTER=${CLUSTER}" \
-    pac-provisioner:local /bin/bash decom.sh
+    annotations-monitoring:local /bin/bash decom.sh
 ```

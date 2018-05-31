@@ -1,0 +1,22 @@
+---
+- name: Provision Annotations Monitoring kinesis analytics application
+
+  vars:
+    cloudformation_stack: "annotations-monitoring-{{ cluster }}"
+
+  tasks:
+  - name: Create Annotations Monitoring Kinesis analytics app
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
+      stack_name: "{{ cloudformation_stack }}"
+      state: present
+      region: "{{ aws_region }}"
+      disable_rollback: true
+      template: /cloudformation/kinesis-analytics.yml
+      template_parameters:
+        InputKinesisStreamARN: "{{ input_kinesis_stream_arn }}"
+        InputRoleARN: "{{ input_role_arn }}"
+        EnvironmentName: "{{ cloudformation_stack }}"
+        TagEnvironment: "{{ environment_type }}"
+    register: kinesis

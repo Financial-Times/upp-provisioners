@@ -1,0 +1,223 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template creates a kinesis analytics application, as a POC for Annotations Monitoring
+
+Parameters:
+  InputKinesisStreamARN:
+      Description: ARN for the Content fluentd kinesis stream we will use as an input.
+      Type: String
+
+  InputRoleARN:
+      Description: ARN for the IAM Role which grants access to the configured Kinesis stream
+      Type: String
+
+  TagTeamDL:
+      Description: Tag of the TeamDL
+      Type: String
+      AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+      ConstraintDescription: There must be a valid email address for the TeamDL
+      Default: universal.publishing.platform@ft.com
+
+  TagEnvironment:
+      Description: Tag detail for the Environment
+      Type: String
+      AllowedValues:
+          - 't'
+          - 'p'
+          - 'd'
+      Default: t
+
+  TagSystemCode:
+      Description: The system code for the environment
+      Type: String
+      Default: annotations-monitoring
+
+  TagIpCode:
+      Description: The environment ipCode
+      Type: String
+      AllowedPattern: '[P][0-9]*'
+      Default: P196
+
+  TagDescription:
+      Description: Tag detail for the describing the instance
+      Type: String
+      Default: Kinesis analytics application used to monitor Annotations publishes
+
+  TagName:
+      Description: Tag detail for the Name used in the console of the instance
+      Type: String
+      Default: Annotations Monitoring Kinesis Analytics Application
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+Resources:
+  AnnotationsMonitoringAnalytics:
+    Type: "AWS::KinesisAnalytics::Application"
+    Properties:
+      ApplicationName: !Sub ${EnvironmentName}-annotations-monitoring-analytics-application
+      ApplicationDescription: !Ref TagDescription
+      Inputs:
+        - NamePrefix: "content-fluentd-input"
+          InputSchema:
+            RecordColumns:
+              - Name: "event_time"
+                SqlType: "TIMESTAMP"
+                Mapping: "$.event_time"
+              - Name: "content_type"
+                SqlType: "VARCHAR(64)"
+                Mapping: "$.content_type"
+              - Name: "event"
+                SqlType: "VARCHAR(32)"
+                Mapping: "$.event"
+              - Name: "monitoring_event"
+                SqlType: "BOOLEAN"
+                Mapping: "$.monitoring_event"
+              - Name: "service_name"
+                SqlType: "VARCHAR(64)"
+                Mapping: "$.service_name"
+              - Name: "transaction_id"
+                SqlType: "VARCHAR(128)"
+                Mapping: "$.transaction_id"
+              - Name: "uuid"
+                SqlType: "VARCHAR(36)"
+                Mapping: "$.uuid"
+              - Name: "isValid"
+                SqlType: "BOOLEAN"
+                Mapping: "$.isValid"
+            RecordFormat:
+              RecordFormatType: "JSON"
+              MappingParameters:
+                JSONMappingParameters:
+                  RecordRowPath: "$"
+          KinesisStreamsInput:
+            ResourceARN: !Ref InputKinesisStreamARN
+            RoleARN: !Ref InputRoleARN
+      ApplicationCode: |
+        -- Annotations Monitoring Analytics Application:
+        --    Creates three in-application streams, one for PublishStart events, one for Map events and one for SaveNeo4j events.
+        --    Two output streams, one which will join the above three streams to produce a completed event output.
+        --    One will join the three streams and monitor for failed events
+
+        -- Create PublishStart event stream
+
+        CREATE OR REPLACE STREAM "PUBLISH_START_STREAM" (
+           "uuid" varchar(64),
+           "transaction_id" varchar(64),
+           "content_type" varchar(64),
+           "event" varchar(16),
+           "event_time" timestamp
+        );
+
+        CREATE OR REPLACE PUMP "PUBLISH_START_PUMP" AS INSERT INTO "PUBLISH_START_STREAM"
+
+        SELECT STREAM "uuid", "transaction_id", "content_type", "event", "event_time"
+        FROM "SOURCE_SQL_STREAM_001"
+        WHERE ("event" = 'PublishStart' AND "content_type" = 'Annotations');
+
+
+        -- Create SaveNeo4j event stream
+
+        CREATE OR REPLACE STREAM "SAVE_NEO4J_STREAM" (
+           "uuid" varchar(64),
+           "transaction_id" varchar(64),
+           "content_type" varchar(64),
+           "event" varchar(16),
+           "event_time" timestamp
+        );
+
+        CREATE OR REPLACE PUMP "SAVE_NEO4J_PUMP" AS INSERT INTO "SAVE_NEO4J_STREAM"
+
+        SELECT STREAM "uuid", "transaction_id", "content_type", "event", "event_time"
+        FROM "SOURCE_SQL_STREAM_001"
+        WHERE ("event" = 'SaveNeo4j' AND "content_type" = 'Annotations');
+
+
+        -- Create Map event stream
+
+        CREATE OR REPLACE STREAM "MAP_STREAM" (
+           "uuid" varchar(64),
+           "transaction_id" varchar(64),
+           "content_type" varchar(64),
+           "event" varchar(16),
+           "event_time" timestamp
+        );
+
+        CREATE OR REPLACE PUMP "MAP_PUMP" AS INSERT INTO "MAP_STREAM"
+
+        SELECT STREAM  "uuid", "transaction_id", "content_type", "event", "event_time"
+        FROM "SOURCE_SQL_STREAM_001"
+        WHERE ("event" = 'Map' AND "content_type" = 'Annotations');
+
+
+        -- Join the three streams to determine completed publishes
+
+        CREATE OR REPLACE STREAM "SUCCESSFUL_PUBLISHES_STREAM" (
+            "uuid" varchar(64),
+            "transaction_id" varchar(64),
+            "content_type" varchar(64),
+            "publish_start_time" timestamp,
+            "map_time" timestamp,
+            "save_time" timestamp
+        );
+
+        -- The following query will watch the stream for any of the three events, and attempt to match them
+        -- to other events within the SLA window. If all three events have not occurred during the window,
+        -- the query will not return an output row for that publish.
+
+        CREATE OR REPLACE PUMP "SUCCESSFUL_PUBLISHES_STREAM_PUMP" AS
+        INSERT INTO "SUCCESSFUL_PUBLISHES_STREAM"
+           SELECT STREAM
+              COALESCE(p."uuid", m."uuid", s."uuid") as "uuid",
+              COALESCE(p."transaction_id", m."transaction_id", s."transaction_id") as "transaction_id",
+              COALESCE(p."content_type", m."content_type", s."content_type") as "content_type",
+              p."event_time" as "publish_start_time",
+              m."event_time" as "map_time",
+              s."event_time" as "save_time"
+           FROM PUBLISH_START_STREAM OVER SLA AS p
+              JOIN SAVE_NEO4J_STREAM OVER SLA AS s ON (p."transaction_id" = s."transaction_id" AND p."uuid" = s."uuid")
+              JOIN MAP_STREAM OVER SLA AS m ON (p."transaction_id" = m."transaction_id" AND p."uuid" = m."uuid")
+           WINDOW SLA AS (RANGE INTERVAL '2' MINUTE PRECEDING); -- SLA of 2 minutes
+
+        -- Join the three streams to determine failed publishes
+
+        CREATE OR REPLACE STREAM "FAILED_PUBLISHES_STREAM" (
+            "uuid" varchar(64),
+            "transaction_id" varchar(64),
+            "content_type" varchar(64),
+            "publish_start_time" timestamp,
+            "map_time" timestamp,
+            "save_time" timestamp
+        );
+
+        -- The following query will monitor for rows in any of the three streams, attempt to join
+        -- events within them, and report if the join contains null timestamps for the Map or SaveNeo4j
+        -- events. The join will wait for the duration of the SLA window before considering a row as failed.
+
+        CREATE OR REPLACE PUMP "FAILED_PUBLISHES_STREAM_PUMP" AS
+        INSERT INTO "FAILED_PUBLISHES_STREAM"
+           SELECT STREAM
+              COALESCE(p."uuid", m."uuid", s."uuid") as "uuid",
+              COALESCE(p."transaction_id", m."transaction_id", s."transaction_id") as "transaction_id",
+              COALESCE(p."content_type", m."content_type", s."content_type") as "content_type",
+              p."event_time" as "publish_start_time",
+              m."event_time" as "map_time",
+              s."event_time" as "save_time"
+           FROM PUBLISH_START_STREAM OVER SLA AS p
+              LEFT OUTER JOIN SAVE_NEO4J_STREAM OVER SLA AS s ON (p."transaction_id" = s."transaction_id" AND p."uuid" = s."uuid")
+              LEFT OUTER JOIN MAP_STREAM OVER SLA AS m ON (p."transaction_id" = m."transaction_id" AND p."uuid" = m."uuid")
+           WHERE (m."event_time" is null OR s."event_time" is null)
+           WINDOW SLA AS (RANGE INTERVAL '2' MINUTE PRECEDING);
+      Tags:
+        - Key: environment
+          Value: !Ref TagEnvironment
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: ipCode
+          Value: !Ref TagIpCode
+        - Key: description
+          Value: !Ref TagDescription
+        - Key: name
+          Value: !Sub ${TagName} - ${EnvironmentName}
