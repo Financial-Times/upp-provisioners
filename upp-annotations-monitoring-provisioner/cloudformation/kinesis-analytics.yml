@@ -55,7 +55,7 @@ Resources:
   AnnotationsMonitoringAnalytics:
     Type: "AWS::KinesisAnalytics::Application"
     Properties:
-      ApplicationName: !Sub ${EnvironmentName}-annotations-monitoring-analytics-application
+      ApplicationName: !Sub ${EnvironmentName}-analytics-application
       ApplicationDescription: !Ref TagDescription
       Inputs:
         - NamePrefix: "content_fluentd_input"
