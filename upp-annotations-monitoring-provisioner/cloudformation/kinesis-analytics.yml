@@ -10,6 +10,10 @@ Parameters:
       Description: ARN for the IAM Role which grants access to the configured Kinesis stream
       Type: String
 
+  OutputRoleS3ARN:
+      Description: ARN for the IAM Role which grants access to the created S3 Bucket
+      Type: String
+
   TagTeamDL:
       Description: Tag of the TeamDL
       Type: String
@@ -208,3 +212,48 @@ Resources:
               LEFT OUTER JOIN MAP_STREAM OVER SLA AS m ON (p."transaction_id" = m."transaction_id" AND p."uuid" = m."uuid")
            WHERE (m."event_time" is null OR s."event_time" is null)
            WINDOW SLA AS (RANGE INTERVAL '2' MINUTE PRECEDING);
+
+  AnnotationsMonitoringS3Bucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: "!Sub ${EnvironmentName}-temp-s3"
+      Tags:
+        - Key: environment
+          Value: !Ref TagEnvironment
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: ipCode
+          Value: !Ref TagIpCode
+        - Key: description
+          Value: !Ref TagDescription
+        - Key: name
+          Value: !Sub ${TagName} - ${EnvironmentName}
+
+  AnnotationsMonitoringS3Firehose:
+    Type: "AWS::KinesisFirehose::DeliveryStream"
+    Properties:
+      DeliveryStreamName: "!Sub ${EnvironmentName}-temp-s3-firehose"
+      S3Configuration:
+        BucketARN:
+          Ref: !Ref AnnotationsMonitoringS3Bucket
+        BufferingHints:
+          IntervalInSeconds: "60"
+          SizeInMBs: "50"
+        CompressionFormat: "UNCOMPRESSED"
+        Prefix: "!Sub ${EnvironmentName}/"
+        RoleARN: !Ref OutputS3RoleARN
+
+  AnnotationsMonitoringAnalyticsOutput:
+    Type: "AWS::KinesisAnalytics::ApplicationOutput"
+    DependsOn: AnnotationsMonitoringAnalytics
+    Properties:
+      ApplicationName: !Ref AnnotationsMonitoringAnalytics
+      Output:
+        Name: !Sub ${EnvironmentName}-analytics-output
+        DestinationSchema:
+          RecordFormatType: "JSON"
+        KinesisFirehoseOutput:
+          ResourceARN: !GetAtt AnnotationsMonitoringS3Firehose.Arn
+          RoleARN: !Ref OutputRoleS3ARN
