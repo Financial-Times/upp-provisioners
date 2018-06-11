@@ -30,7 +30,7 @@ Resources:
       ElasticsearchClusterConfig:
         InstanceCount: "4"
         ZoneAwarenessEnabled: "true"
-        InstanceType: "r3.large.elasticsearch"
+        InstanceType: "m4.xlarge.elasticsearch"
         DedicatedMasterEnabled: "true"
         DedicatedMasterType: "m3.medium.elasticsearch"
         DedicatedMasterCount: "3"
