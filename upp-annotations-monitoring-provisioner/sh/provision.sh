@@ -9,4 +9,6 @@ aws_region=${AWS_REGION} \
 cluster=${CLUSTER} \
 environment_type=${ENVIRONMENT_TYPE} \
 input_kinesis_stream_arn=${INPUT_KINESIS_STREAM_ARN} \
-input_role_arn=${INPUT_ROLE_ARN} "
+input_role_arn=${INPUT_ROLE_ARN} \
+output_role_arn=${OUTPUT_ROLE_ARN} \
+firehose_s3_role_arn=${FIREHOSE_S3_ROLE_ARN}"

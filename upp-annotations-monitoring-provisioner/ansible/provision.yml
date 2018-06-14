@@ -21,6 +21,8 @@
         InputRoleARN: "{{ input_role_arn }}"
         EnvironmentName: "{{ cloudformation_stack }}"
         TagEnvironment: "{{ environment_type }}"
+        AnalyticsOutputRoleARN: "{{ output_role_arn }}"
+        FirehoseS3RoleARN: "{{ firehose_s3_role_arn }}"
     register: kinesis
 
   - name: Start the new application

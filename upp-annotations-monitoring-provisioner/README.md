@@ -30,6 +30,8 @@ export CLUSTER=                     # This will be appended to `annotations-moni
 export ENVIRONMENT_TYPE=            # This should be the type of environment the cluster will be, i.e. `t` for staging, `p` for production and `d` for anything else
 export INPUT_KINESIS_STREAM_ARN=    # The ARN for the Kinesis stream this application will read from.
 export INPUT_ROLE_ARN=              # The ARN for the IAM Role that grants access to the above Kinesis stream.
+export OUTPUT_ROLE_ARN=             # The ARN for the IAM Role that grants write permissions from the analytics output to Firehose
+export FIREHOSE_S3_ROLE_ARN=        # The ARN for the IAM Role which allows the Firehose to write to S3
 ```
 
 * Run the following docker command
@@ -43,6 +45,8 @@ docker run \
     -e "ENVIRONMENT_TYPE=${ENVIRONMENT_TYPE}" \
     -e "INPUT_KINESIS_STREAM_ARN=${INPUT_KINESIS_STREAM_ARN}" \
     -e "INPUT_ROLE_ARN=${INPUT_ROLE_ARN}" \
+    -e "OUTPUT_ROLE_ARN=${OUTPUT_ROLE_ARN}" \
+    -e "FIREHOSE_S3_ROLE_ARN=${FIREHOSE_S3_ROLE_ARN}" \
     annotations-monitoring:local /bin/bash provision.sh
 ```
 
