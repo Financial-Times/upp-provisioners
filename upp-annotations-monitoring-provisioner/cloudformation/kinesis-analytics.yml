@@ -228,7 +228,7 @@ Resources:
         CREATE OR REPLACE PUMP "ANOMALY_ANALYSIS_STREAM_PUMP" AS
         INSERT INTO "ANOMALY_ANALYSIS_STREAM"
         SELECT STREAM "row_time", "count", "average_duration_ms", "min_duration", "max_duration", ANOMALY_SCORE
-           FROM TABLE(RANDOM_CUT_FOREST(CURSOR(SELECT STREAM * FROM "ANALYSIS_STREAM")));
+           FROM TABLE(RANDOM_CUT_FOREST(CURSOR(SELECT STREAM * FROM "ANALYSIS_STREAM"), 64, 128, 1000, 8));
 
         -- Join the three streams to determine failed publishes
 
