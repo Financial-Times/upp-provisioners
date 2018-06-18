@@ -118,11 +118,9 @@ Resources:
         );
 
         CREATE OR REPLACE PUMP "PUBLISH_START_PUMP" AS INSERT INTO "PUBLISH_START_STREAM"
-
-        SELECT STREAM "uuid", "transaction_id", "content_type", "event", "event_time"
-        FROM "content_fluentd_input_001"
-        WHERE ("event" = 'PublishStart' AND "content_type" = 'Annotations');
-
+           SELECT STREAM "uuid", "transaction_id", "content_type", "event", "event_time"
+           FROM "content_fluentd_input_001"
+              WHERE ("event" = 'PublishStart' AND "content_type" = 'Annotations');
 
         -- Create SaveNeo4j event stream
 
@@ -135,10 +133,9 @@ Resources:
         );
 
         CREATE OR REPLACE PUMP "SAVE_NEO4J_PUMP" AS INSERT INTO "SAVE_NEO4J_STREAM"
-
-        SELECT STREAM "uuid", "transaction_id", "content_type", "event", "event_time"
-        FROM "content_fluentd_input_001"
-        WHERE ("event" = 'SaveNeo4j' AND "content_type" = 'Annotations');
+           SELECT STREAM "uuid", "transaction_id", "content_type", "event", "event_time"
+           FROM "content_fluentd_input_001"
+              WHERE ("event" = 'SaveNeo4j' AND "content_type" = 'Annotations');
 
 
         -- Create Map event stream
@@ -153,21 +150,20 @@ Resources:
         );
 
         CREATE OR REPLACE PUMP "MAP_PUMP" AS INSERT INTO "MAP_STREAM"
-
-        SELECT STREAM  "uuid", "transaction_id", "content_type", "event", "event_time", "isValid"
-        FROM "content_fluentd_input_001"
-        WHERE ("event" = 'Map' AND "content_type" = 'Annotations');
+           SELECT STREAM  "uuid", "transaction_id", "content_type", "event", "event_time", "isValid"
+           FROM "content_fluentd_input_001"
+              WHERE ("event" = 'Map' AND "content_type" = 'Annotations');
 
 
         -- Join the three streams to determine completed publishes
 
         CREATE OR REPLACE STREAM "SUCCESSFUL_PUBLISHES_STREAM" (
-            "uuid" varchar(64),
-            "transaction_id" varchar(64),
-            "content_type" varchar(64),
-            "publish_start_time" timestamp,
-            "map_time" timestamp,
-            "save_time" timestamp
+           "uuid" varchar(64),
+           "transaction_id" varchar(64),
+           "content_type" varchar(64),
+           "publish_start_time" timestamp,
+           "map_time" timestamp,
+           "save_time" timestamp
         );
 
         -- The following query will watch the stream for any of the three events, and attempt to match them
@@ -176,74 +172,93 @@ Resources:
 
         CREATE OR REPLACE PUMP "SUCCESSFUL_PUBLISHES_STREAM_PUMP" AS
         INSERT INTO "SUCCESSFUL_PUBLISHES_STREAM"
-           SELECT STREAM
-              COALESCE(p."uuid", m."uuid", s."uuid") as "uuid",
-              COALESCE(p."transaction_id", m."transaction_id", s."transaction_id") as "transaction_id",
-              COALESCE(p."content_type", m."content_type", s."content_type") as "content_type",
-              p."event_time" as "publish_start_time",
-              m."event_time" as "map_time",
-              s."event_time" as "save_time"
-           FROM PUBLISH_START_STREAM OVER SLA AS p
-              JOIN SAVE_NEO4J_STREAM OVER SLA AS s ON (p."transaction_id" = s."transaction_id" AND p."uuid" = s."uuid")
-              JOIN MAP_STREAM OVER SLA AS m ON (p."transaction_id" = m."transaction_id" AND p."uuid" = m."uuid")
-           WINDOW SLA AS (RANGE INTERVAL '2' MINUTE PRECEDING);
+        SELECT STREAM
+           COALESCE(p."uuid", m."uuid", s."uuid") as "uuid",
+           COALESCE(p."transaction_id", m."transaction_id", s."transaction_id") as "transaction_id",
+           COALESCE(p."content_type", m."content_type", s."content_type") as "content_type",
+           p."event_time" as "publish_start_time",
+           m."event_time" as "map_time",
+           s."event_time" as "save_time"
+        FROM PUBLISH_START_STREAM OVER SLA AS p
+           JOIN SAVE_NEO4J_STREAM OVER SLA AS s ON (p."transaction_id" = s."transaction_id" AND p."uuid" = s."uuid")
+           JOIN MAP_STREAM OVER SLA AS m ON (p."transaction_id" = m."transaction_id" AND p."uuid" = m."uuid")
+        WINDOW SLA AS (RANGE INTERVAL '2' MINUTE PRECEDING);
 
 
         -- Create stream for publish analysis
 
-        CREATE OR REPLACE STREAM "PUBLISH_ANALYSIS_STREAM" (
-            "row_time" timestamp,
-            "count" int,
-            "average_duration_ms" double,
-            "min_duration" int,
-            "max_duration" int
+        CREATE OR REPLACE STREAM "ANALYSIS_STREAM" (
+           "row_time" timestamp,
+           "count" int,
+           "average_duration_ms" double,
+           "min_duration" int,
+           "max_duration" int
         );
 
         -- The following query will aggregate and analyse successful publishes in each 5min interval
 
-        CREATE OR REPLACE PUMP "PUBLISH_ANALYSIS_STREAM_PUMP" AS
-        INSERT INTO "PUBLISH_ANALYSIS_STREAM"
-           SELECT STREAM
-              FIRST_VALUE(p.ROWTIME) as "row_time",
-              COUNT(*),
-              AVG(TSDIFF(s."event_time", p."event_time")),
-              MIN(TSDIFF(s."event_time", p."event_time")),
-              MAX(TSDIFF(s."event_time", p."event_time"))
-           FROM PUBLISH_START_STREAM AS p
-              JOIN SAVE_NEO4J_STREAM AS s ON (p."transaction_id" = s."transaction_id" AND p."uuid" = s."uuid")
-              JOIN MAP_STREAM AS m ON (p."transaction_id" = m."transaction_id" AND p."uuid" = m."uuid")
-           GROUP BY
-              STEP(p.ROWTIME BY INTERVAL '5' MINUTE);
+        CREATE OR REPLACE PUMP "ANALYSIS_STREAM_PUMP" AS
+        INSERT INTO "ANALYSIS_STREAM"
+        SELECT STREAM
+           STEP(FIRST_VALUE(p.ROWTIME) BY INTERVAL '5' MINUTE) as "row_time",
+           COUNT(*),
+           AVG(TSDIFF(s."event_time", p."event_time")),
+           MIN(TSDIFF(s."event_time", p."event_time")),
+           MAX(TSDIFF(s."event_time", p."event_time"))
+        FROM PUBLISH_START_STREAM AS p
+           JOIN SAVE_NEO4J_STREAM AS s ON (p."transaction_id" = s."transaction_id" AND p."uuid" = s."uuid")
+           JOIN MAP_STREAM AS m ON (p."transaction_id" = m."transaction_id" AND p."uuid" = m."uuid")
+        GROUP BY
+           STEP(p.ROWTIME BY INTERVAL '5' MINUTE);
+
+
+        -- Create stream for anomaly analysis
+
+        CREATE OR REPLACE STREAM "ANOMALY_ANALYSIS_STREAM" (
+           "row_time" timestamp,
+           "count" int,
+           "average_duration_ms" double,
+           "min_duration" int,
+           "max_duration" int,
+           "anomaly_score" double
+        );
+
+        -- The following query will compute an anomaly score for the aggregated rows
+
+        CREATE OR REPLACE PUMP "ANOMALY_ANALYSIS_STREAM_PUMP" AS
+        INSERT INTO "ANOMALY_ANALYSIS_STREAM"
+        SELECT STREAM "row_time", "count", "average_duration_ms", "min_duration", "max_duration", ANOMALY_SCORE
+           FROM TABLE(RANDOM_CUT_FOREST(CURSOR(SELECT STREAM * FROM "ANALYSIS_STREAM")));
 
         -- Join the three streams to determine failed publishes
 
-        CREATE OR REPLACE STREAM "FAILED_PUBLISHES_STREAM" (
-            "uuid" varchar(64),
-            "transaction_id" varchar(64),
-            "content_type" varchar(64),
-            "publish_start_time" timestamp,
-            "map_time" timestamp,
-            "save_time" timestamp
+        CREATE OR REPLACE STREAM "ALERTS_STREAM" (
+           "uuid" varchar(64),
+           "transaction_id" varchar(64),
+           "content_type" varchar(64),
+           "publish_start_time" timestamp,
+           "map_time" timestamp,
+           "save_time" timestamp
         );
 
         -- The following query will monitor for rows in any of the three streams, attempt to join
         -- events within them, and report if the join contains null timestamps for the Map or SaveNeo4j
         -- events. The join will wait for the duration of the SLA window before considering a row as failed.
 
-        CREATE OR REPLACE PUMP "FAILED_PUBLISHES_STREAM_PUMP" AS
-        INSERT INTO "FAILED_PUBLISHES_STREAM"
-           SELECT STREAM
-              COALESCE(p."uuid", m."uuid", s."uuid") as "uuid",
-              COALESCE(p."transaction_id", m."transaction_id", s."transaction_id") as "transaction_id",
-              COALESCE(p."content_type", m."content_type", s."content_type") as "content_type",
-              p."event_time" as "publish_start_time",
-              m."event_time" as "map_time",
-              s."event_time" as "save_time"
-           FROM PUBLISH_START_STREAM OVER SLA AS p
-              LEFT OUTER JOIN SAVE_NEO4J_STREAM OVER SLA AS s ON (p."transaction_id" = s."transaction_id" AND p."uuid" = s."uuid")
-              LEFT OUTER JOIN MAP_STREAM OVER SLA AS m ON (p."transaction_id" = m."transaction_id" AND p."uuid" = m."uuid")
-           WHERE (m."isValid" AND s."event_time" is null AND m."event_time" is not null)
-           WINDOW SLA AS (RANGE INTERVAL '2' MINUTE PRECEDING);
+        CREATE OR REPLACE PUMP "ALERTS_STREAM_PUMP" AS
+        INSERT INTO "ALERTS_STREAM"
+        SELECT STREAM
+           COALESCE(p."uuid", m."uuid", s."uuid") as "uuid",
+           COALESCE(p."transaction_id", m."transaction_id", s."transaction_id") as "transaction_id",
+           COALESCE(p."content_type", m."content_type", s."content_type") as "content_type",
+           p."event_time" as "publish_start_time",
+           m."event_time" as "map_time",
+           s."event_time" as "save_time"
+        FROM PUBLISH_START_STREAM OVER SLA AS p
+           LEFT OUTER JOIN SAVE_NEO4J_STREAM OVER SLA AS s ON (p."transaction_id" = s."transaction_id" AND p."uuid" = s."uuid")
+           LEFT OUTER JOIN MAP_STREAM OVER SLA AS m ON (p."transaction_id" = m."transaction_id" AND p."uuid" = m."uuid")
+        WHERE (m."isValid" AND s."event_time" is null AND m."event_time" is not null)
+        WINDOW SLA AS (RANGE INTERVAL '5' MINUTE PRECEDING);
 
   AnnotationsMonitoringS3Bucket:
     Type: "AWS::S3::Bucket"
@@ -258,10 +273,10 @@ Resources:
       S3DestinationConfiguration:
         BucketARN: !GetAtt AnnotationsMonitoringS3Bucket.Arn
         BufferingHints:
-          IntervalInSeconds: "900"
-          SizeInMBs: "100"
+          IntervalInSeconds: "300"
+          SizeInMBs: "50"
         CompressionFormat: "UNCOMPRESSED"
-        Prefix: failures/
+        Prefix: alerts/
         RoleARN: !Ref FirehoseS3RoleARN
 
   AnnotationsMonitoringS3FirehoseSuccesses:
@@ -312,7 +327,7 @@ Resources:
     Properties:
       ApplicationName: !Ref AnnotationsMonitoringAnalytics
       Output:
-        Name: FAILED_PUBLISHES_STREAM
+        Name: ALERTS_STREAM
         DestinationSchema:
           RecordFormatType: "JSON"
         KinesisFirehoseOutput:
@@ -351,7 +366,7 @@ Resources:
     Properties:
       ApplicationName: !Ref AnnotationsMonitoringAnalytics
       Output:
-        Name: PUBLISH_ANALYSIS_STREAM
+        Name: ANOMALY_ANALYSIS_STREAM
         DestinationSchema:
           RecordFormatType: "JSON"
         KinesisFirehoseOutput:
