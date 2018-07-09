@@ -1,5 +1,5 @@
 ---
-- name: Provision stack
+- name: Update stack
   hosts: localhost
   connection: local
 
