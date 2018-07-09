@@ -1,5 +1,3 @@
-# USE https://github.com/Financial-Times/upp-global-configs FOR GLOBAL CONFIGS
-
 ## Description
 This repository contains the files required to provision a jumpbox to access the Content k8s clusters. The jumpbox has:
 * `kubectl`, `kubectl-login` and `cluster-login.sh` installed, which is used to access the k8s clusters
