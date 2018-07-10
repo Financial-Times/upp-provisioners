@@ -1,0 +1,122 @@
+---
+ AWSTemplateFormatVersion: '2010-09-09'
+ Description: This template deploys an jumpbox for Ops to use
+ 
+ Metadata:
+     AWS::CloudFormation::Interface:
+         - Label: FT standard tagging
+           Parameters:
+              - TagEnvironment
+              - TagTeamDL
+              - TagSystemCode
+              - TagIpCode
+              - TagDescription
+ 
+ Parameters:
+     SubnetIds:
+         Description: List of comma separated subnet IDs
+         Type: CommaDelimitedList
+
+     SecurityGroups:
+         Description: List of comma separated secudity group IDs
+         Type: CommaDelimitedList
+ 
+     EnvironmentName:
+         Description: An environment name that will be prefixed to resource names
+         Type: String
+ 
+     EnvironmentType:
+         Description: Tag detail for the Environment
+         Type: String
+         Default: p
+ 
+     Ec2InstanceType:
+         Description: Size of ec2 Instance
+         Type: String
+         Default: t2.micro
+
+     ImageId:
+         Description: AMI to be used for the jumpbox
+         Type: String
+         Default: ami-e4515e0e
+ 
+     TagTeamDL:
+         Description: Tag of the TeamDL
+         Type: String
+         AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+         ConstraintDescription: There must be a valid email address for the TeamDL
+         Default: universal.publishing.platform@ft.com
+ 
+     TagSystemCode:
+         Description: The system code for the environment
+         Type: String
+         Default: upp
+ 
+     TagIpCode:
+         Description: The environment ipCode
+         Type: String
+         AllowedPattern: '[P][0-9]*'
+         Default: P196
+ 
+     TagDescription:
+         Description: Tag detail for the describing the instance
+         Type: String
+         Default: UPP Jumpbox for Ops
+ 
+ Resources:
+   AutoScalingGroup:
+     Type: AWS::AutoScaling::AutoScalingGroup
+     Properties:
+       LaunchConfigurationName:
+         Ref: LaunchConfig
+       MinSize: '1'
+       MaxSize: '1'
+       VPCZoneIdentifier: !Ref SubnetIds
+       Tags:
+           - Key: Name
+             Value: !Join ["" , ["Upp Jumpbox ", !Ref EnvironmentType]]
+             PropagateAtLaunch: true
+           - Key: environment
+             Value: !Ref EnvironmentType
+             PropagateAtLaunch: true
+           - Key: teamDL
+             Value: !Ref TagTeamDL
+             PropagateAtLaunch: true
+           - Key: systemCode
+             Value: !Ref TagSystemCode
+             PropagateAtLaunch: true
+           - Key: ipCode
+             Value: !Ref TagIpCode
+             PropagateAtLaunch: true
+           - Key: description
+             Value: !Ref TagDescription
+             PropagateAtLaunch: true
+   LaunchConfig:
+     Type: AWS::AutoScaling::LaunchConfiguration
+     Properties:
+       IamInstanceProfile: "FT-Linux-Role"
+       ImageId: !Ref ImageId
+       InstanceType: !Ref Ec2InstanceType
+       KeyName: "upp-k8s-provisioning-debug"
+       SecurityGroups: !Ref SecurityGroups
+       UserData:
+         Fn::Base64: !Sub |
+           #!/bin/bash -x
+           /usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh /
+           bash /bootstrap.sh -s eng -e ${EnvironmentType}
+           yum update -y
+           cd /home/ec2-user
+           # Install kubectl
+           wget https://storage.googleapis.com/kubernetes-release/release/v1.7.6/bin/linux/amd64/kubectl
+           chmod +x ./kubectl
+           mv ./kubectl /usr/local/bin/kubectl
+           # Install kubectl-login
+           KUBECTL_LOGIN_VERSION=$(curl -sS -D - https://github.com/Financial-Times/kubectl-login/releases/latest -o /dev/null | grep Location | sed -E "s/^.*tag\/([0-9.]+).*$/\1/g")
+           curl -L -s -o /usr/local/bin/kubectl-login https://github.com/Financial-Times/kubectl-login/releases/download/$KUBECTL_LOGIN_VERSION/kubectl-login-linux
+           chmod 755 /usr/local/bin/kubectl-login
+           # Install cluster-login.sh
+           curl -L -s -o /usr/local/bin/cluster-login.sh https://github.com/Financial-Times/kubectl-login/releases/download/$KUBECTL_LOGIN_VERSION/cluster-login.sh
+           chmod 755 /usr/local/bin/cluster-login.sh
+           # Install docker for PAC failover
+           yum install docker -y
+           service docker start

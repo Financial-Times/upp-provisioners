@@ -1,0 +1,5 @@
+region: us-east-1
+vpc_id: vpc-4bc03f32
+subnet_ids: subnet-f9fcc99c,subnet-a8dc1384,subnet-d63d859e
+security_groups: sg-a0e39ade,sg-06e69f78
+image_id: ami-cfe4b2b0

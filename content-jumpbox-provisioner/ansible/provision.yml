@@ -1,0 +1,25 @@
+---
+- name: Provision stack
+  hosts: localhost
+  connection: local
+
+  vars_files:
+    - vars/{{ environment_type }}-{{ aws_region }}.yml
+
+  tasks:
+  - name: Launch Jumpbox
+    cloudformation:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
+      stack_name: "upp-jumpbox-{{ aws_region }}"
+      state: present
+      region: "{{ region }}"
+      disable_rollback: true
+      template: /cloudformation/stack.yml
+      template_parameters:
+        SubnetIds: "{{ subnet_ids }}"
+        SecurityGroups: "{{ security_groups }}"
+        Ec2InstanceType: "t2.micro"
+        EnvironmentName: "upp-jumpbox-{{ aws_region }}"
+        EnvironmentType: "{{ environment_type }}"
+        ImageId: "{{image_id}}"
