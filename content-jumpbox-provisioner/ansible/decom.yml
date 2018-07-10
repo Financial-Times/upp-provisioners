@@ -3,10 +3,14 @@
   hosts: localhost
   connection: local
 
+  vars_files:
+    - vars/{{ environment_type }}-{{ aws_region }}.yml
+
   tasks:
   - name: Delete Jumpbox
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_access_key }}"
       stack_name: "upp-jumpbox-{{ aws_region }}"
+      region: "{{ region }}"
       state: absent
