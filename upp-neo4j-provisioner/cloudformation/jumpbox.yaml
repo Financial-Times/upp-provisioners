@@ -1,0 +1,271 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Template to spin-up jumpbox in Neo4j HA Public subnet
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: Network Configuration
+      Parameters:
+      - VPC
+      - Subnet1
+      - Subnet2
+      - Subnet3
+    - Label:
+        default: DNS configuration
+      Parameters:
+      - KonstructorAPIKey
+      - DnsSuffix
+    - Label:
+        default: Amazon EC2 Configuration
+      Parameters:
+      - InstanceType
+      - ImageId
+      - IamInstanceProfile
+      - InstanceKey
+
+    ParameterLabels:
+      AutoGroupAvailabilityZones:
+        default: Auto Group Availability Zones
+      InstanceType:
+        default: Instance Type
+      InstanceKey:
+        default: Instance EC2 User Key
+
+Parameters:
+  KonstructorAPIKey:
+    Description: API Key used to access Konstructor DNS
+    Type: String
+  DnsSuffix:
+    Description: "The suffix that will be appended to the DNS name exposed for the jumpbox. The whole DNS name for the jumpox will be: jump-{region}-tunnel-{DnsSuffix}.ft.com"
+    Type: String
+    Default: up
+  DeploymentScriptURL:
+    Description: Deployment script URL
+    Type: String
+    Default: https://raw.githubusercontent.com/Financial-Times/upp-provisioners/master/upp-neo4j-provisioner/sh/jumpbox.sh
+  VPC:
+    Description: This is the VPC the stack will be deployed inside.
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-36639c52
+  Subnet1:
+    Description: Public subnet, Neo4j HA Public Subnet 1, eu-west-1a
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-b59b54c3
+  Subnet2:
+    Description: Public subnet, Neo4j HA Public Subnet 2, eu-west-1b
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-fcfa5e98
+  Subnet3:
+    Description: Public subnet, Neo4j HA Public Subnet 3, eu-west-1c
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-1cba5f44
+  InstanceKey:
+    Description: EC2User Key
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: jussi.heinonen.universal.publishing
+  ImageId:
+    Description: Amazon Linux AMI 2016.09.1 (HVM), SSD Volume Type
+    Type: String
+    Default: ami-70edb016
+  IamInstanceProfile:
+    Description: What IAM role to give to this instance
+    Type: String
+    Default: FT-Linux-Role
+  TagEnvironment:
+    Description: Tag detail for the Environment
+    Type: String
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+      - 'int'
+    Default: d
+  TagTeamDL:
+    Description: Tag of the TeamDL.
+    Type: String
+    ConstraintDescription: There must be a valid email address for the TeamDL
+    AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    Default: universal.publishing.platform@ft.com
+  TagSystemCode:
+    Description: Tag detail for the SystemCode
+    Type: String
+    Default: upp
+  TagIpCode:
+    Description: Tag detail for the ipCode
+    Type: String
+    Default: P196
+  TagDescription:
+    Description: Instance description
+    Type: String
+    Default: Neo4j HA Jumpbox
+  TagStopSchedule:
+    Description: Tag detail for the when the instance is to be powered off.
+    Type: String
+    Default: '{ "start": "0 9 * * 1-5", "stop": "55 18 * * *" }'
+  InstanceType:
+    Description: The type and size of the instance. Check documentation for recommended types.
+    Type: String
+    AllowedValues:
+    - t2.nano
+    - t2.micro
+    - t2.small
+    - t2.medium
+    - t2.large
+    - m4.large
+    - m4.xlarge
+    - m4.2xlarge
+    - m4.4xlarge
+    - m4.10xlarge
+    - m4.16xlarge
+    - m3.medium
+    - m3.large
+    - m3.xlarge
+    - m3.2xlarge
+    - c4.large
+    - c4.xlarge
+    - c4.2xlarge
+    - c4.4xlarge
+    - c4.8xlarge
+    - c3.large
+    - c3.xlarge
+    - c3.2xlarge
+    - c3.4xlarge
+    - c3.8xlarge
+    - p2.xlarge
+    - p2.8xlarge
+    - p2.16xlarge
+    - g2.2xlarge
+    - g2.8xlarge
+    - x1.32xlarge
+    - r3.large
+    - r3.xlarge
+    - r3.2xlarge
+    - r3.4xlarge
+    - r3.8xlarge
+    - i2.xlarge
+    - i2.2xlarge
+    - i2.4xlarge
+    - i2.8xlarge
+    - d2.xlarge
+    - d2.2xlarge
+    - d2.4xlarge
+    - d2.8xlarge
+    Default: t2.micro
+
+Conditions:
+  HasKeyName:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: InstanceKey
+
+Resources:
+  # Jumpbox security group
+  JumpboxSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH from known subnets and IP addresses
+      VpcId: !Ref VPC
+      Tags:
+      - Key: environment
+        Value: !Ref TagEnvironment
+      - Key: teamDL
+        Value: !Ref TagTeamDL
+      - Key: systemCode
+        Value: !Ref TagSystemCode
+      - Key: Name
+        Value: Neo4j HA jumpbox
+      - Key: ipCode
+        Value:
+          Ref: TagIpCode
+      SecurityGroupIngress:
+      # OSB + LDNWebPerf
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 82.136.1.214/32
+      # Park Royal
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 213.216.148.1/32
+      # XP - Cluj Office
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 194.117.242.0/23
+      # EU VPN Client
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 62.25.64.1/32
+      # US VPN Client
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 64.210.200.1/32
+      # Allow internal requests
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 172.24.0.0/16
+  #auto-scaling groups
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchConfigurationName:
+        Ref: LaunchConfig
+      MinSize: '1'
+      MaxSize: '1'
+      VPCZoneIdentifier:
+        - Ref: Subnet1
+        - Ref: Subnet2
+        - Ref: Subnet3
+      Tags:
+      - Key: environment
+        Value:
+          Ref: TagEnvironment
+        PropagateAtLaunch: true
+      - Key: teamDL
+        Value:
+          Ref: TagTeamDL
+        PropagateAtLaunch: true
+      - Key: systemCode
+        Value:
+          Ref: TagSystemCode
+        PropagateAtLaunch: true
+      - Key: ipCode
+        Value:
+          Ref: TagIpCode
+        PropagateAtLaunch: true
+      - Key: description
+        Value:
+          Ref: TagDescription
+        PropagateAtLaunch: true
+  LaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      SecurityGroups:
+        - Ref: JumpboxSecurityGroup
+      InstanceType:
+        Ref: InstanceType
+      ImageId:
+        Ref: ImageId
+      AssociatePublicIpAddress: true
+      KeyName:
+        Fn::If:
+        - HasKeyName
+        - Ref: InstanceKey
+        - Ref: AWS::NoValue
+      IamInstanceProfile:
+        Ref: IamInstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -x
+          # Pull and execute deployment script
+          echo ${KonstructorAPIKey} > /root/.kon_dns_key
+          echo ${DnsSuffix} > /root/.dns_suffix
+          /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash

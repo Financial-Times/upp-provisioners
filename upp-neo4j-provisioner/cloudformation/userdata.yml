@@ -1,0 +1,165 @@
+#cloud-config
+
+coreos:
+  update:
+    reboot-strategy: off
+  etcd2:
+    discovery: ${EtcdToken}
+    advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
+    initial-advertise-peer-urls: http://$private_ipv4:2380
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
+  units:
+    - name: authorized_keys.service
+      command: start
+      content: |
+        [Unit]
+        Description=Update authorized_keys
+
+        [Service]
+        Type=oneshot
+        ExecStartPre=/bin/sh -c "mkdir -p /home/core/.ssh && touch /home/core/.ssh/authorized_keys"
+        ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512"
+        ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys"
+        ExecStart=/bin/sh -c "cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/core/.ssh/authorized_keys && chmod 700 /home/core/.ssh && chmod 600 /home/core/.ssh/authorized_keys && chown -R core:core /home/core/.ssh"
+    - name: authorized_keys.timer
+      command: start
+      content: |
+          [Unit]
+          Description=Authorized keys timer
+
+          [Timer]
+          OnBootSec=1min
+          OnUnitActiveSec=1min
+
+          [Install]
+          WantedBy=timers.target
+    - name: docker.service
+      drop-ins:
+        - name: 10-turn-off-logging.conf
+          content: |
+            [Service]
+            Environment="DOCKER_OPTS=--log-driver=none"
+      command: start
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: key-register.service
+      command: start
+      content: |
+          [Unit]
+          Description=Add secret keys to etcd2
+          # Only run on first boot (creates the file at the end of the execution)
+          ConditionPathExists=!/var/lib/format-done
+
+          [Service]
+          Type=oneshot
+          ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && break || sleep 2; done"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/konstructor/api-key ${KonstructorAPIKey} >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_access_key_id ${AWSAccessKeyId} >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/_credentials/aws/aws_secret_access_key ${AWSSecretAccessKey} >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/environment_tag ${CocoEnvironmentTag} >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/services-definition-root-uri ${ServicesDefinitionRootURI} >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_hec_url ${SplunkHecURL} >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/splunk-forwarder/splunk_hec_token ${SplunkHecToken} >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/dbms-memory-heap-maxSize ${HeapMaxSize} >/dev/null 2>&1 || true;"
+          ExecStart=/bin/sh -c "etcdctl mk /ft/config/neo4j/dbms-memory-pagecache-size ${PageCacheSize} >/dev/null 2>&1 || true;"
+    - name: vol-neo4j.mount
+      command: start
+      content: |
+        [Mount]
+        What=/dev/xvdc
+        Where=/vol/neo4j
+        Type=ext4
+    - name: update-engine.service
+      command: stop
+      mask: true
+    - name: bootstrap.service
+      command: start
+      content: |
+          [Unit]
+          Description=Start fleet services
+          After=fleet.service
+          Requires=fleet.service
+          # Only run on first boot
+          ConditionPathExists=!/var/lib/format-done
+
+          [Service]
+          Type=oneshot
+          ExecStartPre=/bin/sh -c "while true; do etcdctl cluster-health && fleetctl list-units && break || sleep 5; done"
+          ExecStart=/bin/sh -c "curl -sSL --retry 5 --retry-delay 2 -o /tmp/deployer.service https://raw.githubusercontent.com/Financial-Times/coco-fleet-deployer/master/deployer.service && fleetctl start /tmp/deployer.service"
+          ExecStartPost=/usr/bin/touch /var/lib/format-done
+
+write_files:
+  - path: /etc/sysctl.d/50-disable-ipv6.conf
+    content: |
+      net.ipv6.conf.all.disable_ipv6=1
+      net.ipv6.conf.default.disable_ipv6=1
+  - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
+    content: |
+      [Socket]
+      ListenStream=0.0.0.0:49153
+  - path: /etc/systemd/journald.conf.d/10-override-config.conf
+    content: |
+      [Journal]
+      MaxLevelConsole=crit
+      Compress=false
+      RateLimitInterval=0
+      RateLimitBurst=0
+  - path: /etc/motd.d/env.confs
+    content: |
+      This persistent enviroment is tagged as ${CocoEnvironmentTag} and is cluster ${EtcdToken}
+  - path: /etc/profile.d/history_timestamps.sh
+    permissions: 0755
+    owner: root
+    content: |
+      #!/bin/bash
+      export HISTTIMEFORMAT="%d/%m/%y %T"
+      export HISTFILESIZE=10000000
+      export HISTSIZE=10000000
+  - path: /etc/profile.d/services_autocomplete.sh
+    permissions: 0755
+    owner: root
+    content: |
+      #!/bin/bash
+      fleetctl list-units | tail -n +2 | cut -f 1 | tr "\\n" " " > /home/core/services.list
+      _services(){
+        local cur=${COMP_WORDS[COMP_CWORD]}
+        COMPREPLY=( $(compgen -W "$(<~/services.list)" -- ${cur}) )
+      }
+      complete -F _services fcres
+      complete -F _services fcjf
+      complete -F _services fcssh
+  - path: /etc/profile.d/ft_aliases.sh
+    permissions: 0755
+    owner: root
+    content: |
+      #!/bin/bash
+      alias ll='ls -l'
+      alias fc='fleetctl'
+      alias fclm='fleetctl list-machines'
+      alias fclu='fleetctl list-units'
+      alias fcjf='fleetctl journal -f '
+      alias fcbad='fleetctl list-units | grep -v "exited\\|running\\|backup\\|upgrade"'
+      function fclmg() { fleetctl list-machines | grep  $@ ;}
+      function fclug() { fleetctl list-units | grep  $@ ;}
+      function fcssh() { fleetctl ssh $@ ;}
+      function fcjfl() { fleetctl journal -f --lines=$@ ; }
+      function fcres() { fleetctl ssh $@ sudo systemctl restart $@ ; }
+  - path: /home/core/.ssh/config
+    permissions: 0600
+    owner: core
+    content: |
+      Host *-tunnel-up.ft.com
+      User core
+      ForwardAgent yes
+      StrictHostKeyChecking no
+      UserKnownHostsFile /dev/null
+  - path: "/etc/profile.d/prompt.sh"
+    permissions: "0755"
+    owner: "root"
+    content: |
+      #!/bin/bash
+      export ENVIRONMENT_TAG=`etcdctl get /ft/config/environment_tag`
+      export PS1='\[\033]0;\u@\h:\w\007\]\[\033[01;32m\]\u@\h [$ENVIRONMENT_TAG]\[\033[01;34m\] \w \$\[\033[00m\] '
