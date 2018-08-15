@@ -1,0 +1,175 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template deploys an Aurora cluster with one instance for Concept Events data.
+
+Metadata:
+    AWS::CloudFormation::Interface:
+        - Label: FT standard tagging
+          Parameters:
+             - TagEnvironment
+             - TagTeamDL
+             - TagSystemCode
+             - TagIpCode
+             - TagDescription
+
+Parameters:
+    DBSecurityGroup:
+        Description: Security group id
+        Type: String
+
+    DBSubnetIds:
+        Description: List of comma separated subnet IDs
+        Type: CommaDelimitedList
+
+    DBInstanceType:
+        Description: The instance type to use for the database
+        Type: String
+        AllowedValues:
+            - db.r4.large
+        Default: db.r4.large
+
+    DBInstanceMasterUsername:
+        Description: The master username for the database
+        Type: String
+        MinLength: 1
+        MaxLength: 16
+        AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+        ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+
+    DBInstanceMasterPassword:
+        Description: The master password for the database
+        NoEcho: true
+        Type: String
+        MinLength: 10
+        MaxLength: 25
+        AllowedPattern: '[a-zA-Z0-9]*'
+        ConstraintDescription: must contain only alphanumeric characters.
+
+    DBParameterGroup:
+        Description: Name of the parameter group to use
+        Type: String
+
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+
+    EnvironmentTag:
+        Description: Tag detail for the Environment; d for team clusters, t for staging and p for production
+        Type: String
+        AllowedValues:
+            - 'd'
+            - 't'
+            - 'p'
+        Default: d
+
+    TagTeamDL:
+        Description: Tag of the TeamDL
+        Type: String
+        AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+        ConstraintDescription: There must be a valid email address for the TeamDL
+        Default: universal.publishing.platform@ft.com
+
+    TagSystemCode:
+        Description: The system code for the environment
+        Type: String
+        Default: upp
+
+    TagIpCode:
+        Description: The environment ipCode
+        Type: String
+        AllowedPattern: '[P][0-9]*'
+        Default: P196
+
+    TagDescription:
+        Description: Tag detail for the describing the instance
+        Type: String
+        Default: UPP Concept Events Aurora Store
+
+Resources:
+    DBSubnetGroup:
+        Type: AWS::RDS::DBSubnetGroup
+        Properties:
+            DBSubnetGroupDescription: !Join ['', [!Ref EnvironmentName, ' Concept Events RDS Subnet Group']]
+            SubnetIds: !Ref DBSubnetIds
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , ["UPP Concept Events RDS Subnet Group ", !Ref EnvironmentName]]
+                - Key: environment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
+
+    DBCluster:
+        Type: AWS::RDS::DBCluster
+        Properties:
+            Engine: aurora
+            DBSubnetGroupName: !Ref DBSubnetGroup
+            MasterUsername: !Ref DBInstanceMasterUsername
+            MasterUserPassword: !Ref DBInstanceMasterPassword
+            DBClusterParameterGroupName: !Ref DBClusterParameterGroup
+            VpcSecurityGroupIds: [ !Ref DBSecurityGroup ]
+            StorageEncrypted: true
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , ["UPP Concept Events RDS Cluster ", !Ref EnvironmentName]]
+                - Key: environment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
+
+    DBPrimaryInstance:
+        Type: AWS::RDS::DBInstance
+        Properties:
+            DBClusterIdentifier: !Ref DBCluster
+            DBInstanceClass: !Ref DBInstanceType
+            Engine: aurora
+            DBSubnetGroupName: !Ref DBSubnetGroup
+            DBInstanceIdentifier: !Join ["" , ["upp-concept-events-rds-", !Ref EnvironmentName]]
+            PubliclyAccessible: true
+            StorageEncrypted: true
+            DBParameterGroupName: !Ref DBParameterGroup
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , ["UPP Concept Events RDS Instance ", !Ref EnvironmentName]]
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
+
+    DBClusterParameterGroup:
+        Type: AWS::RDS::DBClusterParameterGroup
+        Properties:
+            Description: !Join ['', [!Ref EnvironmentName, ' cluster parameter group']]
+            Family: aurora5.6
+            Parameters:
+                binlog_format: 'MIXED'
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , ["UPP Concept Events RDS Cluster Parameter Group ", !Ref EnvironmentName]]
+                - Key: environment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TagTeamDL
+                - Key: systemCode
+                  Value: !Ref TagSystemCode
+                - Key: ipCode
+                  Value: !Ref TagIpCode
+                - Key: description
+                  Value: !Ref TagDescription
