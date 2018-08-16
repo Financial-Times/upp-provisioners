@@ -11,5 +11,4 @@ aws_default_region=${AWS_DEFAULT_REGION} \
 db_master_password=${MASTER_PASSWORD} \
 aws_account=${AWS_ACCOUNT} \
 aws_access_key=${AWS_ACCESS_KEY} \
-aws_secret_access_key=${AWS_SECRET_ACCESS_KEY} \
-decom_dbs=${DECOM_DBS}"
+aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}"

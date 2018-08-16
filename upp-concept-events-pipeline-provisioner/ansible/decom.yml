@@ -4,17 +4,17 @@
     - vault_{{ aws_account }}.yml
 
   tasks:
-    - name: Delete Primary Queue Stack
+    - name: Delete Queue Stack
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_access_key}}"
         region: "{{aws_default_region}}"
         stack_name: "upp-concept-events-sqs-{{environment_name}}"
         state: "absent"
-      register: primary_concept_pub_stack_output
+      register: concept_pub_stack_output
 
     - debug:
-        msg: "{{primary_concept_pub_stack_output}}"
+        msg: "{{concept_pub_stack_output}}"
 
     - name: Remove Concept Events RDS stack
       cloudformation:

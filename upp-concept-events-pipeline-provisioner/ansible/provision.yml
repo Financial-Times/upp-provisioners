@@ -4,7 +4,7 @@
     - vault_{{ aws_account }}.yml
 
   tasks:
-    - name: Create Primary Queues Concept Events Pipeline Stack
+    - name: Create Queues for Concept Events Pipeline Stack
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_access_key}}"
@@ -20,10 +20,10 @@
           systemCode: "upp"
           teamDL: "universal.publishing.platform@ft.com"
           description: "Concept Events Pipeline Queues Stack - {{environment_name}}"
-      register: primary_concept_pub_stack_output
+      register: concept_pub_stack_output
 
     - debug:
-        msg: "{{primary_concept_pub_stack_output}}"
+        msg: "{{concept_pub_stack_output}}"
 
     - name: Launch Concept Events Security and Parameter Group stack
       cloudformation:

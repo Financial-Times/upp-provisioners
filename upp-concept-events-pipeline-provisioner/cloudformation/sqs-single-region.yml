@@ -52,5 +52,5 @@ Resources:
 
 Outputs:
   SQSConceptEventsQueueARN:
-    Description: The SQS Qeueeue
+    Description: The SQS Queue
     Value: !GetAtt SQSConceptEventsQueue.Arn

@@ -129,7 +129,7 @@ Resources:
                 - Key: description
                   Value: !Ref TagDescription
 
-    DBPrimaryInstance:
+    DBInstance:
         Type: AWS::RDS::DBInstance
         Properties:
             DBClusterIdentifier: !Ref DBCluster
