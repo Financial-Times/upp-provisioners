@@ -1,0 +1,56 @@
+Description: "Creates SQS Queue for publishing concept events in UPP."
+
+Parameters:
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+  EnvironmentTag:
+    Description: Tag detail for the Environment; d for team clusters, t for staging and p for production
+    Type: String
+    AllowedValues:
+        - 'd'
+        - 't'
+        - 'p'
+    Default: d
+      
+  Region:
+    Type: String
+    Default: "eu-west-1"
+
+Resources:
+  SQSConceptEventsDeadletterQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: !Join ["", ["upp-concept-events-deadletter-", !Ref EnvironmentName]]
+
+  SQSConceptEventsQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: !Join ["", ["upp-concept-events-", !Ref EnvironmentName]]
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt SQSConceptEventsDeadletterQueue.Arn
+        maxReceiveCount: 5
+
+  SQSConceptEventsQueuePolicy:
+    Type: "AWS::SQS::QueuePolicy"
+    Properties:
+      Queues:
+        - !Ref SQSConceptEventsQueue
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: ConceptNotificationQueuePolicy
+        Statement:
+          -
+            Sid: "communicate-with-sqs"
+            Effect: "Allow"
+            Principal:
+              AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
+            Action: "SQS:*"
+            Resource: !GetAtt SQSConceptEventsQueue.Arn
+
+Outputs:
+  SQSConceptEventsQueueARN:
+    Description: The SQS Queue
+    Value: !GetAtt SQSConceptEventsQueue.Arn

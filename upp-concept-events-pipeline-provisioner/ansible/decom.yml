@@ -1,0 +1,33 @@
+- hosts: all
+
+  vars_files:
+    - vault_{{ aws_account }}.yml
+
+  tasks:
+    - name: Delete Queue Stack
+      cloudformation:
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
+        region: "{{aws_default_region}}"
+        stack_name: "upp-concept-events-sqs-{{environment_name}}"
+        state: "absent"
+      register: concept_pub_stack_output
+
+    - debug:
+        msg: "{{concept_pub_stack_output}}"
+
+    - name: Remove Concept Events RDS stack
+      cloudformation:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        stack_name: "upp-concept-events-rds-{{ environment_name }}"
+        region: eu-west-1
+        state: "absent"
+
+    - name: Remove Concept Events RDS Security Group
+      cloudformation:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        stack_name: "upp-concept-events-rds-security-group-{{ environment_name }}"
+        region: eu-west-1
+        state: "absent"
