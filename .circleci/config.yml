@@ -77,3 +77,4 @@ jobs:
   upp-elasticsearch-provisioner: *build-config
   upp-factset-provisioner: *build-config
   upp-concept-notifications-provisioner: *build-config
+  upp-concept-events-pipeline-provisioner: *build-config
