@@ -19,7 +19,7 @@ The Concept Events Pipeline can be built locally as a Docker image:
 
 ## Provisioning a cluster
 - Grab, customize and export the environment variables from the **AWS Concept Events Pipeline Provisioning** LastPass note.
-- The stack name will be `upp-concept-events-${ENVIRONMENT_NAME}` - eg, `upp-concept-events-pre-prod`
+- The stack name will be `upp-concept-events-${ENVIRONMENT_NAME}` - eg, `upp-concept-events-staging`
 - The environment tag length must be less than or equal to 28
 - Generate credentials for the IAM user `upp-concept-events-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
 - The cloudformation script requires five parameters:
