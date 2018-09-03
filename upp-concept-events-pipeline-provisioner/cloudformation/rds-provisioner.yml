@@ -143,6 +143,7 @@ Resources:
             Tags:
                 - Key: Name
                   Value: !Join ["" , ["UPP Concept Events RDS Instance ", !Ref EnvironmentName]]
+                - Key: environment
                   Value: !Ref EnvironmentTag
                 - Key: teamDL
                   Value: !Ref TagTeamDL
