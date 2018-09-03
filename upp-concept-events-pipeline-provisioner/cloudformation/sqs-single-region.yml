@@ -13,10 +13,13 @@ Parameters:
         - 't'
         - 'p'
     Default: d
-      
+
   Region:
     Type: String
     Default: "eu-west-1"
+
+Conditions:
+  PermitStagingUser: !Equals [!Ref EnvironmentTag, staging]
 
 Resources:
   SQSConceptEventsDeadletterQueue:
@@ -46,7 +49,7 @@ Resources:
             Sid: "communicate-with-sqs"
             Effect: "Allow"
             Principal:
-              AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
+              AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', !If [PermitStagingUser, ':user/content-containers-apps-staging', ':user/content-containers-apps']]]
             Action: "SQS:*"
             Resource: !GetAtt SQSConceptEventsQueue.Arn
 
