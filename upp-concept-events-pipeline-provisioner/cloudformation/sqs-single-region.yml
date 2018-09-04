@@ -19,7 +19,7 @@ Parameters:
     Default: "eu-west-1"
 
 Conditions:
-  PermitStagingUser: !Equals [!Ref EnvironmentTag, staging]
+  PermitStagingUser: !Equals [!Ref EnvironmentName, staging]
 
 Resources:
   SQSConceptEventsDeadletterQueue:

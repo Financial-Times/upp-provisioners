@@ -13,10 +13,6 @@ Metadata:
              - TagDescription
 
 Parameters:
-    DBVPC:
-        Description: Choose which VPC the Aurora DB should be deployed TagStopSchedule
-        Type: AWS::EC2::VPC::Id
-
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
@@ -54,57 +50,6 @@ Parameters:
         Default: UPP Concept Events RDS Group
 
 Resources:
-    ConceptEventsSecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupName: !Join ["" , ["upp-concept-events-rds-security-group-", !Ref EnvironmentName]]
-        GroupDescription: "Security group for UPP Concept Events RDS store"
-        VpcId: !Ref DBVPC
-        Tags:
-            - Key: Name
-              Value: !Join ["" , ["UPP Concept Events RDS Security Group ", !Ref EnvironmentName]]
-            - Key: environment
-              Value: !Ref EnvironmentTag
-            - Key: teamDL
-              Value: !Ref TagTeamDL
-            - Key: systemCode
-              Value: !Ref TagSystemCode
-            - Key: ipCode
-              Value: !Ref TagIpCode
-            - Key: description
-              Value: "Security group for UPP Concept Events RDS store"
-        SecurityGroupIngress:
-            # OSB + LDNWebPerf
-            - IpProtocol: tcp
-              FromPort: 3306
-              ToPort: 3306
-              CidrIp: 82.136.1.214/32
-            # SSH
-            - IpProtocol: tcp
-              FromPort: 22
-              ToPort: 22
-              CidrIp: 82.136.1.214/32
-            # Park Royal
-            - IpProtocol: tcp
-              FromPort: 3306
-              ToPort: 3306
-              CidrIp: 213.216.148.1/32
-            # XP - Cluj Office
-            - IpProtocol: tcp
-              FromPort: 3306
-              ToPort: 3306
-              CidrIp: 194.117.242.0/23
-            # EU VPN Client
-            - IpProtocol: tcp
-              FromPort: 3306
-              ToPort: 3306
-              CidrIp: 62.25.64.1/32
-            # US VPN Client
-            - IpProtocol: tcp
-              FromPort: 3306
-              ToPort: 3306
-              CidrIp: 64.210.200.1/32
-
     ConceptEventsParameterGroup:
       Type: AWS::RDS::DBParameterGroup
       Properties:
@@ -129,9 +74,6 @@ Resources:
               Value: 'Parameter Group for Concept Events RDS Store'
 
 Outputs:
-  ConceptEventsSecurityGroupId:
-    Description: Id of newly created security group
-    Value: !Ref ConceptEventsSecurityGroup
   ConceptEventsParameterGroupName:
     Description: Name of the newly created parameter group
     Value: !Ref ConceptEventsParameterGroup
