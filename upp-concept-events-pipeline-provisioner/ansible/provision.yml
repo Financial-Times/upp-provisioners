@@ -25,24 +25,22 @@
     - debug:
         msg: "{{concept_pub_stack_output}}"
 
-    - name: Launch Concept Events Security and Parameter Group stack
+    - name: Launch Concept Events Parameter Group stack
       cloudformation:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
-        stack_name: "upp-concept-events-rds-security-group-{{ environment_name }}"
+        stack_name: "upp-concept-events-rds-parameter-group-{{ environment_name }}"
         state: present
         region: eu-west-1
         disable_rollback: true
-        template: /cloudformation/security-and-parameter-group-provisioner.yml
+        template: /cloudformation/parameter-group-provisioner.yml
         template_parameters:
-          DBVPC: "{{ vpc_id }}"
           EnvironmentName: "{{ environment_name }}"
           EnvironmentTag: "{{ environment_tag }}"
       register: group_stack_output
 
     - name: Save group outputs as variable
       set_fact:
-        ConceptEventsSecurityGroupId: "{{group_stack_output.stack_outputs.ConceptEventsSecurityGroupId}}"
         ConceptEventsParameterGroupName: "{{group_stack_output.stack_outputs.ConceptEventsParameterGroupName}}"
 
     - name: Launch Concept Events RDS stack
@@ -61,5 +59,5 @@
           DBInstanceMasterPassword: "{{ db_master_password }}"
           EnvironmentName: "{{ environment_name }}"
           EnvironmentTag: "{{ environment_tag }}"
-          DBSecurityGroup: "{{ ConceptEventsSecurityGroupId }}"
+          DBSecurityGroup: "{{ security_group_id }}"
           DBParameterGroup: "{{ ConceptEventsParameterGroupName }}"

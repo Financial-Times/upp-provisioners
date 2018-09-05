@@ -39,7 +39,6 @@ docker run \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
-    -e "SQS_CONCEPT_MAX_DEPTH=$SQS_CONCEPT_MAX_DEPTH" \
     coco/upp-concept-events-pipeline-provisioner:latest /bin/bash provision.sh
 ```
 
