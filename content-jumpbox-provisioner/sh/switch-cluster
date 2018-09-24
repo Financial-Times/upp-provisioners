@@ -1,0 +1,10 @@
+#!/bin/bash
+
+CLUSTER="$1"
+
+if [[ ! -f "/upp-kubeconfig/config-${CLUSTER}" ]] ; then
+    echo -e "${CLUSTER} does not exist. Available clusters are:"
+    grep "aliases"  ~/.kubectl-login.json
+else
+    export KUBECONFIG="/upp-kubeconfig/config-${CLUSTER}"
+fi
