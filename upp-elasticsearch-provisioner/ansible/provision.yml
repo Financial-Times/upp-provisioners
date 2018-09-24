@@ -54,6 +54,3 @@
       include: tasks/restore_es_snapshot.yml
       when:
         - restore_es_snapshot == "true"
-
-    - name: Create or update cluster CNAME
-      include: tasks/create_update_cname.yml

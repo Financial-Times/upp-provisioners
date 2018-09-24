@@ -48,9 +48,6 @@
     - debug:
         msg: "{{es_stack_output}}"
 
-    - name: Delete cluster CNAME
-      include: tasks/delete_cname.yml
-
     - name: Delete S3 bucket (if requested)
       include: tasks/delete_s3_bucket.yml
       when:
