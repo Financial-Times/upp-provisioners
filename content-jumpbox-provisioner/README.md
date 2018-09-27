@@ -26,6 +26,7 @@ Here are the steps for provisioning a new cluster:
         -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
         -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
         -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
+        -e "VAULT_PASS=$VAULT_PASS" \
         content-jumpbox-provisioner:local /bin/bash provision.sh
     ```    
 

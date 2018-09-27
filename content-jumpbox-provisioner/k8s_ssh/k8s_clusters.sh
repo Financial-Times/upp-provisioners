@@ -21,7 +21,7 @@ To show available clusters:
 list-clusters
 
 To connect to a cluster:
-source switch-cluster upp-delivery-prod-eu
+source cluster-login.sh upp-delivery-prod-eu
 "
 
 export PS1='[\u (k8s: $(__kube_ps1)) \W]\$ '

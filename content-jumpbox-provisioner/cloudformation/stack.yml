@@ -39,6 +39,18 @@
          Description: AMI to be used for the jumpbox
          Type: String
          Default: ami-e4515e0e
+        
+     SSHConfig:
+         Description: SSH config
+         Type: String
+
+     SSHAgent:
+         Description: SSh Agent
+         Type: String
+
+     K8sCluster:
+         Description: K8s Clusters
+         Type: String
  
      TagTeamDL:
          Description: Tag of the TeamDL
@@ -105,6 +117,15 @@
            /usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh /
            bash /bootstrap.sh -s eng -e ${EnvironmentType}
            yum update -y
+           curl -s https://raw.githubusercontent.com/Financial-Times/content-k8s-auth-setup/master/kubeconfig?token=AJR6g9BbnXkMwS2G_IdcKSLWZmjV7kPBks5bsiZ9wA%3D%3D > /kubeconfig
+           echo "export KUBECONFIG=/kubeconfig" > ~/.bashrc
+           source ~/.bashrc
+           cat ${SSHConfig} >> /etc/ssh/ssh_config
+           chmod 0644 /etc/ssh/ssh_config
+           cat ${SSHAgent} >> /etc/profile.d/z0_ssh_agent.sh
+           chmod 0644 /etc/profile.d/z0_ssh_agent.sh
+           cat ${K8sCluster} >> /etc/profile.d/z2_k8s_clusters.sh
+           chmod 0644 /etc/profile.d/z2_k8s_clusters.sh
            cd /home/ec2-user
            # Install kubectl
            wget https://storage.googleapis.com/kubernetes-release/release/v1.7.6/bin/linux/amd64/kubectl
