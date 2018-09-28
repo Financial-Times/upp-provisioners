@@ -14,7 +14,7 @@ Parameters:
     Description: The name of the ES cluster
     Type: String
   Region:
-    Description: AWS region - only used to generate the domain access policy 
+    Description: AWS region - only used to generate the domain access policy
     Type: String
     AllowedValues:
       - 'eu-west-1'
@@ -36,7 +36,7 @@ Resources:
       EBSOptions:
         EBSEnabled: true
         Iops: 0
-        VolumeSize: 25
+        VolumeSize: 50
         VolumeType: "gp2"
       SnapshotOptions:
         AutomatedSnapshotStartHour: "0"
