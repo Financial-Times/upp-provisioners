@@ -33,4 +33,5 @@
         SSHConfig: "{{ lookup('file', '/k8s_ssh/ssh_config') }}"
         SSHAgent: "{{ lookup('file', '/k8s_ssh/ssh_agent.sh') }}"
         K8sCluster: "{{ lookup('file', '/k8s_ssh/k8s_clusters.sh') }}"
-        KubectlLoginFile: "{{ lookup('file', '/kubectl-login.json') | from_json }}"
+        KubectlLoginFile: "{{ lookup('file', '/kubectl-login.json') }}"
+        ListClusters: "{{ lookup('file', '/k8s_ssh/list-clusters') }}"
