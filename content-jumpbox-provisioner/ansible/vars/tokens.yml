@@ -1,6 +1,0 @@
-upp_prod_publish_eu: "{{ upp_prod_publish_eu }}"
-upp_prod_publish_us: "{{ upp_prod_publish_us }}"
-upp_prod_delivery_eu: "{{ upp_prod_delivery_eu }}"
-upp_prod_delivery_us: "{{ upp_prod_delivery_us }}"
-pac_prod_eu: "{{ pac_prod_eu }}"
-pac_prod_us: "{{ pac_prod_us }}"  

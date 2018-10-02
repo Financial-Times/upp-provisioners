@@ -5,14 +5,8 @@
 
   vars_files:
     - vars/{{ environment_type }}-{{ aws_region }}.yml
-    - vars/tokens.yml
-    - vaults/tokens.yml
 
   tasks:
-  - name: Generate kubectl-login.json vars_file
-    template: 
-      src: templates/kubectl-login.json.j2
-      dest: /kubectl-login.json
 
   - name: Launch Jumpbox
     cloudformation:
@@ -33,5 +27,4 @@
         SSHConfig: "{{ lookup('file', '/k8s_ssh/ssh_config') }}"
         SSHAgent: "{{ lookup('file', '/k8s_ssh/ssh_agent.sh') }}"
         K8sCluster: "{{ lookup('file', '/k8s_ssh/k8s_clusters.sh') }}"
-        KubectlLoginFile: "{{ lookup('file', '/kubectl-login.json') }}"
         ListClusters: "{{ lookup('file', '/k8s_ssh/list-clusters') }}"
