@@ -135,7 +135,7 @@
             chmod +x /usr/local/bin/list-clusters
             cd /home/ec2-user
             # Install kubectl
-            wget https://storage.googleapis.com/kubernetes-release/release/v1.7.6/bin/linux/amd64/kubectl
+            wget https://storage.googleapis.com/kubernetes-release/release/v1.11.0/bin/linux/amd64/kubectl
             chmod +x ./kubectl
             mv ./kubectl /usr/local/bin/kubectl
             # Install kubectl-login
