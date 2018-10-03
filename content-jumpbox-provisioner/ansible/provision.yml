@@ -24,7 +24,6 @@
         EnvironmentName: "upp-jumpbox-{{ aws_region }}"
         EnvironmentType: "{{ environment_type }}"
         ImageId: "{{image_id}}"
-        SSHConfig: "{{ lookup('file', '/k8s_ssh/ssh_config') }}"
         SSHAgent: "{{ lookup('file', '/k8s_ssh/ssh_agent.sh') }}"
         K8sCluster: "{{ lookup('file', '/k8s_ssh/k8s_clusters.sh') }}"
         ListClusters: "{{ lookup('file', '/k8s_ssh/list-clusters') }}"
