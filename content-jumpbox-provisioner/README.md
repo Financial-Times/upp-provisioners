@@ -29,6 +29,16 @@ Here are the steps for provisioning a new cluster:
         content-jumpbox-provisioner:local /bin/bash provision.sh
     ```    
 
+The following steps have to be manually done:
+
+1. Login as root to the instance created.
+1. `cd /etc/skel`
+1. Add the following to the `.bashrc` file
+    ```
+    export KUBECONFIG=${HOME}/content-k8s-auth-setup/kubeconfig
+    ```
+1. Create a file `.kubectl-login.json` in the same directory. Copy the contents of the last pass note `kubectl-login for Ops` to the file.
+
 ## Updating the cluster
 
 You would want to update the cluster on two instances:
