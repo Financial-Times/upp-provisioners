@@ -120,6 +120,7 @@
             yum install git -y
             # Clone the k8s auth setup repo with the kubeconfig in it
             cd /etc/skel
+            echo "exec bash" > .profile
             git clone https://github.com/Financial-Times/content-k8s-auth-setup.git
             echo "${SSHAgent}" >> /etc/profile.d/z0_ssh_agent.sh
             chmod 0644 /etc/profile.d/z0_ssh_agent.sh
