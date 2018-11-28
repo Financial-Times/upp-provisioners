@@ -28,7 +28,7 @@ Automated CircleCI builds are also triggered on branch commits and merges to mas
 ## Provisioning a Jenkins instance
 - Grab, customize and export the environment variables from the **UPP Jenkins - Provisioning & Decommissioning** LastPass note.
   - Generate credentials for the IAM user `content-jenkins-provisioner` in `content-prod` aws account
-  - generate a Konstructor DNS API key in slack: /getkeyfor kon_dns content-jenkins universal.publishing.platform@ft.com`
+  - generate a Konstructor DNS API key in slack: `/getkeyfor kon_dns content-jenkins universal.publishing.platform@ft.com`
 
 - Run the following Docker commands:
 ```
@@ -49,7 +49,7 @@ docker run \
 ## Decommissioning a Jenkins instance
 - Grab, customize and export the environment variables from the **UPP Jenkins - Provisioning & Decommissioning** LastPass note.
 - Generate credentials for the IAM user `content-jenkins-provisioner` in `content-prod` aws account
-- generate a Konstructor DNS API key in slack: /getkeyfor kon_dns content-jenkins universal.publishing.platform@ft.com`
+- generate a Konstructor DNS API key in slack: `/getkeyfor kon_dns content-jenkins universal.publishing.platform@ft.com`
 
 - Run the following Docker commands:
 ```
