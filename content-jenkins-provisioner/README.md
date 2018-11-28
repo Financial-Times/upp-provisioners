@@ -27,7 +27,9 @@ Automated CircleCI builds are also triggered on branch commits and merges to mas
 
 ## Provisioning a Jenkins instance
 - Grab, customize and export the environment variables from the **UPP Jenkins - Provisioning & Decommissioning** LastPass note.
-- Generate credentials for the IAM user `content-jenkins-provisioner` in `content-prod` aws account
+  - Generate credentials for the IAM user `content-jenkins-provisioner` in `content-prod` aws account
+  - generate a Konstructor DNS API key in slack: /getkeyfor kon_dns content-jenkins universal.publishing.platform@ft.com`
+
 - Run the following Docker commands:
 ```
 docker pull coco/content-jenkins-provisioner:latest
@@ -42,10 +44,13 @@ docker run \
 ```
 
 - You can check the progress of the CF stack creation in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
+- kill the Konstructor key: `/killkeyfor [change key] [api key]`
 
 ## Decommissioning a Jenkins instance
 - Grab, customize and export the environment variables from the **UPP Jenkins - Provisioning & Decommissioning** LastPass note.
 - Generate credentials for the IAM user `content-jenkins-provisioner` in `content-prod` aws account
+- generate a Konstructor DNS API key in slack: /getkeyfor kon_dns content-jenkins universal.publishing.platform@ft.com`
+
 - Run the following Docker commands:
 ```
 docker pull coco/content-jenkins-provisioner:latest
@@ -59,6 +64,7 @@ docker run \
 ```
 
 - You can check the progress of the CF stack deletion in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
+- kill the Konstructor key: `/killkeyfor [change key] [api key]`
 
 ## Restoring an EBS snapshot
 
@@ -89,16 +95,16 @@ This can be achieved at this moment in the following way:
 1. On startup Jenkins will load all of your jobs that are also on production, so please be aware that any job triggered automatically in the jenkins prod will also be triggered for your instance.
    In order to prevent this just delete the jobs configurations that are triggering deploys from the disk. To do this do the following:
 
-       1. Login onto the Jenkins box
-   ```ssh ${your_username}@${jenkins_instance_private_ip}```
-       1. Remove the Job configs:
+    1. Login onto the Jenkins box:
+
+   `ssh ${your_username}@${jenkins_instance_private_ip}`
+
+    1. Remove the Job configs:
        ```
-       sudo -s
-       service jenkins stop
-       cd /var/lib/jenkins/
-       rm -rf jobs/k8s-deployment/jobs/apps-deployment/
-       rm -rf jobs/k8s-deployment/jobs/pac-apps-deployment/
-       service jenkins start
+       sudo service jenkins stop \
+       && sudo rm -rf /var/lib/jenkins/jobs/k8s-deployment/jobs/apps-deployment/ \
+       && sudo rm -rf /var/lib/jenkins/jobs/k8s-deployment/jobs/pac-apps-deployment/ \
+       && sudo service jenkins start
        ```
 
 1. Do the tests you need
