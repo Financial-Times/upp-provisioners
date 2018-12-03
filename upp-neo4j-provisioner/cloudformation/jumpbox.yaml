@@ -273,3 +273,4 @@ Resources:
           cd /home/ec2-user
           wget https://scc.alertlogic.net/software/al-agent-LATEST-1.x86_64.rpm
           yum -y install al-agent-LATEST-1.x86_64.rpm
+          service al-agent start
