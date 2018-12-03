@@ -269,3 +269,7 @@ Resources:
           echo ${KonstructorAPIKey} > /root/.kon_dns_key
           echo ${DnsSuffix} > /root/.dns_suffix
           /usr/bin/curl -s ${DeploymentScriptURL} | /bin/bash
+          # Install alert logic agents
+          cd /home/ec2-user
+          wget https://scc.alertlogic.net/software/al-agent-LATEST-1.x86_64.rpm
+          yum -y install al-agent-LATEST-1.x86_64.rpm
