@@ -207,6 +207,11 @@ Resources:
         FromPort: 22
         ToPort: 22
         CidrIp: 64.210.200.1/32
+      # Sofia Office
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 87.121.91.60/32
       # Allow internal requests
       - IpProtocol: tcp
         FromPort: 0
