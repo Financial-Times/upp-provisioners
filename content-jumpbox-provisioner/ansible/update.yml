@@ -7,7 +7,7 @@
     - vars/{{ environment_type }}-{{ aws_region }}.yml
 
   tasks:
-  - name: Launch Jumpbox
+  - name: Update Jumpbox
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_access_key }}"
@@ -23,3 +23,10 @@
         EnvironmentName: "upp-jumpbox-{{ aws_region }}"
         EnvironmentType: "{{ environment_type }}"
         ImageId: "{{image_id}}"
+        SSHAgent: "{{ lookup('file', '/k8s_ssh/ssh_agent.sh') }}"
+        K8sCluster: "{{ lookup('file', '/k8s_ssh/k8s_clusters.sh') }}"
+        ListClusters: "{{ lookup('file', '/k8s_ssh/list-clusters') }}"
+        FailbackToEU: "{{ lookup('file', '/files/FBtoEU.sh') }}"
+        MenuFailback: "{{ lookup('file', '/files/menu.sh') }}"
+        PreCheckFailback: "{{ lookup('file', '/files/pre_checks.sh') }}"
+        PostCheckFailback: "{{ lookup('file', '/files/post_checks.sh') }}"
