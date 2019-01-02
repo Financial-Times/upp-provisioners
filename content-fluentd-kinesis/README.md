@@ -26,7 +26,7 @@ To provision a new Content Fluentd Kinesis:
 * Using the new credentials, set the following environment variables:
 
 ```
-export AWS_ACCESS_KEY=
+export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 export AWS_REGION=                  # This will determine which AWS region the kinesis stream will be provisioned in
 export CLUSTER=                     # This will be appended to `content-fluentd-kinesis` for the infrastructure
@@ -37,7 +37,7 @@ export ENVIRONMENT_TYPE=            # This should be the type of environment the
 
 ```
 docker run \
-    -e "AWS_ACCESS_KEY=${AWS_ACCESS_KEY}" \
+    -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
     -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" \
     -e "AWS_REGION=${AWS_REGION}" \
     -e "CLUSTER=${CLUSTER}" \
@@ -57,7 +57,7 @@ To decommission the Content Fluentd Kinesis Stream:
 * Using the new credentials, set the following environment variables:
 
 ```
-export AWS_ACCESS_KEY=
+export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 export AWS_REGION=                  # This will determine which AWS region the kinesis stream will be decommissioned from
 export CLUSTER=                     # The cluster that you wish to decommission, i.e. `dev`.
@@ -67,9 +67,9 @@ export CLUSTER=                     # The cluster that you wish to decommission,
 
 ```
 docker run \
-    -e "AWS_ACCESS_KEY=${AWS_ACCESS_KEY}" \
+    -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
     -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" \
     -e "AWS_REGION=${AWS_REGION}" \
     -e "CLUSTER=${CLUSTER}" \
-    pac-provisioner:local /bin/bash decom.sh
+    annotations-monitoring:local /bin/bash decom.sh
 ```

@@ -42,3 +42,6 @@ No further changes should be required, as the job config is fully parameterised.
 
 - [content-fluentd-kinesis](https://github.com/Financial-Times/upp-provisioners/tree/master/content-fluentd-kinesis)
     - Docker image, running Ansible & CloudFormation to provision and decommission Content Fluentd Kinesis.
+
+- [upp-annotations-monitoring-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-annotations-monitoring-provisioner)
+    - Docker image, running Ansible & CloudFormation to provision and decommission Annotations Monitoring Kinesis Analytics Application.

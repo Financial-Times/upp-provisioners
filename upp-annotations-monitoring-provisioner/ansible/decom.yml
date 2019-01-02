@@ -4,10 +4,10 @@
   connection: local
 
   vars:
-    cloudformation_stack: "content-fluentd-kinesis-{{ cluster }}"
+    cloudformation_stack: "annotations-monitoring-{{ cluster }}"
 
   tasks:
-  - name: Decommission Content Fluentd Kinesis
+  - name: Decommission annotations monitoring kinesis analytics application
     cloudformation:
       aws_access_key: "{{ aws_access_key_id }}"
       aws_secret_key: "{{ aws_secret_access_key }}"
