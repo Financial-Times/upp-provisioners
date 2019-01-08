@@ -74,22 +74,6 @@
      ListClusters:
          Description: List the k8s clusters
          Type: String
-     
-     MenuFailback:
-         Description: Options for the script that is used for Publishing failover by Ops
-         Type: String
-     
-     FailbackToEU:
-         Description: Script to fail publishing back to EU. Used by Ops
-         Type: String
-     
-     PreCheckFailback:
-         Description: Checks the health of the publishing cluster before failing back. Used by Ops
-         Type: String
-
-     PostCheckFailback: 
-         Description: Checks the health of the publishing cluster after failing back. Used by Ops
-         Type: String
  
  Resources:
    AutoScalingGroup:
@@ -138,14 +122,7 @@
             cd /etc/skel
             echo "exec bash" > .profile
             git clone https://github.com/Financial-Times/content-k8s-auth-setup.git
-            echo "${MenuFailback}" >> menu.sh
-            chmod 0644 menu.sh
-            echo "${FailbackToEU}" >> FBtoEU.sh
-            chmod 0644 FBtoEU.sh
-            echo "${PreCheckFailback}" >> pre_checks.sh
-            chmod 0644 pre_checks.sh
-            echo "${PostCheckFailback}" >> post_checks.sh
-            chmod 0644 post_checks.sh
+            git clone https://github.com/Financial-Times/upp-dutyops-scripts.git
             echo "${SSHAgent}" >> /etc/profile.d/z0_ssh_agent.sh
             chmod 0644 /etc/profile.d/z0_ssh_agent.sh
             echo "${K8sCluster}" >> /etc/profile.d/z2_k8s_clusters.sh

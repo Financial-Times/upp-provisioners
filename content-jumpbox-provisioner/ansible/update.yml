@@ -26,7 +26,3 @@
         SSHAgent: "{{ lookup('file', '/k8s_ssh/ssh_agent.sh') }}"
         K8sCluster: "{{ lookup('file', '/k8s_ssh/k8s_clusters.sh') }}"
         ListClusters: "{{ lookup('file', '/k8s_ssh/list-clusters') }}"
-        FailbackToEU: "{{ lookup('file', '/files/FBtoEU.sh') }}"
-        MenuFailback: "{{ lookup('file', '/files/menu.sh') }}"
-        PreCheckFailback: "{{ lookup('file', '/files/pre_checks.sh') }}"
-        PostCheckFailback: "{{ lookup('file', '/files/post_checks.sh') }}"
