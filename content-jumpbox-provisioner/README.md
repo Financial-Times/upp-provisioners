@@ -29,7 +29,7 @@ Here are the steps for provisioning a new cluster:
         content-jumpbox-provisioner:local /bin/bash provision.sh
     ```    
 
-Steps that have to be manually done are detailed [here](README-manual_steps.md)
+Finally, there are steps that have to be manually done on the EC2 instance after the provisioning. They are detailed [here](README-manual_steps.md)
 
 ## Updating the cluster
 
@@ -48,8 +48,7 @@ You would want to update the cluster on three instances:
 
 1. To update changes to the script written by [DutyOps](https://github.com/Financial-Times/upp-dutyops-scripts)
 
-Steps that have to be manually done are detailed [here](README-manual_steps.md)
-
+Finally, there are steps that have to be manually done on the EC2 instance after the upgrade. They are detailed [here](README-manual_steps.md)
 
 ## Deleting the cluster
 
