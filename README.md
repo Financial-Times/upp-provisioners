@@ -31,9 +31,6 @@ No further changes should be required, as the job config is fully parameterised.
 - [upp-concept-publishing-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-concept-publishing-provisioner)
     - CloudFormation to spin up an S3 bucket, SNS Topic and 1/2 SQS Queues to be used as part of the event-driven concept publishing pipeline.  
 
-- [upp-coreupdate-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-coreupdate-provisioner)
-    - Provisioning instructions for manually creating a CoreUpdate instance.
-
 - [upp-elasticsearch-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-elasticsearch-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission UPP ElasticSearch clusters.
 
