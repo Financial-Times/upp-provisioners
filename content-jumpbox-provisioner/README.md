@@ -33,7 +33,7 @@ Finally, there are steps that have to be manually done on the EC2 instance after
 
 ## Updating the cluster
 
-You would want to update the cluster on three instances:
+You would want to update the cluster for one of the following reasons:
 
 1. To update the version of kubectl, update the version in the [userdata](cloudformation/stack.yml) and run the following that will update the stack in AWS
     ```
