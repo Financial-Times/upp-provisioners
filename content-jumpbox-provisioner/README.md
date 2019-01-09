@@ -29,19 +29,11 @@ Here are the steps for provisioning a new cluster:
         content-jumpbox-provisioner:local /bin/bash provision.sh
     ```    
 
-The following steps have to be manually done:
-
-1. Login as root to the instance created.
-1. `cd /etc/skel`
-1. Add the following to the `.bashrc` file
-    ```
-    export KUBECONFIG=${HOME}/content-k8s-auth-setup/kubeconfig
-    ```
-1. Create a file `.kubectl-login.json` in the same directory. Copy the contents of the last pass note `kubectl-login for Ops` to the file.
+Finally, there are steps that have to be manually done on the EC2 instance after the provisioning. They are detailed [here](README-manual_steps.md)
 
 ## Updating the cluster
 
-You would want to update the cluster on two instances:
+You would want to update the cluster for one of the following reasons:
 
 1. To update the version of kubectl, update the version in the [userdata](cloudformation/stack.yml) and run the following that will update the stack in AWS
     ```
@@ -54,6 +46,9 @@ You would want to update the cluster on two instances:
     ```   
 1. To update the version of docker, terminate the instance. Since the instances are in an autoscaling group, new instances will be spun up with the latest version of docker available in the yum package manager.
 
+1. To update changes to the script written by [DutyOps](https://github.com/Financial-Times/upp-dutyops-scripts)
+
+Finally, there are steps that have to be manually done on the EC2 instance after the upgrade. They are detailed [here](README-manual_steps.md)
 
 ## Deleting the cluster
 
