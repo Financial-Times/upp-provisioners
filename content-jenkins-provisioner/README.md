@@ -10,7 +10,7 @@ The Jenkins provisioning process will:
 The new instance will be tagged with `scheduler:ebs-snapshot`, which will automatically take nightly EBS snapshots of the instance volume. See [here](http://docs.aws.amazon.com/solutions/latest/ebs-snapshot-scheduler/overview.html) for more details.
 
 Note that the provisioner will not automatically install Jenkins or deploy any config.
-Our current plan is to manually restore the previous EBS snapshot from an existing Jenkins - see [here](https://github.com/Financial-Times/content-provisioners/tree/master/content-jenkins-provisioner#restoring-an-ebs-snapshot) for more details.
+Our current plan is to manually restore the previous EBS snapshot from an existing Jenkins - see [here](https://github.com/Financial-Times/upp-provisioners/tree/master/content-jenkins-provisioner#restoring-an-ebs-snapshot) for more details.
 
 The decommissioning process will:
 
