@@ -61,11 +61,11 @@ Resources:
           Value: '{ "start": "45 5 * * 1-5", "stop": "15 19 * * *" }'
         - Key: scheduler:ebs-snapshot
           Value: default
-    UserData:
-      Fn::Base64: !Sub |
-        #! /bin/bash -x
-        /usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh /
-        bash /bootstrap.sh -s eng -e ${EnvironmentType}
+      UserData:
+        Fn::Base64: !Sub |
+          #! /bin/bash -x
+          /usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh /
+          bash /bootstrap.sh -s eng -e ${EnvironmentType}
         
   JenkinsALB:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
