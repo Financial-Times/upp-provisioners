@@ -28,7 +28,7 @@ Automated CircleCI builds are also triggered on branch commits and merges to mas
 ## Provisioning a Jenkins instance
 - Grab, customize and export the environment variables from the **UPP Jenkins - Provisioning & Decommissioning** LastPass note.
   - Generate credentials for the IAM user `content-jenkins-provisioner` in `content-prod` aws account
-  - generate a Konstructor DNS API key in slack: `/getkeyfor kon_dns content-jenkins universal.publishing.platform@ft.com`
+  - generate a Konstructor DNS API key in slack: `/getkeyfor kon_dns upp-jenkins universal.publishing.platform@ft.com`
 
 - Run the following Docker commands:
 ```
@@ -49,7 +49,7 @@ docker run \
 ## Decommissioning a Jenkins instance
 - Grab, customize and export the environment variables from the **UPP Jenkins - Provisioning & Decommissioning** LastPass note.
 - Generate credentials for the IAM user `content-jenkins-provisioner` in `content-prod` aws account
-- generate a Konstructor DNS API key in slack: `/getkeyfor kon_dns content-jenkins universal.publishing.platform@ft.com`
+- generate a Konstructor DNS API key in slack: `/getkeyfor kon_dns upp-jenkins universal.publishing.platform@ft.com`
 
 - Run the following Docker commands:
 ```
@@ -77,7 +77,7 @@ Once you have provisioned a Jenkins instance, perform the following steps:
 
 - Find the new instance in the EC2 console. If it is running, stop the instance.
 
-- Detach the existing volume from the instance.
+- Detach the existing volume from the instance and delete it.
 
 - Attach the new snapshot-created volume to `/dev/xvda`.
 
