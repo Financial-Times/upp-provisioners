@@ -127,7 +127,7 @@
             chmod 0644 /etc/profile.d/z0_ssh_agent.sh
             echo "${K8sCluster}" >> /etc/profile.d/z2_k8s_clusters.sh
             chmod 0644 /etc/profile.d/z2_k8s_clusters.sh
-            echo 0644 "${ListClusters}" >> /usr/local/bin/list-clusters
+            echo "${ListClusters}" >> /usr/local/bin/list-clusters
             chmod +x /usr/local/bin/list-clusters
             cd /home/ec2-user
             # Install kubectl
