@@ -104,6 +104,16 @@ Resources:
               FromPort: 3306
               ToPort: 3306
               CidrIp: 64.210.200.1/32
+            - Description: "FT Sofia Office - IP range 1"
+              IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 94.156.217.228/31
+            - Description: "FT Sofia Office - IP range 2"
+              IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 94.156.217.230/32
 
 Outputs:
   LoaderSecurityGroupId:
