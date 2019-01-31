@@ -74,36 +74,46 @@ Resources:
             - Key: description
               Value: "Security group for UPP Factset Loader Instance"
         SecurityGroupIngress:
-            # OSB + LDNWebPerf
-            - IpProtocol: tcp
+            - Description: "OSB + LDNWebPerf"
+              IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
               CidrIp: 82.136.1.214/32
-            # SSH
-            - IpProtocol: tcp
+            - Description: "SSH"
+              IpProtocol: tcp
               FromPort: 22
               ToPort: 22
               CidrIp: 82.136.1.214/32
-            # Park Royal
-            - IpProtocol: tcp
+            - Description: "Park Royal"
+              IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
               CidrIp: 213.216.148.1/32
-            # XP - Cluj Office
-            - IpProtocol: tcp
+            - Description: "XP - Cluj Office"
+              IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
               CidrIp: 194.117.242.0/23
-            # EU VPN Client
-            - IpProtocol: tcp
+            - Description: "EU VPN Client"
+              IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
               CidrIp: 62.25.64.1/32
-            # US VPN Client
-            - IpProtocol: tcp
+            - Description: "US VPN Client"
+              IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
               CidrIp: 64.210.200.1/32
+            - Description: "FT Sofia Office - IP range 1"
+              IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 94.156.217.228/31
+            - Description: "FT Sofia Office - IP range 2"
+              IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 94.156.217.230/32
 
 Outputs:
   LoaderSecurityGroupId:
