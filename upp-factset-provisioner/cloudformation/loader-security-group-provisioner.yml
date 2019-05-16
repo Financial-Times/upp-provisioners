@@ -114,6 +114,12 @@ Resources:
               FromPort: 3306
               ToPort: 3306
               CidrIp: 94.156.217.230/32
+            - Description: "Bracken House FTWLAN"
+              IpProtocol: tcp
+              FromPort: 3306
+              ToPort: 3306
+              CidrIp: 213.86.66.72/29
+
 
 Outputs:
   LoaderSecurityGroupId:
