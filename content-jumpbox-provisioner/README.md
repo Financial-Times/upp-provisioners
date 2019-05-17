@@ -24,6 +24,7 @@ Here are the steps for provisioning a new cluster:
     docker run \
         -e "AWS_REGION=$AWS_REGION" \
         -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+	-e "KON_DNS_APIKEY=$KON_DNS_APIKEY" \
         -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
         -e "ENVIRONMENT_TYPE=$ENVIRONMENT_TYPE" \
         content-jumpbox-provisioner:local /bin/bash provision.sh

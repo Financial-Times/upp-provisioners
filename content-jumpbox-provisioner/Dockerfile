@@ -10,4 +10,3 @@ COPY ansible /ansible/
 COPY cloudformation /cloudformation/
 COPY sh/* /usr/local/bin/
 COPY k8s_ssh/* /k8s_ssh/
-COPY files/* /files/
