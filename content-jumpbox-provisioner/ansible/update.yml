@@ -1,5 +1,5 @@
 ---
-- name: Provision stack
+- name: Update stack
   hosts: localhost
   connection: local
 
@@ -8,7 +8,7 @@
 
   tasks:
 
-  - name: Launch Jumpbox
+  - name: Update Jumpbox
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_access_key }}"
