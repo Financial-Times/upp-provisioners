@@ -74,11 +74,6 @@ Resources:
             - Key: description
               Value: "Security group for UPP Factset Loader Instance"
         SecurityGroupIngress:
-            - Description: "OSB + LDNWebPerf"
-              IpProtocol: tcp
-              FromPort: 3306
-              ToPort: 3306
-              CidrIp: 82.136.1.214/32
             - Description: "SSH"
               IpProtocol: tcp
               FromPort: 22
@@ -89,11 +84,6 @@ Resources:
               FromPort: 3306
               ToPort: 3306
               CidrIp: 213.216.148.1/32
-            - Description: "XP - Cluj Office"
-              IpProtocol: tcp
-              FromPort: 3306
-              ToPort: 3306
-              CidrIp: 194.117.242.0/23
             - Description: "EU VPN Client"
               IpProtocol: tcp
               FromPort: 3306
@@ -108,12 +98,12 @@ Resources:
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 94.156.217.228/31
+              CidrIp: 94.156.217.224/29
             - Description: "FT Sofia Office - IP range 2"
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 94.156.217.230/32
+              CidrIp: 212.36.14.64/28
             - Description: "Bracken House FTWLAN"
               IpProtocol: tcp
               FromPort: 3306
