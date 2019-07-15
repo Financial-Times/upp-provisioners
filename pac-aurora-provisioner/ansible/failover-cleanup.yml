@@ -106,6 +106,7 @@
       template_parameters:
         EnvironmentName: "{{ cluster_name }}"
         DBClusterIdentifier: "{{ aurora_replica_stack.stack_outputs.DBCluster }}"
+        TagEnvironment: "{{ environment_type }}"
 
   - include: tasks/delete_cname.yml
     vars:
