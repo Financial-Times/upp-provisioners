@@ -10,14 +10,26 @@ Parameters:
     Description: An environment name that will be prefixed to resource names
     Type: String
 
+  TagEnvironment:
+      Description: Tag detail for the Environment
+      Type: String
+      AllowedValues:
+          - 't'
+          - 'p'
+          - 'd'
+      Default: t
+
 Resources:
   # Alarms containing 'critical' will cause dashing to show a critical RED tile.
+  #
+  # Alarms are suffixed by key=value tags so they appear in Heimdall correctly:
+  # https://monitoring-manager.in.ft.com/add-cloudwatch-alarm.
   WriterReplicaLagAlarm:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
       ActionsEnabled: False
       AlarmDescription: Monitors for Replica lag
-      AlarmName: !Sub '${EnvironmentName}-replica-lag-writer'
+      AlarmName: !Sub '${EnvironmentName}-replica-lag-writer systemCode=pac-aurora,environment=${TagEnvironment},severity=2'
       Namespace: AWS/RDS
       ComparisonOperator: GreaterThanOrEqualToThreshold
       Dimensions:
@@ -38,7 +50,7 @@ Resources:
     Properties:
       ActionsEnabled: False
       AlarmDescription: Monitors for engine uptime, which is a proxy for measuring database availability.
-      AlarmName: !Sub '${EnvironmentName}-critical-engine-uptime-writer'
+      AlarmName: !Sub '${EnvironmentName}-critical-engine-uptime-writer systemCode=pac-aurora,environment=${TagEnvironment},severity=1'
       Namespace: AWS/RDS
       ComparisonOperator: LessThanOrEqualToThreshold
       Dimensions:
@@ -59,7 +71,7 @@ Resources:
     Properties:
       ActionsEnabled: False
       AlarmDescription: Monitors for engine uptime, which is a proxy for measuring database availability.
-      AlarmName: !Sub '${EnvironmentName}-engine-uptime-reader'
+      AlarmName: !Sub '${EnvironmentName}-engine-uptime-reader systemCode=pac-aurora,environment=${TagEnvironment},severity=2'
       Namespace: AWS/RDS
       ComparisonOperator: LessThanOrEqualToThreshold
       Dimensions:
@@ -80,7 +92,7 @@ Resources:
     Properties:
       ActionsEnabled: False
       AlarmDescription: Monitors for high cpu usage
-      AlarmName: !Sub '${EnvironmentName}-cpu-utilization-writer'
+      AlarmName: !Sub '${EnvironmentName}-cpu-utilization-writer systemCode=pac-aurora,environment=${TagEnvironment},severity=2'
       Namespace: AWS/RDS
       ComparisonOperator: GreaterThanOrEqualToThreshold
       Dimensions:
@@ -101,7 +113,7 @@ Resources:
     Properties:
       ActionsEnabled: False
       AlarmDescription: Monitors for high cpu usage
-      AlarmName: !Sub '${EnvironmentName}-cpu-utilization-reader'
+      AlarmName: !Sub '${EnvironmentName}-cpu-utilization-reader systemCode=pac-aurora,environment=${TagEnvironment},severity=2'
       Namespace: AWS/RDS
       ComparisonOperator: GreaterThanOrEqualToThreshold
       Dimensions:
@@ -122,7 +134,7 @@ Resources:
     Properties:
       ActionsEnabled: False
       AlarmDescription: Monitors for a low CPU Credit Balance. Low balance can limit a cluster's capability to burst above the allotted CPU.
-      AlarmName: !Sub '${EnvironmentName}-cpu-credit-balance-writer'
+      AlarmName: !Sub '${EnvironmentName}-cpu-credit-balance-writer systemCode=pac-aurora,environment=${TagEnvironment},severity=2'
       Namespace: AWS/RDS
       ComparisonOperator: LessThanOrEqualToThreshold
       Dimensions:
@@ -143,7 +155,7 @@ Resources:
     Properties:
       ActionsEnabled: False
       AlarmDescription: Monitors for a low CPU Credit Balance. Low balance can limit a cluster's capability to burst above the allotted CPU.
-      AlarmName: !Sub '${EnvironmentName}-cpu-credit-balance-reader'
+      AlarmName: !Sub '${EnvironmentName}-cpu-credit-balance-reader systemCode=pac-aurora,environment=${TagEnvironment},severity=2'
       Namespace: AWS/RDS
       ComparisonOperator: LessThanOrEqualToThreshold
       Dimensions:
@@ -164,7 +176,7 @@ Resources:
     Properties:
       ActionsEnabled: False
       AlarmDescription: Monitors for a low amount of available random access memory.
-      AlarmName: !Sub '${EnvironmentName}-1-freeable-memory'
+      AlarmName: !Sub '${EnvironmentName}-1-freeable-memory systemCode=pac-aurora,environment=${TagEnvironment},severity=2'
       Namespace: AWS/RDS
       ComparisonOperator: LessThanOrEqualToThreshold
       Dimensions:
@@ -183,7 +195,7 @@ Resources:
     Properties:
       ActionsEnabled: False
       AlarmDescription: Monitors for a low amount of available random access memory.
-      AlarmName: !Sub '${EnvironmentName}-2-freeable-memory'
+      AlarmName: !Sub '${EnvironmentName}-2-freeable-memory systemCode=pac-aurora,environment=${TagEnvironment},severity=2'
       Namespace: AWS/RDS
       ComparisonOperator: LessThanOrEqualToThreshold
       Dimensions:
