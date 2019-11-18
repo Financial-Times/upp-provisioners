@@ -1,0 +1,33 @@
+---
+- name: Apply a MSK Cluster
+  hosts: localhost
+  connection: local
+
+  vars_files:
+    - vars/defaults.yml
+    - vars/{{ cluster_name }}.yml
+
+  tasks:
+    - name: Apply the CloudFormation stack
+      cloudformation:
+        state: "present"
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        stack_name: "{{ cluster_name }}"
+        region: "{{ cluster_aws_region }}"
+        template: "/cloudformation/msk-cf.yaml"
+        template_parameters:
+          ClusterName: "{{ cluster_name }}"
+          VpcId: "{{ vpc_id }}"
+          ClientSubnetIDs: "{{ client_subnet_ids }}"
+          ConfigurationArn: "{{ msk_cluster_configuration_arn }}"
+          ConfigurationRevisionNum: "{{ msk_cluster_configuration_revision }}"
+        tags:
+          Name: "{{ cluster_name }}"
+          environment: "{{ environment_type }}"
+          teamDL: "{{ team_dl }}"
+          systemCode: "{{ system_code }}"
+      register: cf_stack_output
+
+    - debug:
+        msg: "{{ cf_stack_output }}"
