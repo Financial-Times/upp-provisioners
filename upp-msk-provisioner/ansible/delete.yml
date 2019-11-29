@@ -1,0 +1,21 @@
+---
+- name: Delete a MSK Cluster
+  hosts: localhost
+  connection: local
+
+  vars_files:
+    - vars/defaults.yml
+    - vars/{{ cluster_name }}.yml
+
+  tasks:
+    - name: Delete CloudFormation stack
+      cloudformation:
+        state: absent
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
+        region: "{{ cluster_aws_region }}"
+        stack_name: "{{ cluster_name }}"
+      register: cf_stack_output
+
+    - debug:
+        msg: "{{ cf_stack_output }}"

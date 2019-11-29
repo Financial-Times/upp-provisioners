@@ -1,0 +1,5 @@
+auto.create.topics.enable = true
+message.max.bytes = 16777216
+replica.fetch.max.bytes = 16777216
+log.retention.bytes = 134217728
+log.retention.hours = 168

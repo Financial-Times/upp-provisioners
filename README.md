@@ -42,3 +42,6 @@ No further changes should be required, as the job config is fully parameterised.
 
 - [upp-annotations-monitoring-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-annotations-monitoring-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission Annotations Monitoring Kinesis Analytics Application.
+
+- [upp-msk-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-msk-provisioner)
+    - Docker image, running Ansible & CloudFormation to provision and decommission AWS Managed Kafka cluster (MSK).
