@@ -5,7 +5,6 @@ set -x
 #Get MSK configuration
 
 aws kafka list-clusters | jq -r '.ClusterInfoList[0].ClusterArn' > clusterArn
-echo "Zookeper" > bootstrapCluster
 aws kafka describe-cluster --cluster-arn $(cat clusterArn) |jq -r '.ClusterInfo.ZookeeperConnectString' >> ZookeeperConnectString
 aws kafka get-bootstrap-brokers --cluster-arn $(cat clusterArn) > brokers
 cat ./brokers |jq '.BootstrapBrokerString' | tr -d '"' >> BootstrapBrokerString
@@ -27,13 +26,26 @@ kubectl get cm global-config -ojson > global-config
 
 #Edit global global-config
 
-cat global-config | jq -r --arg broker "$broker" '.data["kafka-msk.url"]=$broker' > tmp_f && mv tmp_f global-config
-cat global-config | jq -r --arg kafkaHost "$kafkaHost" '.data["kafka-msk.host"]=$kafkaHost' > tmp_f && mv tmp_f global-config
-cat global-config | jq -r --arg kafkaPort "$kafkaPort" '.data["kafka-msk.port"]=$kafkaPort' > tmp_f && mv tmp_f global-config
-cat global-config | jq -r --arg brokerTLS "$brokerTLS" '.data["kafka-msk.url-tls"]=$brokerTLS' > tmp_f && mv tmp_f global-config
-cat global-config | jq -r --arg zookeeperHost "$zookeeperHost" '.data["zookeeper-msk.host"]=$zookeeperHost' > tmp_f && mv tmp_f global-config
-cat global-config | jq -r --arg zookeeperPort "$zookeeperPort" '.data["zookeeper-msk.port"]=$zookeeperPort' > tmp_f && mv tmp_f global-config
-cat global-config | jq -r --arg zookeeper "$zookeeper" '.data["zookeeper-msk.url"]=$zookeeper' > tmp_f && mv tmp_f global-config
+if [[ $K8S_API_SERVER == *"-publish-"* ]]; then
+	cat global-config | jq -r --arg broker "$broker" '.data["kafka.url"]=$broker' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg kafkaHost "$kafkaHost" '.data["kafka.host"]=$kafkaHost' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg kafkaPort "$kafkaPort" '.data["kafka.port"]=$kafkaPort' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg zookeeperHost "$zookeeperHost" '.data["zookeeper.host"]=$zookeeperHost' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg zookeeperPort "$zookeeperPort" '.data["zookeeper.port"]=$zookeeperPort' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg zookeeper "$zookeeper" '.data["zookeeper.url"]=$zookeeper' > tmp_f && mv tmp_f global-config
+	# Required by kafka-rest-proxy-msk
+	cat global-config | jq -r --arg broker "$broker" '.data["kafka-msk.url"]=$broker' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg brokerTLS "$brokerTLS" '.data["kafka-msk.url-tls"]=$brokerTLS' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg zookeeper "$zookeeper" '.data["zookeeper-msk.url"]=$zookeeper' > tmp_f && mv tmp_f global-config
+else
+	cat global-config | jq -r --arg broker "$broker" '.data["kafka-msk.url"]=$broker' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg kafkaHost "$kafkaHost" '.data["kafka-msk.host"]=$kafkaHost' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg kafkaPort "$kafkaPort" '.data["kafka-msk.port"]=$kafkaPort' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg brokerTLS "$brokerTLS" '.data["kafka-msk.url-tls"]=$brokerTLS' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg zookeeperHost "$zookeeperHost" '.data["zookeeper-msk.host"]=$zookeeperHost' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg zookeeperPort "$zookeeperPort" '.data["zookeeper-msk.port"]=$zookeeperPort' > tmp_f && mv tmp_f global-config
+	cat global-config | jq -r --arg zookeeper "$zookeeper" '.data["zookeeper-msk.url"]=$zookeeper' > tmp_f && mv tmp_f global-config
+fi
 
 #Apply global config to the cluster
 
@@ -41,4 +53,4 @@ kubectl patch cm global-config --patch "$(cat global-config)"
 
 #Delete pods related to MSK
 
-kubectl delete pod -l "app in (kafka-rest-proxy-msk, locations-smartlogic-notifier, native-ingester-cms, native-ingester-metadata, smartlogic-concept-transformer, smartlogic-concordance-transformer, smartlogic-notifier, wikidata-concept-transformer)"
+kubectl delete pod -l "app in (kafka-rest-proxy-msk, locations-smartlogic-notifier, smartlogic-concept-transformer, smartlogic-concordance-transformer, smartlogic-notifier, wikidata-concept-transformer, native-ingester-cms, native-ingester-metadata, cms-metadata-notifier, cms-notifier, pac-annotations-mapper, annotations-mapper, annotations-rw-neo4j, annotations-writer-ontotext, post-publication-combiner, concept-suggestion-api, burrow, kafka-lagcheck, upp-next-video-annotations-mapper)"
