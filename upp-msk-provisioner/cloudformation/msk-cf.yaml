@@ -71,7 +71,11 @@ Resources:
         - IpProtocol: tcp
           FromPort: 9092
           ToPort: 9092
-          SourceSecurityGroupId: sg-0156248bcf53de333
+          SourceSecurityGroupId: sg-0e307c6ed011cb8fb
+        - IpProtocol: tcp
+          FromPort: 9092
+          ToPort: 9092
+          SourceSecurityGroupId: sg-0f684f7883bdf344e
         - IpProtocol: tcp
           FromPort: 9092
           ToPort: 9092
