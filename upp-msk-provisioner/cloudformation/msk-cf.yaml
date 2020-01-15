@@ -114,7 +114,7 @@ Resources:
             VolumeSize: 100
       EncryptionInfo:
         EncryptionInTransit:
-          ClientBroker: TLS_PLAINTEXT
+          ClientBroker: PLAINTEXT
           InCluster: true
       ConfigurationInfo:
         Arn: !Ref ConfigurationArn
