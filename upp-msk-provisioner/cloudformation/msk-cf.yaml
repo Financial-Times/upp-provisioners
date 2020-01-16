@@ -115,7 +115,7 @@ Resources:
       EncryptionInfo:
         EncryptionInTransit:
           ClientBroker: PLAINTEXT
-          InCluster: true
+          InCluster: false
       ConfigurationInfo:
         Arn: !Ref ConfigurationArn
         Revision: !Ref ConfigurationRevisionNum
