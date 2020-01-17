@@ -53,4 +53,9 @@ kubectl patch cm global-config --patch "$(cat global-config)"
 
 #Delete pods related to MSK
 
-kubectl delete pod -l "app in (kafka-rest-proxy-msk, locations-smartlogic-notifier, smartlogic-concept-transformer, smartlogic-concordance-transformer, smartlogic-notifier, wikidata-concept-transformer, native-ingester-cms, native-ingester-metadata, cms-metadata-notifier, cms-notifier, pac-annotations-mapper, annotations-mapper, annotations-rw-neo4j, annotations-writer-ontotext, post-publication-combiner, concept-suggestion-api, burrow, kafka-lagcheck, upp-next-video-annotations-mapper)"
+kubectl delete pod -l "app in (kafka-rest-proxy-msk, locations-smartlogic-notifier, smartlogic-notifier, cms-metadata-notifier, cms-notifier, pac-annotations-mapper, annotations-mapper, annotations-rw-neo4j, suggestions-rw-neo4j, annotations-writer-ontotext, post-publication-combiner, concept-suggestion-api, burrow, upp-next-video-annotations-mapper, cms-kafka-bridge-pub, cms-metadata-kafka-bridge-pub, v2-content-annotator)"
+kubectl get pod | grep transformer | awk '{ print $1}' | xargs kubectl delete pod
+kubectl get pod | grep ingester | awk '{ print $1}' | xargs kubectl delete pod
+kubectl get pod | grep validator | awk '{ print $1}' | xargs kubectl delete pod
+# burrow should be running before restarting kafka-lagcheck
+kubectl delete pod -l "app in (kafka-lagcheck)"
