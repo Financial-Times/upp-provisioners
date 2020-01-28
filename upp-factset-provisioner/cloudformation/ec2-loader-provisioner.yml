@@ -89,16 +89,14 @@ Resources:
             Value: !Ref TagIpCode
           - Key: description
             Value: !Ref TagDescription
-          - Key: ec2Powercycle
-            Value: '{ "start": "00 4 * * *", "stop": "00 6 * * *" }'
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -x
           /usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh /
           bash /bootstrap.sh -s eng -e ${EnvironmentTag}
+          /usr/bin/aws s3 cp s3://factset-data-loader/FDSLoader-Linux-2.13.2.0.zip /home/ec2-user
           cd /home/ec2-user
           wget https://dev.mysql.com/get/Downloads/Connector-ODBC/5.3/mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
-          wget https://www.factset.com/download/datafeedloader/FDSLoader-Linux.zip
           yum -y install mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
           unzip FDSLoader-Linux.zip -d FactsetLoader
           chown ec2-user:ec2-user -R FactsetLoader
