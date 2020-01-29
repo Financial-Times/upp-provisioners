@@ -100,7 +100,7 @@ Resources:
     Properties:
       ClusterName: !Ref ClusterName
       NumberOfBrokerNodes: 3
-      KafkaVersion: 2.2.1
+      KafkaVersion: 2.3.1
       EnhancedMonitoring: PER_TOPIC_PER_BROKER
       BrokerNodeGroupInfo:
         ClientSubnets: !Ref ClientSubnetIDs
