@@ -17,6 +17,11 @@ Parameters:
         Description: Security group id
         Type: String
 
+    FTResourcesSecurityGroup:
+      Description: FT wide resources security group id
+      Type: String
+
+
     DBSubnetIds:
         Description: List of comma separated subnet IDs
         Type: CommaDelimitedList
@@ -74,7 +79,7 @@ Resources:
       IamInstanceProfile: "FT-EC2-Role"
       ImageId: "ami-1a962263"
       InstanceType: !Ref Ec2InstanceType
-      SecurityGroupIds: [ !Ref LoaderSecurityGroup ]
+      SecurityGroupIds: [ !Ref LoaderSecurityGroup, !Ref FTResourcesSecurityGroup ]
       SubnetId: !Select [0, !Ref DBSubnetIds ]
       Tags:
           - Key: Name

@@ -42,6 +42,7 @@
         EnvironmentName: "{{ environment_name }}"
         EnvironmentTag: "{{ environment_tag }}"
         LoaderSecurityGroup: "{{ LoaderSecurityGroupId }}"
+        FTResourcesSecurityGroup: "{{ FTResourcesSecurityGroupId }}"
     tags:
       - loader
 

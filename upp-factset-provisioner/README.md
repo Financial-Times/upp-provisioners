@@ -27,6 +27,7 @@ How to run:
 * AWS_ACCOUNT: Account in which to provision RDS; must be either content-test or content-prod
 * AWS_ACCESS_KEY: Access key of the IAM provisioner user
 * AWS_SECRET_ACCESS_KEY: Secret Access key of the IAM provisioner user
+* FT_RESOURCES_SECURITY_GROUP_ID: ID of the FT resources security group in the VPC you are provisioning the cluster (please refer to [FT security groups](https://cloudenablement.in.ft.com/aws/service_guides/ec2/creating_ec2_instances/#security-groups) for more info)
 
 `docker pull coco/upp-factset-provisioner:latest`
 ```
@@ -38,6 +39,7 @@ docker run   \
     -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "FT_RESOURCES_SECURITY_GROUP_ID=$FT_RESOURCES_SECURITY_GROUP_ID" \
     coco/upp-factset-provisioner:latest /bin/bash provision.sh
 ```
 
@@ -86,6 +88,7 @@ How to run:
 * AWS_ACCESS_KEY: Access key of the IAM provisioner user
 * AWS_SECRET_ACCESS_KEY: Secret Access key of the IAM provisioner user
 * LOADER_SECURITY_GROUP_ID: ID of the security group created when provisioning the whole Factset infrastructure (please refer to step [Provisioning a cluster](#provisioning-a-cluster)) 
+* FT_RESOURCES_SECURITY_GROUP_ID: ID of the FT resources security group in the VPC you are provisioning the ec2 instance (please refer to [FT security groups](https://cloudenablement.in.ft.com/aws/service_guides/ec2/creating_ec2_instances/#security-groups) for more info)
 
 `docker pull coco/upp-factset-provisioner:latest`
 ```
@@ -97,6 +100,7 @@ docker run   \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "LOADER_SECURITY_GROUP_ID=$LOADER_SECURITY_GROUP_ID" \
+    -e "FT_RESOURCES_SECURITY_GROUP_ID=$FT_RESOURCES_SECURITY_GROUP_ID" \
     coco/upp-factset-provisioner:latest /bin/bash provision-loader.sh
 ```
 
