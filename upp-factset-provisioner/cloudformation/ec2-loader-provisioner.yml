@@ -67,9 +67,6 @@ Parameters:
         Type: String
         Default: UPP Factset Aurora Store
 
-Conditions:
-  DevEnv: !Equals [ !Ref EnvironmentTag, 'd' ]
-
 Resources:
   FactsetLoader:
     Type: AWS::EC2::Instance
@@ -97,12 +94,9 @@ Resources:
             Value: !Ref TagIpCode
           - Key: description
             Value: !Ref TagDescription
-          - 'Fn::If':
-              - DevEnv
-              -
-                Key: powercycle
-                Value: '{ "start": "45 4 * * 1-5", "stop": "30 17 * * 1-5" }'
-              - !Ref AWS::NoValue
+          - Key: powercycle
+            Value: '{ "start": "0 5 * * 0-6", "stop": "0 8 * * 0-6" }'
+
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -x
