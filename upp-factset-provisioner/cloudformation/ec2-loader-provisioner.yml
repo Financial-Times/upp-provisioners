@@ -108,10 +108,7 @@ Resources:
           #!/bin/bash -x
           /usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh /
           bash /bootstrap.sh -s eng -e ${EnvironmentTag}
-          /usr/bin/aws s3 cp s3://factset-data-loader/FDSLoader-Linux-2.13.2.0.zip /home/ec2-user
           cd /home/ec2-user
           wget https://dev.mysql.com/get/Downloads/Connector-ODBC/5.3/mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
           yum -y install mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
-          unzip FDSLoader-Linux.zip -d FactsetLoader
-          chown ec2-user:ec2-user -R FactsetLoader
-          rm FDSLoader-Linux.zip mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
+          rm mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
