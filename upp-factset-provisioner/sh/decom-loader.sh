@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create Ansible vault credentials
-echo $VAULT_PASS > /ansible/vault.pass
+echo "$VAULT_PASS" > /ansible/vault.pass || exit
 
 cd /ansible
 

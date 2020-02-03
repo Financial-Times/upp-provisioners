@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "$VAULT_PASS" > /ansible/vault.pass
+echo "$VAULT_PASS" > /ansible/vault.pass || exit
 
-cd /ansible || exit
+cd /ansible
 
 ansible-playbook --vault-password-file=vault.pass provision.yml --extra-vars "\
 environment_name=${ENVIRONMENT_NAME} \
