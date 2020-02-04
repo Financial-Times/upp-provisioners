@@ -42,6 +42,9 @@
         EnvironmentName: "{{ environment_name }}"
         EnvironmentTag: "{{ environment_tag }}"
         LoaderSecurityGroup: "{{ LoaderSecurityGroupId }}"
+        FTResourcesSecurityGroup: "{{ FTResourcesSecurityGroupId }}"
+    tags:
+      - loader
 
   - name: Launch Factset Security and Parameter Group stack
     cloudformation:

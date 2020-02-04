@@ -17,6 +17,11 @@ Parameters:
         Description: Security group id
         Type: String
 
+    FTResourcesSecurityGroup:
+      Description: FT wide resources security group id
+      Type: String
+
+
     DBSubnetIds:
         Description: List of comma separated subnet IDs
         Type: CommaDelimitedList
@@ -74,7 +79,7 @@ Resources:
       IamInstanceProfile: "FT-EC2-Role"
       ImageId: "ami-1a962263"
       InstanceType: !Ref Ec2InstanceType
-      SecurityGroupIds: [ !Ref LoaderSecurityGroup ]
+      SecurityGroupIds: [ !Ref LoaderSecurityGroup, !Ref FTResourcesSecurityGroup ]
       SubnetId: !Select [0, !Ref DBSubnetIds ]
       Tags:
           - Key: Name
@@ -89,8 +94,9 @@ Resources:
             Value: !Ref TagIpCode
           - Key: description
             Value: !Ref TagDescription
-          - Key: ec2Powercycle
-            Value: '{ "start": "00 4 * * *", "stop": "00 6 * * *" }'
+          - Key: powercycle
+            Value: '{ "start": "0 5 * * 0-6", "stop": "0 8 * * 0-6" }'
+
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -x
@@ -98,8 +104,5 @@ Resources:
           bash /bootstrap.sh -s eng -e ${EnvironmentTag}
           cd /home/ec2-user
           wget https://dev.mysql.com/get/Downloads/Connector-ODBC/5.3/mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
-          wget https://www.factset.com/download/datafeedloader/FDSLoader-Linux.zip
           yum -y install mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
-          unzip FDSLoader-Linux.zip -d FactsetLoader
-          chown ec2-user:ec2-user -R FactsetLoader
-          rm FDSLoader-Linux.zip mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
+          rm mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
