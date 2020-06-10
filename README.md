@@ -45,3 +45,6 @@ No further changes should be required, as the job config is fully parameterised.
 
 - [upp-msk-provisioner](https://github.com/Financial-Times/upp-provisioners/tree/master/upp-msk-provisioner)
     - Docker image, running Ansible & CloudFormation to provision and decommission AWS Managed Kafka cluster (MSK).
+
+- [ccf-dynamodb](https://github.com/Financial-Times/upp-provisioners/tree/master/ccf-dynamodb)
+    - Docker image, running Ansible & CloudFormation to provision and decommission DynamoDB table used to store client settings for Copyright Cleared Feed.
