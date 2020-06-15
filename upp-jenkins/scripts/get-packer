@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+if [ $# -ne 1 ]; then
+  cat <<EOF
+Usage:
+$(basename "$0") <version>
+EOF
+
+  exit 1
+fi
+
+DESIRED_VERSION=${1}
+INSTALL_DIR="/usr/local/bin"
+PKG_URL="https://releases.hashicorp.com/packer/${DESIRED_VERSION}/packer_${DESIRED_VERSION}_linux_amd64.zip"
+
+cd /tmp
+curl "${PKG_URL}" -o "packer.zip"
+unzip packer.zip
+mv packer ${INSTALL_DIR}

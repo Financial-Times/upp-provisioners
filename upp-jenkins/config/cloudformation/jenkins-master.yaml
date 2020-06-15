@@ -1,0 +1,169 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS CloudFormation Jenkins Master Template
+
+Parameters:
+  stackResourcesPrefix:
+    Type: String
+    Description: "Stack resources prefix"
+    Default: "upp"
+
+  jenkinsUid:
+    Type: String
+    Description: "Set unique ID"
+
+  jenkinsMasterInstanceType:
+    Description: "Type of EC2 instance to launch for the server. Only Compute type nodes are currently specified."
+    Type: String
+
+  stackVpcId:
+    Description: "VPC ID that this stack will be launched in."
+    Type: AWS::EC2::VPC::Id
+    AllowedPattern: "[a-z0-9-]*"
+
+  jenkinsMasterSubnetId:
+    Description: "VPC Subnet that Jenkins will be launched in."
+    Type: AWS::EC2::Subnet::Id
+    AllowedPattern: "[a-z0-9-]*"
+
+  #TODO: maybe remove
+  jenkinsMasterKeyPairName:
+    Description: "Name of an existing EC2 KeyPair to enable SSH access to the instance(s)."
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair
+
+  jenkinsMasterImageId:
+    Description: "The ID of the AMI"
+    Type: String
+
+  jenkinsMasterAz:
+    Description: "The Availability Zone of the instance"
+    Type: String
+
+  stackSecurityGroupIds:
+    Description: "The IDs of the security groups"
+    Type: "List<AWS::EC2::SecurityGroup::Id>"
+
+  jenkinsMasterEbsDeviceName:
+    Description: "The device name (for example, /dev/sdh or xvdh)"
+    Type: String
+    Default: /dev/xvdj
+
+  jenkinsMasterEbsId:
+    Description: "A volume to attach to the instance."
+    Type: String
+
+  albListenerCertificateArn:
+    Description: "The ARN of the certificate"
+    Type: String
+
+  jenkinsAlbSubnets:
+    Description: "ALB subnets"
+    Type: "List<AWS::EC2::Subnet::Id>"
+
+  environmentTag:
+    Description: "The environment tag"
+    Type: String
+
+  systemCodeTag:
+    Description: "The systemCode tag"
+    Type: String
+    Default: "upp"
+
+  teamDlTag:
+    Description: "The teamDL tag"
+    Type: String
+    Default: "universal.publishing.platform@ft.com"
+
+
+Resources:
+  JenkinsMaster:
+    Description: "Jenkins master instance"
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref jenkinsMasterImageId
+      InstanceType: !Ref jenkinsMasterInstanceType
+      AvailabilityZone: !Ref jenkinsMasterAz
+      SubnetId: !Ref jenkinsMasterSubnetId
+      SecurityGroupIds: !Ref stackSecurityGroupIds
+      KeyName: !Ref jenkinsMasterKeyPairName
+      Volumes:
+        - Device: !Ref jenkinsMasterEbsDeviceName
+          VolumeId: !Ref jenkinsMasterEbsId
+      UserData:
+        Fn::Base64: !Sub |
+          #!/usr/bin/env bash
+
+          set -euox pipefail
+
+          echo ${jenkinsMasterEbsDeviceName} /var/lib/jenkins ext4 defaults,nofail 0 2 >> /etc/fstab
+          mount ${jenkinsMasterEbsDeviceName} /var/lib/jenkins
+          chown jenkins:jenkins /var/lib/jenkins
+
+          systemctl start docker
+          systemctl start jenkins
+      Tags:
+        - Key: "Name"
+          Value: !Sub ${stackResourcesPrefix}-jenkins-${jenkinsUid}
+        - Key: "systemCode"
+          Value: !Sub ${systemCodeTag}
+        - Key: "teamDL"
+          Value: !Sub ${teamDlTag}
+        - Key: "environment"
+          Value: !Sub ${environmentTag}
+
+  JenkinsAlb:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub ${stackResourcesPrefix}-jenkins-${jenkinsUid}-elb
+      Scheme: internal
+      Type: application
+      SecurityGroups: !Ref stackSecurityGroupIds
+      Subnets: !Ref jenkinsAlbSubnets
+      Tags:
+        - Key: "Name"
+          Value: !Sub ${stackResourcesPrefix}-jenkins-${jenkinsUid}-elb
+        - Key: "systemCode"
+          Value: !Sub ${systemCodeTag}
+        - Key: "teamDL"
+          Value: !Sub ${teamDlTag}
+        - Key: "environment"
+          Value: !Sub ${environmentTag}
+
+  JenkinsAlbTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 8080
+      Protocol: HTTP
+      VpcId: !Ref stackVpcId
+      HealthCheckPort: 8080
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '403'
+      Targets:
+        - Id: !Ref JenkinsMaster
+      Tags:
+        - Key: "Name"
+          Value: !Sub ${stackResourcesPrefix}-jenkins-${jenkinsUid}-tg
+        - Key: "systemCode"
+          Value: !Sub ${systemCodeTag}
+        - Key: "teamDL"
+          Value: !Sub ${teamDlTag}
+        - Key: "environment"
+          Value: !Sub ${environmentTag}
+
+  JenkinsAlbListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref JenkinsAlbTargetGroup
+      LoadBalancerArn: !Ref JenkinsAlb
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref albListenerCertificateArn
+
+Outputs:
+  JenkinsAlbDnsName:
+    Description: Jenkins ALB DNS record
+    Value: !GetAtt JenkinsAlb.DNSName

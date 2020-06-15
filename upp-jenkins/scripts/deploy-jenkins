@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+CONFIG_PATH="/config"
+CF_STACK_TEMPLATE="${CONFIG_PATH}/cloudformation/jenkins-master.yaml"
+JENKINS_CONFIG="${CONFIG_PATH}/vars/${JENKINS_UID}.sh"
+
+if [ ! -f "${JENKINS_CONFIG}" ]; then
+  echo "No configuration for $JENKINS_UID exist at ${JENKINS_CONFIG}"
+  exit 1
+else
+  # shellcheck source=/dev/null
+  source "${JENKINS_CONFIG}"
+fi
+
+aws cloudformation deploy \
+  --stack-name "${CF_STACK_NAME}" \
+  --region "${AWS_REGION}" \
+  --template-file "${CF_STACK_TEMPLATE}" \
+  --no-fail-on-empty-changeset \
+  --parameter-overrides \
+  stackResourcesPrefix="${STACK_RESOURCES_PREFIX}" \
+  jenkinsUid="${JENKINS_UID}" \
+  environmentTag="${ENVIRONMENT_TAG}" \
+  systemCodeTag="${SYSTEM_CODE_TAG}" \
+  teamDlTag="${TEAM_DL_TAG}" \
+  jenkinsMasterInstanceType="${JENKINS_MASTER_INSTANCE_TYPE}" \
+  stackVpcId="${STACK_VPC_ID}" \
+  jenkinsMasterSubnetId="${JENKINS_MASTER_SUBNET_ID}" \
+  jenkinsMasterKeyPairName="${JENKINS_MASTER_KEYPAIR_NAME}" \
+  jenkinsMasterImageId="${JENKINS_MASTER_IMAGE_ID}" \
+  jenkinsMasterAz="${JENKINS_MASTER_AZ}" \
+  stackSecurityGroupIds="${STACK_SECURITY_GROUP_IDS}" \
+  jenkinsMasterEbsId="${JENKINS_MASTER_EBS_ID}" \
+  albListenerCertificateArn="${ALB_LISTENER_CERTIFICATE_ARN}" \
+  jenkinsAlbSubnets="${JENKINS_ALB_SUBNETS}"
+
+manage-cname "UPSERT"
