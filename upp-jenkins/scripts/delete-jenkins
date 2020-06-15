@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+CONFIG_PATH="/config"
+JENKINS_CONFIG="${CONFIG_PATH}/vars/${JENKINS_UID}.sh"
+
+if [ ! -f "${JENKINS_CONFIG}" ]; then
+  echo "No configuration for $JENKINS_UID exist at ${JENKINS_CONFIG}"
+  exit 1
+else
+  # shellcheck source=/dev/null
+  source "${JENKINS_CONFIG}"
+fi
+
+manage-cname "DELETE"
+
+aws cloudformation delete-stack \
+  --region "${AWS_REGION}" \
+  --stack-name "${CF_STACK_NAME}"
+
+echo "Waiting for the ${CF_STACK_NAME} stack to finish deleting."
+aws cloudformation wait stack-delete-complete \
+  --region "${AWS_REGION}" \
+  --stack-name "${CF_STACK_NAME}"
+
+

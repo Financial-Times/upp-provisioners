@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS CloudFormation Jenkins Master EBS Example Template
+
+Parameters:
+  stackResourcesPrefix:
+    Type: String
+    Description: Stack resources prefix
+    Default: "upp-test"
+    # Default: "upp" # Production default
+
+  jenkinsUid:
+    Type: String
+    Description: "Set unique ID"
+
+  environmentTag:
+    Type: String
+    Description: The environment tag
+    Default: "d"
+
+  systemCodeTag:
+    Type: String
+    Description: The systemCode tag
+    Default: "upp"
+
+  teamDlTag:
+    Type: String
+    Description: The teamDL tag
+    Default: "universal.publishing.platform@ft.com"
+
+  ebsRegion:
+    Type: String
+    Description: The EBS region tag
+    Default: "eu-west-1"
+
+  ebsAzSuffix:
+    Type: String
+    Default: a
+
+  EbsSize:
+    Type: String
+    Default: 20
+    # Default: 150 # Production default
+
+Resources:
+  JenkinsEbs:
+    Type: 'AWS::EC2::Volume'
+    Properties:
+      Size: !Sub ${EbsSize}
+      Encrypted: 'false'
+      AvailabilityZone: !Sub ${ebsRegion}${ebsAzSuffix}
+      Tags:
+        - Key: Name
+          Value: !Sub ${stackResourcesPrefix}-jenkins-${jenkinsUid}-${ebsRegion}${ebsAzSuffix}
+        - Key: "systemCode"
+          Value: !Sub ${systemCodeTag}
+        - Key: "teamDL"
+          Value: !Sub ${teamDlTag}
+        - Key: "environment"
+          Value: !Sub ${environmentTag}
+        - Key: "purpose"
+          Value: "Jenkins Master EBS"

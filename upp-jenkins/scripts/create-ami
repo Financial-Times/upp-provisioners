@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+CONFIG_PATH="/config"
+JENKINS_CONFIG="${CONFIG_PATH}/vars/${JENKINS_UID}.sh"
+
+if [ ! -f "${JENKINS_CONFIG}" ]; then
+  echo "No configuration for $JENKINS_UID exist at ${JENKINS_CONFIG}"
+  exit 1
+else
+  set -o allexport
+  # shellcheck source=/dev/null
+  source "${JENKINS_CONFIG}"
+  set +o allexport
+fi
+
+PACKER_TEMPLATE="${CONFIG_PATH}/packer/jenkins-master.json"
+export PROVISION_SCRIPT="${CONFIG_PATH}/packer/provision-jenkins-master.sh"
+
+packer validate "${PACKER_TEMPLATE}"
+packer build "${PACKER_TEMPLATE}"
