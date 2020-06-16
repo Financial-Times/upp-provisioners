@@ -6,6 +6,7 @@
     "vpc_id": "{{env `STACK_VPC_ID`}}",
     "subnet_id": "{{env `JENKINS_MASTER_SUBNET_ID`}}",
     "provision_script": "{{env `PROVISION_SCRIPT`}}",
+    "sysconfig_jenkins_template": "{{env `SYSCONFIG_JENKINS_TEMPLATE`}}",
     "system_code_tag": "{{env `SYSTEM_CODE_TAG`}}",
     "team_dl_tag": "{{env `TEAM_DL_TAG`}}",
     "environment_tag": "{{env `ENVIRONMENT_TAG`}}",
@@ -50,6 +51,11 @@
     }
   ],
   "provisioners": [
+    {
+      "type": "file",
+      "source": "{{user `sysconfig_jenkins_template`}}",
+      "destination": "/tmp/sysconfig_jenkins_template.conf"
+    },
     {
       "type": "shell",
       "script": "{{user `provision_script`}}"

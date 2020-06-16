@@ -18,6 +18,7 @@ fi
 
 PACKER_TEMPLATE="${CONFIG_PATH}/packer/jenkins-master.json"
 export PROVISION_SCRIPT="${CONFIG_PATH}/packer/provision-jenkins-master.sh"
+export SYSCONFIG_JENKINS_TEMPLATE="${CONFIG_PATH}/packer/etc-sysconfig-jenkins-template.conf"
 
 packer validate "${PACKER_TEMPLATE}"
 packer build "${PACKER_TEMPLATE}"
