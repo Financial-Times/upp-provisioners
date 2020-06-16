@@ -52,6 +52,10 @@ Parameters:
     Description: "A volume to attach to the instance."
     Type: String
 
+  jenkinsMasterJavaOptions:
+    Type: String
+    Default: "-Djava.awt.headless=true"
+
   albListenerCertificateArn:
     Description: "The ARN of the certificate"
     Type: String
@@ -94,6 +98,8 @@ Resources:
           #!/usr/bin/env bash
 
           set -euox pipefail
+
+          sed -i 's/__JENKINS_JAVA_OPTIONS__/${jenkinsMasterJavaOptions}/' /etc/sysconfig/jenkins
 
           echo ${jenkinsMasterEbsDeviceName} /var/lib/jenkins ext4 defaults,nofail 0 2 >> /etc/fstab
           mount ${jenkinsMasterEbsDeviceName} /var/lib/jenkins

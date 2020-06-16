@@ -14,6 +14,9 @@ sudo yum -y install java-1.8.0-openjdk-devel jenkins-2.190.1-1.1
 sudo systemctl stop jenkins
 sudo systemctl enable jenkins
 
+sudo mv /tmp/sysconfig_jenkins_template.conf /etc/sysconfig/jenkins
+sudo chown root:root /etc/sysconfig/jenkins
+
 echo "Install Docker CE"
 sudo amazon-linux-extras install docker
 sudo usermod -a -G docker jenkins

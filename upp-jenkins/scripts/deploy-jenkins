@@ -32,6 +32,7 @@ aws cloudformation deploy \
   jenkinsMasterKeyPairName="${JENKINS_MASTER_KEYPAIR_NAME}" \
   jenkinsMasterImageId="${JENKINS_MASTER_IMAGE_ID}" \
   jenkinsMasterAz="${JENKINS_MASTER_AZ}" \
+  jenkinsMasterJavaOptions="${JENKINS_MASTER_JAVA_OPTIONS}" \
   stackSecurityGroupIds="${STACK_SECURITY_GROUP_IDS}" \
   jenkinsMasterEbsId="${JENKINS_MASTER_EBS_ID}" \
   albListenerCertificateArn="${ALB_LISTENER_CERTIFICATE_ARN}" \
