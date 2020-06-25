@@ -1,0 +1,13 @@
+---
+- name: Decommission CCF DynamoDB
+  hosts: localhost
+  connection: local
+
+  vars:
+    cloudformation_stack: "ccf-dynamodb-{{ environment_name }}"
+
+  tasks:
+  - name: Delete CloudFormation stack
+    cloudformation:
+      stack_name: "{{ cloudformation_stack }}"
+      state: "absent"

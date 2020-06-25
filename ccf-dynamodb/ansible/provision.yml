@@ -1,0 +1,20 @@
+---
+- name: Provision CCF DynamoDB
+  hosts: localhost
+  connection: local
+
+  vars:
+    cloudformation_stack: "ccf-dynamodb-{{ environment_name }}"
+
+  tasks:
+  - name: Apply CloudFormation stack
+    cloudformation:
+      stack_name: "{{ cloudformation_stack }}"
+      aws_access_key: "{{ aws_access_key_id }}"
+      aws_secret_key: "{{ aws_secret_access_key }}"
+      region: "{{ aws_region }}"
+      state: "present"
+      template: /cloudformation/dynamodb.yml
+      template_parameters:
+        EnvironmentName: "{{ environment_name }}"
+        TagEnvironmentType: "{{ environment_type }}"

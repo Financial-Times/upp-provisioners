@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Template that creates a DynamoDB table for the Copyright Cleared Feed platform
+
+Parameters:
+  TagSystemCode:
+    Description: The system code for the environment
+    Type: String
+    Default: upp
+
+  TagTeamDL:
+    Description: Tag for the team distribution list
+    Type: String
+    AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    ConstraintDescription: There must be a valid email address for the TeamDL
+    Default: universal.publishing.platform@ft.com
+
+  TagEnvironmentType:
+    Description: Tag detail for the Environment
+    Type: String
+    AllowedValues:
+        - 'd'
+        - 't'
+        - 'p'
+
+  TagName:
+    Description: Tag detail for the Name
+    Type: String
+    Default: CCF Client Settings
+
+  EnvironmentName:
+    Description: An environment name that will be appended to resource names
+    Type: String
+
+Resources: 
+  CCFDynamoDB: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      TableName: !Sub ccf-client-settings-${EnvironmentName}
+      AttributeDefinitions: 
+        - AttributeName: "client_id"
+          AttributeType: "S"
+      KeySchema: 
+        - AttributeName: "client_id"
+          KeyType: "HASH"
+      BillingMode: "PAY_PER_REQUEST"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: !Ref TagEnvironmentType
+        - Key: Name
+          Value: !Sub ${TagName}-${EnvironmentName}
