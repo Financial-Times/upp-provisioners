@@ -29,12 +29,13 @@ func main() {
 	}
 
 	newTopics := [...]string{
-		// Publishing topics
-		"NativeCmsMetadataPublicationEvents",
-		"NativeCmsPublicationEvents",
+		// Publishing only topics
 		"PreNativeCmsMetadataPublicationEvents",
 		"PreNativeCmsPublicationEvents",
 		"SmartlogicConcept",
+		// Publishing and Delivery topics
+		"NativeCmsMetadataPublicationEvents",
+		"NativeCmsPublicationEvents",
 		// Delivery only topics
 		"CmsPublicationEvents",
 		"CombinedPostPublicationEvents",
