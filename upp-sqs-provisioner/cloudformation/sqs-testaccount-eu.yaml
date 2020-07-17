@@ -1,0 +1,157 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Template to create SQS entities for UPP"
+Parameters:
+
+  TagTeamDL:
+    Type: String
+    Description: Email address of the team used to tag objects
+    Default: "universal.publishing.platform@ft.com"
+
+  TagSystemCode:
+    Type: String
+    Description: The system code for the environment
+    Default: upp
+
+  TagEnvironmentType:
+    Description: Tag detail for the Environment
+    Type: String
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+    Default: d
+
+Resources:
+  uppconceptcarouselqueuek8s:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 20
+      QueueName: "upp-concept-carousel-queue-k8s"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: !Ref TagEnvironmentType
+
+  uppconcepteventsdeadletterdev:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 0
+      QueueName: "upp-concept-events-deadletter-dev"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: !Ref TagEnvironmentType
+
+
+  uppconcepteventsdev:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn : !GetAtt uppconcepteventsdeadletterdev.Arn
+        maxReceiveCount : 5
+      QueueName: "upp-concept-events-dev"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: !Ref TagEnvironmentType
+
+
+  uppconceptpublishdeadletterk8s1:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 0
+      QueueName: "upp-concept-publish-dead-letter-k8s-1"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: !Ref TagEnvironmentType
+
+
+  uppconceptpublishnotificationsk8s1:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn : !GetAtt uppconceptpublishdeadletterk8s1.Arn
+        maxReceiveCount : 5
+      QueueName: "upp-concept-publish-notifications-k8s-1"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: !Ref TagEnvironmentType
+
+
+  uppconceptpublishnotificationsk8s1Policy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - Ref: uppconceptpublishnotificationsk8s1
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: ConceptNotificationQueuePolicy
+        Statement:
+          -
+           Sid: "receive-from-sns"
+           Effect: Allow
+           Principal:
+             AWS: "*"
+           Action: "SQS:SendMessage"
+           Resource: !GetAtt uppconceptpublishnotificationsk8s1.Arn
+           Condition:
+             ArnLike:
+               "aws:SourceArn": !Sub "arn:aws:sns:eu-west-1:${AWS::AccountId}:upp-concept-publishing-primary-k8s-SNSTopic-*"
+          -
+           Sid: "communicate-with-sqs"
+           Effect: Allow
+           Principal:
+             AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps"
+           Action: "SQS:*"
+           Resource: !GetAtt uppconceptpublishnotificationsk8s1.Arn
+  uppconcepteventsdevPolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - Ref: uppconcepteventsdev
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: ConceptNotificationQueuePolicy
+        Statement:
+          -
+           Sid: "communicate-with-sqs"
+           Effect: Allow
+           Principal:
+             AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps"
+           Action: "SQS:*"
+           Resource: !GetAtt uppconcepteventsdev.Arn
+  uppconceptcarouselqueuek8sPolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - Ref: uppconceptcarouselqueuek8s
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: ConceptNotificationQueuePolicy
+        Statement:
+          -
+            Sid: "communicate-with-carousel-queue"
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps"
+            Action: "SQS:*"
+            Resource: !GetAtt uppconceptcarouselqueuek8s.Arn

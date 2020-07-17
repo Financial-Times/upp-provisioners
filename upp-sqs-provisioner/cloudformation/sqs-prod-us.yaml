@@ -1,0 +1,135 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Template to create SQS entities for UPP"
+Parameters:
+
+  TagTeamDL:
+    Type: String
+    Description: Email address of the team used to tag objects
+    Default: "universal.publishing.platform@ft.com"
+
+  TagSystemCode:
+    Type: String
+    Description: The system code for the environment
+    Default: upp
+
+  TagEnvironmentType:
+    Description: Tag detail for the Environment
+    Type: String
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+
+Resources:
+  uppconceptpublishdeadletterk8sprod2:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 0
+      QueueName: "upp-concept-publish-dead-letter-k8s-prod-2"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: p
+
+  uppconceptpublishdeadletterk8sstaging2:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 0
+      QueueName: "upp-concept-publish-dead-letter-k8s-staging-2"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: t
+
+  uppconceptpublishnotificationsk8sprod2:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn : !GetAtt uppconceptpublishdeadletterk8sprod2.Arn
+        maxReceiveCount : 5
+      QueueName: "upp-concept-publish-notifications-k8s-prod-2"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: t
+
+  uppconceptpublishnotificationsk8sstaging2:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn : !GetAtt uppconceptpublishnotificationsk8sstaging2.Arn
+        maxReceiveCount : 5
+      QueueName: "upp-concept-publish-notifications-k8s-staging-2"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: t
+
+
+  uppconceptpublishnotificationsk8sprod2Policy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - Ref: uppconceptpublishnotificationsk8sprod2
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: ConceptNotificationQueuePolicy
+        Statement:
+          -
+           Sid: "subscribe-to-primary-sns-queue"
+           Effect: Allow
+           Principal:
+             AWS: "*"
+           Action: "SQS:SendMessage"
+           Resource: !GetAtt uppconceptpublishnotificationsk8sprod2.Arn
+           Condition:
+             ArnLike:
+               "aws:SourceArn": !Sub "arn:aws:sns:eu-west-1:${AWS::AccountId}:upp-concept-publishing-primary-k8s-prod-SNSTopic-*"
+          -
+           Sid: "communicate-with-sqs"
+           Effect: Allow
+           Principal:
+             AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps"
+           Action: "SQS:*"
+           Resource: !GetAtt uppconceptpublishnotificationsk8sprod2.Arn
+
+  uppconceptpublishnotificationsk8sprod2Policy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - Ref: uppconceptpublishnotificationsk8sstaging2
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: ConceptNotificationQueuePolicy
+        Statement:
+          -
+           Sid: "subscribe-to-primary-sns-queue"
+           Effect: Allow
+           Principal:
+             AWS: "*"
+           Action: "SQS:SendMessage"
+           Resource: !GetAtt uppconceptpublishnotificationsk8sstaging2.Arn
+           Condition:
+             ArnLike:
+               "aws:SourceArn": !Sub "arn:aws:sns:eu-west-1:${AWS::AccountId}:upp-concept-publishing-primary-k8s-staging-SNSTopic-*"
+          -
+           Sid: "communicate-with-sqs"
+           Effect: Allow
+           Principal:
+             AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps-staging"
+           Action: "SQS:*"
+           Resource: !GetAtt uppconceptpublishnotificationsk8sstaging2.Arn
