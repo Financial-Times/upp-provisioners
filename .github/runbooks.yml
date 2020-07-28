@@ -37,3 +37,4 @@ runbooks:
         # paths are relative to root, omitting ./ (case-insensitive)
         pac-aurora: runbooks/pac-aurora-runbook.md
         upp-content-es-cluster: runbooks/upp-content-es-runbook.md
+        upp-concept-publish-provisioner: runbooks/upp-concept-publishing-provisioner-runbook.md
