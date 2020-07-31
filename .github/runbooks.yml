@@ -38,3 +38,4 @@ runbooks:
         pac-aurora: runbooks/pac-aurora-runbook.md
         upp-content-es-cluster: runbooks/upp-content-es-runbook.md
         upp-concept-publish-provisioner: runbooks/upp-concept-publishing-provisioner-runbook.md
+        upp-elasticsearch-provisioner: runbooks/upp-es-provisioner-runbook.md
