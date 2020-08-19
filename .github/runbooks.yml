@@ -42,3 +42,4 @@ runbooks:
         upp-jenkins-provisioner: runbooks/upp-jenkins-provisioner-runbook.md
         upp-jenkins: runbooks/upp-jenkins-runbook.md
         pac-aurora-provisoner: runbooks/pac-aurora-provisoner-runbook.md
+        content-fluentd-stream: runbooks/content-fluentd-kinesis-runbook.md
