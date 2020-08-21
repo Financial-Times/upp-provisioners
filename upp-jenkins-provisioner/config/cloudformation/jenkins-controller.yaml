@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: AWS CloudFormation Jenkins Master Template
+Description: AWS CloudFormation Jenkins Controller Template
 
 Parameters:
   stackResourcesPrefix:
@@ -11,7 +11,7 @@ Parameters:
     Type: String
     Description: "Set unique ID"
 
-  jenkinsMasterInstanceType:
+  jenkinsControllerInstanceType:
     Description: "Type of EC2 instance to launch for the server. Only Compute type nodes are currently specified."
     Type: String
 
@@ -20,22 +20,21 @@ Parameters:
     Type: AWS::EC2::VPC::Id
     AllowedPattern: "[a-z0-9-]*"
 
-  jenkinsMasterSubnetId:
+  jenkinsControllerSubnetId:
     Description: "VPC Subnet that Jenkins will be launched in."
     Type: AWS::EC2::Subnet::Id
     AllowedPattern: "[a-z0-9-]*"
 
-  #TODO: maybe remove
-  jenkinsMasterKeyPairName:
+  jenkinsControllerKeyPairName:
     Description: "Name of an existing EC2 KeyPair to enable SSH access to the instance(s)."
     Type: AWS::EC2::KeyPair::KeyName
     ConstraintDescription: Must be the name of an existing EC2 KeyPair
 
-  jenkinsMasterImageId:
+  jenkinsControllerImageId:
     Description: "The ID of the AMI"
     Type: String
 
-  jenkinsMasterAz:
+  jenkinsControllerAz:
     Description: "The Availability Zone of the instance"
     Type: String
 
@@ -43,16 +42,16 @@ Parameters:
     Description: "The IDs of the security groups"
     Type: "List<AWS::EC2::SecurityGroup::Id>"
 
-  jenkinsMasterEbsDeviceName:
+  jenkinsControllerEbsDeviceName:
     Description: "The device name (for example, /dev/sdh or xvdh)"
     Type: String
     Default: /dev/xvdj
 
-  jenkinsMasterEbsId:
+  jenkinsControllerEbsId:
     Description: "A volume to attach to the instance."
     Type: String
 
-  jenkinsMasterJavaOptions:
+  jenkinsControllerJavaOptions:
     Type: String
     Default: "-Djava.awt.headless=true"
 
@@ -80,33 +79,38 @@ Parameters:
 
 
 Resources:
-  JenkinsMaster:
-    Description: "Jenkins master instance"
+  JenkinsController:
+    Description: "Jenkins Controller instance"
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: !Ref jenkinsMasterImageId
-      InstanceType: !Ref jenkinsMasterInstanceType
-      AvailabilityZone: !Ref jenkinsMasterAz
-      SubnetId: !Ref jenkinsMasterSubnetId
+      ImageId: !Ref jenkinsControllerImageId
+      InstanceType: !Ref jenkinsControllerInstanceType
+      AvailabilityZone: !Ref jenkinsControllerAz
+      SubnetId: !Ref jenkinsControllerSubnetId
       SecurityGroupIds: !Ref stackSecurityGroupIds
-      KeyName: !Ref jenkinsMasterKeyPairName
+      IamInstanceProfile: "FT-EC2-Role"
+      KeyName: !Ref jenkinsControllerKeyPairName
       Volumes:
-        - Device: !Ref jenkinsMasterEbsDeviceName
-          VolumeId: !Ref jenkinsMasterEbsId
+        - Device: !Ref jenkinsControllerEbsDeviceName
+          VolumeId: !Ref jenkinsControllerEbsId
       UserData:
         Fn::Base64: !Sub |
           #!/usr/bin/env bash
 
           set -euox pipefail
 
-          sed -i 's/__JENKINS_JAVA_OPTIONS__/${jenkinsMasterJavaOptions}/' /etc/sysconfig/jenkins
+          sed -i 's/__JENKINS_JAVA_OPTIONS__/${jenkinsControllerJavaOptions}/' /etc/sysconfig/jenkins
 
-          echo ${jenkinsMasterEbsDeviceName} /var/lib/jenkins ext4 defaults,nofail 0 2 >> /etc/fstab
-          mount ${jenkinsMasterEbsDeviceName} /var/lib/jenkins
+          echo ${jenkinsControllerEbsDeviceName} /var/lib/jenkins ext4 defaults,nofail 0 2 >> /etc/fstab
+          mount ${jenkinsControllerEbsDeviceName} /var/lib/jenkins
           chown jenkins:jenkins /var/lib/jenkins
 
           systemctl start docker
           systemctl start jenkins
+
+          ### Install amazon-ftbase-v2
+          /usr/bin/aws s3 cp s3://amazon-ftbase/amazon-ftbase2/releases/bootstrap.sh /
+          bash /bootstrap.sh -s eng -e ${environmentTag} --disable-yum-security-update-schedule
       Tags:
         - Key: "Name"
           Value: !Sub ${stackResourcesPrefix}-jenkins-${jenkinsUid}
@@ -138,15 +142,22 @@ Resources:
   JenkinsAlbTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Port: 8080
-      Protocol: HTTP
       VpcId: !Ref stackVpcId
+      Port: 8080
+      HealthCheckPath: '/login'
+      Protocol: HTTP
       HealthCheckPort: 8080
+      HealthCheckTimeoutSeconds: 25
+      HealthCheckIntervalSeconds: 30
       HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
       Matcher:
-        HttpCode: '403'
+        HttpCode: '200-299'
       Targets:
-        - Id: !Ref JenkinsMaster
+        - Id: !Ref JenkinsController
+      TargetGroupAttributes:
+        - Key: 'deregistration_delay.timeout_seconds'
+          Value: '30'
       Tags:
         - Key: "Name"
           Value: !Sub ${stackResourcesPrefix}-jenkins-${jenkinsUid}-tg
