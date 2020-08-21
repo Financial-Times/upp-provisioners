@@ -37,10 +37,10 @@ Resources:
     Properties: 
       TableName: !Sub ccf-client-settings-${EnvironmentName}
       AttributeDefinitions: 
-        - AttributeName: "client_id"
+        - AttributeName: "licence_id"
           AttributeType: "S"
       KeySchema: 
-        - AttributeName: "client_id"
+        - AttributeName: "licence_id"
           KeyType: "HASH"
       BillingMode: "PAY_PER_REQUEST"
       Tags:
