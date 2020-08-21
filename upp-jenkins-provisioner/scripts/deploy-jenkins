@@ -4,7 +4,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 CONFIG_PATH="/config"
-CF_STACK_TEMPLATE="${CONFIG_PATH}/cloudformation/jenkins-master.yaml"
+CF_STACK_TEMPLATE="${CONFIG_PATH}/cloudformation/jenkins-controller.yaml"
 JENKINS_CONFIG="${CONFIG_PATH}/vars/${JENKINS_UID}.sh"
 
 if [ ! -f "${JENKINS_CONFIG}" ]; then
@@ -21,21 +21,21 @@ aws cloudformation deploy \
   --template-file "${CF_STACK_TEMPLATE}" \
   --no-fail-on-empty-changeset \
   --parameter-overrides \
-  stackResourcesPrefix="${STACK_RESOURCES_PREFIX}" \
+  stackResourcesPrefix="${RESOURCES_PREFIX}" \
   jenkinsUid="${JENKINS_UID}" \
   environmentTag="${ENVIRONMENT_TAG}" \
   systemCodeTag="${SYSTEM_CODE_TAG}" \
   teamDlTag="${TEAM_DL_TAG}" \
-  jenkinsMasterInstanceType="${JENKINS_MASTER_INSTANCE_TYPE}" \
-  stackVpcId="${STACK_VPC_ID}" \
-  jenkinsMasterSubnetId="${JENKINS_MASTER_SUBNET_ID}" \
-  jenkinsMasterKeyPairName="${JENKINS_MASTER_KEYPAIR_NAME}" \
-  jenkinsMasterImageId="${JENKINS_MASTER_IMAGE_ID}" \
-  jenkinsMasterAz="${JENKINS_MASTER_AZ}" \
-  jenkinsMasterJavaOptions="${JENKINS_MASTER_JAVA_OPTIONS}" \
+  jenkinsControllerInstanceType="${JENKINS_CONTROLLER_INSTANCE_TYPE}" \
+  stackVpcId="${VPC_ID}" \
+  jenkinsControllerSubnetId="${JENKINS_CONTROLLER_SUBNET_ID}" \
+  jenkinsControllerKeyPairName="${JENKINS_CONTROLLER_KEYPAIR_NAME}" \
+  jenkinsControllerImageId="${JENKINS_CONTROLLER_IMAGE_ID}" \
+  jenkinsControllerAz="${JENKINS_CONTROLLER_AZ}" \
+  jenkinsControllerJavaOptions="${JENKINS_CONTROLLER_JAVA_OPTIONS}" \
   stackSecurityGroupIds="${STACK_SECURITY_GROUP_IDS}" \
-  jenkinsMasterEbsId="${JENKINS_MASTER_EBS_ID}" \
-  albListenerCertificateArn="${ALB_LISTENER_CERTIFICATE_ARN}" \
+  jenkinsControllerEbsId="${JENKINS_CONTROLLER_EBS_ID}" \
+  albListenerCertificateArn="${JENKINS_ALB_LISTENER_CERTIFICATE_ARN}" \
   jenkinsAlbSubnets="${JENKINS_ALB_SUBNETS}"
 
 manage-cname "UPSERT"

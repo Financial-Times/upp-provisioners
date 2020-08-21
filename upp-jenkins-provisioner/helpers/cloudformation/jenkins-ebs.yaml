@@ -1,12 +1,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: AWS CloudFormation Jenkins Master EBS Example Template
+Description: AWS CloudFormation EBS Template
 
 Parameters:
   stackResourcesPrefix:
     Type: String
     Description: Stack resources prefix
-    Default: "upp-test"
-    # Default: "upp" # Production default
 
   jenkinsUid:
     Type: String
@@ -38,8 +36,7 @@ Parameters:
 
   EbsSize:
     Type: String
-    Default: 20
-    # Default: 150 # Production default
+    Default: 50
 
 Resources:
   JenkinsEbs:
@@ -58,4 +55,4 @@ Resources:
         - Key: "environment"
           Value: !Sub ${environmentTag}
         - Key: "purpose"
-          Value: "Jenkins Master EBS"
+          Value: "Jenkins Controller EBS"
