@@ -16,9 +16,10 @@ else
   set +o allexport
 fi
 
-PACKER_TEMPLATE="${CONFIG_PATH}/packer/jenkins-master.json"
-export PROVISION_SCRIPT="${CONFIG_PATH}/packer/provision-jenkins-master.sh"
+PACKER_TEMPLATE="${CONFIG_PATH}/packer/jenkins-controller.json"
+export PROVISION_SCRIPT="${CONFIG_PATH}/packer/provision-jenkins-controller.sh"
 export SYSCONFIG_JENKINS_TEMPLATE="${CONFIG_PATH}/packer/etc-sysconfig-jenkins-template.conf"
+export BUILDER_INSTANCE_TYPE="t3.medium"
 
 packer validate "${PACKER_TEMPLATE}"
 packer build "${PACKER_TEMPLATE}"

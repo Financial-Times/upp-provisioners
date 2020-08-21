@@ -1,7 +1,13 @@
 .DEFAULT_GOAL := rebuild
 IMAGE_NAME=upp-jenkins-provisioner
 
-.PHONY: rebuild rebuild-files shell create-ami deploy-jenkins delete-jenkins
+.PHONY: \
+	rebuild \
+	rebuild-files \
+	shell \
+	create-ami \
+	deploy-jenkins \
+	delete-jenkins
 
 rebuild:
 	docker build \
