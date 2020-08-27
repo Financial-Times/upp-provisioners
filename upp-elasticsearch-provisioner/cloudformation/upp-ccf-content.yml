@@ -4,7 +4,7 @@ Description: >
 
 Parameters:
   EnvironmentType:
-    Description: Environment type (Test or Production).
+    Description: Environment type (Dev,Test or Production).
     Type: String
     AllowedValues:
       - 'd'
@@ -37,7 +37,7 @@ Resources:
       EBSOptions:
         EBSEnabled: true
         Iops: 0
-        VolumeSize: 30
+        VolumeSize: 50
         VolumeType: "gp2"
       SnapshotOptions:
         AutomatedSnapshotStartHour: "0"
