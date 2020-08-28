@@ -22,7 +22,7 @@ sudo sed -i 's/gpgcheck=1/gpgcheck=0/' /etc/yum.repos.d/jenkins.repo
 
 sudo yum -y update
 sudo yum -y upgrade
-sudo yum -y install java-1.8.0-openjdk-devel "${JENKINS_PACKER_RPM_VERSION}"
+sudo yum -y install git java-1.8.0-openjdk-devel "${JENKINS_PACKER_RPM_VERSION}"
 sudo systemctl stop jenkins
 sudo systemctl enable jenkins
 
