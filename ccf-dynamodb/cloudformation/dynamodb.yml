@@ -39,9 +39,20 @@ Resources:
       AttributeDefinitions: 
         - AttributeName: "licence_id"
           AttributeType: "S"
+        - AttributeName: "feed_id"
+          AttributeType: "S"
       KeySchema: 
         - AttributeName: "licence_id"
           KeyType: "HASH"
+        - AttributeName: "feed_id"
+          KeyType: "RANGE"
+      GlobalSecondaryIndexes:
+        - IndexName: "feed-index"
+          KeySchema:
+            - AttributeName: "feed_id"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
       BillingMode: "PAY_PER_REQUEST"
       Tags:
         - Key: systemCode
