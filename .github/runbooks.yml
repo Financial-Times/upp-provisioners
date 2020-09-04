@@ -44,3 +44,4 @@ runbooks:
         upp-jenkins: runbooks/upp-jenkins-runbook.md
         pac-aurora-provisoner: runbooks/pac-aurora-provisoner-runbook.md
         content-fluentd-stream: runbooks/content-fluentd-kinesis-runbook.md
+        ccf-client-settings-dynamodb: runbooks/ccf-client-settings-dynamodb-runbook.md
