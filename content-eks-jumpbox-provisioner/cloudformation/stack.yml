@@ -1,0 +1,157 @@
+---
+ AWSTemplateFormatVersion: '2010-09-09'
+ Description: This template deploys an jumpbox for Ops to use
+
+ Metadata:
+     AWS::CloudFormation::Interface:
+         - Label: FT standard tagging
+           Parameters:
+              - TagEnvironment
+              - TagTeamDL
+              - TagSystemCode
+              - TagIpCode
+              - TagDescription
+
+ Parameters:
+     SubnetIds:
+         Description: List of comma separated subnet IDs
+         Type: CommaDelimitedList
+
+     SecurityGroups:
+         Description: List of comma separated secudity group IDs
+         Type: CommaDelimitedList
+
+     EnvironmentName:
+         Description: An environment name that will be prefixed to resource names
+         Type: String
+
+     EnvironmentType:
+         Description: Tag detail for the Environment
+         Type: String
+         Default: p
+
+     Ec2InstanceType:
+         Description: Size of ec2 Instance
+         Type: String
+         Default: t2.micro
+
+     ImageId:
+         Description: The Image ID of Amazon Linux 2 kto use
+         Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+         Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+
+
+     TagTeamDL:
+         Description: Tag of the TeamDL
+         Type: String
+         AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+         ConstraintDescription: There must be a valid email address for the TeamDL
+         Default: universal.publishing.platform@ft.com
+
+     TagSystemCode:
+         Description: The system code for the environment
+         Type: String
+         Default: upp
+
+     TagDescription:
+         Description: Tag detail for the describing the instance
+         Type: String
+         Default: UPP Jumpbox for Ops
+
+ Resources:
+   ElasticLoadBalancer:
+      Type: "AWS::ElasticLoadBalancing::LoadBalancer"
+      Properties:
+        LoadBalancerName: !Sub upp-jumpbox-elb-${EnvironmentType}
+        CrossZone: false
+        Subnets: !Ref SubnetIds
+        SecurityGroups: !Ref SecurityGroups
+        Scheme: internal
+        Listeners:
+        - LoadBalancerPort: "22"
+          InstancePort: "22"
+          Protocol: "TCP"
+        HealthCheck:
+          Target: TCP:22
+          HealthyThreshold: 3
+          UnhealthyThreshold: 5
+          Interval: 30
+          Timeout: 5
+        Tags:
+            - Key: Name
+              Value: !Join ["" , ["UPP Content Jumpbox ", !Ref EnvironmentType]]
+            - Key: environment
+              Value: !Ref EnvironmentType
+            - Key: teamDL
+              Value: !Ref TagTeamDL
+            - Key: systemCode
+              Value: !Ref TagSystemCode
+            - Key: description
+              Value: !Ref TagDescription
+
+   AutoScalingGroup:
+     Type: AWS::AutoScaling::AutoScalingGroup
+     Properties:
+       AutoScalingGroupName: !Sub upp-content-jumpbox-${EnvironmentName}
+       MinSize: '1'
+       MaxSize: '1'
+       DesiredCapacity: "1"
+       LoadBalancerNames:
+         [ Ref: ElasticLoadBalancer ]
+       LaunchConfigurationName:
+         Ref: LaunchConfigJump
+       VPCZoneIdentifier: !Ref SubnetIds
+       Tags:
+           - Key: Name
+             Value: !Join ["" , ["UPP Content Jumpbox ", !Ref EnvironmentType]]
+             PropagateAtLaunch: true
+           - Key: environment
+             Value: !Ref EnvironmentType
+             PropagateAtLaunch: true
+           - Key: teamDL
+             Value: !Ref TagTeamDL
+             PropagateAtLaunch: true
+           - Key: systemCode
+             Value: !Ref TagSystemCode
+             PropagateAtLaunch: true
+           - Key: description
+             Value: !Ref TagDescription
+             PropagateAtLaunch: true
+
+
+   LaunchConfigJump:
+     Type: AWS::AutoScaling::LaunchConfiguration
+     Properties:
+       IamInstanceProfile: "FT-EC2-Role"
+       ImageId: !Ref ImageId
+       InstanceType: !Ref Ec2InstanceType
+       KeyName: "upp-k8s-provisioning-debug"
+       SecurityGroups: !Ref SecurityGroups
+       UserData:
+         Fn::Base64: !Sub |
+            #!/bin/bash -x
+            /usr/bin/aws s3 cp s3://amazon-ftbase/amazon-ftbase2/releases/bootstrap.sh /
+            bash /bootstrap.sh -s eng -e ${EnvironmentType}
+            yum update -y
+            yum install git -y
+            # Clone the k8s auth setup repo with the kubeconfig in it
+            cd /etc/skel
+            echo "exec bash" > .profile
+            echo 'export KUBECONFIG=${!HOME}/content-k8s-auth-setup/eks-kubeconfig' >> .bashrc
+            echo "mkdir -p content-k8s-auth-setup" >> .bashrc
+            echo 'bash -x /usr/local/bin/ops-eks-kubeconfig.sh &> ${!HOME}/ops-eks-kubeconfig.log' >> .bashrc
+
+            cd /home/ec2-user
+            # Install kubectl
+            wget https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            mv ./kubectl /usr/bin/kubectl
+            mkdir -p /root/content-k8s-auth-setup/
+            mkdir -p /etc/skel/content-k8s-auth-setup/
+            # Assemble kubeconfig
+            curl https://raw.githubusercontent.com/Financial-Times/kubectl-login/master/update-eks-kubeconfig/ops-eks-kubeconfig.sh > /usr/local/bin/ops-eks-kubeconfig.sh
+
+ Outputs:
+   JumpboxELBDNSname:
+     Description: Jumpbox ELB DNS record
+     Value: !GetAtt ElasticLoadBalancer.DNSName
