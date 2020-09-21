@@ -22,7 +22,7 @@ JENKINS_CONTROLLER_AZ="eu-west-1a"
 JENKINS_CONTROLLER_JAVA_OPTIONS="-Djava.awt.headless=true -Dpermissive-script-security.enabled=true -Xmx5120m"
 JENKINS_PACKER_RPM_VERSION="jenkins-2.190.1-1.1"
 
-STACK_SECURITY_GROUP_IDS="sg-f294008b, sg-39ef7b40"
+STACK_SECURITY_GROUP_IDS="sg-f294008b, sg-39ef7b40, sg-9e99c1e6, sg-13e97d6a"
 JENKINS_ALB_SUBNETS="subnet-901020c8, subnet-5f00f438"
 JENKINS_ALB_LISTENER_CERTIFICATE_ARN="arn:aws:acm:eu-west-1:469211898354:certificate/c9fc4ada-63ee-4951-b1ea-429ba586cbf7"
 
