@@ -90,6 +90,10 @@ Resources:
       SecurityGroupIds: !Ref stackSecurityGroupIds
       IamInstanceProfile: "FT-EC2-Role"
       KeyName: !Ref jenkinsControllerKeyPairName
+      BlockDeviceMappings:
+        - DeviceName: "/dev/xvda"
+          Ebs:
+            VolumeSize: 20
       Volumes:
         - Device: !Ref jenkinsControllerEbsDeviceName
           VolumeId: !Ref jenkinsControllerEbsId
