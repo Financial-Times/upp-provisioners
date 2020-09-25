@@ -1,5 +1,0 @@
-region: eu-west-1
-vpc_id: vpc-ee57bf89
-subnet_ids: subnet-901020c8,subnet-5f00f438,subnet-8cbe4fc5
-security_groups: sg-39ef7b40,sg-f294008b
-image_id: ami-e4515e0e

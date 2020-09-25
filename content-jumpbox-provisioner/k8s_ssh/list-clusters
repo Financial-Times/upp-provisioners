@@ -1,4 +1,0 @@
-#!/bin/bash
-
-echo -e "Available clusters:"
-grep "aliases"  ~/.kubectl-login.json
