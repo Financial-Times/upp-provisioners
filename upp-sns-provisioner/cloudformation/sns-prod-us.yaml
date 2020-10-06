@@ -1,0 +1,164 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Template to create SNS entities for UPP"
+Parameters:
+
+  TagTeamDL:
+    Type: String
+    Description: Email address of the team used to tag objects
+    Default: "universal.publishing.platform@ft.com"
+
+  TagSystemCode:
+    Type: String
+    Description: The system code for the environment
+    Default: upp
+
+  TagEnvironmentType:
+    Description: Tag detail for the Environment
+    Type: String
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+    Default: p
+
+Resources:
+  SNSUPPTeam:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: UPPTeam-prod
+
+  SNSAutomatedKeyRotationPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: __default_policy_ID
+        Statement:
+        - Sid: __default_statement_ID
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action:
+          - SNS:GetTopicAttributes
+          - SNS:SetTopicAttributes
+          - SNS:AddPermission
+          - SNS:RemovePermission
+          - SNS:DeleteTopic
+          - SNS:Subscribe
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Publish
+          - SNS:Receive
+          Resource: !Ref SNSUPPTeam
+          Condition:
+            StringEquals:
+              AWS:SourceOwner: !Ref AWS::AccountId
+      Topics:
+        - !Ref SNSUPPTeam
+
+  UppTeamSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: universal.publishing.platform@ft.com
+      Protocol: email
+      TopicArn: !Ref SNSUPPTeam
+
+  SNSuppconceptpublishingsecondaryk8sprodSQSConceptQueueOverflowAlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: upp-concept-publishing-secondary-k8s-prod-SQSConceptQueueOverflowAlarmTopic-prod
+
+  uppconceptpublishingsecondaryk8sprodSQSConceptQueueOverflowAlarmTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: __default_policy_ID
+        Statement:
+        - Sid: __default_statement_ID
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action:
+          - SNS:GetTopicAttributes
+          - SNS:SetTopicAttributes
+          - SNS:AddPermission
+          - SNS:RemovePermission
+          - SNS:DeleteTopic
+          - SNS:Subscribe
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Publish
+          - SNS:Receive
+          Resource: !Ref SNSuppconceptpublishingsecondaryk8sprodSQSConceptQueueOverflowAlarmTopic
+          Condition:
+            StringEquals:
+              AWS:SourceOwner: !Ref AWS::AccountId
+      Topics:
+        - !Ref SNSuppconceptpublishingsecondaryk8sprodSQSConceptQueueOverflowAlarmTopic
+
+  uppconceptpublishingsecondaryk8sprodSQSConceptQueueOverflowAlarmTopicSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: p2o5v3s3i6a7x0q7@financialtimes.slack.com
+      Protocol: email
+      TopicArn: !Ref SNSuppconceptpublishingsecondaryk8sprodSQSConceptQueueOverflowAlarmTopic
+
+  SNSuppconceptpublishingsecondaryk8sstagingSQSConceptQueueOverflowAlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: t
+      TopicName: upp-concept-publishing-secondary-k8s-staging-SQSConceptQueueOverflowAlarmTopic-staging
+
+  uppconceptpublishingsecondaryk8sstagingSQSConceptQueueOverflowAlarmTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: __default_policy_ID
+        Statement:
+        - Sid: __default_statement_ID
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action:
+          - SNS:GetTopicAttributes
+          - SNS:SetTopicAttributes
+          - SNS:AddPermission
+          - SNS:RemovePermission
+          - SNS:DeleteTopic
+          - SNS:Subscribe
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Publish
+          - SNS:Receive
+          Resource: !Ref SNSuppconceptpublishingsecondaryk8sstagingSQSConceptQueueOverflowAlarmTopic
+          Condition:
+            StringEquals:
+              AWS:SourceOwner: !Ref AWS::AccountId
+      Topics:
+        - !Ref SNSuppconceptpublishingsecondaryk8sstagingSQSConceptQueueOverflowAlarmTopic
+
+  uppconceptpublishingsecondaryk8sstagingSQSConceptQueueOverflowAlarmTopicSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: p2o5v3s3i6a7x0q7@financialtimes.slack.com
+      Protocol: email
+      TopicArn: !Ref SNSuppconceptpublishingsecondaryk8sstagingSQSConceptQueueOverflowAlarmTopic

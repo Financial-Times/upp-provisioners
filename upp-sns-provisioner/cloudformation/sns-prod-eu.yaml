@@ -1,0 +1,394 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Template to create SNS entities for UPP"
+Parameters:
+
+  TagTeamDL:
+    Type: String
+    Description: Email address of the team used to tag objects
+    Default: "universal.publishing.platform@ft.com"
+
+  TagSystemCode:
+    Type: String
+    Description: The system code for the environment
+    Default: upp
+
+  TagEnvironmentType:
+    Description: Tag detail for the Environment
+    Type: String
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+    Default: p
+
+Resources:
+  SNSAutomatedKeyRotation:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: IAM-Automated-Key-Rotation-Notification-Topic-prod
+
+  SNSAutomatedKeyRotationPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: __default_policy_ID
+        Statement:
+        - Sid: __default_statement_ID
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action:
+          - SNS:GetTopicAttributes
+          - SNS:SetTopicAttributes
+          - SNS:AddPermission
+          - SNS:RemovePermission
+          - SNS:DeleteTopic
+          - SNS:Subscribe
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Publish
+          - SNS:Receive
+          Resource: !Ref SNSAutomatedKeyRotation
+          Condition:
+            StringEquals:
+              AWS:SourceOwner: !Ref AWS::AccountId
+      Topics:
+        - !Ref SNSAutomatedKeyRotation
+
+  SNSUppTeam:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: UPPTeam-prod
+
+  SNSUPPTeamPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: __default_policy_ID
+        Statement:
+        - Sid: __default_statement_ID
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action:
+          - SNS:GetTopicAttributes
+          - SNS:SetTopicAttributes
+          - SNS:AddPermission
+          - SNS:RemovePermission
+          - SNS:DeleteTopic
+          - SNS:Subscribe
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Publish
+          - SNS:Receive
+          Resource: !Ref SNSUppTeam
+          Condition:
+            StringEquals:
+              AWS:SourceOwner: !Ref AWS::AccountId
+      Topics:
+        - !Ref SNSUppTeam
+
+  UppTeamSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: universal.publishing.platform@ft.com
+      Protocol: email
+      TopicArn: !Ref SNSUppTeam
+
+  SNSUppTeam1:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: UPP_Team-prod
+
+  SNSUPPTeam1Policy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: __default_policy_ID
+        Statement:
+        - Sid: __default_statement_ID
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action:
+          - SNS:GetTopicAttributes
+          - SNS:SetTopicAttributes
+          - SNS:AddPermission
+          - SNS:RemovePermission
+          - SNS:DeleteTopic
+          - SNS:Subscribe
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Publish
+          - SNS:Receive
+          Resource: !Ref SNSUppTeam1
+          Condition:
+            StringEquals:
+              AWS:SourceOwner: !Ref AWS::AccountId
+      Topics:
+        - !Ref SNSUppTeam1
+
+  SNSdynamodb:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: dynamodb-prod
+
+  SNSdynamodbPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: __default_policy_ID
+        Statement:
+        - Sid: __default_statement_ID
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action:
+          - SNS:GetTopicAttributes
+          - SNS:SetTopicAttributes
+          - SNS:AddPermission
+          - SNS:RemovePermission
+          - SNS:DeleteTopic
+          - SNS:Subscribe
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Publish
+          - SNS:Receive
+          Resource: !Ref SNSdynamodb
+          Condition:
+            StringEquals:
+              AWS:SourceOwner: !Ref AWS::AccountId
+      Topics:
+        - !Ref SNSdynamodb
+
+  SNSuppconceptpublishingprimary:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: "Concept Publish Update Notifications - k8s-prod"
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: upp-concept-publishing-primary-k8s-prod-SNSTopic-prod
+
+  SNSuppconceptpublishingprimaryPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: ConceptNotificationTopicPolicy
+        Statement:
+        - Sid: allow-s3-publish
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action: sns:Publish
+          Resource: !Ref SNSuppconceptpublishingprimary
+          Condition:
+            ArnLike:
+              aws:SourceArn: arn:aws:s3:::upp-concept-normalised-store-k8s-prod
+        - Sid: allow-content-container-apps-publish
+          Effect: Allow
+          Principal:
+            AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps"
+          Action:
+          - SNS:Publish
+          - SNS:GetTopicAttributes
+          Resource: !Ref SNSuppconceptpublishingprimary
+      Topics:
+        - !Ref SNSuppconceptpublishingprimary
+
+  uppconceptpublishnotificationsubscription1:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Sub arn:aws:sqs:us-east-1:${AWS::AccountId}:upp-concept-publish-notifications-k8s-prod-2
+      Protocol: sqs
+      TopicArn: !Ref SNSuppconceptpublishingprimary
+
+  uppconceptpublishnotificationsubscription2:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Sub arn:aws:sqs:eu-west-1:${AWS::AccountId}:upp-concept-publish-notifications-k8s-prod-1
+      Protocol: sqs
+      TopicArn: !Ref SNSuppconceptpublishingprimary
+
+  SNSQueueOverflowAlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: "Triggered when SQS concept queue alarms"
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: upp-concept-publishing-primary-k8s-prod-SQSConceptQueueOverflowAlarmTopic-prod
+
+  SNSQueueOverflowAlarmTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: __default_policy_ID
+        Statement:
+        - Sid: __default_statement_ID
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action:
+          - SNS:GetTopicAttributes
+          - SNS:SetTopicAttributes
+          - SNS:AddPermission
+          - SNS:RemovePermission
+          - SNS:DeleteTopic
+          - SNS:Subscribe
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Publish
+          - SNS:Receive
+          Resource: !Ref SNSQueueOverflowAlarmTopic
+          Condition:
+            StringEquals:
+              AWS:SourceOwner: !Ref AWS::AccountId
+      Topics:
+        - !Ref SNSQueueOverflowAlarmTopic
+
+  SNSQueueOverflowAlarmTopicSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: p2o5v3s3i6a7x0q7@financialtimes.slack.com
+      Protocol: email
+      TopicArn: !Ref SNSQueueOverflowAlarmTopic
+
+  SNSuppconceptpublishingprimarystag:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: "Concept Publish Update Notifications - k8s-staging"
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: t
+      TopicName: upp-concept-publishing-primary-k8s-staging-SNSTopic-staging
+
+  SNSuppconceptpublishingprimarystagPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: ConceptNotificationTopicPolicy
+        Statement:
+        - Sid: allow-s3-publish
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action: sns:Publish
+          Resource: !Ref SNSuppconceptpublishingprimarystag
+          Condition:
+            ArnLike:
+              aws:SourceArn: arn:aws:s3:::upp-concept-normalised-store-k8s-staging
+        - Sid: allow-content-container-apps-publish
+          Effect: Allow
+          Principal:
+            AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps"
+          Action:
+          - SNS:Publish
+          - SNS:GetTopicAttributes
+          Resource: !Ref SNSuppconceptpublishingprimarystag
+      Topics:
+        - !Ref SNSuppconceptpublishingprimarystag
+
+  SNSuppconceptpublishingprimary2Subscription1:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Sub "arn:aws:sqs:eu-west-1:${AWS::AccountId}:upp-concept-publish-notifications-k8s-staging-1"
+      Protocol: sqs
+      TopicArn: !Ref SNSuppconceptpublishingprimarystag
+
+  SNSuppconceptpublishingprimary2Subscription2:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Sub "arn:aws:sqs:us-east-1:${AWS::AccountId}:upp-concept-publish-notifications-k8s-staging-2"
+      Protocol: sqs
+      TopicArn: !Ref SNSuppconceptpublishingprimarystag
+
+  SNSuppconceptpublishingprimaryk8sstagingSQSConceptQueueOverflowAlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: "Triggered when SQS concept queue alarms"
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: t
+      TopicName: upp-concept-publishing-primary-k8s-staging-SQSConceptQueueOverflowAlarmTopic-staging
+
+  SNSuppconceptpublishingprimaryk8sstagingSQSConceptQueueOverflowAlarmTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: __default_policy_ID
+        Statement:
+        - Sid: __default_statement_ID
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action:
+          - SNS:GetTopicAttributes
+          - SNS:SetTopicAttributes
+          - SNS:AddPermission
+          - SNS:RemovePermission
+          - SNS:DeleteTopic
+          - SNS:Subscribe
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Publish
+          - SNS:Receive
+          Resource: !Ref SNSuppconceptpublishingprimaryk8sstagingSQSConceptQueueOverflowAlarmTopic
+          Condition:
+            StringEquals:
+              AWS:SourceOwner: !Ref AWS::AccountId
+      Topics:
+        - !Ref SNSuppconceptpublishingprimaryk8sstagingSQSConceptQueueOverflowAlarmTopic
+
+  SNSuppconceptpublishingprimaryk8sstagingSQSConceptQueueOverflowAlarmTopicSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: p2o5v3s3i6a7x0q7@financialtimes.slack.com
+      Protocol: email
+      TopicArn: !Ref SNSuppconceptpublishingprimaryk8sstagingSQSConceptQueueOverflowAlarmTopic
