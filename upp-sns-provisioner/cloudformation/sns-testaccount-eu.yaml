@@ -32,7 +32,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: !Ref TagEnvironmentType
-      TopicName: IAM-Automated-Key-Rotation-Notification-Topic-dev
+      TopicName: IAM-Automated-Key-Rotation-Notification-Topic
 
   SNSAutomatedKeyRotationPolicy:
     Type: AWS::SNS::TopicPolicy
@@ -112,7 +112,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: !Ref TagEnvironmentType
-      TopicName: dynamodb-dev
+      TopicName: dynamodb
 
   SNSdynamodbPolicy:
     Type: AWS::SNS::TopicPolicy
@@ -152,7 +152,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: !Ref TagEnvironmentType
-      TopicName: upp-concept-publishing-primary-k8s-SNSTopic-dev
+      TopicName: upp-concept-publishing-primary-k8s-SNSTopic
 
   SNSuppconceptpublishingprimaryPolicy:
     Type: AWS::SNS::TopicPolicy
@@ -198,7 +198,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: !Ref TagEnvironmentType
-      TopicName: upp-concept-publishing-primary-k8s-SQSConceptQueueOverflowAlarmTopic-dev
+      TopicName: upp-concept-publishing-primary-k8s-SQSConceptQueueOverflowAlarmTopic
 
   SNSQueueOverflowAlarmTopicPolicy:
     Type: AWS::SNS::TopicPolicy

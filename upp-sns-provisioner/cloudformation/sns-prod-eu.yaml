@@ -32,7 +32,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: !Ref TagEnvironmentType
-      TopicName: IAM-Automated-Key-Rotation-Notification-Topic-prod
+      TopicName: IAM-Automated-Key-Rotation-Notification-Topic
 
   SNSAutomatedKeyRotationPolicy:
     Type: AWS::SNS::TopicPolicy
@@ -72,7 +72,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: !Ref TagEnvironmentType
-      TopicName: UPPTeam-prod
+      TopicName: UPPTeam
 
   SNSUPPTeamPolicy:
     Type: AWS::SNS::TopicPolicy
@@ -119,7 +119,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: !Ref TagEnvironmentType
-      TopicName: UPP_Team-prod
+      TopicName: UPP_Team
 
   SNSUPPTeam1Policy:
     Type: AWS::SNS::TopicPolicy
@@ -159,7 +159,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: !Ref TagEnvironmentType
-      TopicName: dynamodb-prod
+      TopicName: dynamodb
 
   SNSdynamodbPolicy:
     Type: AWS::SNS::TopicPolicy
@@ -200,7 +200,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: !Ref TagEnvironmentType
-      TopicName: upp-concept-publishing-primary-k8s-prod-SNSTopic-prod
+      TopicName: upp-concept-publishing-primary-k8s-prod-SNSTopic
 
   SNSuppconceptpublishingprimaryPolicy:
     Type: AWS::SNS::TopicPolicy
@@ -254,7 +254,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: !Ref TagEnvironmentType
-      TopicName: upp-concept-publishing-primary-k8s-prod-SQSConceptQueueOverflowAlarmTopic-prod
+      TopicName: upp-concept-publishing-primary-k8s-prod-SQSConceptQueueOverflowAlarmTopic
 
   SNSQueueOverflowAlarmTopicPolicy:
     Type: AWS::SNS::TopicPolicy
@@ -302,7 +302,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: t
-      TopicName: upp-concept-publishing-primary-k8s-staging-SNSTopic-staging
+      TopicName: upp-concept-publishing-primary-k8s-staging-SNSTopic
 
   SNSuppconceptpublishingprimarystagPolicy:
     Type: AWS::SNS::TopicPolicy
@@ -356,7 +356,7 @@ Resources:
           Value: !Ref TagSystemCode
         - Key: EnvironmentType
           Value: t
-      TopicName: upp-concept-publishing-primary-k8s-staging-SQSConceptQueueOverflowAlarmTopic-staging
+      TopicName: upp-concept-publishing-primary-k8s-staging-SQSConceptQueueOverflowAlarmTopic
 
   SNSuppconceptpublishingprimaryk8sstagingSQSConceptQueueOverflowAlarmTopicPolicy:
     Type: AWS::SNS::TopicPolicy
