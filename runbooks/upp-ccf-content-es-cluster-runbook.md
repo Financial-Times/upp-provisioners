@@ -1,6 +1,10 @@
 # UPP - CCF Content ElasticSearch Cluster
 
-ElasticSearch cluster for use by the CCF platform. Has content of type articles indexed. It's indexed by ccf-content-rw-elasticsearch and used by combined-content-search. 
+ElasticSearch cluster for use by the CCF platform. Has content of type articles indexed. It's indexed by ccf-content-rw-elasticsearch and used by combined-content-search.
+
+## Primary URL
+
+<https://github.com/Financial-Times/upp-provisioners>
 
 ## Code
 
@@ -81,7 +85,7 @@ Manual
 
 ## Release Details
 
-A new version of the cluster can be created by provisioning it, please follow the provisioner's <a href="https://github.com/Financial-Times/upp-provisioners/blob/master/upp-elasticsearch-provisioner/README.md" target="_blank">README</a>. 
+A new version of the cluster can be created by provisioning it, please follow the provisioner's <https://github.com/Financial-Times/upp-provisioners/blob/master/upp-elasticsearch-provisioner/README.md>.
 
 ## Key Management Process Type
 
@@ -91,6 +95,10 @@ Manual
 
 Manually created AWS IAM "upp-elasticsearch-provisioner" user credentials are used during provisioning only.
 
+## Monitoring
+
+AWS Cloudwatch
+
 ## First Line Troubleshooting
 
 Check the AWS console, us-east-1 region for details about the ElasticSearch cluster health.
@@ -98,4 +106,4 @@ Check the AWS console, us-east-1 region for details about the ElasticSearch clus
 
 ## Second Line Troubleshooting
 
-Check the "Migrating data between ElasticSearch clusters" section from the provisioner's <a href="https://github.com/Financial-Times/upp-provisioners/blob/master/upp-elasticsearch-provisioner/README.md" target="_blank">README</a>.
+Check the "Migrating data between ElasticSearch clusters" section from the provisioner's <https://github.com/Financial-Times/upp-provisioners/blob/master/upp-elasticsearch-provisioner/README.md>.
