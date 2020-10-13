@@ -46,3 +46,5 @@ runbooks:
         content-fluentd-stream: runbooks/content-fluentd-kinesis-runbook.md
         ccf-client-settings-dynamodb: runbooks/ccf-client-settings-dynamodb-runbook.md
         upp-factset-store: runbooks/upp-factset-store-runbook.md
+        upp-concept-carousel-queue-provisioner: runbooks/upp-concept-carousel-queue-provisioner.md
+        upp-concept-carousel-queue: runbooks/upp-concept-carousel-queue.md
