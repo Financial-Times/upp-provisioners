@@ -77,7 +77,7 @@ Resources:
             VolumeType: "gp2"
             VolumeSize: 250
       IamInstanceProfile: "FT-EC2-Role"
-      ImageId: "ami-1a962263"
+      ImageId: "ami-08a2aed6e0a6f9c7d"
       InstanceType: !Ref Ec2InstanceType
       SecurityGroupIds: [ !Ref LoaderSecurityGroup, !Ref FTResourcesSecurityGroup ]
       SubnetId: !Select [0, !Ref DBSubnetIds ]
@@ -100,8 +100,38 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -x
-          /usr/bin/aws s3 cp s3://ft-ce-repository/amazon-ftbase/releases/bootstrap.sh /
-          bash /bootstrap.sh -s eng -e ${EnvironmentTag}
+          ###Alternative ssh method
+          echo "Add authorized keys setup"
+          cat > /etc/systemd/system/authorized_keys.service << EOF
+          [Unit]
+          Description=Update authorized_keys
+          [Service]
+          Type=oneshot
+          ExecStartPre=/bin/sh -c 'mkdir -p /home/ec2-user/.ssh && touch /home/ec2-user/.ssh/authorized_keys'
+          ExecStart=/bin/sh -c 'curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512'
+          ExecStart=/bin/sh -c 'curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys'
+          ExecStart=/bin/sh -c 'cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/ec2-user/.ssh/authorized_keys && chmod 700 /home/ec2-user/.ssh && chmod 600 /home/ec2-user/.ssh/authorized_keys && chown -R ec2-user:ec2-user /home/ec2-user/.ssh'
+          Restart=no
+          EOF
+
+          systemctl start authorized_keys.service
+          systemctl enable authorized_keys.service
+
+          cat > /etc/systemd/system/authorized_keys.timer << EOF
+          [Unit]
+          Description=Authorized keys timer
+          [Timer]
+          OnBootSec=1min
+          OnUnitActiveSec=1min
+          [Install]
+          WantedBy=timers.target
+          EOF
+
+          systemctl start authorized_keys.timer
+          systemctl enable authorized_keys.timer
+          ### Install amazon-ftbase-v2
+          /usr/bin/aws s3 cp s3://amazon-ftbase/amazon-ftbase2/releases/bootstrap.sh /
+          bash /bootstrap.sh -s eng -e ${EnvironmentTag} --disable-yum-security-update-schedule
           cd /home/ec2-user
           wget https://dev.mysql.com/get/Downloads/Connector-ODBC/5.3/mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
           yum -y install mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
