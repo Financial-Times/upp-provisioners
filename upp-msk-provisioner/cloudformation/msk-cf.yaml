@@ -40,38 +40,51 @@ Resources:
           FromPort: 2181
           ToPort: 2181
           CidrIp: 10.112.0.0/13
+          Description: Internal FT network (inc VPN)
         - IpProtocol: tcp
           FromPort: 2181
           ToPort: 2181
-          CidrIp: 10.172.32.0/21     
+          CidrIp: 10.172.32.0/21
+          Description: Internal VPC IP range
         - IpProtocol: tcp
           FromPort: 9094
           ToPort: 9094
           CidrIp: 10.112.0.0/13
+          Description: Internal FT network (inc VPN)
         - IpProtocol: tcp
           FromPort: 9094
           ToPort: 9094
-          CidrIp: 10.172.32.0/21          
+          CidrIp: 10.172.32.0/21 
+          Description: Internal VPC IP range         
         - IpProtocol: tcp
           FromPort: 9092
           ToPort: 9092
           CidrIp: 10.112.0.0/13
+          Description: Internal FT network (inc VPN)
         - IpProtocol: tcp
           FromPort: 9092
           ToPort: 9092
           CidrIp: 10.172.32.0/21
+          Description: Internal VPC IP range 
         - IpProtocol: tcp
           FromPort: 9092
           ToPort: 9092
-          CidrIp: 10.172.32.0/21
+          CidrIp: 10.55.20.0/21
         - IpProtocol: tcp
           FromPort: 9092
           ToPort: 9092
-          CidrIp: 10.55.20.0/21          
+          CidrIp: 10.172.40.0/24
+          Description: Jenkins access AWS Prod Private Subnet AZa
         - IpProtocol: tcp
           FromPort: 9092
           ToPort: 9092
-          SourceSecurityGroupId: sg-0156248bcf53de333
+          SourceSecurityGroupId: sg-0e307c6ed011cb8fb
+          Description: Publishing cluster SG
+        - IpProtocol: tcp
+          FromPort: 9092
+          ToPort: 9092
+          SourceSecurityGroupId: sg-0f684f7883bdf344e
+          Description: Delivery cluster SG
         - IpProtocol: tcp
           FromPort: 9092
           ToPort: 9092
@@ -87,7 +100,7 @@ Resources:
     Properties:
       ClusterName: !Ref ClusterName
       NumberOfBrokerNodes: 3
-      KafkaVersion: 2.2.1
+      KafkaVersion: 2.3.1
       EnhancedMonitoring: PER_TOPIC_PER_BROKER
       BrokerNodeGroupInfo:
         ClientSubnets: !Ref ClientSubnetIDs
@@ -101,8 +114,8 @@ Resources:
             VolumeSize: 100
       EncryptionInfo:
         EncryptionInTransit:
-          ClientBroker: TLS_PLAINTEXT
-          InCluster: true
+          ClientBroker: PLAINTEXT
+          InCluster: false
       ConfigurationInfo:
         Arn: !Ref ConfigurationArn
         Revision: !Ref ConfigurationRevisionNum
