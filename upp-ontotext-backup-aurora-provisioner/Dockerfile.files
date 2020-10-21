@@ -1,0 +1,4 @@
+FROM upp-ontotext-backup-rds-provisioner:local
+
+COPY scripts/* /usr/local/bin/
+COPY config/ /config/

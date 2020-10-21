@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+CONFIG_PATH="/config"
+RDS_CONFIG="${CONFIG_PATH}/vars/${ENVIRONMENT_NAME}.sh"
+
+if [ ! -f "${RDS_CONFIG}" ]; then
+  echo "No configuration for $ENVIRONMENT_NAME exist at ${RDS_CONFIG}"
+  exit 1
+else
+  # shellcheck source=/dev/null
+  source "${RDS_CONFIG}"
+fi
+
+aws cloudformation delete-stack \
+  --region "${AWS_REGION}" \
+  --stack-name "${CF_STACK_NAME}"
+
+echo "Waiting for the ${CF_STACK_NAME} stack to finish deleting."
+aws cloudformation wait stack-delete-complete \
+  --region "${AWS_REGION}" \
+  --stack-name "${CF_STACK_NAME}"
