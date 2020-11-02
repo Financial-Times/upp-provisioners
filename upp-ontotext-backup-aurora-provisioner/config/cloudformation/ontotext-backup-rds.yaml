@@ -19,6 +19,14 @@ Parameters:
         Description: The ID of the resources SG for VPN DB access.
         Type: String
 
+    ClusterCIDR:
+        Description: The CIDR of the K8s cluster.
+        Type: String
+
+    ClusterCIDRDesc:
+        Description: The description for the CIDR of the K8s cluster.
+        Type: String
+
     DBSubnetIds:
         Description: List of comma separated subnet IDs
         Type: CommaDelimitedList
@@ -163,8 +171,8 @@ Resources:
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: 10.169.0.0/18
-                  Description: FT-Content-Platform-Test vpc-f75fb790 CIDR
+                  CidrIp: !Ref ClusterCIDR
+                  Description: !Ref ClusterCIDRDesc
             Tags:
                 - Key: Name
                   Value: !Join ["" , [!Ref BaseName, " Subnet Group ", !Ref EnvironmentDesc]]

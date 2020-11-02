@@ -27,6 +27,8 @@ aws cloudformation deploy \
   DBMasterPassword="${MASTER_PASSWORD}" \
   DBSubnetIds="${RDS_SUBNETS}" \
   VpcId="${VPC_ID}" \
+  ClusterCIDR="${CLUSTER_CIDR}" \
+  ClusterCIDRDesc="${CLUSTER_CIDR_DESC}" \
   ResourcesSgId="${RESOURCES_SG_ID}" \
   EnvironmentDesc="${ENVIRONMENT_DESC}" \
   EnvironmentTag="${ENVIRONMENT_TAG}" \
