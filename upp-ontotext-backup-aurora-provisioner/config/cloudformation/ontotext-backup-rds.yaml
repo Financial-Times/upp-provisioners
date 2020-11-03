@@ -1,0 +1,265 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template deploys an Aurora cluster with one instance for Ontotext backup data.
+
+Metadata:
+    AWS::CloudFormation::Interface:
+        - Label: FT standard tagging
+          Parameters:
+             - EnvironmentTag
+             - TeamDLTag
+             - SystemCodeTag
+
+Parameters:
+    VpcId:
+        Description: The ID of the VPC that will access the cluster.
+        Type: String
+
+    ResourcesSgId:
+        Description: The ID of the resources SG for VPN DB access.
+        Type: String
+
+    ClusterCIDR:
+        Description: The CIDR of the K8s cluster.
+        Type: String
+
+    ClusterCIDRDesc:
+        Description: The description for the CIDR of the K8s cluster.
+        Type: String
+
+    DBSubnetIds:
+        Description: List of comma separated subnet IDs
+        Type: CommaDelimitedList
+
+    DBInstanceId:
+        Description: The ID of the instance to use for the database
+        Type: String
+
+    DBInstanceType:
+        Description: The instance type to use for the database
+        Type: String
+        AllowedValues:
+            - 'db.t3.medium'
+        Default: 'db.t3.medium'
+
+    DBEngineVersion:
+        Description: Select Database Engine Version
+        Type: String
+        Default: '11.8'
+        AllowedValues:
+            - '9.6.17'
+            - '9.6.18'
+            - '10.12'
+            - '10.13'
+            - '11.7'
+            - '11.8'
+    DBPort:
+        Description: TCP/IP Port for the Database Instance
+        Type: Number
+        Default: 5432
+        ConstraintDescription: 'Must be in the range [1115-65535]'
+        MinValue: 1115
+        MaxValue: 65535
+    
+    DBName:
+        Description: Database Name
+        Type: String
+        MinLength: '1'
+        MaxLength: '64'
+        AllowedPattern: "^[a-zA-Z]+[0-9a-zA-Z_]*$" 
+        ConstraintDescription: Must start with a letter. Only numbers, letters, and _ accepted. max length 64 characters
+
+    DBMasterUsername:
+        Description: The master username for the database
+        Type: String
+        MinLength: 1
+        MaxLength: 16
+        AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+        ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+
+    DBMasterPassword:
+        Description: The master password for the database
+        NoEcho: true
+        Type: String
+        MinLength: 10
+        MaxLength: 25
+        AllowedPattern: '[a-zA-Z0-9]*'
+        ConstraintDescription: must contain only alphanumeric characters.
+
+    EnvironmentDesc:
+        Description: An environment name that will be used in the resource descriptions
+        Type: String
+        AllowedValues:
+            - 'Dev'
+            - 'Staging'
+            - 'Prod'
+        Default: 'Dev'
+
+    BaseName:
+        Description: Base name for the resources
+        Type: String
+        Default: UPP Ontotext Backup RDS
+
+    EnvironmentTag:
+        Description: Tag detail for the Environment; d for team clusters, t for staging and p for production
+        Type: String
+        AllowedValues:
+            - 'd'
+            - 't'
+            - 'p'
+        Default: 'd'
+
+    TeamDLTag:
+        Description: Tag of the TeamDL
+        Type: String
+        AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+        ConstraintDescription: There must be a valid email address for the TeamDL
+        Default: universal.publishing.platform@ft.com
+
+    SystemCodeTag:
+        Description: The system code for the environment
+        Type: String
+        Default: upp
+
+Resources:
+    DBSubnetGroup:
+        Type: AWS::RDS::DBSubnetGroup
+        Properties:
+            DBSubnetGroupDescription: !Join ["" , [!Ref BaseName, " Subnet Group ", !Ref EnvironmentDesc]]
+            SubnetIds: !Ref DBSubnetIds
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , [!Ref BaseName, " Subnet Group ", !Ref EnvironmentDesc]]
+                - Key: environment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TeamDLTag
+                - Key: systemCode
+                  Value: !Ref SystemCodeTag
+
+    DBSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: !Join ["" , [!Ref BaseName, " Security Group ", !Ref EnvironmentDesc]]
+            VpcId: !Ref VpcId
+            SecurityGroupIngress:
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: 213.86.66.78/32
+                  Description: Bracken House
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: 94.156.217.224/29
+                  Description: FT Sofia Office - IP range 1
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: 212.36.14.64/28
+                  Description: FT Sofia Office - IP range 2
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: 62.25.64.1/32
+                  Description: EU VPN Client
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: 64.210.200.1/32
+                  Description: US VPN Client
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: !Ref ClusterCIDR
+                  Description: !Ref ClusterCIDRDesc
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , [!Ref BaseName, " Subnet Group ", !Ref EnvironmentDesc]]
+                - Key: environment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TeamDLTag
+                - Key: systemCode
+                  Value: !Ref SystemCodeTag
+
+    DBCluster:
+        Type: AWS::RDS::DBCluster
+        Properties:
+            Engine: aurora-postgresql
+            EngineVersion: !Ref DBEngineVersion
+            Port: !Ref DBPort
+            DatabaseName: !Ref DBName
+            MasterUsername: !Ref DBMasterUsername
+            MasterUserPassword: !Ref DBMasterPassword
+            DBClusterParameterGroupName: !Ref DBClusterParameterGroup
+            DBSubnetGroupName: !Ref DBSubnetGroup
+            VpcSecurityGroupIds:
+                - !GetAtt
+                    - DBSecurityGroup
+                    - GroupId
+                - !Ref ResourcesSgId
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , [!Ref BaseName, " Cluster ", !Ref EnvironmentDesc]]
+                - Key: environment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TeamDLTag
+                - Key: systemCode
+                  Value: !Ref SystemCodeTag
+
+    DBClusterParameterGroup:
+        Type: AWS::RDS::DBClusterParameterGroup
+        Properties:
+            Description: !Join ["" , [!Ref BaseName, " Cluster Parameter Group ", !Ref EnvironmentDesc]]
+            Family: aurora-postgresql11
+            Parameters:
+                rds.force_ssl: 1
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , [!Ref BaseName, " Cluster Parameter Group ", !Ref EnvironmentDesc]]
+                - Key: environment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TeamDLTag
+                - Key: systemCode
+                  Value: !Ref SystemCodeTag
+
+    DBPrimaryInstance:
+        Type: AWS::RDS::DBInstance
+        Properties:
+            Engine: aurora-postgresql
+            EngineVersion: !Ref DBEngineVersion
+            DBClusterIdentifier: !Ref DBCluster
+            DBInstanceClass: !Ref DBInstanceType
+            DBInstanceIdentifier: !Ref DBInstanceId
+            DBParameterGroupName: !Ref DBInstanceParameterGroup
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , [!Ref BaseName, " Instance ", !Ref EnvironmentDesc]]
+                - Key: environment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TeamDLTag
+                - Key: systemCode
+                  Value: !Ref SystemCodeTag
+
+    DBInstanceParameterGroup:
+        Type: AWS::RDS::DBParameterGroup
+        Properties:
+            Description: !Join ["" , [!Ref BaseName, " Parameter Group ", !Ref EnvironmentDesc]]
+            Family: aurora-postgresql11
+            Parameters:
+                log_statement: "ddl"
+                log_rotation_age: 1440
+                idle_in_transaction_session_timeout: 7200000
+            Tags:
+                - Key: Name
+                  Value: !Join ["" , [!Ref BaseName, " Parameter Group ", !Ref EnvironmentDesc]]
+                - Key: environment
+                  Value: !Ref EnvironmentTag
+                - Key: teamDL
+                  Value: !Ref TeamDLTag
+                - Key: systemCode
+                  Value: !Ref SystemCodeTag
