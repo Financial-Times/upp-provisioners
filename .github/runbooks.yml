@@ -48,3 +48,4 @@ runbooks:
         upp-factset-store: runbooks/upp-factset-store-runbook.md
         upp-concept-carousel-queue-provisioner: runbooks/upp-concept-carousel-queue-provisioner.md
         upp-concept-carousel-queue: runbooks/upp-concept-carousel-queue.md
+        upp-ontotext-backup-aurora: runbooks/upp-ontotext-backup-aurora.md
