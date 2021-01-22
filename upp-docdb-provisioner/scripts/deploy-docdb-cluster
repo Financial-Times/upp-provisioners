@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+LIB_PATH="/lib"
+# shellcheck source=/dev/null
+source "${LIB_PATH}/load_config.sh"
+
+sceptre --dir "${CONFIG_PATH}/sceptre" launch --yes docdb/docdb-cluster.yaml
+
+echo "Tasks completed successfully"

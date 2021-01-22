@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+if [ $# -ne 1 ]; then
+  cat <<EOF
+Usage:
+$(basename "$0") <version>
+EOF
+
+  exit 1
+fi
+
+DESIRED_VERSION=${1}
+pip install sceptre=="${DESIRED_VERSION}"

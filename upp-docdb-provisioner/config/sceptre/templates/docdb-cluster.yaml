@@ -1,0 +1,191 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS CloudFormation Template
+
+Parameters:
+  InstanceUID:
+    Description: "Unique identifier"
+    Type: String
+
+  VPCID:
+    Description: "The ID of the VPC"
+    Type: AWS::EC2::VPC::Id
+
+  VpcCIDR1:
+    Type: String
+    Description: "VPC CIDR"
+
+  VpcCIDR2:
+    Type: String
+    Description: "VPC CIDR"
+
+  SubnetIDA:
+    Description: "The ID of the subnet"
+    Type: String
+
+  SubnetIDB:
+    Description: "The ID of the subnet"
+    Type: String
+
+  SubnetIDC:
+    Description: "The ID of the subnet"
+    Type: String
+
+  DocDBUsername:
+    Type: String
+    Description: Username for the Amazon DocumentDB cluster
+
+  DocDBPassword:
+    Type: String
+    Description: Password for the Amazon DocumentDB cluster
+    NoEcho: true
+    MinLength: 8
+
+  DocDBInstanceClass:
+    Type: String
+    Description: "Instance type for DocumentDB cluster"
+    AllowedValues:
+      - db.r5.large
+      - db.r5.xlarge
+      - db.r5.2xlarge
+      - db.r5.4xlarge
+      - db.r5.12xlarge
+      - db.r5.24xlarge
+      - db.t3.medium
+
+  DocDBInstanceSecond:
+    Type: String
+    Description: "Should second DocDB instance be provisioned? (yes/no)"
+    Default: disable
+    AllowedValues: [disable, enable]
+
+  DocDBInstanceThird:
+    Type: String
+    Description: "Should third DocDB instance be provisioned? (yes/no)"
+    Default: disable
+    AllowedValues: [disable, enable]
+
+  DocDBClusterEngineVersion:
+    Type: String
+    Description: "The version number of the database engine to use."
+
+  DocDBClusterBackupRetentionPeriod:
+    Type: String
+    Description: "The number of days for which automated backups are retained. Must be a value from 1 to 35."
+
+Conditions:
+  CreateDocDBInstanceSecond: !Equals [ enable, !Ref DocDBInstanceSecond ]
+  CreateDocDBInstanceThird: !Equals [ enable, !Ref DocDBInstanceThird ]
+
+Resources:
+  DocumentDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Amazon DocumentDB Security Group"
+      GroupName: !Sub ${InstanceUID}-docdb-sg
+      VpcId: !Sub ${VPCID}
+      SecurityGroupIngress:
+         - IpProtocol: tcp
+           CidrIp: !Sub ${VpcCIDR1}
+           FromPort: 27017
+           ToPort: 27017
+         - IpProtocol: tcp
+           CidrIp: !Sub ${VpcCIDR2}
+           FromPort: 27017
+           ToPort: 27017
+      Tags:
+        - Key: Name
+          Value: !Sub ${InstanceUID}-docdb-sg
+
+  DocumentDBSubnetGroup:
+    Type: AWS::DocDB::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: "Subnet Group for DocumentDB"
+      DBSubnetGroupName: !Sub ${InstanceUID}-document-subnet-group
+      SubnetIds:
+         - !Sub ${SubnetIDA}
+         - !Sub ${SubnetIDB}
+         - !Sub ${SubnetIDC}
+      Tags:
+        - Key: Name
+          Value: !Sub ${InstanceUID}-document-subnet-group
+
+  DocumentDBClusterParameterGroup:
+    Type: "AWS::DocDB::DBClusterParameterGroup"
+    Properties:
+       Description: "Custom DocumentDB Parameter group"
+       Family: "docdb4.0"
+       Name: !Sub ${InstanceUID}-docdb-param-group
+       Parameters:
+            audit_logs: "disabled"
+            change_stream_log_retention_duration: 10800
+            profiler: disabled
+            profiler_sampling_rate: 1.0
+            profiler_threshold_ms: 100
+            tls: "enabled"
+            ttl_monitor: "enabled"
+       Tags:
+        - Key: Name
+          Value: !Sub ${InstanceUID}-docdb-param-group
+
+  DocumentDBCluster:
+    Type: AWS::DocDB::DBCluster
+    Properties:
+      DBClusterIdentifier: !Sub ${InstanceUID}-docdb-cluster
+      MasterUsername: !Sub ${DocDBUsername}
+      MasterUserPassword: !Sub ${DocDBPassword}
+      DBSubnetGroupName : !Ref DocumentDBSubnetGroup
+      StorageEncrypted: yes
+      DBClusterParameterGroupName: !Ref DocumentDBClusterParameterGroup
+      BackupRetentionPeriod: !Sub ${DocDBClusterBackupRetentionPeriod}
+      EngineVersion: !Sub ${DocDBClusterEngineVersion}
+      VpcSecurityGroupIds:
+        - !Ref DocumentDBSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub ${InstanceUID}-docdb-cluster
+
+  DocumentDBInstanceFirst:
+    Type: AWS::DocDB::DBInstance
+    Properties:
+      DBClusterIdentifier: !Ref DocumentDBCluster
+      DBInstanceClass: !Sub ${DocDBInstanceClass}
+      AutoMinorVersionUpgrade: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${InstanceUID}-docdb-instance1
+    DependsOn: DocumentDBCluster
+
+  DocumentDBInstanceSecond:
+    Type: AWS::DocDB::DBInstance
+    Condition: CreateDocDBInstanceSecond
+    Properties:
+      DBClusterIdentifier: !Ref DocumentDBCluster
+      DBInstanceClass: !Sub ${DocDBInstanceClass}
+      AutoMinorVersionUpgrade: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${InstanceUID}-docdb-instance2
+    DependsOn: DocumentDBCluster
+
+
+  DocumentDBInstanceThird:
+    Type: AWS::DocDB::DBInstance
+    Condition: CreateDocDBInstanceThird
+    Properties:
+      DBClusterIdentifier: !Ref DocumentDBCluster
+      DBInstanceClass: !Sub ${DocDBInstanceClass}
+      AutoMinorVersionUpgrade: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${InstanceUID}-docdb-instance3
+    DependsOn: DocumentDBCluster
+
+Outputs:
+  ClusterId:
+    Value: !Ref DocumentDBCluster
+  ClusterEndpoint:
+    Value: !GetAtt DocumentDBCluster.Endpoint
+  ClusterPort:
+    Value: !GetAtt DocumentDBCluster.Port
+  EngineVersion:
+    Value: !Sub ${DocDBClusterEngineVersion}
