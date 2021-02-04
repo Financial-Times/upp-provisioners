@@ -1,0 +1,5 @@
+FROM upp-docdb-provisioner:local
+
+COPY scripts/* /usr/local/bin/
+COPY config/ /config/
+COPY lib/ /lib/

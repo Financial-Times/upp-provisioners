@@ -1,0 +1,22 @@
+---
+template_path: docdb-cluster.yaml
+parameters:
+  InstanceUID: "{{ environment_variable.INSTANCE_UID }}"
+  VPCID: "{{ environment_variable.VPC_ID }}"
+  VpcCIDR1: "{{ environment_variable.VPC_CIDR_1 }}"
+  VpcCIDR2: "{{ environment_variable.VPC_CIDR_2 }}"
+  SubnetIDA: "{{ environment_variable.SUBNET_ID_A }}"
+  SubnetIDB: "{{ environment_variable.SUBNET_ID_B }}"
+  SubnetIDC: "{{ environment_variable.SUBNET_ID_C }}"
+  DocDBUsername: "{{ environment_variable.DOC_DB_USERNAME }}"
+  DocDBPassword: "{{ environment_variable.DOC_DB_PASSWORD }}"
+  DocDBInstanceClass: "{{ environment_variable.DOC_DB_INSTANCE_CLASS }}"
+  DocDBInstanceSecond: "{{ environment_variable.DOC_DB_INSTANCE_SECOND }}"
+  DocDBInstanceThird: "{{ environment_variable.DOC_DB_INSTANCE_THIRD }}"
+  DocDBClusterEngineVersion: "{{ environment_variable.DOC_DB_CLUSTER_ENGINE_VERSION }}"
+  DocDBClusterBackupRetentionPeriod: "{{ environment_variable.DOC_DB_CLUSTER_BACKUP_RETENTION_PERIOD }}"
+
+stack_tags:
+  teamDL: "{{ environment_variable.TEAM_DL_TAG }}"
+  environment: "{{ environment_variable.ENVIRONMENT_TAG }}"
+  systemCode: "{{ environment_variable.SYSTEM_CODE_TAG }}"

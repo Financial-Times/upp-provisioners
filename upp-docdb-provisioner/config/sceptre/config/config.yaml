@@ -1,0 +1,2 @@
+project_code: "{{ environment_variable.RESOURCES_PREFIX }}-ecs-{{ environment_variable.INSTANCE_UID}}"
+region: "{{ environment_variable.AWS_REGION }}"
