@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: upp-prometheus-eks-delivery-dev-eu
+spec:
+  destination:
+    namespace: prometheus
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    helm:
+      releaseName: upp-prometheus
+      valueFiles:
+      - values.yaml
+      - app-configs/upp-prometheus_eks_delivery_dev_eu.yaml
+    path: helm/upp-prometheus
+    repoURL: https://github.com/Financial-Times/upp-prometheus.git
+    targetRevision: v1.0.2

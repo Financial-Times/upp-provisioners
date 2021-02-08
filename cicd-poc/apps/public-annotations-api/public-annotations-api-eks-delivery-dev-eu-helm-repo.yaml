@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: public-annotations-api-eks-delivery-dev-eu-helm-repo
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://chartmuseum-infra-test-eu.upp.ft.com'
+    targetRevision: v3.2.0
+    chart: public-annotations-api
+    helm:
+      valueFiles:
+        - values.yaml
+        - app-configs/public-annotations-api_eks_delivery.yaml
+  project: default

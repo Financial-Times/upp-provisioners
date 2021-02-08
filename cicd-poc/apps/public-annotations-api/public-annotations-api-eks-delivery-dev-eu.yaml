@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: public-annotations-api-eks-delivery-dev-eu
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    helm:
+      valueFiles:
+      - values.yaml
+      - app-configs/public-annotations-api_eks_delivery.yaml
+    path: helm/public-annotations-api
+    repoURL: https://github.com/Financial-Times/public-annotations-api.git
+    targetRevision: v3.2.0

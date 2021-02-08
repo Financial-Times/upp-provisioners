@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  repositories: |
+    - name: prometheus-community
+      url: https://prometheus-community.github.io/helm-charts
+      type: helm
+    - name: kubernetes-charts-banzaicloud
+      url: https://kubernetes-charts.banzaicloud.com
+      type: helm
+    - name: helm-stable
+      url: https://charts.helm.sh/stable
+      type: helm
+    - name: chartmuseum-infra-test-eu
+      url: https://chartmuseum-infra-test-eu.upp.ft.com
+      type: helm
+    - url: https://github.com/Financial-Times/upp-prometheus.git
+      type: git
+    - url: https://github.com/Financial-Times/public-annotations-api.git
+      type: git
+    - url: https://github.com/gotha/hellogo.git
+      type: git
+  repository.credentials: |
+    - url: https://github.com/Financial-Times/
+      passwordSecret:
+        key: password
+        name: upp-repos-creds
+      usernameSecret:
+        key: username
+        name: upp-repos-creds
