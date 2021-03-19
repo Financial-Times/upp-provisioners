@@ -1,14 +1,18 @@
+<!--
+    Written in the format prescribed by https://github.com/Financial-Times/runbook.md.
+    Any future edits should abide by this format.
+-->
 # UPP Concept Publishing Provisioner
 
 Provisions the normalised concept store (S3 bucket) from the Concept Publishing Pipeline and sets it up with SNS topic and one or more SQS queues.
 
-## Primary URL
-
-<https://github.com/Financial-Times/upp-provisioners/tree/master/upp-concept-publishing-provisioner>
-
 ## Code
 
 upp-concept-publish-provisioner
+
+## Primary URL
+
+https://github.com/Financial-Times/upp-provisioners/tree/master/upp-concept-publishing-provisioner
 
 ## Service Tier
 
@@ -17,26 +21,6 @@ Bronze
 ## Lifecycle Stage
 
 Production
-
-## Delivered By
-
-content
-
-## Supported By
-
-content
-
-## Known About By
-
-- donislav.belev
-- mihail.mihaylov
-- boyko.boykov
-- elitsa.pavlova
-- kalin.arsov
-- ivan.nikolov
-- marina.chompalova
-- miroslav.gatsanoga
-- dimitar.terziev
 
 ## Host Platform
 
@@ -54,9 +38,19 @@ No
 
 No
 
-## Dependencies
+<!-- Placeholder - remove HTML comment markers to activate
+## Can Download Personal Data
+Choose Yes or No
 
-- github
+...or delete this placeholder if not applicable to this system
+-->
+
+<!-- Placeholder - remove HTML comment markers to activate
+## Can Contact Individuals
+Choose Yes or No
+
+...or delete this placeholder if not applicable to this system
+-->
 
 ## Failover Architecture Type
 
@@ -78,6 +72,14 @@ There is no failover available because this is a tool.
 
 None
 
+<!-- Placeholder - remove HTML comment markers to activate
+## Data Recovery Details
+Enter descriptive text satisfying the following:
+The actions required to restore the data for this system. Either provide a set of numbered steps or a link to a detailed process that operations can follow.
+
+...or delete this placeholder if not applicable to this system
+-->
+
 ## Release Process Type
 
 PartiallyAutomated
@@ -89,6 +91,14 @@ PartiallyAutomated
 ## Release Details
 
 Standard Git releases flow.
+
+<!-- Placeholder - remove HTML comment markers to activate
+## Heroku Pipeline Name
+Enter descriptive text satisfying the following:
+This is the name of the Heroku pipeline for this system. If you don't have a pipeline, this is the name of the app in Heroku. A pipeline is a group of Heroku apps that share the same codebase where each app in a pipeline represents the different stages in a continuous delivery workflow, i.e. staging, production.
+
+...or delete this placeholder if not applicable to this system
+-->
 
 ## Key Management Process Type
 
