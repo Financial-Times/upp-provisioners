@@ -32,6 +32,7 @@ Resources:
     Properties:
       QueueName: !Join ["", ["upp-concept-events-", !Ref EnvironmentName]]
       ReceiveMessageWaitTimeSeconds: 20
+      MessageRetentionPeriod: 691200 #8 days
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt SQSConceptEventsDeadletterQueue.Arn
         maxReceiveCount: 5
