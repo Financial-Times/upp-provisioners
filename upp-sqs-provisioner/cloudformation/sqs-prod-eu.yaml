@@ -70,6 +70,7 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       ReceiveMessageWaitTimeSeconds: 20
+      MessageRetentionPeriod: 691200 #8 days
       RedrivePolicy:
         deadLetterTargetArn : !GetAtt uppconcepteventsdeadletterprod.Arn
         maxReceiveCount : 5
@@ -86,6 +87,7 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       ReceiveMessageWaitTimeSeconds: 20
+      MessageRetentionPeriod: 691200 #8 days
       RedrivePolicy:
         deadLetterTargetArn : !GetAtt uppconcepteventsdeadletterstaging.Arn
         maxReceiveCount : 5
