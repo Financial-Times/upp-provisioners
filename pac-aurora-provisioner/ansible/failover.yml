@@ -15,11 +15,11 @@
     debug:
       msg: "Failing over cluster_name: '{{ cluster_name }}' from region '{{ failover_from_region }}' to region '{{ failover_to_region }}'"
 
-  - include: tasks/update_cname.yml
-    vars:
-      dns_cname: "{{ cluster }}-rds-pac"
-      previous_hostname: "{{ cluster }}-{{ regions[failover_from_region].shortname }}-rds-pac.ft.com"
-      updated_hostname: "{{ cluster }}-{{ regions[failover_to_region].shortname }}-rds-pac.ft.com"
+  - name: "Update CNAME for Aurora {{ cluster }}-rds-pac -> {{ cluster }}-{{ regions[failover_to_region].shortname }}-rds-pac.upp.ft.com"
+    script: tasks/manage-cname.bash UPSERT
+    environment:
+      DNS_CNAME: "{{ cluster }}-rds-pac"
+      DB_HOSTNAME: "{{ cluster }}-{{ regions[failover_to_region].shortname }}-rds-pac.upp.ft.com"
 
   - name: Promote DB Cluster
     script: tasks/promote_read_replica.sh

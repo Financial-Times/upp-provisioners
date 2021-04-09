@@ -108,11 +108,6 @@
         DBClusterIdentifier: "{{ aurora_eu_stack.stack_outputs.DBCluster }}"
         TagEnvironment: "{{ environment_type }}"
 
-  - include: tasks/create_cname.yml
-    vars:
-      dns_cname: "{{ dns_cluster_name }}-eu-rds-pac"
-      hostname: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
-
   - include: tasks/create_pac_user.yml
     when: source_snapshot == ""
     vars:
@@ -190,19 +185,26 @@
         DBClusterIdentifier: "{{ aurora_us_stack.stack_outputs.DBCluster }}"
         TagEnvironment: "{{ environment_type }}"
 
-  - include: tasks/create_cname.yml
-    vars:
-      dns_cname: "{{ dns_cluster_name }}-us-rds-pac"
-      hostname: "{{ aurora_us_stack.stack_outputs.DBHostname }}"
+  - name: "Create CNAME for Aurora {{ dns_cluster_name }}-eu-rds-pac -> {{ aurora_eu_stack.stack_outputs.DBHostname }}"
+    script: tasks/manage-cname.bash UPSERT
+    environment:
+      DNS_CNAME: "{{ dns_cluster_name }}-eu-rds-pac"
+      DB_HOSTNAME: "{{ aurora_eu_stack.stack_outputs.DBHostname }}"
 
-  - include: tasks/create_cname.yml
-    vars:
-      dns_cname: "{{ dns_cluster_name }}-rds-pac"
-      hostname: "{{ dns_cluster_name }}-eu-rds-pac.ft.com"
+  - name: "Create CNAME for Aurora {{ dns_cluster_name }}-us-rds-pac -> {{ aurora_us_stack.stack_outputs.DBHostname }}"
+    script: tasks/manage-cname.bash UPSERT
+    environment:
+      DNS_CNAME: "{{ dns_cluster_name }}-us-rds-pac"
+      DB_HOSTNAME: "{{ aurora_us_stack.stack_outputs.DBHostname }}"
 
-  - include: tasks/update_cname.yml
-    when: current_rdata_cname != ""
-    vars:
-      dns_cname: "{{ cluster }}-rds-pac"
-      previous_hostname: "{{current_rdata_cname}}"
-      updated_hostname: "{{ dns_cluster_name }}-rds-pac.ft.com"
+  - name: "Create CNAME for Aurora {{ dns_cluster_name }}-rds-pac -> {{ dns_cluster_name }}-eu-rds-pac.upp.ft.com"
+    script: tasks/manage-cname.bash UPSERT
+    environment:
+      DNS_CNAME: "{{ dns_cluster_name }}-rds-pac"
+      DB_HOSTNAME: "{{ dns_cluster_name }}-eu-rds-pac.upp.ft.com"
+
+  - name: "Upsert CNAME for Aurora {{ cluster }}-rds-pac -> {{ dns_cluster_name }}-rds-pac.upp.ft.com"
+    script: tasks/manage-cname.bash UPSERT
+    environment:
+      DNS_CNAME: "{{ cluster }}-rds-pac"
+      DB_HOSTNAME: "{{ dns_cluster_name }}-rds-pac.upp.ft.com"

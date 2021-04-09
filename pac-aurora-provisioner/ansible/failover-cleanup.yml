@@ -108,11 +108,9 @@
         DBClusterIdentifier: "{{ aurora_replica_stack.stack_outputs.DBCluster }}"
         TagEnvironment: "{{ environment_type }}"
 
-  - include: tasks/delete_cname.yml
-    vars:
-      dns_cname: "{{ cluster }}-{{ regions[failover_from_region].shortname }}-rds-pac"
+  - name: "Update CNAME for Aurora {{ cluster }}-{{ regions[failover_from_region].shortname }}-rds-pac -> {{ aurora_replica_stack.stack_outputs.DBHostname }}"
+    script: tasks/manage-cname.bash UPSERT
+    environment:
+      DNS_CNAME: "{{ cluster }}-{{ regions[failover_from_region].shortname }}-rds-pac"
+      DB_HOSTNAME: "{{ aurora_replica_stack.stack_outputs.DBHostname }}"
 
-  - include: tasks/create_cname.yml
-    vars:
-      dns_cname: "{{ cluster }}-{{ regions[failover_from_region].shortname }}-rds-pac"
-      hostname: "{{ aurora_replica_stack.stack_outputs.DBHostname }}"

@@ -90,14 +90,6 @@
       state: "absent"
     ignore_errors: yes
 
-  - include: tasks/delete_cname.yml
-    vars:
-      dns_cname: "{{ cluster }}-eu-rds-pac"
-
-  - include: tasks/delete_cname.yml
-    vars:
-      dns_cname: "{{ cluster }}-us-rds-pac"
-
-  - include: tasks/delete_cname.yml
-    vars:
-      dns_cname: "{{ cluster }}-rds-pac"
+  - name: Message
+    debug:
+      msg: "Manually delete the Route53 records: {{ cluster }}-eu-rds-pac, {{ cluster }}-us-rds-pac and {{ cluster }}-rds-pac"
