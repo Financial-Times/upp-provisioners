@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+CONFIG_PATH="/config"
+CF_STACK_TEMPLATE="${CONFIG_PATH}/cloudformation/${CF_TEMPLATE}.yaml"
+RDS_CONFIG="${CONFIG_PATH}/vars/${ENVIRONMENT_NAME}.sh"
+
+if [ ! -f "${RDS_CONFIG}" ]; then
+  echo "No configuration for $ENVIRONMENT_NAME exist at ${RDS_CONFIG}"
+  exit 1
+else
+  # shellcheck source=/dev/null
+  source "${RDS_CONFIG}"
+fi
+
+if [ ! -f "${CF_STACK_TEMPLATE}" ]; then
+  echo "No CloudFormation template for ${CF_TEMPLATE} exist at ${RDS_CONFIG}/cloudformation"
+  exit 1
+fi
+
+aws cloudformation deploy \
+  --stack-name "${CF_STACK_NAME}" \
+  --region "${AWS_REGION}" \
+  --template-file "${CF_STACK_TEMPLATE}" \
+  --no-fail-on-empty-changeset \
+  --parameter-overrides \
+  DBInstanceId="${CF_STACK_NAME}" \
+  DBName="${DB_NAME}" \
+  DBMasterUsername="${MASTER_USER}" \
+  DBMasterPassword="${MASTER_PASSWORD}" \
+  DBSubnetIds="${RDS_SUBNETS}" \
+  VpcId="${VPC_ID}" \
+  ClusterCIDR="${CLUSTER_CIDR}" \
+  ClusterCIDRDesc="${CLUSTER_CIDR_DESC}" \
+  ResourcesSgId="${RESOURCES_SG_ID}" \
+  EnvironmentDesc="${ENVIRONMENT_DESC}" \
+  EnvironmentTag="${ENVIRONMENT_TAG}" \
+  SystemCodeTag="${SYSTEM_CODE_TAG}" \
+  TeamDLTag="${TEAM_DL_TAG}"
