@@ -1,3 +1,7 @@
+<!--
+    Written in the format prescribed by https://github.com/Financial-Times/runbook.md.
+    Any future edits should abide by this format.
+-->
 # UPP - upp-jenkins
 
 Jenkins machines used by UPP
@@ -8,7 +12,7 @@ upp-jenkins
 
 ## Primary URL
 
-<https://github.com/Financial-Times/upp-provisioners>
+https://github.com/Financial-Times/upp-provisioners
 
 ## Service Tier
 
@@ -17,23 +21,6 @@ Bronze
 ## Lifecycle Stage
 
 Production
-
-## Delivered By
-
-content
-
-## Supported By
-
-content
-
-## Known About By
-
-- dimitar.terziev
-- elitsa.pavlova
-- hristo.georgiev
-- donislav.belev
-- mihail.mihaylov
-- boyko.boykov
 
 ## Host Platform
 
@@ -55,6 +42,20 @@ No
 ## Contains Sensitive Data
 
 No
+
+<!-- Placeholder - remove HTML comment markers to activate
+## Can Download Personal Data
+Choose Yes or No
+
+...or delete this placeholder if not applicable to this system
+-->
+
+<!-- Placeholder - remove HTML comment markers to activate
+## Can Contact Individuals
+Choose Yes or No
+
+...or delete this placeholder if not applicable to this system
+-->
 
 ## Failover Architecture Type
 
@@ -92,6 +93,14 @@ Manual
 
 See the [upp-provisioners](https://github.com/Financial-Times/upp-provisioners) repository for details.
 
+<!-- Placeholder - remove HTML comment markers to activate
+## Heroku Pipeline Name
+Enter descriptive text satisfying the following:
+This is the name of the Heroku pipeline for this system. If you don't have a pipeline, this is the name of the app in Heroku. A pipeline is a group of Heroku apps that share the same codebase where each app in a pipeline represents the different stages in a continuous delivery workflow, i.e. staging, production.
+
+...or delete this placeholder if not applicable to this system
+-->
+
 ## Key Management Process Type
 
 NotApplicable
@@ -116,12 +125,12 @@ We need to clear the cache so that Jenkins will recover.
 
 Do the following:
 
-1. Login into the Jenkins box using SSH
-2. Login into AWS in the 'ft-tech-content-platform-prod'.
-3. Access this link to find the EC2 instance running Jenkins
-4. ssh to that IP: ssh <your_ft_username>@<jenkins_private_ip>
-Delete the contents of the /var/lib/jenkins/caches folder: rm -rf /var/lib/jenkins/caches/*
-At this point you can either trigger the scanning of the multibranch pipeline manually, or you can wait for Jenkins to do it automatically.
+1.  Login into the Jenkins box using SSH
+2.  Login into AWS in the 'ft-tech-content-platform-prod'.
+3.  Access this link to find the EC2 instance running Jenkins
+4.  ssh to that IP: ssh &lt;your_ft_username>@&lt;jenkins_private_ip>
+    Delete the contents of the /var/lib/jenkins/caches folder: rm -rf /var/lib/jenkins/caches/\*
+    At this point you can either trigger the scanning of the multibranch pipeline manually, or you can wait for Jenkins to do it automatically.
 
 For more please refer to the GitHub repository README for troubleshooting information.
 

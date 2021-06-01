@@ -1,3 +1,7 @@
+<!--
+    Written in the format prescribed by https://github.com/Financial-Times/runbook.md.
+    Any future edits should abide by this format.
+-->
 # UPP - Ontotext Backup Aurora DB
 
 Amazon Aurora PostgreSQL database used to store a backup of the Ontotext automatic suggestions.
@@ -8,7 +12,7 @@ upp-ontotext-backup-aurora
 
 ## Primary URL
 
-<https://github.com/Financial-Times/upp-provisioners/tree/master/upp-ontotext-backup-aurora-provisioner>
+https://github.com/Financial-Times/upp-provisioners/tree/master/upp-ontotext-backup-aurora-provisioner
 
 ## Service Tier
 
@@ -17,23 +21,6 @@ Bronze
 ## Lifecycle Stage
 
 Production
-
-## Delivered By
-
-content
-
-## Supported By
-
-content
-
-## Known About By
-
-- elitsa.pavlova
-- kalin.arsov
-- ivan.nikolov
-- dimitar.terziev
-- mihail.mihaylov
-- boyko.boykov
 
 ## Host Platform
 
@@ -50,6 +37,20 @@ No
 ## Contains Sensitive Data
 
 No
+
+<!-- Placeholder - remove HTML comment markers to activate
+## Can Download Personal Data
+Choose Yes or No
+
+...or delete this placeholder if not applicable to this system
+-->
+
+<!-- Placeholder - remove HTML comment markers to activate
+## Can Contact Individuals
+Choose Yes or No
+
+...or delete this placeholder if not applicable to this system
+-->
 
 ## Failover Architecture Type
 
@@ -86,6 +87,14 @@ Manual
 ## Release Details
 
 Follow the steps in the [UPP Ontotext Backup RDS Provisioner](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-ontotext-backup-aurora-provisioner/README.md).
+
+<!-- Placeholder - remove HTML comment markers to activate
+## Heroku Pipeline Name
+Enter descriptive text satisfying the following:
+This is the name of the Heroku pipeline for this system. If you don't have a pipeline, this is the name of the app in Heroku. A pipeline is a group of Heroku apps that share the same codebase where each app in a pipeline represents the different stages in a continuous delivery workflow, i.e. staging, production.
+
+...or delete this placeholder if not applicable to this system
+-->
 
 ## Key Management Process Type
 
