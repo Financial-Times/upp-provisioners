@@ -51,3 +51,4 @@ runbooks:
         upp-ontotext-backup-aurora: runbooks/upp-ontotext-backup-aurora.md
         upp-concept-events-queue: runbooks/upp-concept-events-queue-runbook.md
         concept-elasticsearch-cluster: runbooks/concept-elasticsearch-cluster-runbook.md
+        upp-enriched-content-store: runbooks/upp-enriched-content-store-runbook.md
