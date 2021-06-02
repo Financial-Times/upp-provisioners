@@ -1,0 +1,57 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Stack to create the S3 bucket for storing the full content exports.
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: 'The name of the bucket'
+  EnvType:
+    Type: String
+    AllowedValues:
+      - p
+      - t
+      - d
+    Description: 'The env type: p for prod, t for staging, d for dev'
+  SystemCode:
+    Type: String
+    Description: 'The system code of the env that is using the bucket'
+  TeamDL:
+    Type: String
+    Description: 'The team email owning the env that is using the bucket'
+
+Conditions:
+  StagingEnv: !Equals [ !Ref EnvType, t ]
+
+Resources:
+  FullContentExporterBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref BucketName
+      Tags:
+        - Key: "systemCode"
+          Value: !Ref SystemCode
+        - Key: "environment"
+          Value: !Ref EnvType
+        - Key: "teamDL"
+          Value: !Ref TeamDL
+  FullContentExporterBucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket:
+        Ref: "FullContentExporterBucket"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action:
+              - s3:GetObject
+              - s3:ListBucket
+              - s3:DeleteObject
+              - s3:DeleteObjectVersion
+            Effect: "Allow"
+            Resource:
+              - !Join [ "", [ !GetAtt FullContentExporterBucket.Arn, "/*" ] ]
+              - !GetAtt FullContentExporterBucket.Arn
+            Principal:
+              AWS: !Join [ "", [ "arn:aws:iam::", !Ref 'AWS::AccountId', !If [ StagingEnv, ':user/content-containers-apps-staging', ':user/content-containers-apps' ] ] ]
