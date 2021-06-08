@@ -1,0 +1,4 @@
+FROM upp-content-exporter-s3-provisioner:local
+
+COPY scripts/* /usr/local/bin/
+COPY config/ /config/
