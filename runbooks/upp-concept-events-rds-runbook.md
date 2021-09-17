@@ -1,14 +1,14 @@
-# UPP Enriched Content Store
+# UPP concept events RDS
 
-Amazon Aurora PostgreSQL database storing FT content in a format close to the content representation in Enriched Content API.
+The concept events pipeline consists of SQS queue and a deadletter queue in addition to the RDS database.
 
 ## Code
 
-upp-enriched-content-store
+upp-concept-events-rds
 
 ## Primary URL
 
-<https://github.com/Financial-Times/upp-provisioners/tree/master/upp-aurora-postgres-provisioner>
+<https://github.com/Financial-Times/upp-provisioners/tree/master/upp-concept-events-pipeline-provisioner>
 
 ## Service Tier
 
@@ -24,7 +24,8 @@ AWS
 
 ## Architecture
 
-A single instance Aurora PostgreSQL database is provisioned in the Ireland (eu-west-1) region.
+- SQS queue
+- RDS Database
 
 ## Contains Personal Data
 
@@ -70,7 +71,7 @@ Manual
 
 ## Release Details
 
-Follow the steps in the [UPP Aurora Postgres Provisioner](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-aurora-postgres-provisioner/README.md).
+Follow the steps in the [README](https://github.com/Financial-Times/upp-provisioners/blob/master/upp-concept-events-pipeline-provisioner/README.md#provisioning-a-cluster).
 
 ## Key Management Process Type
 

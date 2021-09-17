@@ -70,11 +70,13 @@ None
 
 ## Data Recovery Process Type
 
-None
+Manual
 
 ## Data Recovery Details
 
-None
+Use the comprehensive AWS step by step guide for restoring a DB instance from a DB snapshot:
+
+https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Tutorials.RestoringFromSnapshot.html
 
 ## Release Process Type
 
