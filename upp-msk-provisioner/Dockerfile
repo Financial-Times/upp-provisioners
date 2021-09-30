@@ -19,6 +19,7 @@ RUN apk --update --no-cache add \
     openssl-dev \
     build-base \
   && pip3 install --upgrade pip \
+  && pip install cryptography==2.9.2 \
   && pip3 install \
     ansible==${ANSIBLE_VERSION} \
     boto3 \

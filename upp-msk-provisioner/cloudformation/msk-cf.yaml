@@ -78,17 +78,52 @@ Resources:
         - IpProtocol: tcp
           FromPort: 9092
           ToPort: 9092
-          SourceSecurityGroupId: sg-0e307c6ed011cb8fb
-          Description: Publishing cluster SG
-        - IpProtocol: tcp
-          FromPort: 9092
-          ToPort: 9092
-          SourceSecurityGroupId: sg-0f684f7883bdf344e
-          Description: Delivery cluster SG
-        - IpProtocol: tcp
-          FromPort: 9092
-          ToPort: 9092
           SourceSecurityGroupId: sg-53531d2b
+        - IpProtocol: tcp
+          FromPort: 2181
+          ToPort: 2181
+          CidrIp: 10.169.16.0/21
+          Description: VPC Private Subnet C
+        - IpProtocol: tcp
+          FromPort: 2181
+          ToPort: 2181
+          CidrIp: 10.169.8.0/21
+          Description: VPC Private Subnet B
+        - IpProtocol: tcp
+          FromPort: 2181
+          ToPort: 2181
+          CidrIp: 10.169.0.0/21
+          Description: VPC Private Subnet A
+        - IpProtocol: tcp
+          FromPort: 9092
+          ToPort: 9092
+          CidrIp: 10.169.16.0/21
+          Description: VPC Private Subnet C
+        - IpProtocol: tcp
+          FromPort: 9092
+          ToPort: 9092
+          CidrIp: 10.169.8.0/21
+          Description: VPC Private Subnet B
+        - IpProtocol: tcp
+          FromPort: 9092
+          ToPort: 9092
+          CidrIp: 10.169.0.0/21
+          Description: VPC Private Subnet A
+        - IpProtocol: tcp
+          FromPort: 9094
+          ToPort: 9094
+          CidrIp: 10.169.16.0/21
+          Description: VPC Private Subnet C
+        - IpProtocol: tcp
+          FromPort: 9094
+          ToPort: 9094
+          CidrIp: 10.169.8.0/21
+          Description: VPC Private Subnet B
+        - IpProtocol: tcp
+          FromPort: 9094
+          ToPort: 9094
+          CidrIp: 10.169.0.0/21
+          Description: VPC Private Subnet A
       Tags:
         - Key: Name
           Value: !Ref ClusterName
@@ -100,7 +135,7 @@ Resources:
     Properties:
       ClusterName: !Ref ClusterName
       NumberOfBrokerNodes: 3
-      KafkaVersion: 2.3.1
+      KafkaVersion: 2.8.0
       EnhancedMonitoring: PER_TOPIC_PER_BROKER
       BrokerNodeGroupInfo:
         ClientSubnets: !Ref ClientSubnetIDs
@@ -109,6 +144,7 @@ Resources:
           - !GetAtt
             - MSKSecurityGroup
             - GroupId
+          - sg-8bcb5ff2
         StorageInfo:
           EBSStorageInfo:
             VolumeSize: 100
