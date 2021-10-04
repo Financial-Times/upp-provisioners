@@ -1,7 +1,8 @@
 FROM coco/k8s-cli-utils
 
 ENV ANSIBLE_VERSION="2.8.3" \
-    KUBECTL_VERSION="v1.11.0"
+    KUBECTL_VERSION="v1.11.0" \
+    CRYPTOGRAPHY_VERSION="2.9.2"
 
 RUN apk --update --no-cache add \
     ca-certificates \
@@ -19,6 +20,7 @@ RUN apk --update --no-cache add \
     openssl-dev \
     build-base \
   && pip3 install --upgrade pip \
+  && pip3 install cryptography==${CRYPTOGRAPHY_VERSION} \
   && pip3 install \
     ansible==${ANSIBLE_VERSION} \
     boto3 \
