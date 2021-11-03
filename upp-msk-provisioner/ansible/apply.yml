@@ -15,7 +15,7 @@
         aws_secret_key: "{{ aws_secret_access_key }}"
         stack_name: "{{ cluster_name }}"
         region: "{{ cluster_aws_region }}"
-        template: "/cloudformation/msk-cf.yaml"
+        template: "/cloudformation/{{ cluster_name }}.yaml"
         template_parameters:
           ClusterName: "{{ cluster_name }}"
           VpcId: "{{ vpc_id }}"
