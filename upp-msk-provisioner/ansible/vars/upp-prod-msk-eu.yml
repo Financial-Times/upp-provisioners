@@ -1,0 +1,6 @@
+---
+cluster_aws_region: "eu-west-1"
+vpc_id: "vpc-ee57bf89"
+client_subnet_ids: "subnet-024e2e32aefaa01c5,subnet-02526d7213a359f48,subnet-0f2c8a8f1e3db176a"
+msk_cluster_configuration_arn: "arn:aws:kafka:eu-west-1:469211898354:configuration/MSKConfig/bc39d90c-6d1f-46de-84e0-a7d2f7a2fd76-4"
+msk_cluster_configuration_revision: 1
