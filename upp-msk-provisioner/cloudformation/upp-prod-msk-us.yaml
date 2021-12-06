@@ -1,0 +1,59 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  ClusterName:
+    Type: String
+    Description: The name of the cluster
+
+  VpcId:
+    Type: String
+    Description: The ID of the VPC that will access the cluster.
+
+  ClientSubnetIDs:
+    Type: CommaDelimitedList
+    Description: The list of subnets to connect to in the client VPC separated by commas.
+
+  TagTeamDL:
+    Type: String
+    Description: Email address of the team used to tag objects
+    Default: "universal.publishing.platform@ft.com"
+
+  ConfigurationArn:
+    Type: String
+    Description: The custom MSK configuration ARN.
+
+  ConfigurationRevisionNum:
+    Type: Number
+    Description: The custom MSK configuration revision number.
+
+Resources:
+  MSKCluster:
+    Type: 'AWS::MSK::Cluster'
+    Properties:
+      ClusterName: !Ref ClusterName
+      NumberOfBrokerNodes: 3
+      KafkaVersion: 2.8.0
+      EnhancedMonitoring: PER_TOPIC_PER_BROKER
+      BrokerNodeGroupInfo:
+        ClientSubnets: !Ref ClientSubnetIDs
+        InstanceType: kafka.m5.large
+        SecurityGroups:
+          - sg-a0e39ade
+          - sg-01dd772cd2e4fdfa5
+        StorageInfo:
+          EBSStorageInfo:
+            VolumeSize: 100
+      EncryptionInfo:
+        EncryptionInTransit:
+          ClientBroker: PLAINTEXT
+          InCluster: false
+      ConfigurationInfo:
+        Arn: !Ref ConfigurationArn
+        Revision: !Ref ConfigurationRevisionNum
+
+Outputs:
+  MSKClusterArn:
+    Description: The Arn for the MSK cluster
+    Value: !Ref MSKCluster
