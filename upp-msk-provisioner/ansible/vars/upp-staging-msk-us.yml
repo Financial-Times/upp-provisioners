@@ -3,4 +3,4 @@ cluster_aws_region: "us-east-1"
 vpc_id: "vpc-4bc03f32"
 client_subnet_ids: "subnet-0ef8d475f498f5928,subnet-0ef54f5f927721d15,subnet-0c18f15e56e0490c6"
 msk_cluster_configuration_arn: "arn:aws:kafka:us-east-1:469211898354:configuration/MSKConfig/a422004a-975e-4c8b-a700-d7ddbde84ae0-14"
-msk_cluster_configuration_revision: 1
+msk_cluster_configuration_revision: 2
