@@ -4,9 +4,10 @@ Description: >
 
 Parameters:
   EnvironmentType:
-    Description: Environment type (Test or Production).
+    Description: Environment type (Dev,Test or Production).
     Type: String
     AllowedValues:
+      - 'd'
       - 't'
       - 'p'
     Default: t
@@ -26,12 +27,12 @@ Resources:
     Type: "AWS::Elasticsearch::Domain"
     Properties:
       DomainName: !Ref ClusterName
-      ElasticsearchVersion: "5.1"
+      ElasticsearchVersion: "7.10"
       ElasticsearchClusterConfig:
         InstanceCount: "3"
-        InstanceType: "r3.large.elasticsearch"
+        InstanceType: "m5.xlarge.elasticsearch"
         DedicatedMasterEnabled: "true"
-        DedicatedMasterType: "m3.medium.elasticsearch"
+        DedicatedMasterType: "m5.large.elasticsearch"
         DedicatedMasterCount: "3"
       EBSOptions:
         EBSEnabled: true
@@ -58,8 +59,6 @@ Resources:
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode
           Value: "upp"
-        - Key: ipcode
-          Value: "P490"
         - Key: description
           Value: !Ref ClusterName
 
