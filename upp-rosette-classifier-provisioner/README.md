@@ -1,15 +1,15 @@
-# upp-rosette-classifier-provisioner
+# upp-rosette-tcat-provisioner
 
 ## Description
 
-This repository contains the files required to provision a Rosette Classifier instance
+This repository contains the files required to provision a Rosette TCAT instance
 
 1. [Install docker](https://docs.docker.com/engine/installation/) locally
 
 ## Building the Docker image
 
 ```
-make rosette-classifier-provisioner
+make rosette-tcat-provisioner
 ```
 
 ## Provisioning a new instance
@@ -28,7 +28,7 @@ export AWS_REGION=
 
 ```
 
-make rosette-classifier-instance
+make rosette-tcat-instance
 
 ```
 
@@ -47,7 +47,7 @@ export AWS_REGION=
 
 ```
 
-make destroy-rosette-classifier
+make destroy-rosette-tcat
 
 ```
 
@@ -60,4 +60,4 @@ Find the instance in AWS console (name ending at `*rosette-classifier`), take th
 ssh ec2-user@<IP of the instance>
 ```
 
-The app is installed under `/classifier` folder. The folder is mounted on persistent EBS drive.
+The app is installed under `/tcat` folder. The folder is mounted on persistent EBS drive.
