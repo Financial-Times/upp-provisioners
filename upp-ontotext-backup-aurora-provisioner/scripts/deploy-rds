@@ -27,8 +27,10 @@ aws cloudformation deploy \
   DBMasterPassword="${MASTER_PASSWORD}" \
   DBSubnetIds="${RDS_SUBNETS}" \
   VpcId="${VPC_ID}" \
-  ClusterCIDR="${CLUSTER_CIDR}" \
-  ClusterCIDRDesc="${CLUSTER_CIDR_DESC}" \
+  EUClusterCIDR="${EU_CLUSTER_CIDR}" \
+  EUClusterCIDRDesc="${EU_CLUSTER_CIDR_DESC}" \
+  USClusterCIDR="${US_CLUSTER_CIDR}" \
+  USClusterCIDRDesc="${US_CLUSTER_CIDR_DESC}" \
   ResourcesSgId="${RESOURCES_SG_ID}" \
   EnvironmentDesc="${ENVIRONMENT_DESC}" \
   EnvironmentTag="${ENVIRONMENT_TAG}" \

@@ -9,8 +9,10 @@ RESOURCES_PREFIX="upp"
 
 AWS_REGION="eu-west-1"
 VPC_ID="vpc-f75fb790"
-CLUSTER_CIDR="10.169.0.0/18"
-CLUSTER_CIDR_DESC="FT-Content-Platform-Test vpc-f75fb790 CIDR"
+EU_CLUSTER_CIDR="10.169.0.0/18"
+EU_CLUSTER_CIDR_DESC="FT-Content-Platform-Test-EU vpc-f75fb790 CIDR"
+US_CLUSTER_CIDR="10.168.0.0/18"
+US_CLUSTER_CIDR_DESC="FT-Content-Platform-Test-US vpc-d2bca9b4 CIDR"
 RESOURCES_SG_ID="sg-8bcb5ff2"
 RDS_SUBNETS="subnet-020bff57b77ad7438, subnet-0d1ca6b04133a3ad2, subnet-048030b5219e45d9b"
 
