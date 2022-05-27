@@ -19,12 +19,20 @@ Parameters:
         Description: The ID of the resources SG for VPN DB access.
         Type: String
 
-    ClusterCIDR:
-        Description: The CIDR of the K8s cluster.
+    EUClusterCIDR:
+        Description: The CIDR of the K8s cluster in EU.
         Type: String
 
-    ClusterCIDRDesc:
-        Description: The description for the CIDR of the K8s cluster.
+    EUClusterCIDRDesc:
+        Description: The description for the CIDR of the K8s cluster in EU.
+        Type: String
+
+    USClusterCIDR:
+        Description: The CIDR of the K8s cluster in US.
+        Type: String
+
+    USClusterCIDRDesc:
+        Description: The description for the CIDR of the K8s cluster in US.
         Type: String
 
     DBSubnetIds:
@@ -45,14 +53,9 @@ Parameters:
     DBEngineVersion:
         Description: Select Database Engine Version
         Type: String
-        Default: '11.8'
+        Default: '11.13'
         AllowedValues:
-            - '9.6.17'
-            - '9.6.18'
-            - '10.12'
-            - '10.13'
-            - '11.7'
-            - '11.8'
+            - '11.13'
     DBPort:
         Description: TCP/IP Port for the Database Instance
         Type: Number
@@ -171,8 +174,13 @@ Resources:
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: !Ref ClusterCIDR
-                  Description: !Ref ClusterCIDRDesc
+                  CidrIp: !Ref EUClusterCIDR
+                  Description: !Ref EUClusterCIDRDesc
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: !Ref USClusterCIDR
+                  Description: !Ref USClusterCIDRDesc
             Tags:
                 - Key: Name
                   Value: !Join ["" , [!Ref BaseName, " Subnet Group ", !Ref EnvironmentDesc]]
