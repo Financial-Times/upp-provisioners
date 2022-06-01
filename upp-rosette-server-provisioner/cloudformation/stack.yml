@@ -23,7 +23,7 @@ Parameters:
   ImageId:
       Description: The Image ID of Amazon Linux 2 kto use
       Type: String
-      Default: 'ami-075011d52e8108c2a'
+      Default: 'ami-0465e0a72449869f0'
   TagTeamDL:
       Description: Tag of the TeamDL
       Type: String
@@ -73,6 +73,16 @@ Resources:
               FromPort: 8181
               ToPort: 8181
               CidrIp: 10.165.0.0/24
+            - Description: "Rosette app port withing VPC"
+              IpProtocol: tcp
+              FromPort: 8080
+              ToPort: 8080
+              CidrIp: 10.169.64.0/18
+            - Description: "SSH port within VPC"
+              IpProtocol: tcp
+              FromPort: 8080
+              ToPort: 8080
+              CidrIp: 10.165.0.0/24
     ElasticLoadBalancer:
        Type: "AWS::ElasticLoadBalancing::LoadBalancer"
        Properties:
@@ -84,6 +94,9 @@ Resources:
          Listeners:
          - LoadBalancerPort: "8181"
            InstancePort: "8181"
+           Protocol: "HTTP"
+         - LoadBalancerPort: "8080"
+           InstancePort: "8080"
            Protocol: "HTTP"
          HealthCheck:
            Target: HTTP:8181/rest/v1/info
