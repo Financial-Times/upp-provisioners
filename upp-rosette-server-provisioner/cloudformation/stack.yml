@@ -19,7 +19,7 @@ Parameters:
   Ec2InstanceType:
       Description: Size of ec2 Instance
       Type: String
-      Default: m6a.2xlarge
+      Default: m6g.4xlarge
   ImageId:
       Description: The Image ID of Amazon Linux 2 kto use
       Type: String
@@ -83,6 +83,26 @@ Resources:
               FromPort: 8080
               ToPort: 8080
               CidrIp: 10.165.0.0/24
+            - Description: "Connection from Dev VPC"
+              IpProtocol: tcp
+              FromPort: 8181
+              ToPort: 8181
+              CidrIp: 10.172.32.0/21
+            - Description: "Connection from Dev VPC"
+              IpProtocol: tcp
+              FromPort: 8080
+              ToPort: 8080
+              CidrIp: 10.172.32.0/21
+            - Description: "Connection from Dev VPC"
+              IpProtocol: tcp
+              FromPort: 8080
+              ToPort: 8080
+              CidrIp: 10.169.0.0/18
+            - Description: "Connection from Dev VPC"
+              IpProtocol: tcp
+              FromPort: 8181
+              ToPort: 8181
+              CidrIp: 10.169.0.0/18
     ElasticLoadBalancer:
        Type: "AWS::ElasticLoadBalancing::LoadBalancer"
        Properties:
