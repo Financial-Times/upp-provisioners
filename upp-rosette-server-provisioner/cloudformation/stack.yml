@@ -19,7 +19,7 @@ Parameters:
   Ec2InstanceType:
       Description: Size of ec2 Instance
       Type: String
-      Default: m6g.4xlarge
+      Default: m6a.4xlarge
   ImageId:
       Description: The Image ID of Amazon Linux 2 kto use
       Type: String
