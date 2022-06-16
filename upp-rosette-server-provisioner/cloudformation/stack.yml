@@ -23,7 +23,7 @@ Parameters:
   ImageId:
       Description: The Image ID of Amazon Linux 2 kto use
       Type: String
-      Default: 'ami-0241bade45fb38810'
+      Default: 'ami-09552f658e9ff8bc0'
   TagTeamDL:
       Description: Tag of the TeamDL
       Type: String
