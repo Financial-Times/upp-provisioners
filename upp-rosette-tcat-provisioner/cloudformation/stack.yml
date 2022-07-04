@@ -89,7 +89,7 @@ Resources:
           - DeviceName: /dev/xvda
             Ebs:
               VolumeType: gp3
-              VolumeSize: 20
+              VolumeSize: 80
               Encrypted: false
         Volumes:
           - Device: !Ref MountDevice
