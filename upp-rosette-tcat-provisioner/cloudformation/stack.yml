@@ -75,6 +75,16 @@ Resources:
               FromPort: 22
               ToPort: 22
               CidrIp: 10.165.0.0/24
+            - Description: "`VPC range"
+              IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 10.172.40.0/21
+            - Description: "VPC range"
+              IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 10.169.64.0/18
 
     RosetteTCATInstance:
       Type: AWS::EC2::Instance
@@ -130,6 +140,7 @@ Resources:
              echo ${MountDevice} /tcat ext4 defaults,nofail 0 2 >> /etc/fstab
              mkdir /tcat
              mount ${MountDevice} /tcat
+             yum install -y java-1.8.0-openjdk
         Tags:
           - Key: "Name"
             Value: !Ref TagName
