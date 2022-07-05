@@ -75,12 +75,12 @@ Resources:
               FromPort: 22
               ToPort: 22
               CidrIp: 10.165.0.0/24
-            - Description: "`VPC range"
+            - Description: "VPC range"
               IpProtocol: tcp
               FromPort: 22
               ToPort: 22
               CidrIp: 10.172.40.0/21
-            - Description: "VPC range"
+            - Description: "VPC range again"
               IpProtocol: tcp
               FromPort: 22
               ToPort: 22
