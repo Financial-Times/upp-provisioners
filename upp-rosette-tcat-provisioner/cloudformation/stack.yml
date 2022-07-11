@@ -5,9 +5,6 @@ Parameters:
       Description: The ID of the VPC
       Type: String
       Default: vpc-ee57bf89
-  SubnetIds:
-      Description: List of comma separated subnet IDs
-      Type: String
   EnvironmentName:
       Description: An environment name that will be prefixed to resource names
       Type: String
@@ -20,6 +17,10 @@ Parameters:
       Description: Size of ec2 Instance
       Type: String
       Default: c5.xlarge
+  NetworkIface:
+      Description: Network interface to be attached
+      Type: String
+      Default: 'eni-0997c5e38141e1f64'
   ImageID:
       Description: The Image ID of Amazon Linux 2 kto use
       Type: String
@@ -52,40 +53,6 @@ Parameters:
       Default: upp-rosette-tcat-instance
 
 Resources:
-    RosetteTCATSecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupName: !Join ["" , ["Rosette-Tcat", !Ref EnvironmentName]]
-        GroupDescription: "Security group for Rosette Server Instance"
-        VpcId: !Ref VpcID
-        Tags:
-            - Key: Name
-              Value: !Join ["" , ["UPP Rosette TCAT Security Group ", !Ref EnvironmentName]]
-            - Key: environment
-              Value: !Ref EnvironmentName
-            - Key: teamDL
-              Value: !Ref TagTeamDL
-            - Key: systemCode
-              Value: !Ref TagSystemCode
-            - Key: description
-              Value: "Security group for UPP Rosette Classifier Instance"
-        SecurityGroupIngress:
-            - Description: "AWS VPN range"
-              IpProtocol: tcp
-              FromPort: 22
-              ToPort: 22
-              CidrIp: 10.165.0.0/24
-            - Description: "VPC range"
-              IpProtocol: tcp
-              FromPort: 22
-              ToPort: 22
-              CidrIp: 10.172.40.0/21
-            - Description: "VPC range again"
-              IpProtocol: tcp
-              FromPort: 22
-              ToPort: 22
-              CidrIp: 10.169.64.0/18
-
     RosetteTCATInstance:
       Type: AWS::EC2::Instance
       Properties:
@@ -93,8 +60,9 @@ Resources:
         IamInstanceProfile: "FT-EC2-Role"
         InstanceType: !Ref Ec2InstanceType
         KeyName: "upp-k8s-provisioning-debug"
-        SecurityGroupIds: [!Ref RosetteTCATSecurityGroup]
-        SubnetId: !Ref SubnetIds
+        NetworkInterfaces: 
+        - NetworkInterfaceId: !Ref NetworkIface
+          DeviceIndex: 0
         BlockDeviceMappings:
           - DeviceName: /dev/xvda
             Ebs:
