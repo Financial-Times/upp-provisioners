@@ -51,6 +51,8 @@ Resources:
       Family: aurora5.6
       Parameters:
         binlog_format: 'MIXED'
+        character_set_server: 'utf8mb4'
+        character_set_database: 'utf8mb4'
       Tags:
         - Key: environment
           Value: !Ref TagEnvironment
