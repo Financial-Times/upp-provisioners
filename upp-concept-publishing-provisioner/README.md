@@ -30,8 +30,6 @@ The Concept Publishing provisioner can be built locally as a Docker image:
   * AWS Secret Key - Secret Access key of the IAM user
 - Run the following Docker commands:
 ```
-docker pull coco/upp-concept-publishing-provisioner:latest
-
 docker run \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
@@ -41,7 +39,7 @@ docker run \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "SQS_CONCEPT_MAX_DEPTH=$SQS_CONCEPT_MAX_DEPTH" \
-    coco/upp-concept-publishing-provisioner:latest /bin/bash provision.sh
+    coco/upp-concept-publishing-provisioner:local /bin/bash provision.sh
 ```
 
 - You can check the progress of the CF stack creation in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
@@ -51,8 +49,6 @@ docker run \
 - Generate credentials for the IAM user `upp-concept-publishing-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
 - - Run the following Docker commands:
 ```
-docker pull coco/upp-concept-publishing-provisioner:latest
-
 docker run \
     -e "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" \
     -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
@@ -61,7 +57,7 @@ docker run \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "DECOM_DBS=$DECOM_DBS" \   
-    coco/upp-concept-publishing-provisioner:latest /bin/bash decom.sh
+    coco/upp-concept-publishing-provisioner:local /bin/bash decom.sh
 ```
 
 - You can check the progress of the CF stack creation in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
