@@ -20,7 +20,7 @@ Resources:
     Type: "AWS::S3::Bucket"
     Properties:
       BucketName: !Join [ "", ["upp-concept-normalised-store-", !Ref EnvironmentTag]]
-      AccessControl: AuthenticatedRead
+      AccessControl: Private
       NotificationConfiguration:
         TopicConfigurations:
           - Event: "s3:ObjectCreated:*"
