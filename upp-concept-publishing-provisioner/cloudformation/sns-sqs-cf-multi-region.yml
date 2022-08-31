@@ -16,6 +16,9 @@ Parameters:
   SQSConceptQueueMaxDepth:
     Type: Number
     Default: 50000
+  AlertEmail:
+    Type: String
+    Default: p2o5v3s3i6a7x0q7@financialtimes.slack.com #upp-concept-load-err channel on Slack
 
 Resources:
   # Create another SQS queue if multi-region is set to true.
@@ -61,7 +64,7 @@ Resources:
   SQSConceptQueueOverflowAlarmSubscription:
     Type: AWS::SNS::Subscription
     Properties:
-      Endpoint: p2o5v3s3i6a7x0q7@financialtimes.slack.com #upp-concept-load-err channel on Slack
+      Endpoint: !Ref AlertEmail
       Protocol: email
       TopicArn: !Ref SQSConceptQueueOverflowAlarmTopic
 

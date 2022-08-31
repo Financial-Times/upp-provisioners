@@ -39,6 +39,7 @@ docker run \
     -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -e "SQS_CONCEPT_MAX_DEPTH=$SQS_CONCEPT_MAX_DEPTH" \
+    -e "ALERT_EMAIL=$ALERT_EMAIL
     coco/upp-concept-publishing-provisioner:local /bin/bash provision.sh
 ```
 
