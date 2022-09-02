@@ -13,6 +13,9 @@ Parameters:
   SQSConceptQueueMaxDepth:
     Type: Number
     Default: 50000
+  AlertEmail:
+    Type: String
+    Default: p2o5v3s3i6a7x0q7@financialtimes.slack.com #upp-concept-load-err channel on Slack
 
 Resources:
   # Create the topic and the policy.
@@ -91,9 +94,31 @@ Resources:
   SQSConceptQueueOverflowAlarmSubscription:
     Type: AWS::SNS::Subscription
     Properties:
-      Endpoint: p2o5v3s3i6a7x0q7@financialtimes.slack.com #upp-concept-load-err channel on Slack
+      Endpoint: !Ref AlertEmail
       Protocol: email
       TopicArn: !Ref SQSConceptQueueOverflowAlarmTopic
+
+  SQSConceptQueueDeadletterAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Join [ "", [ "upp-concept-publish-notifications-dead-letter-alarm-", !Ref EnvironmentTag, "-1" ] ]
+      AlarmDescription: !Join [ "", [ "Alarm if concepts dead letter queue contains any messages." ] ]
+      Namespace: "AWS/SQS"
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+        - Name: QueueName
+          Value: { "Fn::GetAtt": [ "SQSDeadLetterConceptQueue", "QueueName" ] }
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - Ref: SQSConceptQueueOverflowAlarmTopic
+      InsufficientDataActions:
+        - Ref: SQSConceptQueueOverflowAlarmTopic
+      OKActions:
+        - Ref: SQSConceptQueueOverflowAlarmTopic
 
   SQSConceptQueuePolicy:
     Type: "AWS::SQS::QueuePolicy"

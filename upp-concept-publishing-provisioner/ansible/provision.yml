@@ -13,6 +13,7 @@
           EnvironmentTag: "{{environment_tag}}"
           EnvironmentType: "{{environment_type}}"
           SQSConceptQueueMaxDepth: "{{sqs_concept_max_depth}}"
+          AlertEmail: "{{alert_email}}"
         tags:
           environment: "{{environment_type}}"
           systemCode: "upp"
@@ -60,6 +61,7 @@
           Region: "{{aws_secondary_region}}"
           SNSTopicARN: "{{SNSConceptTopicARN}}"
           SQSConceptQueueMaxDepth: "{{sqs_concept_max_depth}}"
+          AlertEmail: "{{alert_email}}"
         tags:
           environment: "{{environment_type}}"
           systemCode: "upp"
