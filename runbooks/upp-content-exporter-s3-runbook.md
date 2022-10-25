@@ -4,7 +4,7 @@ Amazon S3 bucket storing FT content exports.
 
 ## Code
 
-upp-enriched-content-store
+upp-content-exporter-s3
 
 ## Primary URL
 
