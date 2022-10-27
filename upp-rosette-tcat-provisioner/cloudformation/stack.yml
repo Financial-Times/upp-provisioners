@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template deploys Rosette stack
+Parameters:
+  VpcID:
+      Description: The ID of the VPC
+      Type: String
+      Default: vpc-ee57bf89
+  EnvironmentName:
+      Description: An environment name that will be prefixed to resource names
+      Type: String
+      Default: prod
+  EnvironmentType:
+      Description: Tag detail for the Environment
+      Type: String
+      Default: p
+  Ec2InstanceType:
+      Description: Size of ec2 Instance
+      Type: String
+      Default: c5.xlarge
+  NetworkIface:
+      Description: Network interface to be attached
+      Type: String
+      Default: 'eni-0997c5e38141e1f64'
+  ImageID:
+      Description: The Image ID of Amazon Linux 2 kto use
+      Type: String
+      Default: 'ami-0069d66985b09d219'
+  VolumeId:
+      Description: Volume ID where the app lives
+      Type: String
+      Default: vol-0aaadc2118b7a2362
+  MountDevice:
+      Description: Where to mount external Ebs
+      Type: String
+      Default: '/dev/xvdb'
+  TagTeamDL:
+      Description: Tag of the TeamDL
+      Type: String
+      AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+      ConstraintDescription: There must be a valid email address for the TeamDL
+      Default: universal.publishing.platform@ft.com
+  TagSystemCode:
+      Description: The system code for the environment
+      Type: String
+      Default: upp
+  TagDescription:
+      Description: Tag detail for the describing the instance
+      Type: String
+      Default: UPP Rosette stack
+  TagName:
+      Description: Name of the instance
+      Type: String
+      Default: upp-rosette-tcat-instance
+
+Resources:
+    RosetteTCATInstance:
+      Type: AWS::EC2::Instance
+      Properties:
+        ImageId: !Ref ImageID
+        IamInstanceProfile: "FT-EC2-Role"
+        InstanceType: !Ref Ec2InstanceType
+        KeyName: "upp-k8s-provisioning-debug"
+        NetworkInterfaces: 
+        - NetworkInterfaceId: !Ref NetworkIface
+          DeviceIndex: 0
+        BlockDeviceMappings:
+          - DeviceName: /dev/xvda
+            Ebs:
+              VolumeType: gp3
+              VolumeSize: 80
+              Encrypted: false
+        Volumes:
+          - Device: !Ref MountDevice
+            VolumeId: !Ref VolumeId
+        UserData:
+          Fn::Base64: !Sub |
+             #!/bin/bash -x
+             yum update -y
+             yum install git -y
+             cat > /etc/systemd/system/authorized_keys.service << EOF
+             [Unit]
+             Description=Update authorized_keys
+             [Service]
+             Type=oneshot
+             ExecStartPre=/bin/sh -c 'mkdir -p /home/ec2-user/.ssh && touch /home/ec2-user/.ssh/authorized_keys'
+             ExecStart=/bin/sh -c 'curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512'
+             ExecStart=/bin/sh -c 'curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys'
+             ExecStart=/bin/sh -c 'cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/ec2-user/.ssh/authorized_keys && chmod 700 /home/ec2-user/.ssh && chmod 600 /home/ec2-user/.ssh/authorized_keys && chown -R ec2-user:ec2-user /home/ec2-user/.ssh'
+             Restart=no
+             EOF
+
+             systemctl start authorized_keys.service
+             systemctl enable authorized_keys.service
+
+             cat > /etc/systemd/system/authorized_keys.timer << EOF
+             [Unit]
+             Description=Authorized keys timer
+             [Timer]
+             OnBootSec=1min
+             OnUnitActiveSec=1min
+             [Install]
+             WantedBy=timers.target
+             EOF
+
+             systemctl start authorized_keys.timer
+             systemctl enable authorized_keys.timer
+
+             echo ${MountDevice} /tcat ext4 defaults,nofail 0 2 >> /etc/fstab
+             mkdir /tcat
+             mount ${MountDevice} /tcat
+             yum install -y java-1.8.0-openjdk
+        Tags:
+          - Key: "Name"
+            Value: !Ref TagName
+          - Key: "systemCode"
+            Value: !Ref TagSystemCode
+          - Key: "teamDL"
+            Value: !Ref TagTeamDL
+          - Key: "environment"
+            Value: !Ref EnvironmentType
