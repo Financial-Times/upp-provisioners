@@ -158,9 +158,10 @@ Resources:
         Type: AWS::RDS::DBClusterParameterGroup
         Properties:
             Description: !Join ['', [!Ref EnvironmentName, ' cluster parameter group']]
-            Family: aurora5.6
+            Family: aurora-mysql5.7
             Parameters:
                 binlog_format: 'MIXED'
+                aws_default_s3_role: 'arn:aws:iam::469211898354:role/concept-events-notifications-migration-role'
             Tags:
                 - Key: Name
                   Value: !Join ["" , ["UPP Concept Events RDS Cluster Parameter Group ", !Ref EnvironmentName]]
