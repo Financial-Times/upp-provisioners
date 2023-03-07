@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >
-  Template to spin-up an Elasticsearch cluster that contains FT content used by CCF platform
+  Template to spin-up an OpenSearch cluster that contains FT content used by CCF platform
 
 Parameters:
   EnvironmentType:
@@ -23,16 +23,46 @@ Parameters:
     Default: eu-west-1
 
 Resources:
-  ElasticsearchDomain:
-    Type: "AWS::Elasticsearch::Domain"
+  BackupBucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket:
+        Ref: BackupBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          Effect: "Allow"
+          Action: "s3:*"
+          Resource:
+            - !Join [ "", [ !GetAtt BackupBucket.Arn, "/*" ] ]
+            - !GetAtt BackupBucket.Arn
+          Principal:
+            AWS: !Join [ "", [ "arn:aws:iam::", !Ref 'AWS::AccountId', ":role/upp-elasticsearch-backup-role" ] ]
+
+  BackupBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Join ["", [!Ref ClusterName, "-backup"]]
+      Tags:
+        - Key: environment
+          Value: !Ref EnvironmentType
+        - Key: teamDL
+          Value: "universal.publishing.platform@ft.com"
+        - Key: systemCode
+          Value: "upp"
+        - Key: description
+          Value: !Ref ClusterName
+
+  OpenSearchDomain:
+    Type: "AWS::OpenSearchService::Domain"
     Properties:
       DomainName: !Ref ClusterName
-      ElasticsearchVersion: "7.4"
-      ElasticsearchClusterConfig:
+      EngineVersion: "1.3"
+      ClusterConfig:
         InstanceCount: "3"
-        InstanceType: "m5.xlarge.elasticsearch"
+        InstanceType: "m5.xlarge.search"
         DedicatedMasterEnabled: "true"
-        DedicatedMasterType: "m5.large.elasticsearch"
+        DedicatedMasterType: "m5.large.search"
         DedicatedMasterCount: "3"
       EBSOptions:
         EBSEnabled: true
@@ -41,15 +71,6 @@ Resources:
         VolumeType: "gp2"
       SnapshotOptions:
         AutomatedSnapshotStartHour: "0"
-      AccessPolicies:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Effect: "Allow"
-            Principal:
-              AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
-            Action: "es:*"
-            Resource: !Join [ "", [ "arn:aws:es:", !Ref Region, ":", !Ref 'AWS::AccountId', ":domain/", !Ref ClusterName, "/*" ] ]
       AdvancedOptions:
         rest.action.multi.allow_explicit_index: "true"
       Tags:
@@ -64,5 +85,5 @@ Resources:
 
 Outputs:
   ESClusterEndpoint:
-    Description: The ElasticSearch cluster endpoint
-    Value: !GetAtt ElasticsearchDomain.DomainEndpoint
+    Description: The OpenSearch cluster endpoint
+    Value: !GetAtt OpenSearchDomain.DomainEndpoint

@@ -7,19 +7,6 @@
     - vault_{{aws_account}}.yml
 
   tasks:
-
-    - name: Ensure S3 bucket exists
-      s3_bucket:
-        aws_access_key: "{{aws_access_key}}"
-        aws_secret_key: "{{aws_secret_access_key}}"
-        name: "{{cluster_name}}-backup"
-        region: "{{aws_default_region}}"
-        policy: "{{ lookup('template','files/s3-bucket-policy.json') }}"
-      register: s3_bucket_output
-
-    - debug:
-        msg: "{{s3_bucket_output}}"
-
     - name: Create ElasticSearch cluster
       cloudformation:
         aws_access_key: "{{aws_access_key}}"
