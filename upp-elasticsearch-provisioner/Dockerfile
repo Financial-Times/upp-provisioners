@@ -1,11 +1,14 @@
-FROM alpine:3.5
+FROM ubuntu:22.04
 
 ENV ANSIBLE_HOSTS=/ansible/hosts
 
-RUN apk --update add python py-pip ansible bash ca-certificates \
- && pip install --upgrade pip boto boto3 dnspython \
- && update-ca-certificates 2&>1 > /dev/null
+RUN apt-get update
+RUN apt-get -y install ansible ca-certificates jq zip curl
+RUN update-ca-certificates 2&>1 > /dev/null
+
+COPY sh/* /usr/local/bin/
+RUN chmod -R 755 /usr/local/bin/
+RUN get-latest-awscli2
 
 COPY ansible /ansible
 COPY cloudformation /cloudformation
-COPY sh/* /usr/local/bin/
