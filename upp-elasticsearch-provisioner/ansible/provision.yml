@@ -1,4 +1,6 @@
-- hosts: all
+- name: Provision ElasticSearch Domain and S3 backup bucket
+  hosts: localhost
+  connection: local
 
   vars:
     cluster_name: "{{cf_template}}-{{delivery_cluster}}"
