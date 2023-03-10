@@ -2,6 +2,97 @@
 
 [![CircleCI](https://circleci.com/gh/Financial-Times/upp-provisioners.svg?style=shield)](https://circleci.com/gh/Financial-Times/upp-provisioners)
 
+Note: This provisioner is in restructuring process. There are two ways for provisioning ElasticSearch domains. The old
+one that uses Ansible. And a new one that depends on AWS CLI and bash scripts for deploying the domains.
+Not all domains are transitioned to the new way of working, so
+check [configs](upp-elasticsearch-provisioner/config/vars/) for up-to-date setups. And make sure you are following the
+correct steps for deploying and decommissioning domains.
+
+## Building the Docker image
+
+The AWS ES provisioner can be built locally as a Docker image:
+
+`docker build -t coco/upp-elasticsearch-provisioner:local .`
+
+Automated DockerHub builds are also triggered on new releases,
+located [here](https://hub.docker.com/r/coco/upp-elasticsearch-provisioner/).
+
+## How it works
+
+### New setup
+
+The new setup deploys a CloudFormation with provided CONFIG_NAME setup. Every OpenSearch deployment has its own config.
+That way both the provisioner and the concrete config are stored in git. Here is a list of all
+current [configs](upp-elasticsearch-provisioner/config/vars/).
+
+The AWS ES provisioning process will:
+
+* Create an OpenSearch Service and S3 bucket for snapshot backups
+* Registers it to the ES cluster with
+  a [shell script](upp-elasticsearch-provisioner/scripts/register-es-snapshot-dir.py)
+
+The decommissioning process will:
+
+* Delete the cloud formation
+
+### Provisioning a cluster
+
+- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in `content-test` aws account for a dev stack or
+  in `content-prod` aws account for a staging/ prod stack.
+- Export the environment variables for the desired config
+
+```shell
+export CONFIG_NAME="upp-ccf-content-dev-eu"
+export AWS_ACCESS_KEY_ID=""
+export AWS_SECRET_ACCESS_KEY=""
+```
+
+- Run the following Docker command:
+
+```shell
+docker pull coco/upp-elasticsearch-provisioner:latest
+docker run \
+    -e "CONFIG_NAME=$CONFIG_NAME" \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    coco/upp-elasticsearch-provisioner:latest /bin/bash deploy-stack.sh
+```
+
+- Note that the `Create OpenSearch cluster` step may take up to 15 minutes, as CloudFormation waits until the
+  OpenSearch cluster is fully provisioned and online before returning a success code.
+- You can check the progress of the CF stack creation in the AWS
+  console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
+
+### Decommissioning a cluster
+
+- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in `content-test` aws account for a dev stack or
+  in `content-prod` aws account for a staging/ prod stack.
+- Export the environment variables for the desired config
+
+```shell
+export CONFIG_NAME="upp-ccf-content-dev-eu"
+export AWS_ACCESS_KEY_ID=""
+export AWS_SECRET_ACCESS_KEY=""
+```
+
+- Run the following Docker command:
+
+```shell
+docker pull coco/upp-elasticsearch-provisioner:latest
+docker run \
+    -e "CONFIG_NAME=$CONFIG_NAME" \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    coco/upp-elasticsearch-provisioner:latest /bin/bash delete-stack.sh
+```
+
+- Note that the `Delete ElasticSearch cluster` step may take up to 15 minutes, as CloudFormation waits until the
+  ElasticSearch cluster is fully decommissioned before returning a success code.
+- You can check the progress of the CF stack deletion in the AWS
+  console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
+
+### Old setup
+
 The AWS ES provisioning process will:
 
 * Create an ElasticSearch Service using the specified CloudFormation template
@@ -15,16 +106,7 @@ The decommissioning process will:
 * Delete the cluster
 * (Optionally) delete the S3 bucket for full decommissioning
 
-## Building the Docker image
-
-The AWS ES provisioner can be built locally as a Docker image:
-
-`docker build -t coco/upp-elasticsearch-provisioner:local .`
-
-Automated DockerHub builds are also triggered on new releases,
-located [here](https://hub.docker.com/r/coco/upp-elasticsearch-provisioner/).
-
-## Provisioning a cluster
+### Provisioning a cluster
 
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass
   note.
@@ -56,7 +138,7 @@ docker run \
 - You can check the progress of the CF stack creation in the AWS
   console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
 
-## Decommissioning a cluster
+### Decommissioning a cluster
 
 - Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass
   note.
