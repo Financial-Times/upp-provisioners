@@ -4,30 +4,38 @@
 
 The AWS ES provisioning process will:
 
- * Create an ElasticSearch Service using the specified CloudFormation template
- * Ensure an S3 bucket exists, and register it to the ES cluster
- * (Optionally) restore the most recent snapshot in the S3 bucket
+* Create an ElasticSearch Service using the specified CloudFormation template
+* Using Ansible ensures an S3 bucket exists, and registers it to the ES cluster with
+  a [python script](upp-elasticsearch-provisioner/ansible/files/register-es-snapshot-dir.py)
+* (Optionally) restore the most recent snapshot in the S3 bucket
 
 The decommissioning process will:
 
- * Take a snapshot of the cluster
- * Delete the cluster
- * (Optionally) delete the S3 bucket for full decommissioning
+* Take a snapshot of the cluster
+* Delete the cluster
+* (Optionally) delete the S3 bucket for full decommissioning
 
 ## Building the Docker image
+
 The AWS ES provisioner can be built locally as a Docker image:
 
 `docker build -t coco/upp-elasticsearch-provisioner:local .`
 
-Automated DockerHub builds are also triggered on new releases, located [here](https://hub.docker.com/r/coco/upp-elasticsearch-provisioner/).
+Automated DockerHub builds are also triggered on new releases,
+located [here](https://hub.docker.com/r/coco/upp-elasticsearch-provisioner/).
 
 ## Provisioning a cluster
-- Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
-- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
+
+- Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass
+  note.
+- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in `content-test` aws account for a dev stack or
+  in `content-prod` aws account for a staging/ prod stack.
 - The full cluster name will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
 - The full cluster name has a maxmimum length of 28 characters.
-- If provisioning a cluster that has previously had a snapshot taken, and you wish to restore the latest ES snapshot, set `$RESTORE_ES_SNAPSHOT"` to `true`.
+- If provisioning a cluster that has previously had a snapshot taken, and you wish to restore the latest ES snapshot,
+  set `$RESTORE_ES_SNAPSHOT"` to `true`.
 - Run the following Docker commands:
+
 ```
 docker pull coco/upp-elasticsearch-provisioner:latest
 docker run \
@@ -43,15 +51,22 @@ docker run \
     coco/upp-elasticsearch-provisioner:latest /bin/bash provision.sh
 ```
 
-- Note that the `Create ElasticSearch cluster` step may take up to 15 minutes, as CloudFormation waits until the ElasticSearch cluster is fully provisioned and online before returning a success code.
-- You can check the progress of the CF stack creation in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
+- Note that the `Create ElasticSearch cluster` step may take up to 15 minutes, as CloudFormation waits until the
+  ElasticSearch cluster is fully provisioned and online before returning a success code.
+- You can check the progress of the CF stack creation in the AWS
+  console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
 
 ## Decommissioning a cluster
-- Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass note.
-- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
+
+- Grab, customize and export the environment variables from the **AWS ElasticSearch - Provisioning Setup** LastPass
+  note.
+- Generate credentials for the IAM user `upp-elasticsearch-provisioner` in `content-test` aws account for a dev stack or
+  in `content-prod` aws account for a staging/ prod stack.
 - The decommissioned cluster will be `${CF_TEMPLATE}-${DELIVERY_CLUSTER}` - eg, `upp-concepts-prod-uk`.
-- If fully decommissioning a cluster, and you no longer need the S3 bucket or the ES snapshots inside, set `$DELETE_S3_BUCKET` to `true`.
+- If fully decommissioning a cluster, and you no longer need the S3 bucket or the ES snapshots inside,
+  set `$DELETE_S3_BUCKET` to `true`.
 - Run the following Docker command:
+
 ```
 docker pull coco/upp-elasticsearch-provisioner:latest
 docker run \
@@ -67,16 +82,21 @@ docker run \
     coco/upp-elasticsearch-provisioner:latest /bin/bash decom.sh
 ```
 
-- Note that the `Delete ElasticSearch cluster` step may take up to 15 minutes, as CloudFormation waits until the ElasticSearch cluster is fully decommissioned before returning a success code.
-- You can check the progress of the CF stack deletion in the AWS console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
+- Note that the `Delete ElasticSearch cluster` step may take up to 15 minutes, as CloudFormation waits until the
+  ElasticSearch cluster is fully decommissioned before returning a success code.
+- You can check the progress of the CF stack deletion in the AWS
+  console [here](https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks).
 
 ## Migrating data between ElasticSearch clusters
 
-Note that the following instructions assume that the source and target clusters have been created using `upp-elasticsearch-provisioner`, which will automatically create and register an S3 bucket for manual snapshots.
+Note that the following instructions assume that the source and target clusters have been created
+using `upp-elasticsearch-provisioner`, which will automatically create and register an S3 bucket for manual snapshots.
 
-If your ES cluster has not been created by the provisioner, you will need to create and register an S3 bucket yourself - speak to your friendly neighbourhood Integration Engineer for help.
+If your ES cluster has not been created by the provisioner, you will need to create and register an S3 bucket yourself -
+speak to your friendly neighbourhood Integration Engineer for help.
 
-For the following steps, using [Postman](https://www.getpostman.com/) (or a similar tool) is strongly recommended, as it means you don't have to mess about with AWS credentials and certificates.
+For the following steps, using [Postman](https://www.getpostman.com/) (or a similar tool) is strongly recommended, as it
+means you don't have to mess about with AWS credentials and certificates.
 
 You will need to pass the `content-containers-apps` credentials to Postman, which are available in LastPass.
 
@@ -84,21 +104,27 @@ You will need to pass the `content-containers-apps` credentials to Postman, whic
 
 ### Take a snapshot of the source ElasticSearch cluster
 
-- On your source cluster, send a `PUT` request to the following URL to create a snapshot, replacing your cluster hostname and snapshot name with appropriate values:
+- On your source cluster, send a `PUT` request to the following URL to create a snapshot, replacing your cluster
+  hostname and snapshot name with appropriate values:
+
 ```
 https://search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/20170526-efinlay
 ```
 
-- Depending on the size of the source cluster, this may take some time to complete. You can check the progress of the snapshot by sending a `GET` request to the following URL:
+- Depending on the size of the source cluster, this may take some time to complete. You can check the progress of the
+  snapshot by sending a `GET` request to the following URL:
+
 ```
 https://search-upp-concepts-source-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/_all
 ```
 
 ### Copy snapshot data to target ElasticSearch cluster
 
-Run the following commands on an AWS EC2 instance in the same region as your S3 bucket. You can run the commands locally, but it will be slower to sync the data to and from the buckets.
+Run the following commands on an AWS EC2 instance in the same region as your S3 bucket. You can run the commands
+locally, but it will be slower to sync the data to and from the buckets.
 
-You will need to have `awscli` installed, and have configured credentials with appropriate IAM permissions to perform S3 actions. 
+You will need to have `awscli` installed, and have configured credentials with appropriate IAM permissions to perform S3
+actions.
 
 If you are copying data between different AWS accounts, you will need credentials for each account.
 
@@ -127,16 +153,19 @@ aws s3 sync . s3://upp-concepts-target-cluster-backup/ --profile content-test
 ### Restore snapshot to target ElasticSearch cluster
 
 - Send a `GET` request to check the snapshot is visible in your target cluster:
+
 ```
 https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/_all
 ```
 
 - Trigger a restore of the snapshot in the target cluster. Send a `POST` request to the following URL:
+
 ```
 https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/20170526-efinlay/_restore
 ```
 
 - To check the progress of the restore, send a `GET` request to the following URL:
+
 ```
 https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/index-backups/efinlay-20170615/_status
 ```
@@ -147,4 +176,5 @@ https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_snapshot/
 https://search-upp-concepts-target-cluster.eu-west-1.es.amazonaws.com/_cluster/health
 ```
 
-- All done! You can delete the snapshot files from the target cluster's S3 bucket, unless you want to keep the snapshot for future use.
+- All done! You can delete the snapshot files from the target cluster's S3 bucket, unless you want to keep the snapshot
+  for future use.
