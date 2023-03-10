@@ -33,3 +33,5 @@ aws cloudformation deploy \
 aws cloudformation wait stack-create-complete \
   --region "${AWS_REGION}" \
   --stack-name "${CF_STACK_NAME}"
+
+source register-snapshot-bucket

@@ -1,28 +1,44 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >
-  Template to spin-up an Elasticsearch cluster that contains FT content used by CCF platform
+  Template to spin-up an OpenSearch cluster that contains FT content used by CCF platform
 
 Parameters:
-  EnvironmentType:
+  EnvironmentTag:
     Description: Environment type (Dev,Test or Production).
     Type: String
     AllowedValues:
       - 'd'
       - 't'
       - 'p'
-    Default: t
+    Default: 'd'
+
+  TeamDLTag:
+    Description: Tag of the TeamDL
+    Type: String
+    AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    ConstraintDescription: There must be a valid email address for the TeamDL
+    Default: 'universal.publishing.platform@ft.com'
+
+  SystemCodeTag:
+    Description: The system code for the environment
+    Type: String
+    Default: 'upp'
+
   ClusterName:
     Description: The name of the ES cluster
     Type: String
-  Region:
-    Description: AWS region - only used to generate the domain access policy
+
+  BackupRole:
+    Description: The IAM role used for accessing the S3 bucket when creating ES snapshots
     Type: String
-    AllowedValues:
-      - 'eu-west-1'
-      - 'us-east-1'
-    Default: eu-west-1
+    Default: 'upp-elasticsearch-backup-role'
+
+  BackupBucketName:
+    Description: The name of the S3 bucket used for ES snapshot backups
+    Type: String
 
 Resources:
+
   BackupBucketPolicy:
     Type: "AWS::S3::BucketPolicy"
     Properties:
@@ -37,30 +53,32 @@ Resources:
             - !Join [ "", [ !GetAtt BackupBucket.Arn, "/*" ] ]
             - !GetAtt BackupBucket.Arn
           Principal:
-            AWS: !Join [ "", [ "arn:aws:iam::", !Ref 'AWS::AccountId', ":role/upp-elasticsearch-backup-role" ] ]
+            AWS: !Join [ "", [ "arn:aws:iam::", !Ref 'AWS::AccountId', ":role/", !Ref 'BackupRole' ] ]
+
   BackupBucket:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: !Join [ "", [ !Ref ClusterName, "-backup" ] ]
+      BucketName: !Ref BackupBucketName
       Tags:
         - Key: environment
-          Value: !Ref EnvironmentType
+          Value: !Ref EnvironmentTag
         - Key: teamDL
-          Value: "universal.publishing.platform@ft.com"
+          Value: !Ref TeamDLTag
         - Key: systemCode
-          Value: "upp"
+          Value: !Ref SystemCodeTag
         - Key: description
           Value: !Ref ClusterName
-  ElasticsearchDomain:
-    Type: "AWS::Elasticsearch::Domain"
+
+  OpenSearchDomain:
+    Type: "AWS::OpenSearchService::Domain"
     Properties:
       DomainName: !Ref ClusterName
-      ElasticsearchVersion: "7.4"
-      ElasticsearchClusterConfig:
+      EngineVersion: "1.3"
+      ClusterConfig:
         InstanceCount: "3"
-        InstanceType: "m5.xlarge.elasticsearch"
+        InstanceType: "m5.xlarge.search"
         DedicatedMasterEnabled: "true"
-        DedicatedMasterType: "m5.large.elasticsearch"
+        DedicatedMasterType: "m5.large.search"
         DedicatedMasterCount: "3"
       EBSOptions:
         EBSEnabled: true
@@ -69,28 +87,14 @@ Resources:
         VolumeType: "gp2"
       SnapshotOptions:
         AutomatedSnapshotStartHour: "0"
-      AccessPolicies:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Effect: "Allow"
-            Principal:
-              AWS: !Join ["", ["arn:aws:iam::", !Ref 'AWS::AccountId', ":user/content-containers-apps"]]
-            Action: "es:*"
-            Resource: !Join [ "", [ "arn:aws:es:", !Ref Region, ":", !Ref 'AWS::AccountId', ":domain/", !Ref ClusterName, "/*" ] ]
       AdvancedOptions:
         rest.action.multi.allow_explicit_index: "true"
       Tags:
         - Key: environment
-          Value: !Ref EnvironmentType
+          Value: !Ref EnvironmentTag
         - Key: teamDL
-          Value: "universal.publishing.platform@ft.com"
+          Value: !Ref TeamDLTag
         - Key: systemCode
-          Value: "upp"
+          Value: !Ref SystemCodeTag
         - Key: description
           Value: !Ref ClusterName
-
-Outputs:
-  ESClusterEndpoint:
-    Description: The ElasticSearch cluster endpoint
-    Value: !GetAtt ElasticsearchDomain.DomainEndpoint
