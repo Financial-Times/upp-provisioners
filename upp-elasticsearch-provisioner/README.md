@@ -23,13 +23,13 @@ located [here](https://hub.docker.com/r/coco/upp-elasticsearch-provisioner/).
 
 The new setup deploys a CloudFormation with provided CONFIG_NAME setup. Every OpenSearch deployment has its own config.
 That way both the provisioner and the concrete config are stored in git. Here is a list of all
-current [configs](upp-elasticsearch-provisioner/config/vars/).
+current [configs](config/vars/).
 
 The AWS ES provisioning process will:
 
 * Create an OpenSearch Service and S3 bucket for snapshot backups
 * Registers it to the ES cluster with
-  a [shell script](upp-elasticsearch-provisioner/scripts/register-es-snapshot-dir.py)
+  a [shell script](scripts/register-es-snapshot-dir.py)
 
 The decommissioning process will:
 
@@ -97,7 +97,7 @@ The AWS ES provisioning process will:
 
 * Create an ElasticSearch Service using the specified CloudFormation template
 * Using Ansible ensures an S3 bucket exists, and registers it to the ES cluster with
-  a [python script](upp-elasticsearch-provisioner/ansible/files/register-es-snapshot-dir.py)
+  a [python script](ansible/files/register-es-snapshot-dir.py)
 * (Optionally) restore the most recent snapshot in the S3 bucket
 
 The decommissioning process will:
