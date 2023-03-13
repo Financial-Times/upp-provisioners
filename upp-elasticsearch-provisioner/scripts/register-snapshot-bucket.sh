@@ -13,9 +13,9 @@ else
 fi
 
 echo "Looking for backup role \"$BACKUP_ROLE\""
-BACKUP_ROLE_ARN="$(aws iam get-role --role-name=$BACKUP_ROLE 2>/dev/null | jq .Role.Arn -r)"
+BACKUP_ROLE_ARN="$(aws iam get-role --role-name="$BACKUP_ROLE" 2>/dev/null | jq .Role.Arn -r)"
 if [ "$BACKUP_ROLE_ARN" == "" ]; then
-  echo -e "Error - Failed to get \"upp-elasticsearch-backup-role\"\n"
+  echo -e "Error - Failed to get \"$BACKUP_ROLE\"\n"
   echo -e "Check if the IAM role exists and is accessible with the provided credentials."
   echo
   exit 1
@@ -24,11 +24,11 @@ else
 fi
 
 echo "Looking for es domain endpoint."
-ES_ENDPOINT="https://$(
-  aws es describe-elasticsearch-domain --domain-name="$CF_STACK_NAME" 2>/dev/null | jq .DomainStatus.Endpoint -r
+ES_ENDPOINT="$(
+  aws es describe-elasticsearch-domain --domain-name="$CLUSTER_NAME" 2>/dev/null | jq .DomainStatus.Endpoint -r
 )"
-if [ "$ES_ENDPOINT" == "https://" ]; then
-  echo -e "Error - Failed to get es endpoint for $CF_STACK_NAME\n"
+if [ "$ES_ENDPOINT" == "" ]; then
+  echo -e "Error - Failed to get es endpoint for $CLUSTER_NAME\n"
   echo -e "Check if the ES domain exists and is accessible with the provided credentials."
   echo
   exit 1
@@ -36,4 +36,4 @@ else
   echo "Found: \"$ES_ENDPOINT\" domain endpoint."
 fi
 
-/register-es-snapshot-dir.py -r "$AWS_DEFAULT_REGION" -e "$ES_ENDPOINT" -a "$AWS_ACCESS_KEY" -s "$AWS_SECRET_ACCESS_KEY" -b "$BACKUP_BUCKET" -o "$BACKUP_ROLE_ARN"
+/utils/register-es-snapshot-dir.py -r "$AWS_REGION" -e "$ES_ENDPOINT" -a "$AWS_ACCESS_KEY_ID" -s "$AWS_SECRET_ACCESS_KEY" -b "$BACKUP_BUCKET" -o "$BACKUP_ROLE_ARN"
