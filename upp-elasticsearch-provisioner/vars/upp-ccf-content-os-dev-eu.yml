@@ -1,0 +1,8 @@
+template_params:
+  EnvironmentType: "d"
+  TeamDLTag: "universal.publishing.platform@ft.com"
+  SystemCodeTag: "upp"
+  ClusterName: "{{cluster_name}}"
+  InstanceType: "t3.medium.search"
+  MasterType: "t3.medium.search"
+  StorageSize: 30

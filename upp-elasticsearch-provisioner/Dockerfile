@@ -9,3 +9,4 @@ RUN apk --update add python py-pip ansible bash ca-certificates \
 COPY ansible /ansible
 COPY cloudformation /cloudformation
 COPY sh/* /usr/local/bin/
+COPY vars /vars

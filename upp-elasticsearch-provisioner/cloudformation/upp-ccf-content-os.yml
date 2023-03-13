@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Template to spin-up an OpenSearch cluster that contains FT content used by CCF platform
+
+Parameters:
+  EnvironmentType:
+    Description: Environment type (Dev,Test or Production).
+    Type: String
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+    Default: 'd'
+
+  TeamDLTag:
+    Description: Tag of the TeamDL
+    Type: String
+    AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    ConstraintDescription: There must be a valid email address for the TeamDL
+    Default: 'universal.publishing.platform@ft.com'
+
+  SystemCodeTag:
+    Description: The system code for the environment
+    Type: String
+    Default: 'upp'
+
+  ClusterName:
+    Description: The name of the ES cluster
+    Type: String
+
+  Region:
+    Description: Deprecated - previously used for constructing access policies
+    Type: String
+    Default: eu-west-1
+
+  InstanceType:
+    Description: Instance Type of the cluster nodes
+    Type: String
+    Default: "m6g.xlarge.search"
+
+  MasterType:
+    Description: Dedicated Master Type Type of the cluster nodes
+    Type: String
+    Default: "m6g.large.search"
+
+  StorageSize:
+    Description: Node Volume size in gigabytes
+    Type: Number
+    Default: 30
+
+Resources:
+
+  OpenSearchDomain:
+    Type: "AWS::OpenSearchService::Domain"
+    UpdatePolicy:
+      EnableVersionUpgrade: true
+    Properties:
+      DomainName: !Ref ClusterName
+      EngineVersion: "OpenSearch_1.3"
+      ClusterConfig:
+        InstanceCount: "3"
+        InstanceType: !Ref InstanceType
+        DedicatedMasterEnabled: "true"
+        DedicatedMasterType: !Ref MasterType
+        DedicatedMasterCount: "3"
+      EBSOptions:
+        EBSEnabled: true
+        Iops: 0
+        VolumeSize: !Ref StorageSize
+        VolumeType: "gp2"
+      SnapshotOptions:
+        AutomatedSnapshotStartHour: "0"
+      AdvancedOptions:
+        rest.action.multi.allow_explicit_index: "true"
+      Tags:
+        - Key: environment
+          Value: !Ref EnvironmentType
+        - Key: teamDL
+          Value: !Ref TeamDLTag
+        - Key: systemCode
+          Value: !Ref SystemCodeTag
+        - Key: description
+          Value: !Ref ClusterName
+
+Outputs:
+  ESClusterEndpoint:
+    Description: The OpenSearchDomain cluster endpoint
+    Value: !GetAtt OpenSearchDomain.DomainEndpoint
