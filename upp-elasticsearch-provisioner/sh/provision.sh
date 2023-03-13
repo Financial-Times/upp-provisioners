@@ -1,26 +1,24 @@
 #!/bin/bash
 
 # Validate that ${CF_TEMPLATE}.yml exists
-if [ ! -f /cloudformation/${CF_TEMPLATE}.yml ] ; then
-    echo -e "Error - ${CF_TEMPLATE}.yml doesn't exist.\n"
-    echo -e "Valid \$CF_TEMPLATE values are:"
-    ls /cloudformation/ | sed 's/.yml//g'
-    echo
-    exit 1
+if [ ! -f /cloudformation/${CF_TEMPLATE}.yml ]; then
+  echo -e "Error - ${CF_TEMPLATE}.yml doesn't exist.\n"
+  echo -e "Valid \$CF_TEMPLATE values are:"
+  ls /cloudformation/ | sed 's/.yml//g'
+  echo
+  exit 1
 fi
 
 env_vars="/vars/${CF_TEMPLATE}-${DELIVERY_CLUSTER}.yml"
-# Validate that ${CF_TEMPLATE}.yml exists
-if [ ! -f ${env_vars} ] ; then
-    echo -e "Error - ${env_vars}.yml doesn't exist.\n"
-    echo -e "Valid \$CF_TEMPLATE values are:"
-    ls /vars/ | sed 's/.yml//g'
-    echo
-    env_vars=""
+# Check if there are custom provision properties
+if [ ! -f ${env_vars} ]; then
+  echo -e "Warning - ${env_vars} doesn't exist.\n"
+  echo -e "Using /vars/defaults.yml values."
+  env_vars="/vars/defaults.yml"
 fi
 
 # Create Ansible vault credentials
-echo ${VAULT_PASS} > /ansible/vault.pass
+echo ${VAULT_PASS} >/ansible/vault.pass
 
 cd /ansible
 
@@ -35,4 +33,3 @@ aws_secret_access_key=${AWS_SECRET_ACCESS_KEY} \
 aws_account=${AWS_ACCOUNT} \
 env_vars=${env_vars}
 "
-
