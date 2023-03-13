@@ -19,7 +19,7 @@ if [ ! -f "${CF_STACK_TEMPLATE}" ]; then
   exit 1
 fi
 
-echp "Delete ElasticSearch cluster: ${CF_STACK_NAME}"
+echo "Delete ElasticSearch cluster: ${CF_STACK_NAME}"
 aws cloudformation delete-stack \
   --region "${AWS_REGION}" \
   --stack-name "${CF_STACK_NAME}"

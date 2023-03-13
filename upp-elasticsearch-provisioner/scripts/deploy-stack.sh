@@ -26,12 +26,11 @@ aws cloudformation deploy \
   --template-file "${CF_STACK_TEMPLATE}" \
   --no-fail-on-empty-changeset \
   --parameter-overrides \
-  EnvironmentType="${ENVIRONMENT_TAG}" \
+  EnvironmentTag="${ENVIRONMENT_TAG}" \
+  TeamDLTag="${TEAM_DL_TAG}" \
   SystemCodeTag="${SYSTEM_CODE_TAG}" \
-  TeamDLTag="${TEAM_DL_TAG}"
+  ClusterName="${CLUSTER_NAME}" \
+  BackupRole="${BACKUP_ROLE}" \
+  BackupBucketName="${BACKUP_BUCKET}"
 
-aws cloudformation wait stack-create-complete \
-  --region "${AWS_REGION}" \
-  --stack-name "${CF_STACK_NAME}"
-
-source register-snapshot-bucket
+source register-snapshot-bucket.sh
