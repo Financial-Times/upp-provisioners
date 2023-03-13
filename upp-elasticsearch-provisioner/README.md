@@ -43,8 +43,10 @@ The decommissioning process will:
 
 ```shell
 export CONFIG_NAME="upp-ccf-content-dev-eu"
+export AWS_REGION="eu-west-1"
 export AWS_ACCESS_KEY_ID=""
 export AWS_SECRET_ACCESS_KEY=""
+
 ```
 
 - Run the following Docker command:
@@ -53,6 +55,7 @@ export AWS_SECRET_ACCESS_KEY=""
 docker pull coco/upp-elasticsearch-provisioner:latest
 docker run \
     -e "CONFIG_NAME=$CONFIG_NAME" \
+    -e "AWS_REGION=$AWS_REGION" \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     coco/upp-elasticsearch-provisioner:latest /bin/bash deploy-stack.sh
