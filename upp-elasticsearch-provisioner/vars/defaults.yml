@@ -1,0 +1,4 @@
+template_params:
+  ClusterName: "{{cluster_name}}"
+  Region: "{{ aws_default_region }}"
+  EnvironmentType: "{{environment_type}}"

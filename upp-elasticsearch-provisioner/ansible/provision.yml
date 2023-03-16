@@ -5,6 +5,7 @@
 
   vars_files:
     - vault_{{aws_account}}.yml
+    - "{{ env_vars }}"
 
   tasks:
 
@@ -29,9 +30,7 @@
         region: "{{aws_default_region}}"
         template: "/cloudformation/{{cf_template}}.yml"
         template_parameters:
-          EnvironmentType: "{{environment_type}}"
-          ClusterName: "{{cluster_name}}"
-          Region: "{{aws_default_region}}"
+          "{{ template_params }}"
         tags:
           Stack: "{{cluster_name}}"
       register: es_stack_output
