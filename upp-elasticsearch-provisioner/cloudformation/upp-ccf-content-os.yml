@@ -56,7 +56,7 @@ Resources:
       EnableVersionUpgrade: true
     Properties:
       DomainName: !Ref ClusterName
-      EngineVersion: "OpenSearch_1.3"
+      EngineVersion: "OpenSearch_2.5"
       ClusterConfig:
         InstanceCount: "3"
         InstanceType: !Ref InstanceType
