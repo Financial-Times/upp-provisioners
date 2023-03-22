@@ -4,11 +4,11 @@ set -euo pipefail
 IFS=$'\n\t'
 
 CONFIG_PATH="/config"
-RDS_CONFIG="${CONFIG_PATH}/vars/${ENVIRONMENT_NAME}.sh"
+RDS_CONFIG="${CONFIG_PATH}/vars/${ENVIRONMENT_NAME}-${REGION}.sh"
 CF_STACK_TEMPLATE="${CONFIG_PATH}/cloudformation/${CF_TEMPLATE}.yaml"
 
 if [ ! -f "${RDS_CONFIG}" ]; then
-  echo "No configuration for $ENVIRONMENT_NAME exist at ${RDS_CONFIG}"
+  echo "No configuration for $ENVIRONMENT_NAME and $REGION exist at ${RDS_CONFIG}"
   exit 1
 else
   # shellcheck source=/dev/null

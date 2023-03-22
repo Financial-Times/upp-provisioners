@@ -29,6 +29,9 @@ export MASTER_PASSWORD="xxx"
 # Fill in the desired environment (dev, staging, prod)
 export ENVIRONMENT_NAME="dev"
 
+# Specify the region (eu, us)
+export REGION="eu"
+
 make deploy
 ```
 
@@ -55,6 +58,9 @@ export CF_TEMPLATE="xxx"
 
 # Fill in the desired environment (dev, staging, prod)
 export ENVIRONMENT_NAME="dev"
+
+# Specify the region (eu, us)
+export REGION="eu"
 
 make delete
 ```

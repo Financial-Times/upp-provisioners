@@ -45,9 +45,9 @@ Parameters:
     DBEngineVersion:
         Description: Select Database Engine Version
         Type: String
-        Default: '12.4'
+        Default: '12.12'
         AllowedValues:
-            - '12.4'
+            - '12.12'
     DBPort:
         Description: TCP/IP Port for the Database Instance
         Type: Number

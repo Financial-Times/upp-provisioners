@@ -1,6 +1,9 @@
 .DEFAULT_GOAL := rebuild
 IMAGE_NAME=upp-aurora-postgres-rds-provisioner
 
+# The default for Macs with M1 is 'linux/arm64/v8' and there are missing dependencies for that platform
+PLATFORM="linux/amd64"
+
 .PHONY: \
 	rebuild \
 	rebuild-files \
@@ -8,7 +11,7 @@ IMAGE_NAME=upp-aurora-postgres-rds-provisioner
 	delete
 
 rebuild:
-	docker build \
+	docker build --platform ${PLATFORM} \
 		--no-cache \
 		--tag ${IMAGE_NAME}:local \
 		--file Dockerfile .
@@ -20,8 +23,9 @@ rebuild-files:
 		--file Dockerfile.files .
 
 deploy:
-	docker run -it --rm \
+	docker run -it --rm --platform ${PLATFORM} \
 		-e "ENVIRONMENT_NAME=${ENVIRONMENT_NAME}" \
+		-e "REGION=${REGION}" \
 		-e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
 		-e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" \
 		-e "CF_TEMPLATE=${CF_TEMPLATE}" \
@@ -31,8 +35,9 @@ deploy:
 		${IMAGE_NAME}:local deploy-rds
 
 delete:
-	docker run -it --rm \
+	docker run -it --rm --platform ${PLATFORM} \
 		-e "ENVIRONMENT_NAME=${ENVIRONMENT_NAME}" \
+		-e "REGION=${REGION}" \
 		-e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
 		-e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" \
 		-e "CF_TEMPLATE=${CF_TEMPLATE}" \
