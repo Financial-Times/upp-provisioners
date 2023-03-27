@@ -1,0 +1,8 @@
+template_params:
+  EnvironmentType: "t"
+  TeamDLTag: "universal.publishing.platform@ft.com"
+  SystemCodeTag: "upp"
+  ClusterName: "upp-ccf-content-os-stage-eu" # the default upp-ccf-content-os-staging-eu is 29 symbols long. Max domain name length is 28
+  InstanceType: "m6g.large.search"
+  MasterType: "m6g.large.search"
+  StorageSize: 30

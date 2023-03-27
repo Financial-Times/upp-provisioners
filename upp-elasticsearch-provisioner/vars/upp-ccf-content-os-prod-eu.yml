@@ -1,0 +1,8 @@
+template_params:
+  EnvironmentType: "p"
+  TeamDLTag: "universal.publishing.platform@ft.com"
+  SystemCodeTag: "upp"
+  ClusterName: "{{cluster_name}}"
+  InstanceType: "m6g.large.search"
+  MasterType: "m6g.large.search"
+  StorageSize: 30
