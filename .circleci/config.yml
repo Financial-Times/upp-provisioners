@@ -46,7 +46,7 @@ build-config: &build-config
         command: |
           source ${BASH_ENV}
           echo Pushing coco/${CIRCLE_JOB}:${DOCKER_TAG}
-          docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+          docker login -u ${DOCKER_USER} -p ${DOCKER_ACCESS_TOKEN}
           docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
 
 # define our CircleCI config here
@@ -59,6 +59,7 @@ workflows:
           filters:
             tags:
               only: /.*/
+          context: cm-team-dockerhub
 jobs:
   trigger-provisioner-builds:
     docker:
