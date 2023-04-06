@@ -1,10 +1,6 @@
-<!--
-    Written in the format prescribed by https://github.com/Financial-Times/runbook.md.
-    Any future edits should abide by this format.
--->
 # UPP - CCF Content ElasticSearch Cluster
 
-ElasticSearch cluster for use by the CCF platform. Has content of type articles indexed. It's indexed by ccf-content-rw-elasticsearch and used by combined-content-search.
+AWS OpenSearch cluster for use by the CCF platform. Has content of type articles indexed. It's indexed by ccf-content-rw-elasticsearch and used by combined-content-search.
 
 ## Code
 
@@ -16,7 +12,7 @@ https://github.com/Financial-Times/upp-provisioners
 
 ## Service Tier
 
-Bronze
+Gold
 
 ## Lifecycle Stage
 
@@ -28,7 +24,7 @@ AWS
 
 ## Architecture
 
-There is one Amazon Elasticsearch clusters in us-east-1. The cluster contains 3 data nodes and 3 dedicated master nodes.
+There is one Amazon OpenSearch clusters in both eu-west-1 and us-east-1. The cluster contains 3 data nodes and 3 dedicated master nodes. The naming convention for the clusters is upp-ccf-content-os-{environment}-{region}. Ex. upp-ccf-content-os-staging-eu is for eu-west-1 staging environment.
 
 ## Contains Personal Data
 
@@ -37,20 +33,6 @@ No
 ## Contains Sensitive Data
 
 No
-
-<!-- Placeholder - remove HTML comment markers to activate
-## Can Download Personal Data
-Choose Yes or No
-
-...or delete this placeholder if not applicable to this system
--->
-
-<!-- Placeholder - remove HTML comment markers to activate
-## Can Contact Individuals
-Choose Yes or No
-
-...or delete this placeholder if not applicable to this system
--->
 
 ## Failover Architecture Type
 
@@ -87,14 +69,6 @@ Manual
 ## Release Details
 
 A new version of the cluster can be created by provisioning it, please follow the provisioner's <https://github.com/Financial-Times/upp-provisioners/blob/master/upp-elasticsearch-provisioner/README.md>.
-
-<!-- Placeholder - remove HTML comment markers to activate
-## Heroku Pipeline Name
-Enter descriptive text satisfying the following:
-This is the name of the Heroku pipeline for this system. If you don't have a pipeline, this is the name of the app in Heroku. A pipeline is a group of Heroku apps that share the same codebase where each app in a pipeline represents the different stages in a continuous delivery workflow, i.e. staging, production.
-
-...or delete this placeholder if not applicable to this system
--->
 
 ## Key Management Process Type
 
