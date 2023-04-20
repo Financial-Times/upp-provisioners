@@ -262,12 +262,15 @@ Resources:
         Id: ConceptNotificationQueuePolicy
         Statement:
           -
-           Sid: "communicate-with-sqs"
+           Sid: "receive-from-sns"
            Effect: Allow
            Principal:
-             AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps"
-           Action: "SQS:*"
+             AWS: "*"
+           Action: "SQS:SendMessage"
            Resource: !GetAtt uppconcepteventsprod.Arn
+           Condition:
+             ArnLike:
+               "aws:SourceArn": !Sub "arn:aws:sns:eu-west-1:${AWS::AccountId}:upp-concept-events-k8s-prod-SNSTopic"
 
   uppconcepteventsstagingPolicy:
     Type: AWS::SQS::QueuePolicy
@@ -279,12 +282,15 @@ Resources:
         Id: ConceptNotificationQueuePolicy
         Statement:
           -
-           Sid: "communicate-with-sqs"
+           Sid: "receive-from-sns"
            Effect: Allow
            Principal:
-             AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps-staging"
-           Action: "SQS:*"
+             AWS: "*"
+           Action: "SQS:SendMessage"
            Resource: !GetAtt uppconcepteventsstaging.Arn
+           Condition:
+             ArnLike:
+               "aws:SourceArn": !Sub "arn:aws:sns:eu-west-1:${AWS::AccountId}:upp-concept-events-k8s-staging-SNSTopic"
 
   uppconceptpublishnotificationsk8sprod1Policy:
     Type: AWS::SQS::QueuePolicy

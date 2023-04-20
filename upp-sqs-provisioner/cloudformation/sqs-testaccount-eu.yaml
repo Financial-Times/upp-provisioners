@@ -164,12 +164,15 @@ Resources:
         Id: ConceptNotificationQueuePolicy
         Statement:
           -
-           Sid: "communicate-with-sqs"
+           Sid: "receive-from-sns"
            Effect: Allow
            Principal:
-             AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps"
-           Action: "SQS:*"
+             AWS: "*"
+           Action: "SQS:SendMessage"
            Resource: !GetAtt uppconcepteventsdev.Arn
+           Condition:
+             ArnLike:
+               "aws:SourceArn": !Sub "arn:aws:sns:eu-west-1:${AWS::AccountId}:upp-concept-events-k8s-SNSTopic"
   uppconceptcarouselqueuek8sPolicy:
     Type: AWS::SQS::QueuePolicy
     Properties:
