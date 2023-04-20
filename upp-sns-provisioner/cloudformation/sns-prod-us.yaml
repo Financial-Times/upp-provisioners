@@ -162,3 +162,41 @@ Resources:
       Endpoint: p2o5v3s3i6a7x0q7@financialtimes.slack.com
       Protocol: email
       TopicArn: !Ref SNSuppconceptpublishingsecondaryk8sstagingSQSConceptQueueOverflowAlarmTopic
+
+  SNSUPPConceptEventsStaging:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: upp-concept-events-k8s-staging-SNSTopic
+
+  UPPConceptEventsCECCIStagingSQSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Sub "arn:aws:sqs:us-east-1:${AWS::AccountId}:upp-concept-events-cecci-staging"
+      Protocol: sqs
+      TopicArn: !Ref SNSUPPConceptEventsStaging
+
+  SNSUPPConceptEventsProd:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: upp-concept-events-k8s-prod-SNSTopic
+
+  UPPConceptEventsCECCIProdSQSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Sub "arn:aws:sqs:us-east-1:${AWS::AccountId}:upp-concept-events-cecci-prod"
+      Protocol: sqs
+      TopicArn: !Ref SNSUPPConceptEventsProd
