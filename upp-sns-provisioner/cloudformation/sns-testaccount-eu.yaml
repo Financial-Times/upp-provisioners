@@ -227,3 +227,30 @@ Resources:
               AWS:SourceOwner: !Ref AWS::AccountId
       Topics:
         - !Ref SNSQueueOverflowAlarmTopic
+
+  SNSUPPConceptEventsDev:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: teamDL
+          Value: !Ref TagTeamDL
+        - Key: SystemCode
+          Value: !Ref TagSystemCode
+        - Key: EnvironmentType
+          Value: !Ref TagEnvironmentType
+      TopicName: upp-concept-events-k8s-SNSTopic
+
+
+  UPPConceptEventsDevSQSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Sub "arn:aws:sqs:eu-west-1:${AWS::AccountId}:upp-concept-events-dev"
+      Protocol: sqs
+      TopicArn: !Ref SNSUPPConceptEventsDev
+
+  UPPConceptEventsCECCIDevSQSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Sub "arn:aws:sqs:eu-west-1:${AWS::AccountId}:upp-concept-events-cecci-dev"
+      Protocol: sqs
+      TopicArn: !Ref SNSUPPConceptEventsDev

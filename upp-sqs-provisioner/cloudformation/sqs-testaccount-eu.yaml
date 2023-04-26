@@ -97,6 +97,36 @@ Resources:
         - Key: environment
           Value: !Ref TagEnvironmentType
 
+  UPPConceptEventsCECCIDevDeadLetter:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 0
+      QueueName: "upp-concept-events-cecci-dev-dead-letter"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: !Ref TagEnvironmentType
+
+  UPPConceptEventsCECCIDev:
+    Type: AWS::SQS::Queue
+    Description: Queue used by cm-enriched-content-concept-ingester
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn : !GetAtt UPPConceptEventsCECCIDevDeadLetter.Arn
+        maxReceiveCount : 5
+      QueueName: "upp-concept-events-cecci-dev"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: !Ref TagEnvironmentType
+
 
   uppconceptpublishnotificationsk8s1Policy:
     Type: AWS::SQS::QueuePolicy
@@ -134,12 +164,15 @@ Resources:
         Id: ConceptNotificationQueuePolicy
         Statement:
           -
-           Sid: "communicate-with-sqs"
+           Sid: "receive-from-sns"
            Effect: Allow
            Principal:
-             AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps"
-           Action: "SQS:*"
+             AWS: "*"
+           Action: "SQS:SendMessage"
            Resource: !GetAtt uppconcepteventsdev.Arn
+           Condition:
+             ArnLike:
+               "aws:SourceArn": !Sub "arn:aws:sns:eu-west-1:${AWS::AccountId}:upp-concept-events-k8s-SNSTopic"
   uppconceptcarouselqueuek8sPolicy:
     Type: AWS::SQS::QueuePolicy
     Properties:
@@ -156,3 +189,23 @@ Resources:
               AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/content-containers-apps"
             Action: "SQS:*"
             Resource: !GetAtt uppconceptcarouselqueuek8s.Arn
+
+  UPPConceptEventsCECCIDevPolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - Ref: UPPConceptEventsCECCIDev
+      PolicyDocument:
+        Version: "2012-10-17"
+        Id: UppConceptEventsCECCIDevQueuePolicy
+        Statement:
+          -
+           Sid: "receive-from-sns"
+           Effect: Allow
+           Principal:
+             AWS: "*"
+           Action: "SQS:SendMessage"
+           Resource: !GetAtt UPPConceptEventsCECCIDev.Arn
+           Condition:
+             ArnLike:
+               "aws:SourceArn": !Sub "arn:aws:sns:eu-west-1:${AWS::AccountId}:upp-concept-events-k8s-SNSTopic"
