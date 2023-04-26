@@ -169,7 +169,7 @@ Resources:
         - Key: TagTeamDL
           Value: !Ref TagTeamDL
         - Key: environment
-          Value: !Ref TagEnvironmentType
+          Value: 't'
 
   UPPConceptEventsCECCIStaging:
     Type: AWS::SQS::Queue
@@ -186,7 +186,7 @@ Resources:
         - Key: TagTeamDL
           Value: !Ref TagTeamDL
         - Key: environment
-          Value: !Ref TagEnvironmentType
+          Value: 't'
 
   UPPConceptEventsCECCIProdDeadLetter:
     Type: AWS::SQS::Queue
@@ -199,7 +199,7 @@ Resources:
         - Key: TagTeamDL
           Value: !Ref TagTeamDL
         - Key: environment
-          Value: !Ref TagEnvironmentType
+          Value: 'p'
 
   UPPConceptEventsCECCIProd:
     Type: AWS::SQS::Queue
@@ -216,7 +216,7 @@ Resources:
         - Key: TagTeamDL
           Value: !Ref TagTeamDL
         - Key: environment
-          Value: !Ref TagEnvironmentType
+          Value: 'p'
 
   uppconceptcarouselqueuek8sprodPolicy:
     Type: AWS::SQS::QueuePolicy

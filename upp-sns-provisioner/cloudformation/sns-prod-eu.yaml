@@ -401,8 +401,8 @@ Resources:
           Value: !Ref TagTeamDL
         - Key: SystemCode
           Value: !Ref TagSystemCode
-        - Key: EnvironmentType
-          Value: !Ref TagEnvironmentType
+        - Key: environment
+          Value: 't'
       TopicName: upp-concept-events-k8s-staging-SNSTopic
 
 
@@ -428,8 +428,8 @@ Resources:
           Value: !Ref TagTeamDL
         - Key: SystemCode
           Value: !Ref TagSystemCode
-        - Key: EnvironmentType
-          Value: !Ref TagEnvironmentType
+        - Key: environment
+          Value: 'p'
       TopicName: upp-concept-events-k8s-prod-SNSTopic
 
 
