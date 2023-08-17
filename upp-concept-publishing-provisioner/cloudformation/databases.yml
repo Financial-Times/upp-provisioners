@@ -25,3 +25,14 @@ Resources:
         TopicConfigurations:
           - Event: "s3:ObjectCreated:*"
             Topic: !Ref SNSTopicARN
+
+  # Create the S3 bucket for external concepts with notifications.
+  S3ExternalConceptPublish:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Join [ "", ["upp-external-concept-normalised-store-", !Ref EnvironmentTag]]
+      AccessControl: Private
+      NotificationConfiguration:
+        TopicConfigurations:
+          - Event: "s3:ObjectCreated:*"
+            Topic: !Ref SNSTopicARN
