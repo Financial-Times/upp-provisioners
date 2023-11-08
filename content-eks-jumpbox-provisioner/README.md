@@ -51,11 +51,13 @@ make destroy-prod-jumpbox
 
 ## Usage
 
-Login to jumpbox:
+Login to jumpbox and switch to ec2-user:
 
 ```
 
-ssh Firstname.Lastname@upp-jumpbox-p.upp.ft.com
+aws ssm start-session --target <instance_id>
+sh-4.2$ sudo su - ec2-user
+sh-4.2$ bash
 
 ```
 
