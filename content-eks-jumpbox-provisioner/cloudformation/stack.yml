@@ -150,6 +150,10 @@
             mkdir -p /etc/skel/content-k8s-auth-setup/
             # Assemble kubeconfig
             curl https://raw.githubusercontent.com/Financial-Times/kubectl-login/master/update-eks-kubeconfig/ops-eks-kubeconfig.sh > /usr/local/bin/ops-eks-kubeconfig.sh
+            echo "exec bash" > .profile
+            echo "mkdir -p content-k8s-auth-setup" >> .bashrc
+            echo 'export KUBECONFIG=/home/ec2-user/content-k8s-auth-setup/eks-kubeconfig' >> .bashrc
+            echo 'bash -x /usr/local/bin/ops-eks-kubeconfig.sh &> /home/ec2-user/ops-eks-kubeconfig.log' >> .bashrc
 
  Outputs:
    JumpboxELBDNSname:
