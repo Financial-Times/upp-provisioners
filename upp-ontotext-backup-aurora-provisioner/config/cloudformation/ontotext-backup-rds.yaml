@@ -47,15 +47,15 @@ Parameters:
         Description: The instance type to use for the database
         Type: String
         AllowedValues:
-            - 'db.t3.medium'
-        Default: 'db.t3.medium'
+            - 'db.r6g.large'
+        Default: 'db.r6g.large'
 
     DBEngineVersion:
         Description: Select Database Engine Version
         Type: String
-        Default: '11.13'
+        Default: '12.15'
         AllowedValues:
-            - '11.13'
+            - '12.15'
     DBPort:
         Description: TCP/IP Port for the Database Instance
         Type: Number
