@@ -58,7 +58,7 @@ Resources:
         - Key: teamDL
           Value: "universal.publishing.platform@ft.com"
         - Key: systemCode
-          Value: "upp"
+          Value: "upp-sapi-v2"
         - Key: description
           Value: !Ref ClusterName
 
