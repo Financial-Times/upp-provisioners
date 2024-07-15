@@ -22,7 +22,7 @@ Parameters:
   SystemCodeTag:
     Description: The system code for the environment
     Type: String
-    Default: 'upp'
+    Default: 'upp-ccf-content-os'
 
   ClusterName:
     Description: The name of the ES cluster

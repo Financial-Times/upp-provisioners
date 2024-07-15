@@ -5,7 +5,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 ENVIRONMENT_DESC="Staging"
-RESOURCES_PREFIX="upp"
+RESOURCES_PREFIX="upp-ontotext-backup-aurora"
 
 AWS_REGION="eu-west-1"
 VPC_ID="vpc-ee57bf89"

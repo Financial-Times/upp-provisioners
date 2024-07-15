@@ -5,7 +5,7 @@ Parameters:
   TagSystemCode:
     Description: The system code for the environment
     Type: String
-    Default: upp
+    Default: upp-ccf-client-settings-dynamodb
 
   TagTeamDL:
     Description: Tag for the team distribution list

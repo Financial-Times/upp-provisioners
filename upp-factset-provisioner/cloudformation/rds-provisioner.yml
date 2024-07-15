@@ -72,7 +72,7 @@ Parameters:
     TagSystemCode:
         Description: The system code for the environment
         Type: String
-        Default: upp
+        Default: upp-factset-store
 
     TagIpCode:
         Description: The environment ipCode

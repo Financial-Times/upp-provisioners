@@ -122,7 +122,7 @@ Parameters:
     SystemCodeTag:
         Description: The system code for the environment
         Type: String
-        Default: upp
+        Default: upp-ontotext-backup-aurora
 
 Resources:
     DBSubnetGroup:

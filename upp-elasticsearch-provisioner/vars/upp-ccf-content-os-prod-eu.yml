@@ -1,7 +1,7 @@
 template_params:
   EnvironmentType: "p"
   TeamDLTag: "universal.publishing.platform@ft.com"
-  SystemCodeTag: "upp"
+  SystemCodeTag: "upp-ccf-content-os"
   ClusterName: "{{cluster_name}}"
   InstanceType: "m6g.xlarge.search"
   MasterType: "m6g.large.search"
