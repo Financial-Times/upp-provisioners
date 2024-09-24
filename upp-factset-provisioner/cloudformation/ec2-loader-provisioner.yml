@@ -133,6 +133,6 @@ Resources:
           /usr/bin/aws s3 cp s3://amazon-ftbase/amazon-ftbase2/releases/bootstrap.sh /
           bash /bootstrap.sh -s eng -e ${EnvironmentTag} --disable-yum-security-update-schedule
           cd /home/ec2-user
-          wget https://dev.mysql.com/get/Downloads/Connector-ODBC/5.3/mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
+          wget https://dev.mysql.com/get/Downloads/Connector-ODBC/9.0/mysql-connector-odbc-9.0.0-1.el7.x86_64.rpm
           yum -y install mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
           rm mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
