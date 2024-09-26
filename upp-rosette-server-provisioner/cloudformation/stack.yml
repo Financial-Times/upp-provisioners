@@ -1,0 +1,221 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template deploys Rosette stack
+Parameters:
+  VpcID:
+      Description: The ID of the VPC
+      Type: String
+      Default: vpc-ee57bf89
+  SubnetIds:
+      Description: List of comma separated subnet IDs
+      Type: CommaDelimitedList
+  EnvironmentName:
+      Description: An environment name that will be prefixed to resource names
+      Type: String
+      Default: prod
+  EnvironmentType:
+      Description: Tag detail for the Environment
+      Type: String
+      Default: p
+  Ec2InstanceType:
+      Description: Size of ec2 Instance
+      Type: String
+      Default: m6a.4xlarge
+  ImageId:
+      Description: The Image ID of Amazon Linux 2 kto use
+      Type: String
+      Default: 'ami-09552f658e9ff8bc0'
+  TagTeamDL:
+      Description: Tag of the TeamDL
+      Type: String
+      AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+      ConstraintDescription: There must be a valid email address for the TeamDL
+      Default: universal.publishing.platform@ft.com
+  TagSystemCode:
+      Description: The system code for the environment
+      Type: String
+      Default: upp
+  TagDescription:
+      Description: Tag detail for the describing the instance
+      Type: String
+      Default: UPP Rosette stack
+
+Resources:
+    RosetteSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupName: !Join ["" , ["Rosette-", !Ref EnvironmentName]]
+        GroupDescription: "Security group for Rosette Server Instance"
+        VpcId: !Ref VpcID
+        Tags:
+            - Key: Name
+              Value: !Join ["" , ["UPP Rosette Server Security Group ", !Ref EnvironmentName]]
+            - Key: environment
+              Value: !Ref EnvironmentName
+            - Key: teamDL
+              Value: !Ref TagTeamDL
+            - Key: systemCode
+              Value: !Ref TagSystemCode
+            - Key: description
+              Value: "Security group for UPP Rosette Instance"
+        SecurityGroupIngress:
+            - Description: "AWS VPN range"
+              IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 10.165.0.0/24
+            - Description: "Rosette app port withing VPC"
+              IpProtocol: tcp
+              FromPort: 8181
+              ToPort: 8181
+              CidrIp: 10.169.64.0/18
+            - Description: "SSH port within VPC"
+              IpProtocol: tcp
+              FromPort: 8181
+              ToPort: 8181
+              CidrIp: 10.165.0.0/24
+            - Description: "Rosette app port withing VPC"
+              IpProtocol: tcp
+              FromPort: 8080
+              ToPort: 8080
+              CidrIp: 10.169.64.0/18
+            - Description: "SSH port within VPC"
+              IpProtocol: tcp
+              FromPort: 8080
+              ToPort: 8080
+              CidrIp: 10.165.0.0/24
+            - Description: "Connection from Dev VPC"
+              IpProtocol: tcp
+              FromPort: 8181
+              ToPort: 8181
+              CidrIp: 10.172.32.0/21
+            - Description: "Connection from Dev VPC"
+              IpProtocol: tcp
+              FromPort: 8080
+              ToPort: 8080
+              CidrIp: 10.172.32.0/21
+            - Description: "Connection from Dev VPC"
+              IpProtocol: tcp
+              FromPort: 8080
+              ToPort: 8080
+              CidrIp: 10.169.0.0/18
+            - Description: "Connection from Dev VPC"
+              IpProtocol: tcp
+              FromPort: 8181
+              ToPort: 8181
+              CidrIp: 10.169.0.0/18
+    ElasticLoadBalancer:
+       Type: "AWS::ElasticLoadBalancing::LoadBalancer"
+       Properties:
+         LoadBalancerName: !Sub upp-rosette-elb-server-${EnvironmentType}
+         CrossZone: false
+         Subnets: !Ref SubnetIds
+         SecurityGroups: [!Ref RosetteSecurityGroup]
+         Scheme: internal
+         Listeners:
+         - LoadBalancerPort: "8181"
+           InstancePort: "8181"
+           Protocol: "HTTP"
+         - LoadBalancerPort: "8080"
+           InstancePort: "8080"
+           Protocol: "HTTP"
+         HealthCheck:
+           Target: HTTP:8181/rest/v1/info
+           HealthyThreshold: '3'
+           UnhealthyThreshold: '5'
+           Interval: '30'
+           Timeout: '5'
+         Tags:
+             - Key: Name
+               Value: !Join ["" , ["UPP Rosette ", !Ref EnvironmentType]]
+             - Key: environment
+               Value: !Ref EnvironmentType
+             - Key: teamDL
+               Value: !Ref TagTeamDL
+             - Key: systemCode
+               Value: !Ref TagSystemCode
+             - Key: description
+               Value: !Ref TagDescription
+    AutoScalingGroup:
+      Type: AWS::AutoScaling::AutoScalingGroup
+      Properties:
+        AutoScalingGroupName: !Sub upp-rosette-server-${EnvironmentName}
+        MinSize: '1'
+        MaxSize: '1'
+        DesiredCapacity: "1"
+        LoadBalancerNames:
+          [ Ref: ElasticLoadBalancer ]
+        LaunchConfigurationName:
+          Ref: LaunchConfigRosette
+        VPCZoneIdentifier: !Ref SubnetIds
+        Tags:
+            - Key: Name
+              Value: !Join ["" , ["UPP Rosette ", !Ref EnvironmentType]]
+              PropagateAtLaunch: true
+            - Key: environment
+              Value: !Ref EnvironmentType
+              PropagateAtLaunch: true
+            - Key: teamDL
+              Value: !Ref TagTeamDL
+              PropagateAtLaunch: true
+            - Key: systemCode
+              Value: !Ref TagSystemCode
+              PropagateAtLaunch: true
+            - Key: description
+              Value: !Ref TagDescription
+              PropagateAtLaunch: true
+
+    LaunchConfigRosette:
+      Type: AWS::AutoScaling::LaunchConfiguration
+      Properties:
+        IamInstanceProfile: "FT-EC2-Role"
+        ImageId: !Ref ImageId
+        InstanceType: !Ref Ec2InstanceType
+        KeyName: "upp-k8s-provisioning-debug"
+        SecurityGroups: [!Ref RosetteSecurityGroup]
+        BlockDeviceMappings:
+          - DeviceName: /dev/xvda
+            Ebs:
+              VolumeType: gp3
+              VolumeSize: 100
+              Encrypted: false
+        UserData:
+          Fn::Base64: !Sub |
+             #!/bin/bash -x
+             yum update -y
+             yum install git -y
+             cat > /etc/systemd/system/authorized_keys.service << EOF
+             [Unit]
+             Description=Update authorized_keys
+             [Service]
+             Type=oneshot
+             ExecStartPre=/bin/sh -c 'mkdir -p /home/ec2-user/.ssh && touch /home/ec2-user/.ssh/authorized_keys'
+             ExecStart=/bin/sh -c 'curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys.sha512 https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys.sha512'
+             ExecStart=/bin/sh -c 'curl -sSL --retry 5 --retry-delay 2 -o /tmp/authorized_keys https://raw.githubusercontent.com/Financial-Times/up-ssh-keys/master/authorized_keys'
+             ExecStart=/bin/sh -c 'cd /tmp/ && sha512sum -c authorized_keys.sha512 && cp authorized_keys /home/ec2-user/.ssh/authorized_keys && chmod 700 /home/ec2-user/.ssh && chmod 600 /home/ec2-user/.ssh/authorized_keys && chown -R ec2-user:ec2-user /home/ec2-user/.ssh'
+             Restart=no
+             EOF
+
+             systemctl start authorized_keys.service
+             systemctl enable authorized_keys.service
+
+             cat > /etc/systemd/system/authorized_keys.timer << EOF
+             [Unit]
+             Description=Authorized keys timer
+             [Timer]
+             OnBootSec=1min
+             OnUnitActiveSec=1min
+             [Install]
+             WantedBy=timers.target
+             EOF
+
+             systemctl start authorized_keys.timer
+             systemctl enable authorized_keys.timer
+
+             yum update -y
+             yum install git -y
+             docker-compose -f /rosette/docker-compose.yaml up -d
+
+Outputs:
+  RosetteELBDNSname:
+    Description: Rosette ELB DNS record
+    Value: !GetAtt ElasticLoadBalancer.DNSName
