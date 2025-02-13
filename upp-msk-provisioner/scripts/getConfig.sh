@@ -53,7 +53,7 @@ kubectl patch cm global-config --patch "$(cat global-config)"
 
 #Delete pods related to MSK
 
-kubectl delete pod -l "app in (kafka-rest-proxy-msk, locations-smartlogic-notifier, smartlogic-notifier, cms-metadata-notifier, cms-notifier, annotations-rw-neo4j, suggestions-rw-neo4j, annotations-writer-ontotext, post-publication-combiner, concept-suggestion-api, burrow, upp-next-video-annotations-mapper, cms-kafka-bridge-pub, cms-metadata-kafka-bridge-pub)"
+kubectl delete pod -l "app in (kafka-rest-proxy-msk, locations-smartlogic-notifier, specialist-smartlogic-notifier, smartlogic-notifier, cms-metadata-notifier, cms-notifier, annotations-rw-neo4j, suggestions-rw-neo4j, annotations-writer-ontotext, post-publication-combiner, concept-suggestion-api, burrow, upp-next-video-annotations-mapper, cms-kafka-bridge-pub, cms-metadata-kafka-bridge-pub)"
 kubectl get pod | grep transformer | awk '{ print $1}' | xargs kubectl delete pod
 kubectl get pod | grep ingester | awk '{ print $1}' | xargs kubectl delete pod
 kubectl get pod | grep validator | awk '{ print $1}' | xargs kubectl delete pod
