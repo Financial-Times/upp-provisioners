@@ -10,13 +10,9 @@ Elasticsearch cluster for use by the Content Search API Port service and Content
 
 upp-content-es-cluster
 
-<!-- Placeholder - remove HTML comment markers to activate
 ## Primary URL
-Enter descriptive text satisfying the following:
-The main url served by the system.
 
-...or delete this placeholder if not applicable to this system
--->
+<https://search-upp-sapi-v2-prod-eu-sfu6rx4tvpoiosezjaibejkvya.eu-west-1.es.amazonaws.com/>
 
 ## Service Tier
 
@@ -34,6 +30,8 @@ AWS
 
 There are two regional Amazon Elasticsearch clusters, one in eu-west-1 and one in us-east-1. Each regional cluster contains 4 data nodes and 3 dedicated master nodes.
 
+[Content Delivery Diagram](https://lucid.app/lucidchart/5f4f1a8b-2d62-4fb3-a605-b54d52ba7ddb/edit?invitationId=inv_2d591f1a-d6df-4d98-8c33-3b74c4feaa37&page=X1hEm.AnbKcP#)
+
 ## Contains Personal Data
 
 No
@@ -42,19 +40,12 @@ No
 
 No
 
-<!-- Placeholder - remove HTML comment markers to activate
 ## Can Download Personal Data
-Choose Yes or No
 
-...or delete this placeholder if not applicable to this system
--->
+No
 
-<!-- Placeholder - remove HTML comment markers to activate
 ## Can Contact Individuals
-Choose Yes or No
-
-...or delete this placeholder if not applicable to this system
--->
+No
 
 ## Failover Architecture Type
 
@@ -92,14 +83,6 @@ Manual
 
 Manual failover is needed. For more details about the failover process please see: <https://github.com/Financial-Times/upp-docs/tree/master/failover-guides/delivery-cluster>
 
-<!-- Placeholder - remove HTML comment markers to activate
-## Heroku Pipeline Name
-Enter descriptive text satisfying the following:
-This is the name of the Heroku pipeline for this system. If you don't have a pipeline, this is the name of the app in Heroku. A pipeline is a group of Heroku apps that share the same codebase where each app in a pipeline represents the different stages in a continuous delivery workflow, i.e. staging, production.
-
-...or delete this placeholder if not applicable to this system
--->
-
 ## Key Management Process Type
 
 Manual
@@ -136,10 +119,6 @@ Content ElasticSearch US:
 
 <https://github.com/Financial-Times/upp-docs/tree/master/guides/ops/first-line-troubleshooting>
 
-<!-- Placeholder - remove HTML comment markers to activate
 ## Second Line Troubleshooting
-Enter descriptive text satisfying the following:
-Troubleshooting information for members of the system's support or delivery team.
 
-...or delete this placeholder if not applicable to this system
--->
+Please refer to the GitHub repository README for troubleshooting information.
