@@ -10,13 +10,10 @@ Elasticsearch cluster for use by the Content Search API Port service and Content
 
 upp-content-es-cluster
 
-<!-- Placeholder - remove HTML comment markers to activate
 ## Primary URL
-Enter descriptive text satisfying the following:
-The main url served by the system.
 
-...or delete this placeholder if not applicable to this system
--->
+The Elasticsearch cluster is hosted on AWS. A primary URL is not applicable in this case, but one can gain insight into its configurations by exploring the following directory of one of the clients (our content-rw-elasticsearch service):
+https://github.com/Financial-Times/content-rw-elasticsearch/tree/master/configs
 
 ## Service Tier
 
@@ -33,6 +30,8 @@ AWS
 ## Architecture
 
 There are two regional Amazon Elasticsearch clusters, one in eu-west-1 and one in us-east-1. Each regional cluster contains 4 data nodes and 3 dedicated master nodes.
+
+https://lucid.app/lucidchart/5f4f1a8b-2d62-4fb3-a605-b54d52ba7ddb/edit?invitationId=inv_2d591f1a-d6df-4d98-8c33-3b74c4feaa37&page=7ezayB~FQlW7#
 
 ## Contains Personal Data
 
@@ -79,6 +78,7 @@ Manual
 ## Data Recovery Details
 
 The procedure of creating and restoring from snapshots is described here: <https://github.com/Financial-Times/upp-provisioners/tree/master/upp-elasticsearch-provisioner#migrating-data-between-elasticsearch-clusters>
+As it is an AWS-hosted service, data backup is provided automatically by the vendor.
 
 ## Release Process Type
 
@@ -111,6 +111,7 @@ Manually created AWS IAM "upp-elasticsearch-provisioner" user credentials are us
 ## Monitoring
 
 Monitoring can be performed using the listed CloudWatch metrics below.
+(The following CloudWatch links are accessible to anyone with access to the "FT Tech Content Platform Prod" AWS account.)
 
 Content ElasticSearch EU:
 - [Document Statistics](https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#metricsV2:graph=~(view~'timeSeries~stacked~false~region~'eu-west-1~title~'Document*20Statistics~metrics~(~(~'AWS*2fES~'SearchableDocuments~'DomainName~'upp-sapi-v2-prod-eu~'ClientId~'469211898354)~(~'.~'DeletedDocuments~'.~'.~'.~'.))~start~'-PT24H~end~'P0D);query=~'*7bAWS*2fES*2cClientId*2cDomainName*7d)
@@ -131,6 +132,13 @@ Content ElasticSearch US:
 - [ReadWrite Latency](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#metricsV2:graph=~(view~'timeSeries~stacked~false~region~'us-east-1~title~'Latency~start~'-PT3H~end~'P0D~metrics~(~(~'AWS*2fES~'WriteLatency~'DomainName~'upp-sapi-v2-prod-us~'ClientId~'469211898354)~(~'.~'ReadLatency~'.~'.~'.~'.)));query=~'*7bAWS*2fES*2cClientId*2cDomainName*7d)
 - [ReadWrite Throughput](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#metricsV2:graph=~(view~'timeSeries~stacked~false~region~'us-east-1~title~'Throughput~start~'-PT3H~end~'P0D~metrics~(~(~'AWS*2fES~'WriteThroughput~'DomainName~'upp-sapi-v2-prod-us~'ClientId~'469211898354)~(~'.~'ReadThroughput~'.~'.~'.~'.)));query=~'*7bAWS*2fES*2cClientId*2cDomainName*7d)
 - [ReadWrite IOPS](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#metricsV2:graph=~(view~'timeSeries~stacked~false~region~'us-east-1~title~'IOPS~start~'-PT3H~end~'P0D~metrics~(~(~'AWS*2fES~'ReadIOPS~'DomainName~'upp-sapi-v2-prod-us~'ClientId~'469211898354)~(~'.~'WriteIOPS~'.~'.~'.~'.)));query=~'*7bAWS*2fES*2cClientId*2cDomainName*7d)
+
+Direct Heimdall alerting is not applicable for the Elasticsearch cluster, but monitoring its client services (content-rw-elasticsearch and content-search-api-port) is a sufficient approach to indicate cluster problems.
+
+- [EU Delivery cluster](https://heimdall.ftops.tech/system?code=upp-prod-delivery-eu#monitored-checks-list)
+- [US Delivery cluster](https://heimdall.ftops.tech/system?code=upp-prod-delivery-us#monitored-checks-list)
+
+To check the status of a specific service, please open the appropriate cluster link and use the search functionality in the Heimdall UI to locate `content-rw-elasticsearch` or `content-search-api-port`.
 
 ## First Line Troubleshooting
 
