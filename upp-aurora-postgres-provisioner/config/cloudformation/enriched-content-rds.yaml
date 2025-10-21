@@ -45,9 +45,8 @@ Parameters:
     DBEngineVersion:
         Description: Select Database Engine Version
         Type: String
-        Default: '12.12'
-        AllowedValues:
-            - '12.12'
+        Default: '17.4'
+
     DBPort:
         Description: TCP/IP Port for the Database Instance
         Type: Number
@@ -187,7 +186,6 @@ Resources:
             DatabaseName: !Ref DBName
             MasterUsername: !Ref DBMasterUsername
             MasterUserPassword: !Ref DBMasterPassword
-            DBClusterParameterGroupName: !Ref DBClusterParameterGroup
             DBSubnetGroupName: !Ref DBSubnetGroup
             VpcSecurityGroupIds:
                 - !GetAtt
@@ -204,23 +202,6 @@ Resources:
                 - Key: systemCode
                   Value: !Ref SystemCodeTag
 
-    DBClusterParameterGroup:
-        Type: AWS::RDS::DBClusterParameterGroup
-        Properties:
-            Description: !Join ["" , [!Ref BaseName, " Cluster Parameter Group ", !Ref EnvironmentDesc]]
-            Family: aurora-postgresql12
-            Parameters:
-                rds.force_ssl: 1
-            Tags:
-                - Key: Name
-                  Value: !Join ["" , [!Ref BaseName, " Cluster Parameter Group ", !Ref EnvironmentDesc]]
-                - Key: environment
-                  Value: !Ref EnvironmentTag
-                - Key: teamDL
-                  Value: !Ref TeamDLTag
-                - Key: systemCode
-                  Value: !Ref SystemCodeTag
-
     DBPrimaryInstance:
         Type: AWS::RDS::DBInstance
         Properties:
@@ -229,29 +210,9 @@ Resources:
             DBClusterIdentifier: !Ref DBCluster
             DBInstanceClass: !Ref DBInstanceType
             DBInstanceIdentifier: !Ref DBInstanceId
-            DBParameterGroupName: !Ref DBInstanceParameterGroup
             Tags:
                 - Key: Name
                   Value: !Join ["" , [!Ref BaseName, " Instance ", !Ref EnvironmentDesc]]
-                - Key: environment
-                  Value: !Ref EnvironmentTag
-                - Key: teamDL
-                  Value: !Ref TeamDLTag
-                - Key: systemCode
-                  Value: !Ref SystemCodeTag
-
-    DBInstanceParameterGroup:
-        Type: AWS::RDS::DBParameterGroup
-        Properties:
-            Description: !Join ["" , [!Ref BaseName, " Parameter Group ", !Ref EnvironmentDesc]]
-            Family: aurora-postgresql12
-            Parameters:
-                log_statement: "ddl"
-                log_rotation_age: 1440
-                idle_in_transaction_session_timeout: 7200000
-            Tags:
-                - Key: Name
-                  Value: !Join ["" , [!Ref BaseName, " Parameter Group ", !Ref EnvironmentDesc]]
                 - Key: environment
                   Value: !Ref EnvironmentTag
                 - Key: teamDL
