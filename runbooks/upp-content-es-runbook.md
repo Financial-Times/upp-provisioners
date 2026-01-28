@@ -31,7 +31,7 @@ AWS
 
 There are two regional Amazon Elasticsearch clusters, one in eu-west-1 and one in us-east-1. Each regional cluster contains 4 data nodes and 3 dedicated master nodes.
 
-https://lucid.app/lucidchart/5f4f1a8b-2d62-4fb3-a605-b54d52ba7ddb/edit?invitationId=inv_2d591f1a-d6df-4d98-8c33-3b74c4feaa37&page=7ezayB~FQlW7#
+[Content Publishing Diagram](https://lucid.app/lucidchart/5e5565b7-1f41-4482-9020-fd398e28cafb/edit?viewport_loc=29%2C-268%2C4491%2C2186%2Cp8vkn3Go3Qsu&invitationId=inv_bce7bda7-bad9-4815-90d8-b23e31d2a5fb)
 
 ## Contains Personal Data
 
