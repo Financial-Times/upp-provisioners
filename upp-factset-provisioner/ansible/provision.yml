@@ -3,10 +3,11 @@
   hosts: localhost
   connection: local
 
-  vars_files:
-    - vault_{{ aws_account }}.yml
-
   tasks:
+  - name: Load account-specific vault variables
+    include_vars:
+      file: "vault_{{ aws_account }}.yml"
+
   - name: Launch Factset Loader Security Group stack
     cloudformation:
       aws_access_key: "{{ aws_access_key }}"
@@ -78,7 +79,7 @@
       template: /cloudformation/rds-provisioner.yml
       template_parameters:
         DBSubnetIds: "{{ subnet_ids }}"
-        DBInstanceType: db.r4.large
+        DBInstanceType: db.r5.large
         DBInstanceMasterUsername: admin
         DBInstanceMasterPassword: "{{ db_master_password }}"
         EnvironmentName: "{{ environment_name }}"

@@ -25,8 +25,8 @@ Parameters:
         Description: The instance type to use for the database
         Type: String
         AllowedValues:
-            - db.r4.large
-        Default: db.r4.large
+            - db.r5.large
+        Default: db.r5.large
 
     DBInstanceMasterUsername:
         Description: The master username for the database
@@ -108,7 +108,7 @@ Resources:
     DBCluster:
         Type: AWS::RDS::DBCluster
         Properties:
-            Engine: aurora
+            Engine: aurora-mysql
             DBSubnetGroupName: !Ref DBSubnetGroup
             MasterUsername: !Ref DBInstanceMasterUsername
             MasterUserPassword: !Ref DBInstanceMasterPassword
@@ -134,7 +134,7 @@ Resources:
         Properties:
             DBClusterIdentifier: !Ref DBCluster
             DBInstanceClass: !Ref DBInstanceType
-            Engine: aurora
+            Engine: aurora-mysql
             DBSubnetGroupName: !Ref DBSubnetGroup
             DBInstanceIdentifier: !Join ["" , ["upp-factset-rds-", !Ref EnvironmentName]]
             PubliclyAccessible: true
@@ -143,6 +143,7 @@ Resources:
             Tags:
                 - Key: Name
                   Value: !Join ["" , ["UPP Factset RDS Instance ", !Ref EnvironmentName]]
+                - Key: environment
                   Value: !Ref EnvironmentTag
                 - Key: teamDL
                   Value: !Ref TagTeamDL
@@ -157,9 +158,9 @@ Resources:
         Type: AWS::RDS::DBClusterParameterGroup
         Properties:
             Description: !Join ['', [!Ref EnvironmentName, ' cluster parameter group']]
-            Family: aurora5.6
+            Family: aurora-mysql8.0
             Parameters:
-                binlog_format: 'MIXED'
+                binlog_format: 'OFF'
             Tags:
                 - Key: Name
                   Value: !Join ["" , ["UPP Factset RDS Cluster Parameter Group ", !Ref EnvironmentName]]

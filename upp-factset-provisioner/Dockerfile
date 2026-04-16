@@ -1,10 +1,13 @@
-FROM alpine:3.5
+FROM python:3.8-slim
 
 ENV ANSIBLE_HOSTS=/ansible/hosts
 
-RUN apk --update add python py-pip ansible bash ca-certificates \
- && pip install --upgrade pip boto boto3 \
- && update-ca-certificates 2&>1 > /dev/null
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends bash ca-certificates \
+ && pip install --no-cache-dir --upgrade pip \
+ && pip install --no-cache-dir ansible==2.9.27 boto boto3 \
+ && update-ca-certificates >/dev/null 2>&1 \
+ && rm -rf /var/lib/apt/lists/*
 
 COPY ansible /ansible
 COPY cloudformation /cloudformation
