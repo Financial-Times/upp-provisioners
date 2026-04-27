@@ -11,18 +11,21 @@ IMAGE_NAME=upp-jenkins-provisioner
 
 rebuild:
 	docker build \
+	    --platform linux/amd64 \
 		--no-cache \
 		--tag ${IMAGE_NAME}:local \
 		--file Dockerfile .
 
 rebuild-files:
 	docker build \
+	    --platform linux/amd64 \
 		--no-cache \
 		--tag ${IMAGE_NAME}:local \
 		--file Dockerfile.files .
 
 shell:
 	docker run -it --rm \
+	    --platform linux/amd64 \
 		-h ${IMAGE_NAME}-${JENKINS_UID} \
 		-e "JENKINS_UID=${JENKINS_UID}" \
 		-e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
@@ -31,6 +34,7 @@ shell:
 
 create-ami:
 	docker run -it --rm \
+	    --platform linux/amd64 \
 		-h ${IMAGE_NAME}-${JENKINS_UID} \
 		-e "JENKINS_UID=${JENKINS_UID}" \
 		-e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
@@ -39,6 +43,7 @@ create-ami:
 
 deploy-jenkins:
 	docker run -it --rm \
+	    --platform linux/amd64 \
 		-h ${IMAGE_NAME}-${JENKINS_UID} \
 		-e "JENKINS_UID=${JENKINS_UID}" \
 		-e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
@@ -47,6 +52,7 @@ deploy-jenkins:
 
 delete-jenkins:
 	docker run -it --rm \
+	    --platform linux/amd64 \
 		-h ${IMAGE_NAME}-${JENKINS_UID} \
 		-e "JENKINS_UID=${JENKINS_UID}" \
 		-e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \

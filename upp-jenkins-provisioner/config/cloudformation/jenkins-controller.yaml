@@ -25,11 +25,6 @@ Parameters:
     Type: AWS::EC2::Subnet::Id
     AllowedPattern: "[a-z0-9-]*"
 
-  jenkinsControllerKeyPairName:
-    Description: "Name of an existing EC2 KeyPair to enable SSH access to the instance(s)."
-    Type: AWS::EC2::KeyPair::KeyName
-    ConstraintDescription: Must be the name of an existing EC2 KeyPair
-
   jenkinsControllerImageId:
     Description: "The ID of the AMI"
     Type: String
@@ -89,7 +84,6 @@ Resources:
       SubnetId: !Ref jenkinsControllerSubnetId
       SecurityGroupIds: !Ref stackSecurityGroupIds
       IamInstanceProfile: "FT-EC2-Role"
-      KeyName: !Ref jenkinsControllerKeyPairName
       BlockDeviceMappings:
         - DeviceName: "/dev/xvda"
           Ebs:

@@ -29,7 +29,6 @@ aws cloudformation deploy \
   jenkinsControllerInstanceType="${JENKINS_CONTROLLER_INSTANCE_TYPE}" \
   stackVpcId="${VPC_ID}" \
   jenkinsControllerSubnetId="${JENKINS_CONTROLLER_SUBNET_ID}" \
-  jenkinsControllerKeyPairName="${JENKINS_CONTROLLER_KEYPAIR_NAME}" \
   jenkinsControllerImageId="${JENKINS_CONTROLLER_IMAGE_ID}" \
   jenkinsControllerAz="${JENKINS_CONTROLLER_AZ}" \
   jenkinsControllerJavaOptions="${JENKINS_CONTROLLER_JAVA_OPTIONS}" \

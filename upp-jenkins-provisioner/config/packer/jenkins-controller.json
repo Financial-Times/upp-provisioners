@@ -41,7 +41,7 @@
       },
       "source_ami_filter": {
           "filters": {
-              "name": "amzn2-ami-hvm-2.0.*-x86_64-gp2",
+              "name": "al2023-ami-2023.*-kernel-*-x86_64",
               "virtualization-type": "hvm",
               "root-device-type": "ebs"
           },
