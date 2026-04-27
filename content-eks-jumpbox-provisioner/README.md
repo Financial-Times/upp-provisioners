@@ -19,8 +19,8 @@ Here are the steps for provisioning a new cluster:
 1. [Build your docker image locally](#building-the-docker-image)
 1. Set the environment variables to provision a cluster. Get credentials for upp-jenkins-provisioner user in PROD account and export them:
 ```
-export AWS_ACCESS_KEY=
-export AWS_SECRET_ACCESS_KEY=
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY_ID=
 ```
 
 1. Run the following that will provision the stack in AWS:
@@ -37,8 +37,8 @@ make prod-jumpbox
 1. Set the environment variables to provision a cluster. Get credentials for upp-jenkins-provisioner user in PROD account and export them:
 
 ```
-export AWS_ACCESS_KEY=
-export AWS_SECRET_ACCESS_KEY=
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY_ID=
 ```
 
 1. Run the following that will decommission the stack in AWS:

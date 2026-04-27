@@ -38,7 +38,7 @@
      ImageId:
          Description: The Image ID of Amazon Linux 2 kto use
          Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
-         Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+         Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
 
 
      TagTeamDL:
@@ -125,7 +125,7 @@
        IamInstanceProfile: "FT-EC2-Role"
        ImageId: !Ref ImageId
        InstanceType: !Ref Ec2InstanceType
-       KeyName: "upp-k8s-provisioning-debug"
+#       KeyName: "upp-k8s-provisioning-debug"
        SecurityGroups: !Ref SecurityGroups
        UserData:
          Fn::Base64: !Sub |
@@ -143,7 +143,7 @@
 
             cd /home/ec2-user
             # Install kubectl
-            wget https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl
+            wget https://dl.k8s.io/release/v1.35.0/bin/linux/amd64/kubectl
             chmod +x ./kubectl
             mv ./kubectl /usr/bin/kubectl
             mkdir -p /root/content-k8s-auth-setup/
