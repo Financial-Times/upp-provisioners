@@ -14,7 +14,6 @@ TEAM_DL_TAG="universal.publishing.platform@ft.com"
 
 JENKINS_CONTROLLER_INSTANCE_TYPE="t2.xlarge"
 JENKINS_CONTROLLER_SUBNET_ID="subnet-2a1de94d"
-JENKINS_CONTROLLER_KEYPAIR_NAME="ft-tech-content-platform-test"
 JENKINS_CONTROLLER_IMAGE_ID="ami-0dff567761710b3c6"
 JENKINS_CONTROLLER_EBS_ID="vol-0ed84015eb42cefd9" # this is a temp volume
 JENKINS_CONTROLLER_AZ="eu-west-1a"

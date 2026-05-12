@@ -11,18 +11,32 @@ sudo groupadd -g 800 jenkins
 sudo adduser -u 800 -g 800 -s /bin/false -d /var/lib/jenkins -M -c 'Jenkins Automation Server' jenkins
 sudo chown -R jenkins:jenkins /var/lib/jenkins
 
-sudo wget -O /etc/yum.repos.d/jenkins.repo \
-  https://pkg.jenkins.io/redhat-stable/jenkins.repo
+install_jenkins_repo() {
+  local repo_url=$1
+
+  sudo wget -O /etc/yum.repos.d/jenkins.repo "${repo_url}"
+  sudo sed -i 's/gpgcheck=1/gpgcheck=0/' /etc/yum.repos.d/jenkins.repo
+}
+
+install_jenkins_package() {
+  sudo dnf -y install git jq java-1.8.0-amazon-corretto-devel "${JENKINS_PACKER_RPM_VERSION}"
+}
+
+install_jenkins_repo "https://pkg.jenkins.io/redhat-stable/jenkins.repo"
 
 ### 2020-07-28: The Jenkins gpg key use to sign our packages has been updated on
 ### 16th of April 2020. That breaks the older package that we want to install.
 ### It looks for the old gpg key at the moment. The workaround is to disable the gpgcheck
 # sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
-sudo sed -i 's/gpgcheck=1/gpgcheck=0/' /etc/yum.repos.d/jenkins.repo
 
-sudo yum -y update
-sudo yum -y upgrade
-sudo yum -y install git jq java-1.8.0-openjdk-devel "${JENKINS_PACKER_RPM_VERSION}"
+sudo dnf -y update
+sudo dnf -y upgrade
+if ! install_jenkins_package; then
+  echo "Pinned Jenkins package not found in the stable repo, retrying with the legacy stable repo"
+  install_jenkins_repo "https://pkg.jenkins.io/redhat-stable-legacy/jenkins.repo"
+  sudo dnf clean all
+  install_jenkins_package
+fi
 sudo systemctl stop jenkins
 sudo systemctl enable jenkins
 
@@ -30,7 +44,7 @@ sudo mv /tmp/sysconfig_jenkins_template.conf /etc/sysconfig/jenkins
 sudo chown root:root /etc/sysconfig/jenkins
 
 echo "Install Docker CE"
-sudo amazon-linux-extras install docker
+sudo dnf -y install docker
 sudo usermod -a -G docker jenkins
 sudo systemctl stop docker
 sudo systemctl enable docker
