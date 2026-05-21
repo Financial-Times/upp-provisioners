@@ -7,6 +7,8 @@
   - name: Load account-specific vault variables
     include_vars:
       file: "vault_{{ aws_account }}.yml"
+    tags:
+      - always
 
   - name: Launch Factset Loader Security Group stack
     cloudformation:
