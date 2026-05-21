@@ -77,7 +77,7 @@ Resources:
             VolumeType: "gp2"
             VolumeSize: 250
       IamInstanceProfile: "FT-EC2-Role"
-      ImageId: "ami-08a2aed6e0a6f9c7d"
+      ImageId: "ami-0c13c2049f369d641"
       InstanceType: !Ref Ec2InstanceType
       SecurityGroupIds: [ !Ref LoaderSecurityGroup, !Ref FTResourcesSecurityGroup ]
       SubnetId: !Select [0, !Ref DBSubnetIds ]
@@ -133,6 +133,9 @@ Resources:
           /usr/bin/aws s3 cp s3://amazon-ftbase/amazon-ftbase2/releases/bootstrap.sh /
           bash /bootstrap.sh -s eng -e ${EnvironmentTag} --disable-yum-security-update-schedule
           cd /home/ec2-user
-          wget https://dev.mysql.com/get/Downloads/Connector-ODBC/9.0/mysql-connector-odbc-9.0.0-1.el7.x86_64.rpm
-          yum -y install mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
-          rm mysql-connector-odbc-5.3.9-1.el7.x86_64.rpm
+          dnf -y install unixODBC openldap-compat libxcrypt-compat libnsl
+          sudo dnf install -y \
+            https://repo.mysql.com/yum/mysql-connectors-community/el/9/x86_64/mysql-connector-odbc-9.0.0-1.el9.x86_64.rpm
+          sudo dnf install -y cronie
+          sudo systemctl enable --now crond
+          command -v odbcinst
