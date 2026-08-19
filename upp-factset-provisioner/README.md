@@ -27,7 +27,9 @@ How to run:
 * AWS_ACCOUNT: Account in which to provision RDS; must be either content-test or content-prod
 * AWS_ACCESS_KEY: Access key of the IAM provisioner user
 * AWS_SECRET_ACCESS_KEY: Secret Access key of the IAM provisioner user
-* FT_RESOURCES_SECURITY_GROUP_ID: ID of the FT resources security group in the VPC you are provisioning the cluster (please refer to [FT security groups](https://tech.in.ft.com/tech-topics/amazon-web-services/service-guides/ec2/creating_ec2_instances#security-groups) for more info)
+* FT_RESOURCES_SECURITY_GROUP_ID: ID of the FT resources security group in the VPC you are provisioning the cluster - navigate to Security Groups in the amazon console and search for `FT Resources Security Group` (please refer to [FT security groups](https://tech.in.ft.com/tech-topics/amazon-web-services/service-guides/ec2/creating_ec2_instances#security-groups) for more info)
+
+- Note there is a note in 1pass 'UPP Factset Provisioner' with an example set of the parameters
 
 `docker pull coco/upp-factset-provisioner:latest`
 ```
@@ -49,6 +51,32 @@ docker run   \
 
 There are a few manual steps which need to be run after successful provisioning of a stack which can be found [here](https://docs.google.com/document/d/1GEu0HKSgdq38bPX7RqRyWSftHhwCoMe-iW8nErbqy7A/edit?usp=sharing). The installation and actual setup of the factset loader application needs to be done on the box itself.
 
+## Updating a cluster
+
+The update process will:
+
+* Update the database infrastructure: the cluster and db instance, cluster/instance parameter group and security group. Update the Factset Loader infrastructure: ec2 instance with non-configured loader application installed, 250GB ebs volume and security group
+
+How to run:
+
+- Generate credentials for the IAM user `upp-factset-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
+- Get the environment variables from the **UPP Factset Provisioner** 1Password.
+- Run the following docker commands:
+
+`docker build -t coco/upp-factset-provisioner:local .`
+```
+docker run   \
+    -e "MASTER_PASSWORD=$MASTER_PASSWORD" \
+    -e "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" \
+    -e "ENVIRONMENT_TAG=$ENVIRONMENT_TAG" \
+    -e "VAULT_PASS=$VAULT_PASS" \
+    -e "AWS_ACCOUNT=$AWS_ACCOUNT" \
+    -e "AWS_ACCESS_KEY=$AWS_ACCESS_KEY" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -e "FT_RESOURCES_SECURITY_GROUP_ID=$FT_RESOURCES_SECURITY_GROUP_ID" \
+    coco/upp-factset-provisioner:local /bin/bash provision.sh
+```
+
 ## Decommissioning a cluster
 
 The de-commissioning process will:
@@ -58,7 +86,7 @@ The de-commissioning process will:
 How to run:
 
 - Generate credentials for the IAM user `upp-factset-provisioner` in `content-test` aws account for a dev stack or in `content-prod` aws account for a staging/ prod stack.
-- Get the environment variables from the **UPP Factset Provisioner** LastPass note in the **Shared-UPP Credentials & Services Login Details** folder.
+- Get the environment variables from the **UPP Factset Provisioner** 1Password.
 - Run the following docker command
 
 ```
@@ -88,7 +116,9 @@ How to run:
 * AWS_ACCESS_KEY: Access key of the IAM provisioner user
 * AWS_SECRET_ACCESS_KEY: Secret Access key of the IAM provisioner user
 * LOADER_SECURITY_GROUP_ID: ID of the security group created when provisioning the whole Factset infrastructure (please refer to step [Provisioning a cluster](#provisioning-a-cluster)) 
-* FT_RESOURCES_SECURITY_GROUP_ID: ID of the FT resources security group in the VPC you are provisioning the ec2 instance (please refer to [FT security groups](https://cloudenablement.in.ft.com/aws/service_guides/ec2/creating_ec2_instances/#security-groups) for more info)
+* FT_RESOURCES_SECURITY_GROUP_ID: ID of the FT resources security group in the VPC you are provisioning the ec2 instance - navigate to Security Groups in the amazon console and search for `FT Resources Security Group` (please refer to [FT security groups](https://cloudenablement.in.ft.com/aws/service_guides/ec2/creating_ec2_instances/#security-groups) for more info)
+
+- Note there is a note in 1pass 'UPP Factset Provisioner' with an example set of the parameters
 
 `docker pull coco/upp-factset-provisioner:latest`
 ```
