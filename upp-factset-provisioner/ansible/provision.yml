@@ -7,6 +7,8 @@
   - name: Load account-specific vault variables
     include_vars:
       file: "vault_{{ aws_account }}.yml"
+    tags:
+      - always
 
   - name: Launch Factset Loader Security Group stack
     cloudformation:
@@ -62,11 +64,15 @@
         EnvironmentTag: "{{ environment_tag }}"
         LoaderSecurityGroup: "{{ LoaderSecurityGroupId }}"
     register: group_stack_output
+    tags:
+      - rds
 
   - name: Save group outputs as variable
     set_fact:
       FactsetSecurityGroupId: "{{group_stack_output.stack_outputs.FactsetSecurityGroupId}}"
       FactsetParameterGroupName: "{{group_stack_output.stack_outputs.FactsetParameterGroupName}}"
+    tags:
+      - rds
 
   - name: Launch Factset RDS stack
     cloudformation:
@@ -86,3 +92,5 @@
         EnvironmentTag: "{{ environment_tag }}"
         DBSecurityGroup: "{{ FactsetSecurityGroupId }}"
         DBParameterGroup: "{{ FactsetParameterGroupName }}"
+    tags:
+      - rds

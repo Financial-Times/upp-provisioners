@@ -137,7 +137,7 @@ Resources:
             Engine: aurora-mysql
             DBSubnetGroupName: !Ref DBSubnetGroup
             DBInstanceIdentifier: !Join ["" , ["upp-factset-rds-", !Ref EnvironmentName]]
-            PubliclyAccessible: true
+            PubliclyAccessible: false
             StorageEncrypted: true
             DBParameterGroupName: !Ref DBParameterGroup
             Tags:
