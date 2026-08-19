@@ -49,7 +49,7 @@ docker run   \
 
 ## Manual Setup
 
-There are a few manual steps which need to be run after successful provisioning of a stack which can be found [here](https://docs.google.com/document/d/1GEu0HKSgdq38bPX7RqRyWSftHhwCoMe-iW8nErbqy7A/edit?usp=sharing). The installation and actual setup of the factset loader application needs to be done on the box itself.
+There are a few manual steps which need to be run after successful provisioning of a stack which can be found [here](https://github.com/Financial-Times/upp-docs/tree/main/guides/howto/manage-factset-loader). The installation and actual setup of the factset loader application needs to be done on the box itself.
 
 ## Provision/Update the rds
 
@@ -135,7 +135,7 @@ docker run   \
 
 ## Manual Setup
 
-There are a few manual steps which need to be run after successful provisioning of the factset loader instance which can be found [here](https://docs.google.com/document/d/1GEu0HKSgdq38bPX7RqRyWSftHhwCoMe-iW8nErbqy7A/edit?usp=sharing). The installation and actual setup of the factset loader application needs to be done on the box itself.
+There are a few manual steps which need to be run after successful provisioning of the factset loader instance which can be found [here](https://github.com/Financial-Times/upp-docs/tree/main/guides/howto/manage-factset-loader). The installation and actual setup of the factset loader application needs to be done on the box itself.
 
 ## Decommissioning only Factset Loader EC2 instance
 
