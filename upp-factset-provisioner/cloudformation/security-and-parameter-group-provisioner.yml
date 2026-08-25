@@ -8,9 +8,9 @@ Metadata:
             - Label:
                   default: FT standard tagging
               Parameters:
+                  - EnvironmentTag
                   - TagTeamDL
                   - TagSystemCode
-                  - TagIpCode
 
 Parameters:
     DBVPC:
@@ -46,12 +46,6 @@ Parameters:
         Type: String
         Default: upp
 
-    TagIpCode:
-        Description: The environment ipCode
-        Type: String
-        AllowedPattern: '[P][0-9]*'
-        Default: P196
-
 Mappings:
     EnvironmentCidrs:
         dev:
@@ -77,8 +71,6 @@ Resources:
               Value: !Ref TagTeamDL
             - Key: systemCode
               Value: !Ref TagSystemCode
-            - Key: ipCode
-              Value: !Ref TagIpCode
             - Key: description
               Value: "Security group for UPP Factset RDS store"
         SecurityGroupIngress:
@@ -124,8 +116,6 @@ Resources:
               Value: !Ref TagTeamDL
             - Key: systemCode
               Value: !Ref TagSystemCode
-            - Key: ipCode
-              Value: !Ref TagIpCode
             - Key: description
               Value: 'Parameter Group for Factset RDS Store'
 
