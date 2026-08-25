@@ -4,13 +4,13 @@ Description: This template deploys a security group and a parameter group to be 
 
 Metadata:
     AWS::CloudFormation::Interface:
-        - Label: FT standard tagging
-          Parameters:
-             - TagEnvironment
-             - TagTeamDL
-             - TagSystemCode
-             - TagIpCode
-             - TagDescription
+        ParameterGroups:
+            - Label:
+                  default: FT standard tagging
+              Parameters:
+                  - TagTeamDL
+                  - TagSystemCode
+                  - TagIpCode
 
 Parameters:
     DBVPC:
@@ -51,11 +51,6 @@ Parameters:
         Type: String
         AllowedPattern: '[P][0-9]*'
         Default: P196
-
-    TagDescription:
-        Description: Tag detail for the describing the instance
-        Type: String
-        Default: UPP Factset RDS Group
 
 Mappings:
     EnvironmentCidrs:
