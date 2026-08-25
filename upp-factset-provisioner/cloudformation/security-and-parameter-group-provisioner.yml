@@ -49,9 +49,11 @@ Parameters:
 Mappings:
     EnvironmentCidrs:
         dev:
+            Name: Test
             EKS: 10.169.0.0/18
             VPC: 10.172.32.0/21
         prod:
+            Name: Prod
             EKS: 10.168.64.0/18
             VPC: 10.172.40.0/21
 
@@ -74,12 +76,12 @@ Resources:
             - Key: description
               Value: "Security group for UPP Factset RDS store"
         SecurityGroupIngress:
-            - Description: "Content Platform EKS CIDR"
+            - Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, Name], " EKS"]]
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
               CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, EKS]
-            - Description: "Content Platform VPC CIDR"
+            - Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, Name], " VPC"]]
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
