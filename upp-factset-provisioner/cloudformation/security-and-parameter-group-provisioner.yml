@@ -57,6 +57,15 @@ Parameters:
         Type: String
         Default: UPP Factset RDS Group
 
+Mappings:
+    EnvironmentCidrs:
+        dev:
+            EKS: 10.169.0.0/18
+            VPC: 10.172.32.0/21
+        prod:
+            EKS: 10.168.64.0/18
+            VPC: 10.172.40.0/21
+
 Resources:
     FactsetSecurityGroup:
       Type: AWS::EC2::SecurityGroup
@@ -78,36 +87,26 @@ Resources:
             - Key: description
               Value: "Security group for UPP Factset RDS store"
         SecurityGroupIngress:
-            - Description: "SSH"
-              IpProtocol: tcp
-              FromPort: 22
-              ToPort: 22
-              CidrIp: 82.136.1.214/32
-            - Description: "Park Royal"
+            - Description: "Content Platform EKS CIDR"
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 213.216.148.1/32
-            - Description: "FT Sofia Office - IP range 1"
+              CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, EKS]
+            - Description: "Content Platform VPC CIDR"
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 94.156.217.224/29
-            - Description: "FT Sofia Office - IP range 2"
+              CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, VPC]
+            - Description: "AWS Client VPN, eu-west-1"
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 212.36.14.64/28
-            - Description: "EU VPN Client"
+              CidrIp: 10.165.0.0/24
+            - Description: "AWS Client VPN, us-east-1"
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 62.25.64.1/32
-            - Description: "US VPN Client"
-              IpProtocol: tcp
-              FromPort: 3306
-              ToPort: 3306
-              CidrIp: 64.210.200.1/32
+              CidrIp: 10.166.0.0/24
             - Description: "Permit access to factset-loader"
               IpProtocol: tcp
               FromPort: 3306
