@@ -179,6 +179,31 @@ Resources:
                   ToPort: 5432
                   CidrIp: !Ref ClusterCIDR
                   Description: !Ref ClusterCIDRDesc
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, VPC]
+                  Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, Name], " VPC"]]
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: !FindInMap [AdditionalNetworkCidrs, CommunityProdVpc, Cidr]
+                  Description: !FindInMap [AdditionalNetworkCidrs, CommunityProdVpc, Description]
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdVpc, Cidr]
+                  Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdVpc, Description]
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestVpc, Cidr]
+                  Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestVpc, Description]
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: !FindInMap [AdditionalNetworkCidrs, SearchRecommendationsEks, Cidr]
+                  Description: !FindInMap [AdditionalNetworkCidrs, SearchRecommendationsEks, Description]
             Tags:
                 - Key: Name
                   Value: !Join ["" , [!Ref BaseName, " Subnet Group ", !Ref EnvironmentDesc]]
@@ -188,56 +213,6 @@ Resources:
                   Value: !Ref TeamDLTag
                 - Key: systemCode
                   Value: !Ref SystemCodeTag
-
-    ContentPlatformVpcIngress:
-        Type: AWS::EC2::SecurityGroupIngress
-        Properties:
-            GroupId: !GetAtt DBSecurityGroup.GroupId
-            IpProtocol: tcp
-            FromPort: 5432
-            ToPort: 5432
-            CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, VPC]
-            Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, Name], " VPC"]]
-
-    CommunityProdVpcIngress:
-        Type: AWS::EC2::SecurityGroupIngress
-        Properties:
-            GroupId: !GetAtt DBSecurityGroup.GroupId
-            IpProtocol: tcp
-            FromPort: 5432
-            ToPort: 5432
-            CidrIp: !FindInMap [AdditionalNetworkCidrs, CommunityProdVpc, Cidr]
-            Description: !FindInMap [AdditionalNetworkCidrs, CommunityProdVpc, Description]
-
-    ProfessionalProdVpcIngress:
-        Type: AWS::EC2::SecurityGroupIngress
-        Properties:
-            GroupId: !GetAtt DBSecurityGroup.GroupId
-            IpProtocol: tcp
-            FromPort: 5432
-            ToPort: 5432
-            CidrIp: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdVpc, Cidr]
-            Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdVpc, Description]
-
-    ProfessionalTestVpcIngress:
-        Type: AWS::EC2::SecurityGroupIngress
-        Properties:
-            GroupId: !GetAtt DBSecurityGroup.GroupId
-            IpProtocol: tcp
-            FromPort: 5432
-            ToPort: 5432
-            CidrIp: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestVpc, Cidr]
-            Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestVpc, Description]
-
-    SearchRecommendationsEksIngress:
-        Type: AWS::EC2::SecurityGroupIngress
-        Properties:
-            GroupId: !GetAtt DBSecurityGroup.GroupId
-            IpProtocol: tcp
-            FromPort: 5432
-            ToPort: 5432
-            CidrIp: !FindInMap [AdditionalNetworkCidrs, SearchRecommendationsEks, Cidr]
-            Description: !FindInMap [AdditionalNetworkCidrs, SearchRecommendationsEks, Description]
 
     DBCluster:
         Type: AWS::RDS::DBCluster
