@@ -17,14 +17,6 @@ Parameters:
         Description: The ID of the VPC that will access the cluster.
         Type: String
 
-    VpcCIDR:
-        Description: The CIDR of the Content Platform VPC.
-        Type: String
-
-    VpcCIDRDesc:
-        Description: The description for the Content Platform VPC CIDR.
-        Type: String
-
     ResourcesSgId:
         Description: The ID of the resources SG for VPN DB access.
         Type: String
@@ -133,6 +125,18 @@ Parameters:
         Type: String
         Default: upp-ontotext-backup-aurora
 
+Mappings:
+    EnvironmentCidrs:
+        d:
+            Name: Test
+            VPC: 10.172.32.0/21
+        t:
+            Name: Prod
+            VPC: 10.172.40.0/21
+        p:
+            Name: Prod
+            VPC: 10.172.40.0/21
+
 Resources:
     DBSubnetGroup:
         Type: AWS::RDS::DBSubnetGroup
@@ -168,8 +172,8 @@ Resources:
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: !Ref VpcCIDR
-                  Description: !Ref VpcCIDRDesc
+                  CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, VPC]
+                  Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, Name], " VPC"]]
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
