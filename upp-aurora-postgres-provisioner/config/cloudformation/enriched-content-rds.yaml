@@ -21,6 +21,14 @@ Parameters:
         Description: The ID of the resources SG for VPN DB access.
         Type: String
 
+    ClusterCIDR:
+        Description: The CIDR of the K8s cluster.
+        Type: String
+
+    ClusterCIDRDesc:
+        Description: The description for the CIDR of the K8s cluster.
+        Type: String
+
     DBSubnetIds:
         Description: List of comma separated subnet IDs
         Type: CommaDelimitedList
@@ -114,18 +122,12 @@ Mappings:
         d:
             Name: Test
             VPC: 10.172.32.0/21
-            EKS: 10.169.0.0/18
-            EKSDescription: DB access from Content Platform Test EKS
         t:
             Name: Prod
             VPC: 10.172.40.0/21
-            EKS: 10.169.64.0/18
-            EKSDescription: DB access from Content Platform Prod EKS
         p:
             Name: Prod
             VPC: 10.172.40.0/21
-            EKS: 10.169.64.0/18
-            EKSDescription: DB access from Content Platform Prod EKS
 Resources:
     DBSubnetGroup:
         Type: AWS::RDS::DBSubnetGroup
@@ -161,8 +163,8 @@ Resources:
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, EKS]
-                  Description: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, EKSDescription]
+                  CidrIp: !Ref ClusterCIDR
+                  Description: !Ref ClusterCIDRDesc
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
