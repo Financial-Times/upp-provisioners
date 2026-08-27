@@ -21,6 +21,22 @@ Parameters:
         Description: The ID of the resources SG for VPN DB access.
         Type: String
 
+    EUClusterCIDR:
+        Description: The CIDR of the K8s cluster in EU.
+        Type: String
+
+    EUClusterCIDRDesc:
+        Description: The description for the CIDR of the K8s cluster in EU.
+        Type: String
+
+    USClusterCIDR:
+        Description: The CIDR of the K8s cluster in US.
+        Type: String
+
+    USClusterCIDRDesc:
+        Description: The description for the CIDR of the K8s cluster in US.
+        Type: String
+
     DBSubnetIds:
         Description: List of comma separated subnet IDs
         Type: CommaDelimitedList
@@ -114,24 +130,12 @@ Mappings:
         d:
             Name: Test
             VPC: 10.172.32.0/21
-            EUEKS: 10.169.0.0/18
-            EUEKSDescription: DB access from Content Platform Test EU EKS
-            USEKS: 10.168.0.0/18
-            USEKSDescription: DB access from Content Platform Test US EKS
         t:
             Name: Prod
             VPC: 10.172.40.0/21
-            EUEKS: 10.169.64.0/18
-            EUEKSDescription: DB access from Content Platform Prod EU EKS
-            USEKS: 10.168.64.0/18
-            USEKSDescription: DB access from Content Platform Prod US EKS
         p:
             Name: Prod
             VPC: 10.172.40.0/21
-            EUEKS: 10.169.64.0/18
-            EUEKSDescription: DB access from Content Platform Prod EU EKS
-            USEKS: 10.168.64.0/18
-            USEKSDescription: DB access from Content Platform Prod US EKS
 Resources:
     DBSubnetGroup:
         Type: AWS::RDS::DBSubnetGroup
@@ -172,13 +176,13 @@ Resources:
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, EUEKS]
-                  Description: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, EUEKSDescription]
+                  CidrIp: !Ref EUClusterCIDR
+                  Description: !Ref EUClusterCIDRDesc
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, USEKS]
-                  Description: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, USEKSDescription]
+                  CidrIp: !Ref USClusterCIDR
+                  Description: !Ref USClusterCIDRDesc
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
