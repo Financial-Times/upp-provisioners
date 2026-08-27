@@ -4,11 +4,13 @@ Description: This template deploys an Aurora cluster with one Postgres instance 
 
 Metadata:
     AWS::CloudFormation::Interface:
-        - Label: FT standard tagging
-          Parameters:
-             - EnvironmentTag
-             - TeamDLTag
-             - SystemCodeTag
+        ParameterGroups:
+            - Label:
+                  default: FT standard tagging
+              Parameters:
+                  - EnvironmentTag
+                  - TeamDLTag
+                  - SystemCodeTag
 
 Parameters:
     VpcId:
@@ -140,28 +142,13 @@ Resources:
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: 213.86.66.78/32
-                  Description: Bracken House
+                  CidrIp: 10.165.0.0/24
+                  Description: AWS Client VPN, eu-west-1
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: 94.156.217.224/29
-                  Description: FT Sofia Office - IP range 1
-                - IpProtocol: tcp
-                  FromPort: 5432
-                  ToPort: 5432
-                  CidrIp: 212.36.14.64/28
-                  Description: FT Sofia Office - IP range 2
-                - IpProtocol: tcp
-                  FromPort: 5432
-                  ToPort: 5432
-                  CidrIp: 62.25.64.1/32
-                  Description: EU VPN Client
-                - IpProtocol: tcp
-                  FromPort: 5432
-                  ToPort: 5432
-                  CidrIp: 64.210.200.1/32
-                  Description: US VPN Client
+                  CidrIp: 10.166.0.0/24
+                  Description: AWS Client VPN, us-east-1
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432

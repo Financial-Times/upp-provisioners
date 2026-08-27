@@ -10,7 +10,7 @@ RESOURCES_PREFIX="upp"
 AWS_REGION="us-east-1"
 VPC_ID="vpc-4bc03f32"
 CLUSTER_CIDR="10.168.64.0/18"
-CLUSTER_CIDR_DESC="FT-Content-Platform-Prod vpc-4bc03f32 CIDR"
+CLUSTER_CIDR_DESC="DB access from Content Platform Prod US EKS"
 RESOURCES_SG_ID="sg-a0e39ade"
 RDS_SUBNETS="subnet-0ef54f5f927721d15, subnet-0c18f15e56e0490c6, subnet-0ef8d475f498f5928"
 
