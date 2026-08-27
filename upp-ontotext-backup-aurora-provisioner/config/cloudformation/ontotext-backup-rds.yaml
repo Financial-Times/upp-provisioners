@@ -136,20 +136,6 @@ Mappings:
         p:
             Name: Prod
             VPC: 10.172.40.0/21
-    AdditionalNetworkCidrs:
-        ProfessionalProdUsVpc:
-            Cidr: 10.174.224.0/21
-            Description: DB access from FT-Professional-Prod VPC, us-east-1
-        ProfessionalProdEuVpc:
-            Cidr: 10.172.0.0/21
-            Description: DB access from FT-Professional-Prod VPC, eu-west-1
-        ProfessionalTestUsVpc:
-            Cidr: 10.174.184.0/21
-            Description: DB access from FT-Professional-Test VPC, us-east-1
-        ProfessionalTestEuVpc:
-            Cidr: 10.172.8.0/21
-            Description: DB access from FT-Professional-Test VPC, eu-west-1
-
 Resources:
     DBSubnetGroup:
         Type: AWS::RDS::DBSubnetGroup
@@ -200,23 +186,23 @@ Resources:
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdUsVpc, Cidr]
-                  Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdUsVpc, Description]
+                  CidrIp: 10.174.224.0/21
+                  Description: DB access from FT-Professional-Prod VPC, us-east-1
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdEuVpc, Cidr]
-                  Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdEuVpc, Description]
+                  CidrIp: 10.172.0.0/21
+                  Description: DB access from FT-Professional-Prod VPC, eu-west-1
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestUsVpc, Cidr]
-                  Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestUsVpc, Description]
+                  CidrIp: 10.174.184.0/21
+                  Description: DB access from FT-Professional-Test VPC, us-east-1
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestEuVpc, Cidr]
-                  Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestEuVpc, Description]
+                  CidrIp: 10.172.8.0/21
+                  Description: DB access from FT-Professional-Test VPC, eu-west-1
             Tags:
                 - Key: Name
                   Value: !Join ["" , [!Ref BaseName, " Subnet Group ", !Ref EnvironmentDesc]]
