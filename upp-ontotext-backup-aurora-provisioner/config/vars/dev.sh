@@ -9,6 +9,8 @@ RESOURCES_PREFIX="upp"
 
 AWS_REGION="eu-west-1"
 VPC_ID="vpc-f75fb790"
+VPC_CIDR="10.172.32.0/21"
+VPC_CIDR_DESC="DB access from Content Platform Test VPC"
 EU_CLUSTER_CIDR="10.169.0.0/18"
 EU_CLUSTER_CIDR_DESC="FT-Content-Platform-Test-EU vpc-f75fb790 CIDR"
 US_CLUSTER_CIDR="10.168.0.0/18"

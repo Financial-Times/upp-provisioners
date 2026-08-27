@@ -4,15 +4,25 @@ Description: This template deploys an Aurora cluster with one instance for Ontot
 
 Metadata:
     AWS::CloudFormation::Interface:
-        - Label: FT standard tagging
-          Parameters:
-             - EnvironmentTag
-             - TeamDLTag
-             - SystemCodeTag
+        ParameterGroups:
+            - Label:
+                  default: FT standard tagging
+              Parameters:
+                  - EnvironmentTag
+                  - TeamDLTag
+                  - SystemCodeTag
 
 Parameters:
     VpcId:
         Description: The ID of the VPC that will access the cluster.
+        Type: String
+
+    VpcCIDR:
+        Description: The CIDR of the Content Platform VPC.
+        Type: String
+
+    VpcCIDRDesc:
+        Description: The description for the Content Platform VPC CIDR.
         Type: String
 
     ResourcesSgId:
@@ -148,28 +158,18 @@ Resources:
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: 213.86.66.78/32
-                  Description: Bracken House
+                  CidrIp: 10.165.0.0/24
+                  Description: AWS Client VPN, eu-west-1
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: 94.156.217.224/29
-                  Description: FT Sofia Office - IP range 1
+                  CidrIp: 10.166.0.0/24
+                  Description: AWS Client VPN, us-east-1
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: 212.36.14.64/28
-                  Description: FT Sofia Office - IP range 2
-                - IpProtocol: tcp
-                  FromPort: 5432
-                  ToPort: 5432
-                  CidrIp: 62.25.64.1/32
-                  Description: EU VPN Client
-                - IpProtocol: tcp
-                  FromPort: 5432
-                  ToPort: 5432
-                  CidrIp: 64.210.200.1/32
-                  Description: US VPN Client
+                  CidrIp: !Ref VpcCIDR
+                  Description: !Ref VpcCIDRDesc
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
@@ -232,4 +232,3 @@ Resources:
                   Value: !Ref TeamDLTag
                 - Key: systemCode
                   Value: !Ref SystemCodeTag
-
