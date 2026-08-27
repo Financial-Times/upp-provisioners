@@ -4,13 +4,13 @@ Description: This template deploys a security group and a parameter group to be 
 
 Metadata:
     AWS::CloudFormation::Interface:
-        - Label: FT standard tagging
-          Parameters:
-             - TagEnvironment
-             - TagTeamDL
-             - TagSystemCode
-             - TagIpCode
-             - TagDescription
+        ParameterGroups:
+            - Label:
+                  default: FT standard tagging
+              Parameters:
+                  - EnvironmentTag
+                  - TagTeamDL
+                  - TagSystemCode
 
 Parameters:
     DBVPC:
@@ -46,16 +46,18 @@ Parameters:
         Type: String
         Default: upp
 
-    TagIpCode:
-        Description: The environment ipCode
-        Type: String
-        AllowedPattern: '[P][0-9]*'
-        Default: P196
-
-    TagDescription:
-        Description: Tag detail for the describing the instance
-        Type: String
-        Default: UPP Factset RDS Group
+Mappings:
+    EnvironmentCidrs:
+        dev:
+            Name: Test
+            EUEKS: 10.169.0.0/18
+            USEKS: 10.168.0.0/18
+            VPC: 10.172.32.0/21
+        prod:
+            Name: Prod
+            EUEKS: 10.169.64.0/18
+            USEKS: 10.168.64.0/18
+            VPC: 10.172.40.0/21
 
 Resources:
     FactsetSecurityGroup:
@@ -73,41 +75,34 @@ Resources:
               Value: !Ref TagTeamDL
             - Key: systemCode
               Value: !Ref TagSystemCode
-            - Key: ipCode
-              Value: !Ref TagIpCode
             - Key: description
               Value: "Security group for UPP Factset RDS store"
         SecurityGroupIngress:
-            - Description: "SSH"
-              IpProtocol: tcp
-              FromPort: 22
-              ToPort: 22
-              CidrIp: 82.136.1.214/32
-            - Description: "Park Royal"
+            - Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, Name], " EU EKS"]]
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 213.216.148.1/32
-            - Description: "FT Sofia Office - IP range 1"
+              CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, EUEKS]
+            - Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, Name], " US EKS"]]
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 94.156.217.224/29
-            - Description: "FT Sofia Office - IP range 2"
+              CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, USEKS]
+            - Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, Name], " VPC"]]
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 212.36.14.64/28
-            - Description: "EU VPN Client"
+              CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentName, VPC]
+            - Description: "AWS Client VPN, eu-west-1"
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 62.25.64.1/32
-            - Description: "US VPN Client"
+              CidrIp: 10.165.0.0/24
+            - Description: "AWS Client VPN, us-east-1"
               IpProtocol: tcp
               FromPort: 3306
               ToPort: 3306
-              CidrIp: 64.210.200.1/32
+              CidrIp: 10.166.0.0/24
             - Description: "Permit access to factset-loader"
               IpProtocol: tcp
               FromPort: 3306
@@ -130,8 +125,6 @@ Resources:
               Value: !Ref TagTeamDL
             - Key: systemCode
               Value: !Ref TagSystemCode
-            - Key: ipCode
-              Value: !Ref TagIpCode
             - Key: description
               Value: 'Parameter Group for Factset RDS Store'
 
