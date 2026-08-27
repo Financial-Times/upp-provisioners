@@ -142,9 +142,6 @@ Mappings:
             Cidr: 10.170.192.0/18
             Description: DB access from Search & Recommendations EKS
 
-Conditions:
-    IsEuWest1: !Equals [!Ref 'AWS::Region', eu-west-1]
-
 Resources:
     DBSubnetGroup:
         Type: AWS::RDS::DBSubnetGroup
@@ -193,7 +190,6 @@ Resources:
                   Value: !Ref SystemCodeTag
 
     ContentPlatformVpcIngress:
-        Condition: IsEuWest1
         Type: AWS::EC2::SecurityGroupIngress
         Properties:
             GroupId: !GetAtt DBSecurityGroup.GroupId
@@ -204,7 +200,6 @@ Resources:
             Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, Name], " VPC"]]
 
     CommunityProdVpcIngress:
-        Condition: IsEuWest1
         Type: AWS::EC2::SecurityGroupIngress
         Properties:
             GroupId: !GetAtt DBSecurityGroup.GroupId
@@ -215,7 +210,6 @@ Resources:
             Description: !FindInMap [AdditionalNetworkCidrs, CommunityProdVpc, Description]
 
     ProfessionalProdVpcIngress:
-        Condition: IsEuWest1
         Type: AWS::EC2::SecurityGroupIngress
         Properties:
             GroupId: !GetAtt DBSecurityGroup.GroupId
@@ -226,7 +220,6 @@ Resources:
             Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdVpc, Description]
 
     ProfessionalTestVpcIngress:
-        Condition: IsEuWest1
         Type: AWS::EC2::SecurityGroupIngress
         Properties:
             GroupId: !GetAtt DBSecurityGroup.GroupId
@@ -237,7 +230,6 @@ Resources:
             Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestVpc, Description]
 
     SearchRecommendationsEksIngress:
-        Condition: IsEuWest1
         Type: AWS::EC2::SecurityGroupIngress
         Properties:
             GroupId: !GetAtt DBSecurityGroup.GroupId
