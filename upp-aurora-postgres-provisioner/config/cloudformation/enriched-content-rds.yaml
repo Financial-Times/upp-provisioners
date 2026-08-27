@@ -128,6 +128,19 @@ Mappings:
         p:
             Name: Prod
             VPC: 10.172.40.0/21
+    AdditionalNetworkCidrs:
+        CommunityProdVpc:
+            Cidr: 10.170.176.0/21
+            Description: DB access from Community Prod VPC
+        ProfessionalProdVpc:
+            Cidr: 10.172.0.0/21
+            Description: DB access from FT Professional Prod VPC
+        ProfessionalTestVpc:
+            Cidr: 10.172.8.0/21
+            Description: DB access from FT Professional Test VPC
+        SearchRecommendationsEks:
+            Cidr: 10.170.192.0/18
+            Description: DB access from Search & Recommendations EKS
 
 Conditions:
     IsEuWest1: !Equals [!Ref 'AWS::Region', eu-west-1]
@@ -189,6 +202,50 @@ Resources:
             ToPort: 5432
             CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, VPC]
             Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, Name], " VPC"]]
+
+    CommunityProdVpcIngress:
+        Condition: IsEuWest1
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+            GroupId: !GetAtt DBSecurityGroup.GroupId
+            IpProtocol: tcp
+            FromPort: 5432
+            ToPort: 5432
+            CidrIp: !FindInMap [AdditionalNetworkCidrs, CommunityProdVpc, Cidr]
+            Description: !FindInMap [AdditionalNetworkCidrs, CommunityProdVpc, Description]
+
+    ProfessionalProdVpcIngress:
+        Condition: IsEuWest1
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+            GroupId: !GetAtt DBSecurityGroup.GroupId
+            IpProtocol: tcp
+            FromPort: 5432
+            ToPort: 5432
+            CidrIp: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdVpc, Cidr]
+            Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalProdVpc, Description]
+
+    ProfessionalTestVpcIngress:
+        Condition: IsEuWest1
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+            GroupId: !GetAtt DBSecurityGroup.GroupId
+            IpProtocol: tcp
+            FromPort: 5432
+            ToPort: 5432
+            CidrIp: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestVpc, Cidr]
+            Description: !FindInMap [AdditionalNetworkCidrs, ProfessionalTestVpc, Description]
+
+    SearchRecommendationsEksIngress:
+        Condition: IsEuWest1
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+            GroupId: !GetAtt DBSecurityGroup.GroupId
+            IpProtocol: tcp
+            FromPort: 5432
+            ToPort: 5432
+            CidrIp: !FindInMap [AdditionalNetworkCidrs, SearchRecommendationsEks, Cidr]
+            Description: !FindInMap [AdditionalNetworkCidrs, SearchRecommendationsEks, Description]
 
     DBCluster:
         Type: AWS::RDS::DBCluster
