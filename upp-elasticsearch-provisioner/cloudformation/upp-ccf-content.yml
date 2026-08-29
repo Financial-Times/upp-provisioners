@@ -28,6 +28,8 @@ Resources:
     Properties:
       DomainName: !Ref ClusterName
       ElasticsearchVersion: "7.4"
+      DomainEndpointOptions:
+        TLSSecurityPolicy: "Policy-Min-TLS-1-2-PFS-2023-10"
       ElasticsearchClusterConfig:
         InstanceCount: "3"
         InstanceType: "m5.xlarge.elasticsearch"
