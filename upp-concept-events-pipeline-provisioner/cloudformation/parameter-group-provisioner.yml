@@ -54,11 +54,10 @@ Resources:
       Type: AWS::RDS::DBParameterGroup
       Properties:
         Description: 'UPP Concept Events RDS Parameter Group'
-        Family: aurora5.6
+        Family: aurora-mysql5.7
         Parameters:
           innodb_large_prefix: 1
           innodb_file_format: Barracuda
-          local_infile: 1
         Tags:
             - Key: Name
               Value: !Join ["" , ["UPP Concept Events RDS Parameter Group ", !Ref EnvironmentName]]
