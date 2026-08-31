@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Template to create SQS entities for CM Neo4j Latency Measurement Service Prod US"
+Parameters:
+
+  TagTeamDL:
+    Type: String
+    Description: Email address of the team used to tag objects
+    Default: "universal.publishing.platform@ft.com"
+
+  TagSystemCode:
+    Type: String
+    Description: The system code for the environment
+    Default: upp
+
+  TagEnvironmentType:
+    Description: Tag detail for the Environment
+    Type: String
+    AllowedValues:
+      - 'd'
+      - 't'
+      - 'p'
+    Default: d
+
+Resources:
+  UPPConceptPublishNotificationsk8sProdMetrics2:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn : !GetAtt UPPConceptPublishDeadLetterk8sProdMetrics2.Arn
+        maxReceiveCount : 5
+      QueueName: "upp-concept-publish-notifications-k8s-prod-metrics-2"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: p
+
+  UPPConceptPublishDeadLetterk8sProdMetrics2:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 0
+      QueueName: "upp-concept-publish-dead-letter-k8s-prod-metrics-2"
+      Tags:
+        - Key: systemCode
+          Value: !Ref TagSystemCode
+        - Key: TagTeamDL
+          Value: !Ref TagTeamDL
+        - Key: environment
+          Value: p
