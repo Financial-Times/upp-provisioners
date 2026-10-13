@@ -4,11 +4,13 @@ Description: This template deploys an Aurora cluster with one Postgres instance 
 
 Metadata:
     AWS::CloudFormation::Interface:
-        - Label: FT standard tagging
-          Parameters:
-             - EnvironmentTag
-             - TeamDLTag
-             - SystemCodeTag
+        ParameterGroups:
+            - Label:
+                  default: FT standard tagging
+              Parameters:
+                  - EnvironmentTag
+                  - TeamDLTag
+                  - SystemCodeTag
 
 Parameters:
     VpcId:
@@ -115,6 +117,17 @@ Parameters:
         Type: String
         Default: upp-enriched-content-store
 
+Mappings:
+    EnvironmentCidrs:
+        d:
+            Name: Test
+            VPC: 10.172.32.0/21
+        t:
+            Name: Prod
+            VPC: 10.172.40.0/21
+        p:
+            Name: Prod
+            VPC: 10.172.40.0/21
 Resources:
     DBSubnetGroup:
         Type: AWS::RDS::DBSubnetGroup
@@ -140,33 +153,43 @@ Resources:
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: 213.86.66.78/32
-                  Description: Bracken House
+                  CidrIp: 10.165.0.0/24
+                  Description: AWS Client VPN, eu-west-1
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
-                  CidrIp: 94.156.217.224/29
-                  Description: FT Sofia Office - IP range 1
-                - IpProtocol: tcp
-                  FromPort: 5432
-                  ToPort: 5432
-                  CidrIp: 212.36.14.64/28
-                  Description: FT Sofia Office - IP range 2
-                - IpProtocol: tcp
-                  FromPort: 5432
-                  ToPort: 5432
-                  CidrIp: 62.25.64.1/32
-                  Description: EU VPN Client
-                - IpProtocol: tcp
-                  FromPort: 5432
-                  ToPort: 5432
-                  CidrIp: 64.210.200.1/32
-                  Description: US VPN Client
+                  CidrIp: 10.166.0.0/24
+                  Description: AWS Client VPN, us-east-1
                 - IpProtocol: tcp
                   FromPort: 5432
                   ToPort: 5432
                   CidrIp: !Ref ClusterCIDR
                   Description: !Ref ClusterCIDRDesc
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, VPC]
+                  Description: !Join ["", ["DB access from Content Platform ", !FindInMap [EnvironmentCidrs, !Ref EnvironmentTag, Name], " VPC"]]
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: 10.170.176.0/21
+                  Description: DB access from Community Prod VPC
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: 10.172.0.0/21
+                  Description: DB access from FT-Professional-Prod VPC, eu-west-1
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: 10.172.8.0/21
+                  Description: DB access from FT-Professional-Test VPC, eu-west-1
+                - IpProtocol: tcp
+                  FromPort: 5432
+                  ToPort: 5432
+                  CidrIp: 10.170.192.0/18
+                  Description: DB access from Search & Recommendations EKS
             Tags:
                 - Key: Name
                   Value: !Join ["" , [!Ref BaseName, " Subnet Group ", !Ref EnvironmentDesc]]
