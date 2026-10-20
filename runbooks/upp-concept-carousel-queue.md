@@ -16,7 +16,7 @@ https://github.com/Financial-Times/upp-provisioners/tree/master/upp-sqs-provisio
 
 ## Service Tier
 
-Bronze
+Silver
 
 ## Lifecycle Stage
 
