@@ -16,7 +16,7 @@ https://github.com/Financial-Times/upp-provisioners
 
 ## Service Tier
 
-Bronze
+Gold
 
 ## Lifecycle Stage
 

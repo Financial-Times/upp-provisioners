@@ -20,7 +20,7 @@ Bronze
 
 ## Lifecycle Stage
 
-Production
+Decommissioned
 
 ## Host Platform
 

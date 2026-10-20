@@ -16,7 +16,7 @@ https://github.com/Financial-Times/upp-provisioners/tree/master/ccf-dynamodb
 
 ## Service Tier
 
-Bronze
+Platinum
 
 ## Lifecycle Stage
 
