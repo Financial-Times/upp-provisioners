@@ -16,7 +16,7 @@ https://github.com/Financial-Times/upp-provisioners/tree/master/upp-factset-prov
 
 ## Service Tier
 
-Bronze
+Silver
 
 ## Lifecycle Stage
 
