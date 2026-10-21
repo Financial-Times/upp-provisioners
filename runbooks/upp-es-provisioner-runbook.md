@@ -16,7 +16,7 @@ https://github.com/Financial-Times/upp-provisioners/tree/master/upp-elasticsearc
 
 ## Service Tier
 
-Bronze
+Silver
 
 ## Lifecycle Stage
 

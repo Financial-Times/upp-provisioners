@@ -12,7 +12,7 @@ upp-content-exporter-s3
 
 ## Service Tier
 
-Bronze
+Silver
 
 ## Lifecycle Stage
 

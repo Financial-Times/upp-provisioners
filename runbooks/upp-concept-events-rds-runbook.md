@@ -12,7 +12,7 @@ upp-concept-events-rds
 
 ## Service Tier
 
-Bronze
+Silver
 
 ## Lifecycle Stage
 

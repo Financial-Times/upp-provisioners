@@ -12,7 +12,7 @@ upp-enriched-content-store
 
 ## Service Tier
 
-Bronze
+Gold
 
 ## Lifecycle Stage
 
