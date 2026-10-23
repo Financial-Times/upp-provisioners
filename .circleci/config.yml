@@ -50,9 +50,9 @@ build-config: &build-config
           docker push coco/${CIRCLE_JOB}:${DOCKER_TAG}
 
 # define our CircleCI config here
-version: 2
+version: 2.1
 workflows:
-  version: 2
+  version: 2.1
   build:
     jobs:
       - trigger-provisioner-builds:
