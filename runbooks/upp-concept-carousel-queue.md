@@ -18,7 +18,6 @@ https://github.com/Financial-Times/upp-provisioners/tree/master/upp-sqs-provisio
 
 Silver
 
-
 ## Lifecycle Stage
 
 Production
