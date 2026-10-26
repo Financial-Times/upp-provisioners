@@ -1,12 +1,6 @@
 # upp-provisioners
 
-Collection of provisioning tools for the Universal Publishing Platform which includes the following:
-* Delivery k8s Cluster
-* Publishing k8 Cluster
-* Neo4j k8s Cluster
-* Elastic Search Cluster
-* Concept Publishing Stack
-* Factset
+Collection of provisioning tools for the Universal Publishing Platform including Delivery k8s Cluster, Publishing k8 Cluster, Neo4j k8s Cluster, Elastic Search Cluster, Concept Publishing Stack and Factset.
 
 ## Code
 
